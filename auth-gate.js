@@ -54,8 +54,8 @@
       '#dq-gate button{width:100%;margin-top:18px;padding:14px;border:none;border-radius:12px;background:#2563EB;color:#fff;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;transition:background .15s;}',
       '#dq-gate button:hover{background:#1D4ED8;}'
     ].join('');
-    document.head.appendChild(css);
-    document.body.appendChild(overlay);
+    (document.head || document.documentElement).appendChild(css);
+    document.documentElement.appendChild(overlay);
 
     var form = document.getElementById('dq-gate-form');
     var input = document.getElementById('dq-gate-input');
