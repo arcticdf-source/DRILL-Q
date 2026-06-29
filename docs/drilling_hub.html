@@ -1,0 +1,2311 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>DRILL-Q · Ванкорское НГМ · Скв. 7-002</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#06090f; --p1:#0c1220; --p2:#111a2e; --p3:#172038;
+  --line:rgba(255,255,255,.07); --line2:rgba(255,255,255,.04);
+  --t:#d8e4f0; --muted:#6b7f96; --muted2:#4a5a6e;
+  --cyan:#00d4ff; --cyan2:rgba(0,212,255,.12);
+  --g:#00e676; --g2:rgba(0,230,118,.12);
+  --w:#ffab00; --w2:rgba(255,171,0,.15);
+  --r:#ff3d3d; --r2:rgba(255,61,61,.15);
+  --purple:#a78bfa; --purple2:rgba(167,139,250,.12);
+  --sb:220px; --tb:46px;
+}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--t);
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:13px;-webkit-font-smoothing:antialiased}
+
+/* ══ TOPBAR ══════════════════════════════════════════════ */
+#topbar{
+  position:fixed;top:0;left:0;right:0;height:var(--tb);z-index:300;
+  background:rgba(12,18,32,.97);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--line);
+  display:flex;align-items:center;padding:0 16px 0 0;gap:0
+}
+.tb-brand{
+  width:var(--sb);flex-shrink:0;
+  display:flex;align-items:center;gap:8px;padding:0 16px;
+  border-right:1px solid var(--line);height:100%
+}
+.tb-mark{width:26px;height:26px;border-radius:6px;background:#2563eb;
+  display:flex;align-items:center;justify-content:center;
+  font-size:9px;font-weight:800;color:#fff;letter-spacing:-.02em;flex-shrink:0}
+.tb-name{font-size:13px;font-weight:800;letter-spacing:-.02em}
+.tb-sub{font-size:9px;color:var(--muted);margin-top:1px}
+.tb-mid{flex:1;display:flex;align-items:center;gap:10px;padding:0 14px;min-width:0}
+.well-chip{
+  display:flex;align-items:center;gap:7px;
+  padding:4px 10px;border-radius:6px;
+  background:var(--p2);border:1px solid var(--line);
+  font-size:12px;white-space:nowrap;flex-shrink:0
+}
+.well-chip .dot{width:6px;height:6px;border-radius:50%;background:var(--g);
+  box-shadow:0 0 0 3px rgba(0,230,118,.15);animation:blink 2s infinite}
+.well-chip .fname{color:var(--muted);font-size:11px}
+.well-chip .wname{font-weight:700}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.35}}
+#tb-status-text{font-size:11px;color:var(--muted);white-space:nowrap}
+.tb-right{display:flex;align-items:center;gap:8px;flex-shrink:0;margin-left:auto}
+.alert-chip{
+  display:flex;align-items:center;gap:5px;
+  padding:4px 10px;border-radius:999px;cursor:pointer;
+  background:var(--r2);border:1px solid rgba(255,61,61,.25);
+  font-size:11px;font-weight:700;color:var(--r);
+  transition:all .15s
+}
+.alert-chip:hover{background:rgba(255,61,61,.22)}
+.alert-chip .adot{width:5px;height:5px;border-radius:50%;background:var(--r);animation:blink .7s infinite}
+.alert-chip.ok{background:var(--g2);border-color:rgba(0,230,118,.25);color:var(--g)}
+.alert-chip.ok .adot{background:var(--g);animation:none}
+#tb-depth{font-size:18px;font-weight:800;font-family:monospace;color:var(--cyan);letter-spacing:-.5px}
+#tb-date{font-size:11px;color:var(--muted)}
+
+/* ══ SIDEBAR ═════════════════════════════════════════════ */
+#sidebar{
+  position:fixed;top:var(--tb);left:0;bottom:0;width:var(--sb);z-index:200;
+  background:var(--p1);border-right:1px solid var(--line);
+  display:flex;flex-direction:column;overflow:hidden
+}
+.sb-section{padding:10px 10px 4px}
+.sb-label{font-size:9px;font-weight:700;color:var(--muted2);letter-spacing:.1em;
+  text-transform:uppercase;padding:0 8px;margin-bottom:3px}
+.nav-item{
+  display:flex;align-items:center;gap:9px;
+  padding:7px 8px;border-radius:7px;
+  color:var(--muted);font-size:12px;font-weight:500;
+  cursor:pointer;transition:all .12s;position:relative
+}
+.nav-item:hover{background:var(--p2);color:var(--t)}
+.nav-item.active{background:var(--cyan2);color:var(--cyan);font-weight:700}
+.nav-item .ni-icon{width:16px;height:16px;flex-shrink:0;opacity:.7}
+.nav-item.active .ni-icon{opacity:1}
+.nav-badge{
+  margin-left:auto;padding:1px 5px;border-radius:999px;
+  font-size:9px;font-weight:700;background:var(--r);color:#fff
+}
+.nav-badge.warn{background:var(--w);color:#111}
+.nav-badge.ok{background:var(--g);color:#001}
+.sb-divider{height:1px;background:var(--line);margin:6px 10px}
+.sb-well-card{
+  margin:10px;padding:11px 12px;
+  background:linear-gradient(135deg,#0f2347,#0a1928);
+  border:1px solid rgba(0,212,255,.12);border-radius:9px
+}
+.swc-label{font-size:9px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px}
+.swc-val{font-family:monospace;font-size:22px;font-weight:700;color:var(--cyan);line-height:1}
+.swc-sub{font-size:10px;color:rgba(255,255,255,.35);margin-top:2px}
+.swc-bar{margin-top:8px;height:3px;background:rgba(255,255,255,.1);border-radius:2px;overflow:hidden}
+.swc-fill{height:100%;background:var(--cyan);border-radius:2px;transition:width .6s}
+
+/* ══ MAIN ════════════════════════════════════════════════ */
+#main{
+  position:fixed;top:var(--tb);left:var(--sb);right:0;bottom:0;
+  overflow:hidden
+}
+.view{position:absolute;inset:0;display:none;overflow-y:auto;overflow-x:hidden;
+  scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+.view.active{display:block}
+/* cockpit view overrides */
+#view-cockpit{overflow:hidden;display:none}
+#view-cockpit.active{display:flex;flex-direction:column}
+#view-dmr{overflow:hidden;display:none}
+#view-dmr.active{display:block}
+#view-dwop{overflow:hidden;display:none}
+#view-dwop.active{display:block}
+
+/* ══ ANALYTICS VIEW ══════════════════════════════════════ */
+.an-wrap{padding:20px;display:flex;flex-direction:column;gap:14px;min-height:100%}
+
+/* Loader card */
+.loader-card{
+  background:var(--p1);border:1px solid var(--line);border-radius:10px;
+  padding:16px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap
+}
+.loader-icon{
+  width:40px;height:40px;border-radius:10px;background:var(--p2);
+  display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0
+}
+.loader-text{flex:1;min-width:0}
+.loader-title{font-size:13px;font-weight:700;margin-bottom:2px}
+.loader-sub{font-size:11px;color:var(--muted)}
+.loader-actions{display:flex;gap:8px;flex-shrink:0;flex-wrap:wrap}
+.btn{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:6px 13px;border-radius:7px;font-size:12px;font-weight:700;
+  cursor:pointer;border:1px solid transparent;transition:all .15s;
+  font-family:inherit;letter-spacing:.01em;white-space:nowrap
+}
+.btn-primary{background:#2563eb;color:#fff;border-color:#2563eb}
+.btn-primary:hover{background:#1d4ed8}
+.btn-ghost{background:var(--p2);color:var(--t);border-color:var(--line)}
+.btn-ghost:hover{border-color:var(--cyan);color:var(--cyan)}
+.btn-green{background:var(--g2);color:var(--g);border-color:rgba(0,230,118,.25)}
+.btn-green:hover{background:rgba(0,230,118,.2)}
+#fileInput{display:none}
+#loadStatus{
+  padding:7px 14px;border-radius:7px;font-size:11px;font-weight:700;
+  display:none;align-items:center;gap:6px
+}
+#loadStatus.ok{background:var(--g2);color:var(--g);border:1px solid rgba(0,230,118,.2);display:flex}
+#loadStatus.err{background:var(--r2);color:var(--r);border:1px solid rgba(255,61,61,.2);display:flex}
+
+/* KPI row */
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.kpi-card{
+  background:var(--p1);border:1px solid var(--line);border-radius:10px;
+  padding:14px 16px
+}
+.kpi-label{font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px}
+.kpi-value{font-size:24px;font-weight:800;font-family:monospace;letter-spacing:-.5px}
+.kpi-delta{font-size:10px;margin-top:4px}
+.kpi-delta.ok{color:var(--g)}.kpi-delta.warn{color:var(--w)}.kpi-delta.crit{color:var(--r)}.kpi-delta.info{color:var(--cyan)}
+
+/* Two-col layout */
+.an-grid{display:grid;grid-template-columns:1fr 320px;gap:14px}
+.an-card{background:var(--p1);border:1px solid var(--line);border-radius:10px}
+.an-card-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 16px 0;margin-bottom:10px
+}
+.an-card-title{font-size:12px;font-weight:800;letter-spacing:.02em;text-transform:uppercase;color:var(--muted)}
+.an-card-body{padding:0 16px 14px}
+
+/* Formation risk table */
+.ftable{width:100%;border-collapse:collapse}
+.ftable th{
+  font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;
+  letter-spacing:.08em;text-align:left;padding:5px 8px;
+  border-bottom:1px solid var(--line)
+}
+.ftable td{
+  font-size:11px;padding:6px 8px;
+  border-bottom:1px solid var(--line2);vertical-align:middle
+}
+.ftable tr:last-child td{border-bottom:none}
+.ftable tr:hover td{background:rgba(255,255,255,.02)}
+.risk-pill{
+  display:inline-flex;align-items:center;gap:3px;
+  padding:2px 7px;border-radius:999px;font-size:9px;font-weight:700
+}
+.risk-pill.critical{background:var(--r2);color:var(--r);border:1px solid rgba(255,61,61,.2)}
+.risk-pill.high{background:rgba(249,115,22,.12);color:#f97316;border:1px solid rgba(249,115,22,.2)}
+.risk-pill.med{background:var(--w2);color:var(--w);border:1px solid rgba(255,171,0,.2)}
+.risk-pill.low{background:var(--g2);color:var(--g);border:1px solid rgba(0,230,118,.2)}
+
+/* AI insights list */
+.insight-item{
+  display:flex;gap:10px;padding:8px 0;
+  border-bottom:1px solid var(--line2)
+}
+.insight-item:last-child{border-bottom:none}
+.insight-cls{
+  width:3px;border-radius:2px;flex-shrink:0;margin-top:2px;
+  align-self:stretch
+}
+.insight-cls.critical{background:var(--r)}
+.insight-cls.high{background:#f97316}
+.insight-cls.warn{background:var(--w)}
+.insight-cls.info{background:var(--cyan)}
+.insight-cls.ok{background:var(--g)}
+.insight-body{flex:1}
+.insight-title{font-size:12px;font-weight:700;margin-bottom:2px}
+.insight-title.critical{color:var(--r)}.insight-title.high{color:#f97316}
+.insight-title.warn{color:var(--w)}.insight-title.info{color:var(--cyan)}.insight-title.ok{color:var(--g)}
+.insight-desc{font-size:11px;color:var(--muted);line-height:1.5}
+.insight-source{font-size:9px;color:var(--muted2);margin-top:3px}
+
+/* Risk column */
+.risk-col-wrap{position:relative;background:var(--p2);border-radius:7px;overflow:hidden;height:340px}
+.rz{position:absolute;left:0;right:0;display:flex;align-items:center;padding:0 8px;font-size:9px}
+.rz-label{font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+.rz-d{font-family:monospace;font-size:9px;color:rgba(255,255,255,.35);margin-left:auto}
+.rz.critical{background:rgba(255,61,61,.13);color:var(--r)}
+.rz.high{background:rgba(249,115,22,.1);color:#f97316}
+.rz.med{background:rgba(255,171,0,.09);color:var(--w)}
+.rz.low{background:rgba(0,230,118,.07);color:var(--g)}
+.depth-now-line{position:absolute;left:0;right:0;height:2px;background:var(--cyan);z-index:10}
+.depth-now-line::after{
+  content:attr(data-label);
+  position:absolute;right:6px;top:-9px;
+  font-size:8px;font-weight:700;color:var(--cyan);font-family:monospace;
+  background:var(--p1);padding:1px 4px;border-radius:3px;
+  border:1px solid rgba(0,212,255,.25)
+}
+
+/* Upcoming events timeline */
+.timeline-item{
+  display:flex;align-items:flex-start;gap:8px;
+  padding:5px 0;border-bottom:1px solid var(--line2)
+}
+.timeline-item:last-child{border-bottom:none}
+.tl-depth{font-family:monospace;font-size:10px;color:var(--muted);width:40px;flex-shrink:0;padding-top:1px;text-align:right}
+.tl-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:3px}
+.tl-body{flex:1;min-width:0}
+.tl-title{font-size:11px;font-weight:700}
+.tl-desc{font-size:10px;color:var(--muted);margin-top:1px;line-height:1.4}
+
+/* ══ COCKPIT VIEW ════════════════════════════════════════ */
+#cockpit-row{flex:1;display:flex;overflow:hidden;min-height:0}
+#gauges{width:210px;flex-shrink:0;background:var(--p1);border-right:1px solid var(--line);
+  display:flex;flex-direction:column;overflow-y:auto;overflow-x:hidden;
+  scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+.gauge-cell{padding:8px 12px;border-bottom:1px solid var(--line)}
+.gauge-lbl{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.arc-wrap{display:flex;justify-content:center}
+.bar-gauge{height:8px;background:rgba(255,255,255,.06);border-radius:99px;overflow:hidden;margin-top:4px}
+.bar-fill{height:100%;border-radius:99px;transition:width .8s ease}
+.gauge-val{font-size:16px;font-weight:800;font-family:monospace;text-align:center;margin-top:2px}
+.gauge-unit{font-size:9px;color:var(--muted);text-align:center}
+.gauge-val.ok{color:var(--g)}.gauge-val.warn{color:var(--w)}.gauge-val.crit{color:var(--r)}.gauge-val.cyan{color:var(--cyan)}
+.compact-row{display:flex;gap:6px;padding:8px 12px;border-bottom:1px solid var(--line)}
+.compact-cell{flex:1;text-align:center}
+.compact-lbl{font-size:8px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.compact-val{font-size:13px;font-weight:800;font-family:monospace;color:var(--cyan);margin-top:2px}
+
+#cp-center{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+#formation-banner{height:34px;background:var(--p2);border-bottom:1px solid var(--line);
+  display:flex;align-items:center;padding:0 14px;gap:10px;flex-shrink:0}
+.form-badge{display:inline-flex;align-items:center;border-radius:5px;
+  padding:2px 8px;font-size:9px;font-weight:800;letter-spacing:.06em;white-space:nowrap}
+.form-badge.clay{background:rgba(96,112,128,.25);color:#8ba0b4;border:1px solid rgba(96,112,128,.35)}
+.form-badge.sand{background:rgba(200,160,96,.2);color:#daa520;border:1px solid rgba(200,160,96,.3)}
+.form-badge.reservoir{background:rgba(0,230,118,.15);color:var(--g);border:1px solid rgba(0,230,118,.3)}
+.form-badge.gas{background:rgba(255,171,0,.15);color:var(--w);border:1px solid rgba(255,171,0,.3)}
+.form-badge.tight,.form-badge.argillite,.form-badge.loose{background:rgba(90,90,100,.2);color:#9aabb8;border:1px solid rgba(90,90,100,.3)}
+#form-name{font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#form-depth-range{font-size:10px;color:var(--muted);margin-left:auto;white-space:nowrap}
+#canvas-wrap{flex:1;position:relative;overflow:hidden}
+#wellCanvas{display:block;width:100%;height:100%}
+
+#cp-right{width:260px;flex-shrink:0;background:var(--p1);border-left:1px solid var(--line);
+  overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+.rp-section{padding:10px 12px;border-bottom:1px solid var(--line)}
+.rp-title{font-size:9px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:7px}
+.prop-row{display:flex;justify-content:space-between;align-items:center;padding:2px 0;
+  border-bottom:1px solid rgba(255,255,255,.03)}
+.prop-row:last-child{border-bottom:none}
+.prop-key{font-size:11px;color:var(--muted)}
+.prop-val{font-size:12px;font-weight:700;font-family:monospace}
+.prop-val.ok{color:var(--g)}.prop-val.warn{color:var(--w)}.prop-val.crit{color:var(--r)}.prop-val.cyan{color:var(--cyan)}
+.trend-arrow{font-size:10px;margin-left:3px}
+.trend-up{color:var(--r)}.trend-dn{color:var(--g)}.trend-ok{color:var(--g);opacity:.5}
+.form-detail-card{background:var(--p2);border-radius:7px;padding:9px;margin-bottom:6px}
+.form-detail-name{font-size:12px;font-weight:800;margin-bottom:2px}
+.form-detail-desc{font-size:10px;color:var(--muted);line-height:1.5}
+.form-risk{display:inline-flex;align-items:center;gap:4px;margin-top:5px;
+  font-size:10px;font-weight:700;padding:2px 7px;border-radius:99px}
+.form-risk.low{background:var(--g2);color:var(--g)}.form-risk.med{background:var(--w2);color:var(--w)}
+.form-risk.high{background:rgba(249,115,22,.12);color:#f97316}.form-risk.critical{background:var(--r2);color:var(--r)}
+.ai-event{background:var(--p2);border-radius:6px;padding:6px 9px;margin-bottom:4px;
+  border-left:3px solid;animation:slideIn .22s ease;cursor:pointer;position:relative}
+.ai-event:hover{opacity:.88}
+.ai-event::after{content:'▶';position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:8px;color:var(--muted);opacity:.6}
+@keyframes slideIn{from{transform:translateX(12px);opacity:0}to{transform:none;opacity:1}}
+.ai-event.info{border-color:var(--cyan)}.ai-event.warn{border-color:var(--w)}
+.ai-event.high{border-color:#f97316}.ai-event.crit{border-color:var(--r)}.ai-event.ok{border-color:var(--g)}
+.ai-event-time{font-size:9px;color:var(--muted);font-weight:600}
+.ai-event-title{font-size:11px;font-weight:700;margin:2px 0;padding-right:12px}
+.ai-event.info .ai-event-title{color:var(--cyan)}.ai-event.warn .ai-event-title{color:var(--w)}
+.ai-event.high .ai-event-title{color:#f97316}.ai-event.crit .ai-event-title{color:var(--r)}.ai-event.ok .ai-event-title{color:var(--g)}
+.ai-event-body{font-size:10px;color:var(--muted);line-height:1.4}
+.fc-row{display:flex;align-items:center;gap:6px;padding:3px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+.fc-row:last-child{border-bottom:none}
+.fc-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.fc-body{flex:1;min-width:0}
+.fc-name{font-size:9px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fc-sub{font-size:8px;color:var(--muted)}
+.fc-risk{font-size:8px;font-weight:800;white-space:nowrap}
+.fc-risk.low{color:var(--g)}.fc-risk.med{color:var(--w)}.fc-risk.high{color:#f97316}.fc-risk.critical{color:var(--r)}
+.rec-line{display:flex;align-items:flex-start;gap:5px;padding:1px 0;font-size:10px;line-height:1.5;color:var(--muted)}
+.rec-line.warn{color:var(--w)}.rec-line.crit{color:var(--r)}.rec-line.ok{color:var(--g)}.rec-line.info{color:var(--cyan)}
+#dmrBadge{display:none;padding:6px 12px;background:rgba(0,230,118,0.07);
+  border-bottom:1px solid rgba(0,230,118,0.15);font-size:10px;color:var(--g);font-weight:700}
+
+/* Cockpit bottom bar */
+#cp-bottom{height:54px;background:var(--p1);border-top:1px solid var(--line);
+  display:flex;align-items:center;padding:0 12px;gap:8px;flex-shrink:0}
+.ctrl-btn{background:var(--p2);border:1px solid var(--line);color:var(--t);
+  border-radius:7px;padding:5px 11px;cursor:pointer;font-size:11px;font-weight:700;
+  font-family:inherit;letter-spacing:.03em;transition:all .15s;white-space:nowrap}
+.ctrl-btn:hover{border-color:rgba(0,212,255,.4);color:var(--cyan)}
+.ctrl-btn.active{background:#2563eb;border-color:#2563eb;color:#fff}
+.speed-btn{padding:4px 7px;font-size:10px}
+#progressTrack{flex:1;position:relative;height:32px;cursor:pointer;min-width:60px}
+#progressBar{position:absolute;top:50%;transform:translateY(-50%);width:100%;
+  height:4px;background:rgba(255,255,255,.08);border-radius:99px}
+#progressFill{height:100%;background:var(--cyan);border-radius:99px;width:0%}
+#progressNPT{position:absolute;top:0;height:100%;background:rgba(255,61,61,.3);pointer-events:none;border-radius:2px}
+#depthInput{width:72px;border:1px solid var(--line);background:var(--p2);color:var(--t);
+  border-radius:6px;padding:4px 7px;font-size:11px;font-family:monospace;text-align:center;font-weight:700}
+.live-toggle{display:flex;align-items:center;gap:6px;cursor:pointer;user-select:none;
+  padding:4px 9px;border-radius:7px;font-size:11px;font-weight:700;
+  border:1px solid var(--line);background:var(--p2);color:var(--muted);transition:all .15s}
+.live-toggle.on{background:rgba(255,171,0,.12);border-color:rgba(255,171,0,.3);color:var(--w)}
+.live-toggle .lt-dot{width:5px;height:5px;border-radius:50%;background:var(--muted)}
+.live-toggle.on .lt-dot{background:var(--w);animation:blink .8s infinite}
+
+/* Live input drawer */
+#liveDrawer{
+  position:absolute;bottom:54px;left:0;right:0;z-index:50;
+  background:rgba(12,18,32,.97);border-top:1px solid rgba(255,171,0,.2);
+  backdrop-filter:blur(10px);
+  padding:10px 14px;
+  display:none;flex-wrap:wrap;gap:8px;align-items:flex-end
+}
+#liveDrawer.open{display:flex}
+.li-group{display:flex;flex-direction:column;gap:3px}
+.li-label{font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.li-input{
+  width:80px;background:var(--p2);border:1px solid var(--line);
+  color:var(--t);border-radius:5px;padding:4px 7px;font-size:12px;
+  font-family:monospace;font-weight:700;text-align:center;
+  transition:border-color .15s
+}
+.li-input:focus{outline:none;border-color:var(--w)}
+.li-input.changed{border-color:var(--w);background:rgba(255,171,0,.06)}
+#btnApplyLive{background:var(--w);border:none;color:#111;
+  border-radius:6px;padding:6px 14px;font-size:12px;font-weight:800;
+  cursor:pointer;font-family:inherit;white-space:nowrap;align-self:flex-end}
+#btnApplyLive:hover{background:#ffc200}
+.li-mode-badge{
+  padding:4px 9px;border-radius:5px;font-size:10px;font-weight:700;
+  background:rgba(255,171,0,.12);color:var(--w);border:1px solid rgba(255,171,0,.2);
+  align-self:flex-end;white-space:nowrap
+}
+
+/* Cement overlay */
+#cementBar{display:none;position:absolute;inset:0;background:rgba(6,9,15,.88);
+  backdrop-filter:blur(4px);z-index:60;align-items:center;justify-content:center;flex-direction:column;gap:14px}
+#cementBar.show{display:flex}
+.cement-title{font-size:20px;font-weight:800;color:#cbd5e1;letter-spacing:-.3px}
+.cement-sub{font-size:13px;color:var(--muted)}
+.cement-track{width:320px;height:8px;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden}
+.cement-fill{height:100%;background:linear-gradient(90deg,#64748b,#cbd5e1);border-radius:99px;width:0%;transition:width .3s}
+.cement-skip{margin-top:8px;background:var(--p2);border:1px solid var(--line);color:var(--muted);
+  border-radius:7px;padding:5px 16px;cursor:pointer;font-size:11px;font-family:inherit;font-weight:700}
+.cement-skip:hover{color:var(--t)}
+
+/* Alert overlay */
+#alertOverlay{display:none;position:fixed;inset:0;z-index:500;
+  background:rgba(0,0,0,.7);backdrop-filter:blur(5px);
+  align-items:center;justify-content:center;flex-direction:column}
+#alertOverlay.show{display:flex;animation:fadein .2s ease}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+#alertBox{border-radius:16px;padding:26px 30px;max-width:500px;width:90%;border:2px solid;animation:shake .35s ease}
+@keyframes shake{0%,100%{transform:none}20%{transform:translateX(-7px)}40%{transform:translateX(7px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+#alertBox.warn{background:#1a1400;border-color:var(--w)}
+#alertBox.high{background:#170d00;border-color:#f97316}
+#alertBox.crit{background:#1a0000;border-color:var(--r)}
+#alertBox.ok{background:#001a08;border-color:var(--g)}
+#alertBox.info{background:#001319;border-color:var(--cyan)}
+.alert-icon-lg{font-size:34px;text-align:center;margin-bottom:10px}
+.alert-title-lg{font-size:17px;font-weight:800;text-align:center;margin-bottom:7px}
+.alert-body-lg{font-size:12px;color:var(--muted);line-height:1.65;text-align:center;margin-bottom:16px}
+.alert-prob-row{text-align:center;margin-bottom:16px}
+.alert-prob-chip{display:inline-block;padding:4px 14px;border-radius:99px;font-size:12px;font-weight:800}
+.alert-actions{display:flex;gap:10px;justify-content:center}
+.btn-ack{border-radius:8px;padding:7px 18px;font-size:12px;font-weight:800;cursor:pointer;border:2px solid;font-family:inherit}
+.btn-ack.primary{background:var(--r);border-color:var(--r);color:#fff}.btn-ack.primary:hover{background:#cc2222}
+.btn-ack.secondary{background:transparent;border-color:var(--line);color:var(--muted)}.btn-ack.secondary:hover{border-color:var(--cyan);color:var(--cyan)}
+
+/* Event modal */
+#eventModal{display:none;position:fixed;inset:0;z-index:480;
+  background:rgba(0,0,0,.65);backdrop-filter:blur(4px);align-items:center;justify-content:center}
+#eventModal.show{display:flex;animation:fadein .2s ease}
+#eventModalBox{background:var(--p1);border:1px solid var(--line);border-radius:14px;
+  padding:24px 26px;max-width:540px;width:92%;max-height:80vh;overflow-y:auto;position:relative}
+.em-close{position:absolute;top:14px;right:16px;background:none;border:none;color:var(--muted);font-size:18px;cursor:pointer}
+.em-close:hover{color:var(--t)}
+.em-depth{font-size:10px;font-weight:700;color:var(--muted);margin-bottom:6px}
+.em-title{font-size:17px;font-weight:800;margin-bottom:10px}
+.em-body{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:14px;white-space:pre-wrap}
+.em-rec{background:var(--p2);border-left:3px solid var(--cyan);border-radius:4px;padding:12px 14px;font-size:12px;line-height:1.65}
+.em-rec-title{font-size:10px;font-weight:800;color:var(--cyan);letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px}
+
+/* Archive view */
+.arch-wrap{padding:20px;display:flex;flex-direction:column;gap:14px}
+.arch-well-group{background:var(--p1);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.arch-well-hdr{
+  display:flex;align-items:center;gap:10px;padding:11px 16px;
+  background:var(--p2);border-bottom:1px solid var(--line);cursor:pointer
+}
+.arch-well-hdr:hover{background:var(--p3)}
+.arch-well-name{font-size:13px;font-weight:700}
+.arch-well-cnt{font-size:11px;color:var(--muted);margin-left:auto}
+.arch-report{
+  display:flex;align-items:center;gap:10px;padding:9px 16px;
+  border-bottom:1px solid var(--line2);cursor:pointer;transition:background .1s
+}
+.arch-report:last-child{border-bottom:none}
+.arch-report:hover{background:rgba(255,255,255,.025)}
+.arch-report-date{font-family:monospace;font-size:11px;color:var(--muted);width:80px;flex-shrink:0}
+.arch-report-depth{font-family:monospace;font-size:11px;font-weight:700;color:var(--cyan);width:70px;flex-shrink:0}
+.arch-report-fluid{font-size:11px;flex:1;color:var(--muted)}
+.arch-report-eng{font-size:11px;color:var(--t)}
+.arch-open-btn{
+  font-size:10px;font-weight:700;color:var(--cyan);
+  padding:3px 8px;border-radius:5px;border:1px solid rgba(0,212,255,.2);
+  background:var(--cyan2);cursor:pointer;white-space:nowrap;flex-shrink:0;
+  font-family:inherit;transition:all .15s
+}
+.arch-open-btn:hover{background:rgba(0,212,255,.2)}
+#archEmpty{text-align:center;padding:40px 20px;color:var(--muted);font-size:13px}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════ TOPBAR ════ -->
+<div id="topbar">
+  <div class="tb-brand">
+    <div class="tb-mark">DQ</div>
+    <div><div class="tb-name">DRILL-Q</div><div class="tb-sub">Платформа управления</div></div>
+  </div>
+  <div class="tb-mid">
+    <div class="well-chip">
+      <div class="dot"></div>
+      <span class="fname">Ванкорское НГМ</span>
+      <span style="color:rgba(255,255,255,.15)">/</span>
+      <span class="wname" id="tbWellName">Скв. 7-002</span>
+    </div>
+    <span id="tb-status-text" style="font-size:11px;color:var(--muted)">Скв. 7-002 · Куст 7 · Нх III–IV · ТД 3353 м MD</span>
+  </div>
+  <div class="tb-right">
+    <div class="alert-chip ok" id="tbAlertChip" onclick="showView('cockpit')">
+      <div class="adot"></div>
+      <span id="tbAlertText">Нет алертов</span>
+    </div>
+    <div id="tb-depth" style="display:none">0 м</div>
+    <span id="tb-date" style="font-size:11px;color:var(--muted)"></span>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════ SIDEBAR ════ -->
+<div id="sidebar">
+  <div class="sb-section">
+    <div class="sb-label">Рабочие экраны</div>
+
+    <div class="nav-item" id="nav-analytics" onclick="showView('analytics')">
+      <svg class="ni-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+      </svg>
+      AI Аналитика
+      <span class="nav-badge warn" id="badgeAnalytics" style="display:none">0</span>
+    </div>
+
+    <div class="nav-item" id="nav-cockpit" onclick="showView('cockpit')">
+      <svg class="ni-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+        <circle cx="12" cy="12" r="3"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 2v2m0 16v2M2 12h2m16 0h2m-3.5-7.5-1.4 1.4M6.9 17.1l-1.4 1.4m0-14.8 1.4 1.4m9.8 9.8 1.4 1.4"/>
+      </svg>
+      Кокпит
+      <span class="nav-badge" id="badgeCockpit" style="display:none">0</span>
+    </div>
+
+    <div class="nav-item" id="nav-dmr" onclick="showView('dmr')">
+      <svg class="ni-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414A1 1 0 0119 9.414V19a2 2 0 01-2 2z"/>
+      </svg>
+      Суточный рапорт
+    </div>
+
+    <div class="nav-item" id="nav-archive" onclick="showView('archive')">
+      <svg class="ni-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/>
+      </svg>
+      Архив рапортов
+      <span class="nav-badge ok" id="badgeArchive" style="display:none">0</span>
+    </div>
+
+    <div class="nav-item" id="nav-dwop" onclick="showView('dwop')">
+      <svg class="ni-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"/>
+      </svg>
+      DWOP Симулятор
+    </div>
+
+    <div class="nav-item" onclick="window.open('vankor_knowledge_center.html','_blank')">
+      <svg class="ni-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+      </svg>
+      Knowledge Center
+    </div>
+  </div>
+
+  <div class="sb-divider"></div>
+
+  <div class="sb-section">
+    <div class="sb-label">Разрез скважины</div>
+    <div id="sbSectionList" style="display:flex;flex-direction:column;gap:1px"></div>
+  </div>
+
+  <div style="flex:1"></div>
+
+  <div class="sb-well-card" id="sbDepthCard">
+    <div class="swc-label">Текущая глубина</div>
+    <div class="swc-val" id="sbDepthVal">0 <span style="font-size:12px;opacity:.4">м</span></div>
+    <div class="swc-sub" id="sbDepthSub">—</div>
+    <div class="swc-bar"><div class="swc-fill" id="sbDepthFill" style="width:0%"></div></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════ MAIN VIEWS ════════ -->
+<div id="main">
+
+  <!-- ─── ANALYTICS ───────────────────────────────── -->
+  <div class="view active" id="view-analytics">
+    <div class="an-wrap">
+
+      <!-- Data loader -->
+      <div class="loader-card">
+        <div class="loader-icon">🗂</div>
+        <div class="loader-text">
+          <div class="loader-title">База знаний · Исторические данные скважин</div>
+          <div class="loader-sub" id="loaderSub">Загрузите JSON с данными пробуренных скважин или используйте данные из сохранённых рапортов</div>
+        </div>
+        <div class="loader-actions">
+          <button class="btn btn-primary" onclick="document.getElementById('fileInput').click()">📂 Загрузить JSON</button>
+          <input type="file" id="fileInput" accept=".json" onchange="loadJSONFile(event)">
+          <button class="btn btn-ghost" onclick="loadFromLocalStorage()">⚡ Из рапортов DMR</button>
+          <button class="btn btn-green" onclick="loadDemoData()">▶ Демо-данные</button>
+        </div>
+      </div>
+      <div id="loadStatus"></div>
+      <div id="drillCTA" style="display:none;margin-top:10px;text-align:center">
+        <button class="btn btn-primary" onclick="goToCockpit()" style="padding:10px 28px;font-size:13px;font-weight:800;letter-spacing:.02em">
+          🔩 Начать бурение →
+        </button>
+        <div style="font-size:10px;color:var(--muted);margin-top:5px">AI-анализ завершён · Перейти в кокпит для старта симуляции</div>
+      </div>
+
+      <!-- KPI row -->
+      <div class="kpi-row" id="kpiRow">
+        <div class="kpi-card">
+          <div class="kpi-label">Скважин в базе</div>
+          <div class="kpi-value" id="kpiWells" style="color:var(--cyan)">—</div>
+          <div class="kpi-delta info" id="kpiWellsSub">Загрузите данные</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Суммарная проходка</div>
+          <div class="kpi-value" id="kpiDepth" style="color:var(--g)">—</div>
+          <div class="kpi-delta ok" id="kpiDepthSub">м</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Всего суток НПВ</div>
+          <div class="kpi-value" id="kpiNPT" style="color:var(--w)">—</div>
+          <div class="kpi-delta warn" id="kpiNPTSub">суток</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">AI-алертов создано</div>
+          <div class="kpi-value" id="kpiAlerts" style="color:var(--r)">—</div>
+          <div class="kpi-delta crit" id="kpiAlertsSub">для текущей скважины</div>
+        </div>
+      </div>
+
+      <!-- Main grid -->
+      <div class="an-grid">
+
+        <!-- Left: AI insights + formation table -->
+        <div style="display:flex;flex-direction:column;gap:14px">
+
+          <div class="an-card">
+            <div class="an-card-header">
+              <div class="an-card-title">AI · Предиктивные алерты для текущего бурения</div>
+              <div id="insightsBadge" style="font-size:10px;color:var(--muted)">нет данных</div>
+            </div>
+            <div class="an-card-body">
+              <div id="insightsList">
+                <div style="text-align:center;padding:24px;color:var(--muted);font-size:12px">
+                  Загрузите исторические данные — AI сгенерирует предиктивные алерты<br>на основе осложнений в аналогичных геологических условиях.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="an-card">
+            <div class="an-card-header">
+              <div class="an-card-title">Анализ разреза · Риски по формациям</div>
+              <div style="font-size:10px;color:var(--muted)" id="tableWellLabel"></div>
+            </div>
+            <div class="an-card-body">
+              <table class="ftable" id="formTable">
+                <thead>
+                  <tr>
+                    <th>Формация</th><th>Глубина</th><th>Риск</th>
+                    <th>Инцидентов</th><th>ρ оптим.</th><th>РОП ср.</th>
+                    <th>AI-рекомендация</th>
+                  </tr>
+                </thead>
+                <tbody id="formTableBody">
+                  <tr><td colspan="7" style="text-align:center;color:var(--muted);padding:20px">— нет данных —</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right: Risk column + upcoming events -->
+        <div style="display:flex;flex-direction:column;gap:14px">
+
+          <div class="an-card">
+            <div class="an-card-header">
+              <div class="an-card-title">Карта рисков разреза</div>
+            </div>
+            <div class="an-card-body">
+              <div class="risk-col-wrap" id="riskMap">
+                <div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--muted);font-size:11px">
+                  Загрузите данные
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="an-card">
+            <div class="an-card-header">
+              <div class="an-card-title">Ключевые события · Что впереди</div>
+            </div>
+            <div class="an-card-body">
+              <div id="timelineList">
+                <div style="text-align:center;padding:16px;color:var(--muted);font-size:11px">— нет данных —</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="an-card">
+            <div class="an-card-header">
+              <div class="an-card-title">Оптимальные параметры раствора</div>
+            </div>
+            <div class="an-card-body" id="mudRecPanel">
+              <div style="text-align:center;padding:16px;color:var(--muted);font-size:11px">— нет данных —</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div><!-- /analytics -->
+
+  <!-- ─── COCKPIT ──────────────────────────────────── -->
+  <div class="view" id="view-cockpit">
+    <div id="cockpit-row">
+      <!-- Left gauges -->
+      <div id="gauges">
+        <div class="gauge-cell">
+          <div class="gauge-lbl">Вес на долото (WOB)</div>
+          <div class="arc-wrap">
+            <svg width="172" height="88" viewBox="0 0 172 88">
+              <path d="M16 76 A70 70 0 0 1 156 76" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="9" stroke-linecap="round"/>
+              <path id="gWOB" d="M16 76 A70 70 0 0 1 156 76" fill="none" stroke="#00d4ff" stroke-width="9" stroke-linecap="round" stroke-dasharray="220" stroke-dashoffset="220"/>
+              <text x="86" y="67" text-anchor="middle" fill="#d8e4f0" font-size="18" font-weight="800" font-family="monospace" id="gWOBv">0</text>
+              <text x="86" y="79" text-anchor="middle" fill="#6b7f96" font-size="9">kN</text>
+            </svg>
+          </div>
+        </div>
+        <div class="gauge-cell">
+          <div class="gauge-lbl">Обороты долота (RPM)</div>
+          <div class="arc-wrap">
+            <svg width="172" height="88" viewBox="0 0 172 88">
+              <path d="M16 76 A70 70 0 0 1 156 76" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="9" stroke-linecap="round"/>
+              <path id="gRPM" d="M16 76 A70 70 0 0 1 156 76" fill="none" stroke="#a78bfa" stroke-width="9" stroke-linecap="round" stroke-dasharray="220" stroke-dashoffset="220"/>
+              <text x="86" y="67" text-anchor="middle" fill="#d8e4f0" font-size="18" font-weight="800" font-family="monospace" id="gRPMv">0</text>
+              <text x="86" y="79" text-anchor="middle" fill="#6b7f96" font-size="9">об/мин</text>
+            </svg>
+          </div>
+        </div>
+        <div class="gauge-cell">
+          <div class="gauge-lbl">Крутящий момент</div>
+          <div class="arc-wrap">
+            <svg width="172" height="88" viewBox="0 0 172 88">
+              <path d="M16 76 A70 70 0 0 1 156 76" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="9" stroke-linecap="round"/>
+              <path id="gTQ" d="M16 76 A70 70 0 0 1 156 76" fill="none" stroke="#f97316" stroke-width="9" stroke-linecap="round" stroke-dasharray="220" stroke-dashoffset="220"/>
+              <text x="86" y="67" text-anchor="middle" fill="#d8e4f0" font-size="18" font-weight="800" font-family="monospace" id="gTQv">0</text>
+              <text x="86" y="79" text-anchor="middle" fill="#6b7f96" font-size="9">кН·м</text>
+            </svg>
+          </div>
+        </div>
+        <div class="gauge-cell">
+          <div class="gauge-lbl">РОП (мех. скорость)</div>
+          <div class="gauge-val cyan" id="gROPv">0 <span style="font-size:10px">м/ч</span></div>
+          <div class="bar-gauge"><div class="bar-fill" id="gROPbar" style="background:var(--cyan);width:0%"></div></div>
+          <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-top:2px"><span>0</span><span>30 м/ч</span></div>
+        </div>
+        <div class="gauge-cell">
+          <div class="gauge-lbl">Давление насосов (ΔP)</div>
+          <div class="gauge-val ok" id="gDPv">0 <span style="font-size:10px">бар</span></div>
+          <div class="bar-gauge"><div class="bar-fill" id="gDPbar" style="background:var(--g);width:0%"></div></div>
+          <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-top:2px"><span>0</span><span>250 бар</span></div>
+        </div>
+        <div class="gauge-cell">
+          <div class="gauge-lbl">ECD (экв. цирк. плотность)</div>
+          <div class="arc-wrap">
+            <svg width="172" height="88" viewBox="0 0 172 88">
+              <path d="M16 76 A70 70 0 0 1 156 76" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="9" stroke-linecap="round"/>
+              <path id="gECD" d="M16 76 A70 70 0 0 1 156 76" fill="none" stroke="#f59e0b" stroke-width="9" stroke-linecap="round" stroke-dasharray="220" stroke-dashoffset="220"/>
+              <text x="86" y="67" text-anchor="middle" fill="#d8e4f0" font-size="15" font-weight="800" font-family="monospace" id="gECDv">1.20</text>
+              <text x="86" y="79" text-anchor="middle" fill="#6b7f96" font-size="9">г/см³</text>
+            </svg>
+          </div>
+        </div>
+        <div class="compact-row">
+          <div class="compact-cell"><div class="compact-lbl">НК, кН</div><div class="compact-val" id="gHL">0</div></div>
+          <div class="compact-cell"><div class="compact-lbl">Ходы/мин</div><div class="compact-val" id="gSPM">0</div></div>
+          <div class="compact-cell"><div class="compact-lbl">Расход л/с</div><div class="compact-val" id="gFlow">0</div></div>
+        </div>
+        <div class="gauge-cell">
+          <div class="gauge-lbl">Приток / Потери</div>
+          <div class="gauge-val" id="gPit" style="color:var(--muted)">0 <span style="font-size:9px">л/мин</span></div>
+          <div style="font-size:10px;color:var(--muted);margin-top:2px" id="gPitStatus">Норма</div>
+        </div>
+      </div>
+
+      <!-- Center canvas -->
+      <div id="cp-center">
+        <div id="formation-banner">
+          <div class="form-badge tight" id="formBadge">Q</div>
+          <span id="form-name">Четвертичные отложения</span>
+          <span id="form-depth-range" style="margin-left:auto;font-size:10px;color:var(--muted)">0–150 м</span>
+        </div>
+        <div id="canvas-wrap">
+          <canvas id="wellCanvas"></canvas>
+          <div id="cementBar">
+            <div class="cement-title" id="cementTitle">ОЗЦ</div>
+            <div class="cement-sub" id="cementSub">0.0 / 8.0 ч</div>
+            <div class="cement-track"><div class="cement-fill" id="cementFill"></div></div>
+            <button class="cement-skip" onclick="skipPhase()">Пропустить →</button>
+          </div>
+          <!-- Live input drawer -->
+          <div id="liveDrawer">
+            <div class="li-mode-badge">⚡ РУЧНОЙ ВВОД</div>
+            <div class="li-group"><div class="li-label">Глубина, м</div><input class="li-input" id="li_depth" type="number" placeholder="—"></div>
+            <div class="li-group"><div class="li-label">WOB, кН</div><input class="li-input" id="li_wob" type="number" placeholder="—"></div>
+            <div class="li-group"><div class="li-label">RPM</div><input class="li-input" id="li_rpm" type="number" placeholder="—"></div>
+            <div class="li-group"><div class="li-label">РОП, м/ч</div><input class="li-input" id="li_rop" type="number" placeholder="—"></div>
+            <div class="li-group"><div class="li-label">ΔP, бар</div><input class="li-input" id="li_dp" type="number" placeholder="—"></div>
+            <div class="li-group"><div class="li-label">Плотность</div><input class="li-input" id="li_dens" type="number" step="0.001" placeholder="—"></div>
+            <div class="li-group"><div class="li-label">ПВ, сПз</div><input class="li-input" id="li_pv" type="number" placeholder="—"></div>
+            <div class="li-group"><div class="li-label">ДНС</div><input class="li-input" id="li_yp" type="number" placeholder="—"></div>
+            <button id="btnApplyLive" onclick="applyLiveParams()">Применить ↵</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right panel -->
+      <div id="cp-right">
+        <div id="dmrBadge"></div>
+        <div class="rp-section">
+          <div class="rp-title">Буровой раствор</div>
+          <div class="prop-row"><span class="prop-key">Плотность (ρ)</span><span class="prop-val cyan" id="rDens">1.100 СГ</span></div>
+          <div class="prop-row"><span class="prop-key">Воронка Марш</span><span class="prop-val ok" id="rT">38 сек</span></div>
+          <div class="prop-row"><span class="prop-key">ПВ</span><span class="prop-val ok" id="rPV">10 сПз</span></div>
+          <div class="prop-row">
+            <span class="prop-key">ДНС <span id="ypTrend" class="trend-arrow trend-ok">→</span></span>
+            <span class="prop-val ok" id="rYP">20 lb/100ft²</span>
+          </div>
+          <div class="prop-row"><span class="prop-key">СНС 10 сек</span><span class="prop-val ok" id="rGel">4 lb/100ft²</span></div>
+          <div class="prop-row"><span class="prop-key">API-фильтрат</span><span class="prop-val ok" id="rAPI">4.5 мл</span></div>
+          <div class="prop-row"><span class="prop-key">pH</span><span class="prop-val ok" id="rPH">9.5</span></div>
+          <div class="prop-row"><span class="prop-key">KCl</span><span class="prop-val ok" id="rKCl">100 кг/м³</span></div>
+          <div class="prop-row"><span class="prop-key">Хлориды</span><span class="prop-val cyan" id="rCl">45 000 мг/л</span></div>
+        </div>
+        <div class="rp-section">
+          <div class="rp-title">Текущий пласт</div>
+          <div class="form-detail-card">
+            <div class="form-detail-name" id="formDetailName">—</div>
+            <div class="form-detail-desc" id="formDetailDesc">—</div>
+            <div class="form-risk low" id="formRisk">● Риск низкий</div>
+          </div>
+        </div>
+        <div class="rp-section">
+          <div class="rp-title">Действия сейчас</div>
+          <div id="drillingRec"></div>
+        </div>
+        <div class="rp-section">
+          <div class="rp-title">Прогноз · Впереди</div>
+          <div id="formForecast"></div>
+        </div>
+        <div class="rp-section">
+          <div class="rp-title">AI · События <span style="font-size:9px;color:var(--muted)">(нажмите)</span></div>
+          <div id="aiFeed"></div>
+        </div>
+        <div class="rp-section">
+          <div class="rp-title">НПВ / Экономика</div>
+          <div class="prop-row"><span class="prop-key">Суток пробурено</span><span class="prop-val cyan" id="cDays">0</span></div>
+          <div class="prop-row"><span class="prop-key">НПВ (суток)</span><span class="prop-val ok" id="cNPT">0</span></div>
+          <div class="prop-row"><span class="prop-key">Потери на НПВ</span><span class="prop-val ok" id="cCost">$0</span></div>
+          <div class="prop-row"><span class="prop-key">Экономия AI</span><span class="prop-val ok" id="cSaved">—</span></div>
+        </div>
+      </div>
+    </div><!-- /cockpit-row -->
+
+    <!-- Cockpit bottom bar -->
+    <div id="cp-bottom">
+      <button class="ctrl-btn active" id="btnPlay" onclick="togglePlay()">▶ Пуск</button>
+      <button class="ctrl-btn" onclick="resetSim()">↺</button>
+      <button class="ctrl-btn speed-btn" onclick="setSpeed(1)" id="sp1">1×</button>
+      <button class="ctrl-btn speed-btn active" onclick="setSpeed(5)" id="sp5">5×</button>
+      <button class="ctrl-btn speed-btn" onclick="setSpeed(20)" id="sp20">20×</button>
+      <div id="progressTrack" onclick="seekClick(event)">
+        <div id="progressBar">
+          <div id="progressFill"></div>
+          <div id="progressNPT"></div>
+        </div>
+      </div>
+      <input type="number" id="depthInput" value="0" min="0" max="3353" onchange="seekDepth(this.value)">
+      <span style="font-size:10px;color:var(--muted)">м</span>
+      <div class="live-toggle" id="liveToggle" onclick="toggleLiveInput()">
+        <div class="lt-dot"></div> Ввод данных
+      </div>
+    </div>
+  </div><!-- /cockpit -->
+
+  <!-- ─── DMR ──────────────────────────────────────── -->
+  <div class="view" id="view-dmr">
+    <iframe id="dmrFrame"
+      src="project_well_dmr_entry.html"
+      style="width:100%;height:100%;border:none;display:block">
+    </iframe>
+  </div>
+
+  <!-- ─── DWOP ──────────────────────────────────────── -->
+  <div class="view" id="view-dwop">
+    <iframe id="dwopFrame"
+      src="vankor_dwop.html"
+      style="width:100%;height:100%;border:none;display:block">
+    </iframe>
+  </div>
+
+  <!-- ─── ARCHIVE ──────────────────────────────────── -->
+  <div class="view" id="view-archive">
+    <div class="arch-wrap">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div>
+          <div style="font-size:16px;font-weight:800;letter-spacing:-.02em">Архив рапортов DMR</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:2px">Все сохранённые суточные рапорты · localStorage</div>
+        </div>
+        <button class="btn btn-ghost" onclick="renderArchive()">↺ Обновить</button>
+      </div>
+      <div id="archContent">
+        <div id="archEmpty">
+          <div style="font-size:32px;margin-bottom:10px">📄</div>
+          Сохранённых рапортов нет.<br>
+          <span style="font-size:11px">Создайте первый рапорт в разделе «Суточный рапорт».</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<!-- Alert overlay (shared) -->
+<div id="alertOverlay">
+  <div id="alertBox" class="crit">
+    <div class="alert-icon-lg" id="aIcon">🚨</div>
+    <div class="alert-title-lg" id="aTitle"></div>
+    <div class="alert-body-lg" id="aBody"></div>
+    <div class="alert-prob-row" id="aProbRow" style="display:none"><span class="alert-prob-chip" id="aProb"></span></div>
+    <div class="alert-actions">
+      <button class="btn-ack primary" id="ackBtn" onclick="ackAlert()">Принял — принять меры</button>
+      <button class="btn-ack secondary" onclick="dismissAlert()">Позже</button>
+    </div>
+  </div>
+</div>
+
+<!-- Event modal (shared) -->
+<div id="eventModal">
+  <div id="eventModalBox">
+    <button class="em-close" onclick="closeEventModal()">✕</button>
+    <div class="em-depth" id="emDepth"></div>
+    <div class="em-title" id="emTitle"></div>
+    <div class="em-body" id="emBody"></div>
+    <div class="em-rec"><div class="em-rec-title">Рекомендации AI</div><div id="emRec"></div></div>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+// ═══════════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════════
+const VIEWS = ['analytics','cockpit','dmr','archive','dwop'];
+let cockpitStarted = false;
+
+function showView(name) {
+  VIEWS.forEach(v => {
+    document.getElementById('view-' + v).classList.toggle('active', v === name);
+    const nav = document.getElementById('nav-' + v);
+    if (nav) nav.classList.toggle('active', v === name);
+  });
+  // Lazy-start cockpit on first visit
+  if (name === 'cockpit' && !cockpitStarted) {
+    cockpitStarted = true;
+    resizeCanvas();
+    loadDMRData();
+    updateUI(0); drawWell();
+    addPhaseEvent(PHASES[0]);
+    setTimeout(() => { requestAnimationFrame(tick); }, 300);
+  }
+  if (name === 'cockpit') {
+    resizeCanvas(); drawWell();
+    document.getElementById('tb-depth').style.display = 'block';
+  } else {
+    document.getElementById('tb-depth').style.display = 'none';
+  }
+  if (name === 'archive') renderArchive();
+}
+
+// Default: analytics
+showView('analytics');
+
+// ═══════════════════════════════════════════════════════
+// SIDEBAR SECTION LIST (Ванкор — Скв. 7-002, Куст 7)
+// ═══════════════════════════════════════════════════════
+(function buildSbSections() {
+  const secs = [
+    {label:'Кондуктор Ø393.7 мм · 0–620 м', done:true},
+    {label:'Тех. колонна Ø295.3 мм · 620–1780 м', active:true},
+    {label:'Экспл. колонна Ø219.1 мм · 1780–3050 м', done:false},
+    {label:'Горизонт. ствол Ø152.4 мм · 3050–3353 м', done:false},
+  ];
+  const el = document.getElementById('sbSectionList');
+  el.innerHTML = secs.map(s => {
+    const cls = s.done ? 'color:var(--g)' : s.active ? 'color:var(--cyan);font-weight:700' : 'color:var(--muted)';
+    const dot = s.done ? '●' : s.active ? '●' : '○';
+    return `<div style="font-size:11px;padding:4px 8px;display:flex;gap:7px;align-items:center;${cls}">
+      <span style="flex-shrink:0">${dot}</span><span>${s.label}</span>
+    </div>`;
+  }).join('');
+})();
+
+// ═══════════════════════════════════════════════════════
+// TOPBAR DATE
+// ═══════════════════════════════════════════════════════
+(function setDate() {
+  const d = new Date();
+  const dd = String(d.getDate()).padStart(2,'0');
+  const mm = String(d.getMonth()+1).padStart(2,'0');
+  document.getElementById('tb-date').textContent = dd + '.' + mm + '.' + d.getFullYear();
+})();
+
+// ═══════════════════════════════════════════════════════
+// ANALYTICS ENGINE
+// ═══════════════════════════════════════════════════════
+
+// ── Vankor geological context (real ГТН data, Куст 7/12, 2009–2011)
+const VANKOR_STRAT_REF = [
+  {s:'Q+Тнз', n:'Четвертичные + Таназская',      f:0,    t:150,  risk:'high',     incidents:2, dens:1.18, rop:15, rec:'Зона ВМ 0–150 м. Поглощения. Аварийный р-р ≥35 м³. Профилакт. отрывы КНБК каждые 1 м.'},
+  {s:'Дл',    n:'Долганская / Салпадаяхинская',   f:150,  t:905,  risk:'med',      incidents:1, dens:1.13, rop:14, rec:'Прихватоопасная зона 540–905 м. Непрерывная циркуляция. Ясс + нефт. ванна готовы.'},
+  {s:'Дл-г',  n:'Долганская (газоносный горизонт)',f:905, t:1050, risk:'high',     incidents:2, dens:1.16, rop:10, rec:'ГАЗ 1005–1031 м. ρ ≥ 1.16. ГВА каждые 15 мин. ПВО в боеготовности. Дегазатор.'},
+  {s:'Нсн',   n:'Насоновская',                    f:1050, t:1350, risk:'high',     incidents:2, dens:1.13, rop:12, rec:'Прихват 1000–1350 м. Непрерывная циркуляция. Промывка 2 цикла перед каждым подъёмом.'},
+  {s:'Вхт',   n:'Верхнехетская',                  f:1350, t:1630, risk:'med',      incidents:1, dens:1.13, rop:12, rec:'Поглощения 1000–1350 м. LCM в готовности. Проработка при возобновлении.'},
+  {s:'Як',    n:'Яковлевская Як III–VII',          f:1630, t:1937, risk:'high',     incidents:2, dens:1.13, rop:11, rec:'Коллектор P=16.2 МПа. Инж. по р-рам на буровой. Контроль каждые 15 мин. ГИС при выходе.'},
+  {s:'Схд',   n:'Суходудинская',                  f:1937, t:2040, risk:'med',      incidents:1, dens:1.12, rop:10, rec:'Сужение ствола. Проработка каждые 72 ч. Визинг-трип перед ГИС.'},
+  {s:'Млх',   n:'Малохетская',                    f:2040, t:2570, risk:'med',      incidents:1, dens:1.12, rop:9,  rec:'Тугой ход 2040–2570 м. 2 цикла промывки перед подъёмом. Смазочная добавка 5–10 кг/м³.'},
+  {s:'Нх I',  n:'Нижнехетская Нх I',              f:2570, t:2750, risk:'critical', incidents:5, dens:1.20, rop:5,  rec:'ПРИХВАТ кровли 2665–2727 м ТВД. Стабилизатор ствола 10–14 кг/м³. РОП ≤3–5 м/ч. Запрет промывания при наращивании.'},
+  {s:'Нх34',  n:'Нижнехетская Нх III–IV (цель)',  f:2750, t:3050, risk:'critical', incidents:4, dens:1.20, rop:5,  rec:'АВПД P=274 атм. Контроль ρ КАЖДЫЙ ЧАС. ρ строго 1.18–1.20. Не снижать более 0.02 г/см³. Флуоресценция 100%.'},
+  {s:'ГС',    n:'Горизонтальный ствол Нх I/Ø114', f:3050, t:3353, risk:'critical', incidents:2, dens:1.06, rop:8,  rec:'KCl-полимерный р-р ρ=1.06. KCl 30 кг/м³. Пыжевые промывки каждые 200 м. 2 цикла перед подъёмом.'},
+];
+
+const KNOWN_INCIDENTS = [
+  {depth:300,  cls:'warn',     title:'Поглощение — зона ВМ 0–540 м',                 prob:'',     type:'loss'},
+  {depth:1005, cls:'critical', title:'Газопроявление — Долганская 1005–1031 м',       prob:'38%',  type:'gas_show'},
+  {depth:1200, cls:'warn',     title:'Прихват — Насоновская 1000–1350 м',             prob:'38%',  type:'stuck_pipe'},
+  {depth:1630, cls:'warn',     title:'Нефтепроявление — Яковлевская P=16.2 МПа',     prob:'',     type:'reservoir'},
+  {depth:2200, cls:'med',      title:'Сужение ствола — Малохетская 2040–2570 м',      prob:'',     type:'yp_increase'},
+  {depth:2665, cls:'critical', title:'Кровля Нх I — нестабильные аргиллиты',          prob:'',     type:'clay_swell'},
+  {depth:2750, cls:'critical', title:'Нх I — нефтеприток P=254 атм',                 prob:'',     type:'reservoir'},
+  {depth:2841, cls:'critical', title:'ПРИХВАТ — кровля Нх III–IV',                   prob:'100%', type:'stuck_pipe'},
+  {depth:3050, cls:'warn',     title:'AI: ДНС ↑ + РОП ↓ — прихват',                 prob:'68%',  type:'yp_increase'},
+];
+
+let loadedWells = null; // filled by loadDemoData / loadJSONFile / loadFromLocalStorage
+
+// ── Load from localStorage (existing DMR reports)
+function loadFromLocalStorage() {
+  const allKeys = Object.keys(localStorage);
+  const dmrKeys = allKeys.filter(k => k.startsWith('ws2000_dmr_saved_'));
+  const indexKeys = allKeys.filter(k => k.startsWith('dmr_reports_'));
+
+  if (dmrKeys.length === 0 && indexKeys.length === 0) {
+    showLoadStatus('err', 'Нет сохранённых рапортов. Сначала создайте рапорты в разделе «Суточный рапорт».');
+    return;
+  }
+
+  // Group by well name
+  const wells = {};
+  dmrKeys.forEach(key => {
+    try {
+      const state = JSON.parse(localStorage.getItem(key));
+      const wellName = state.well_name || key.replace('ws2000_dmr_saved_','').replace(/_\d+$/,'');
+      if (!wells[wellName]) wells[wellName] = {name: wellName, reports: []};
+      wells[wellName].reports.push({
+        depth_to: parseFloat(state.bh_bit_depth_to) || 0,
+        depth_from: parseFloat(state.bh_bit_depth_from) || 0,
+        dens: parseFloat(state.rig_mud_weight) || 1.18,
+        pv: parseFloat(state.bh_pv) || 18,
+        yp: parseFloat(state.bh_yp) || 24,
+        rop: parseFloat(state.bh_rop_auto || state.bh_rop) || 8,
+        fluid: state.mr_fluid_type || 'Н/Д',
+        date: state.mr_date || '',
+        engineer: state.mr_engineer || '',
+        incidents: [],
+      });
+    } catch(e) {}
+  });
+
+  if (Object.keys(wells).length === 0) {
+    showLoadStatus('err', 'Не удалось разобрать данные из localStorage.');
+    return;
+  }
+
+  loadedWells = {
+    source: 'localStorage',
+    wells: Object.values(wells),
+    strat: VANKOR_STRAT_REF,
+    incidents: KNOWN_INCIDENTS,
+  };
+  processAndRender(loadedWells);
+  showLoadStatus('ok', `Загружено из localStorage: ${dmrKeys.length} рапортов по ${Object.keys(wells).length} скважинам.`);
+}
+
+// ── Load from uploaded JSON file
+function loadJSONFile(evt) {
+  const file = evt.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const data = JSON.parse(e.target.result);
+      // Expect: {wells:[...], strat:[...], incidents:[...]}
+      // or just {wells:[...]}
+      loadedWells = {
+        source: 'json',
+        wells: data.wells || [data],
+        strat: data.strat || VANKOR_STRAT_REF,
+        incidents: data.incidents || KNOWN_INCIDENTS,
+      };
+      processAndRender(loadedWells);
+      showLoadStatus('ok', `Загружено из файла «${file.name}»: ${loadedWells.wells.length} скважин.`);
+    } catch(err) {
+      showLoadStatus('err', 'Ошибка парсинга JSON: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+  evt.target.value = '';
+}
+
+// ── Demo data (Vankor + Kovykta synthetic)
+function loadDemoData() {
+  loadedWells = {
+    source: 'demo',
+    wells: [
+      {
+        name: 'Скв. 21 (Ванкор)',
+        td: 3650, npt_days: 9.2,
+        reports: [
+          {depth_from:0,    depth_to:600,  dens:1.10, pv:12, yp:20, rop:16, fluid:'КМЦ',         incidents:[]},
+          {depth_from:600,  depth_to:1000, dens:1.18, pv:16, yp:22, rop:12, fluid:'KCl-полим.',  incidents:['gas_show']},
+          {depth_from:1000, depth_to:1350, dens:1.20, pv:20, yp:28, rop:7,  fluid:'KCl-полим.',  incidents:['clay_swell','yp_increase']},
+          {depth_from:1350, depth_to:1800, dens:1.22, pv:18, yp:25, rop:9,  fluid:'KCl-полим.',  incidents:['loss']},
+          {depth_from:1800, depth_to:3050, dens:1.28, pv:22, yp:26, rop:8,  fluid:'РУО (инверт.эм.)', incidents:[]},
+          {depth_from:3050, depth_to:3650, dens:1.30, pv:24, yp:27, rop:10, fluid:'РУО (инверт.эм.)', incidents:['stuck_pipe','reservoir']},
+        ]
+      },
+      {
+        name: 'Скв. 22 (Ванкор)',
+        td: 3700, npt_days: 3.5,
+        reports: [
+          {depth_from:0,    depth_to:600,  dens:1.10, pv:11, yp:19, rop:18, fluid:'КМЦ',         incidents:[]},
+          {depth_from:600,  depth_to:1000, dens:1.17, pv:15, yp:21, rop:13, fluid:'KCl-полим.',  incidents:[]},
+          {depth_from:1000, depth_to:1350, dens:1.21, pv:19, yp:26, rop:8,  fluid:'KCl-полим.',  incidents:['clay_swell']},
+          {depth_from:1350, depth_to:1800, dens:1.22, pv:17, yp:24, rop:10, fluid:'KCl-полим.',  incidents:['loss']},
+          {depth_from:1800, depth_to:3700, dens:1.29, pv:23, yp:26, rop:9,  fluid:'РУО (инверт.эм.)', incidents:['yp_increase']},
+        ]
+      },
+    ],
+    strat: VANKOR_STRAT_REF,
+    incidents: KNOWN_INCIDENTS,
+  };
+  processAndRender(loadedWells);
+  showLoadStatus('ok', 'Загружены демо-данные: 2 скважины, Ванкорское ГМ.');
+}
+
+function showLoadStatus(type, msg) {
+  const el = document.getElementById('loadStatus');
+  el.className = type;
+  el.innerHTML = (type === 'ok' ? '✓ ' : '✕ ') + msg;
+  el.style.display = 'flex';
+}
+
+// ── Main processing + render
+function processAndRender(data) {
+  const insights = generateInsights(data);
+  const strat = data.strat || VANKOR_STRAT_REF;
+  const wells = data.wells || [];
+  const totalDepth = wells.reduce((s,w) => s + (w.td || (w.reports && w.reports[w.reports.length-1] ? w.reports[w.reports.length-1].depth_to : 0) || 0), 0);
+  const totalNPT = wells.reduce((s,w) => s + (w.npt_days || 0), 0);
+
+  // KPI
+  document.getElementById('kpiWells').textContent = wells.length;
+  document.getElementById('kpiWellsSub').textContent = 'скважин загружено';
+  document.getElementById('kpiDepth').textContent = totalDepth.toLocaleString('ru-RU');
+  document.getElementById('kpiDepthSub').textContent = 'метров суммарной проходки';
+  document.getElementById('kpiNPT').textContent = totalNPT.toFixed(1);
+  document.getElementById('kpiNPTSub').textContent = 'суток НПВ (все скважины)';
+  document.getElementById('kpiAlerts').textContent = insights.length;
+  document.getElementById('kpiAlertsSub').textContent = 'AI-алертов для новой скважины';
+
+  // Update analytics badge in sidebar
+  const critCount = insights.filter(i => i.cls === 'critical' || i.cls === 'high').length;
+  const badge = document.getElementById('badgeAnalytics');
+  if (critCount > 0) {
+    badge.textContent = critCount;
+    badge.style.display = 'inline-flex';
+  }
+  // Update topbar alert chip
+  updateAlertChip(critCount, insights);
+
+  // Render insights
+  renderInsights(insights);
+
+  // Formation table
+  renderFormTable(strat, data);
+
+  // Risk map
+  renderRiskMap(strat, data);
+
+  // Timeline
+  renderTimeline(data.incidents || KNOWN_INCIDENTS);
+
+  // Mud recommendations
+  renderMudRec(strat, data);
+
+  // Source label
+  document.getElementById('tableWellLabel').textContent =
+    (data.source === 'demo' ? 'Демо · ' : data.source === 'json' ? 'JSON · ' : 'localStorage · ')
+    + wells.length + ' скважин';
+  document.getElementById('loaderSub').textContent =
+    '✓ База загружена: ' + wells.length + ' скв., ' + strat.length + ' формаций, ' + (data.incidents||[]).length + ' инцидентов';
+
+  document.getElementById('drillCTA').style.display = 'block';
+}
+
+// ── Generate AI insights from historical data
+function generateInsights(data) {
+  const insights = [];
+  const wells = data.wells || [];
+  const strat = data.strat || VANKOR_STRAT_REF;
+  const incidents = data.incidents || KNOWN_INCIDENTS;
+
+  // Count incident frequencies by type across all wells
+  const incFreq = {};
+  wells.forEach(w => {
+    (w.reports || []).forEach(r => {
+      (r.incidents || []).forEach(inc => {
+        incFreq[inc] = (incFreq[inc] || 0) + 1;
+      });
+    });
+  });
+
+  // Rule 1: clay swelling / кровля Нх — нестабильные аргиллиты
+  if (incFreq.clay_swell >= 1) {
+    const times = incFreq.clay_swell;
+    insights.push({
+      cls: 'critical',
+      title: `НЕСТАБИЛЬНЫЕ АРГИЛЛИТЫ кровли Нх — ${times} скважин(ах)`,
+      desc: 'Кровля Нижнехетской (2665–2727 м ТВД) — наиболее опасная зона на Ванкоре. Прихваты зафиксированы на кустах 7 и 12. Обязательные меры ДО входа в зону.',
+      rec: 'Стабилизатор ствола 10–14 кг/м³ с 2200 м ТВД. РОП ≤ 3–5 м/ч в кровле. Запрет промывания при наращивании. ρ строго 1.18–1.20 г/см³.',
+      depth: '2570–2750 м ТВД',
+      source: `${times} инцидентов в базе`,
+    });
+  }
+
+  // Rule 2: stuck pipe
+  if (incFreq.stuck_pipe >= 1) {
+    const times = incFreq.stuck_pipe;
+    insights.push({
+      cls: 'critical',
+      title: `ПРИХВАТ — ${times} случай(ев) в базе`,
+      desc: 'Прихваты зафиксированы в зоне кровли Нх (2665–2727 м ТВД) при нарастании ДНС + падении РОП. AI предсказывает риск за 48–72 ч. Кусты 7 и 12.',
+      rec: 'Стабилизатор ствола 10–14 кг/м³. Дефлокулянт при ДНС > 24 lb/100ft². Расхаживание каждые 30 мин. Нефт. ванна 5–8 м³ готовность.',
+      depth: '2570–2841 м ТВД',
+      source: `${times} прихват(а) в базе`,
+    });
+  }
+
+  // Rule 3: gas shows — Долганская Ванкор
+  if (incFreq.gas_show >= 1) {
+    insights.push({
+      cls: 'high',
+      title: 'Газопроявления — Долганская 1005–1031 м',
+      desc: 'Газосодержащий горизонт на 1005–1031 м. Зафиксировано в скважинах базы. Порог дегазатора 5% УВ. Риск выброса при ρ < 1.15 г/см³.',
+      rec: 'ρ ≥ 1.16 г/см³ при входе. ГВА каждые 15 мин. ПВО в полной боеготовности. Дегазатор активирован.',
+      depth: '1005–1031 м',
+      source: `${incFreq.gas_show || 1} фиксация в базе`,
+    });
+  }
+
+  // Rule 4: losses — поглощения ВМ
+  if (incFreq.loss >= 1) {
+    const times = incFreq.loss;
+    insights.push({
+      cls: 'warn',
+      title: `Поглощения — зона ВМ и трещинный карст 0–540 м`,
+      desc: 'Зона трещинно-каверновых поглощений 0–540 м. По данным скв. 73: полная потеря циркуляции с 70 м, интенсивность 36–60 м³/ч.',
+      rec: 'Аварийный р-р (глина+опилки+волокно) 35 м³ обязательно. Профилакт. отрывы КНБК каждые 1 м. ECD ниже Pпогл.',
+      depth: '0–540 м',
+      source: `${times} поглощений в базе`,
+    });
+  }
+
+  // Rule 5: reservoir approach
+  if (incFreq.reservoir >= 1) {
+    insights.push({
+      cls: 'high',
+      title: 'Нефтяные коллекторы — Яковлевская и Нх',
+      desc: 'Яковлевская (P=16.2 МПа) и Нижнехетская Нх III–IV (P=274 атм): два нефтеносных горизонта. Флуоресценция 100% при вскрытии Нх. АВПД зона.',
+      rec: 'Як: инж. по р-рам на буровой, контроль каждые 15 мин. Нх: ρ ЕЖЕЧАСНО, не ниже 0.02 г/см³ от плановой. LWD реального времени.',
+      depth: '1630–1937 м и 2570–3050 м',
+      source: 'АВПД зона + продуктивные горизонты',
+    });
+  }
+
+  // Rule 6: high YP trend
+  const ypIncidents = wells.flatMap(w => (w.reports||[]).filter(r => (r.yp||0) > 30));
+  if (ypIncidents.length > 0) {
+    const avgYP = (ypIncidents.reduce((s,r) => s + r.yp, 0) / ypIncidents.length).toFixed(1);
+    insights.push({
+      cls: 'warn',
+      title: 'Повышенная ДНС в глубоких секциях — риск прихвата',
+      desc: `Средняя ДНС при инцидентах: ${avgYP} lb/100ft². Тренд роста за 2–3 суток — надёжный предиктор прихвата.`,
+      rec: 'Дефлокулянт при ДНС > 28. Промывка 2 цикла перед каждым подъёмом. Смазочные добавки 3 кг/м³ при РОП < 7 м/ч.',
+      depth: '2800–3500 м',
+      source: `${ypIncidents.length} рапортов с ДНС > 30`,
+    });
+  }
+
+  // Rule 7: general mud density advice
+  const avgDens = wells.length > 0 ?
+    wells.flatMap(w => w.reports||[]).reduce((s,r,_,a) => s + r.dens/a.length, 0) : 1.18;
+  insights.push({
+    cls: 'info',
+    title: 'Оптимальная плотность по данным базы — полимер-глинистый ВБР',
+    desc: `Применяемая система: полимер-глинистый ВБР. Средняя плотность: ${avgDens.toFixed(3)} г/см³. По разрезу: 1.18 (ВМ/кондуктор) → 1.13 (тех. кол.) → 1.12–1.20 (экспл.) → 1.06 (горизонт, KCl-полимерный).`,
+    rec: 'Ключевые реагенты (функциональные): биополимер ксантановый (структура), ингибитор набухания глин, полианионная целлюлоза (фильтрация), смазочная добавка. Стабилизатор аргиллитов 10–14 кг/м³ с 2200 м ТВД — обязателен по программе бурения.',
+    depth: 'Весь разрез',
+    source: `${wells.flatMap(w=>w.reports||[]).length} рапортов · Программа бурения скв. 7-002`,
+  });
+
+  // Rule 8: Яковлевская — нефтепроявление
+  insights.push({
+    cls: 'warn',
+    title: 'Яковлевский горизонт Як III–VII — P=16.2 МПа · обязателен контроль',
+    desc: 'Продуктивный горизонт 1630–1937 м ТВД. P=16.2 МПа (ρ жидкости 0.846 г/см³). Газ на 1645–1650 м. Инж. по растворам обязан быть на буровой при вскрытии. Контроль каждые 15 мин.',
+    rec: 'ρ 1.13 г/см³ строго. ГВА каждые 15 мин. ПВО в боеготовности. Шлам каждые 3 м. ГИС при выходе из пласта.',
+    depth: '1630–1937 м ТВД',
+    source: 'Программа бурения 7-002 · ГТН Ванкор',
+  });
+
+  return insights;
+}
+
+function renderInsights(insights) {
+  const el = document.getElementById('insightsList');
+  const badge = document.getElementById('insightsBadge');
+  badge.textContent = insights.length + ' инсайтов';
+  badge.style.color = 'var(--cyan)';
+
+  el.innerHTML = insights.map(ins => `
+    <div class="insight-item">
+      <div class="insight-cls ${ins.cls}"></div>
+      <div class="insight-body">
+        <div class="insight-title ${ins.cls}">${ins.title}</div>
+        <div class="insight-desc">${ins.desc}</div>
+        <div style="margin-top:5px;padding:5px 8px;background:rgba(255,255,255,.03);border-radius:4px;font-size:10px;color:var(--t);line-height:1.5">
+          <b style="color:var(--cyan)">Рекомендация:</b> ${ins.rec}
+        </div>
+        <div class="insight-source">📍 ${ins.depth} &nbsp;·&nbsp; Источник: ${ins.source}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderFormTable(strat, data) {
+  const tbody = document.getElementById('formTableBody');
+  const riskMap = {critical:'critical',high:'high',med:'med',low:'low'};
+  const riskLabel = {critical:'КРИТИЧ.',high:'Высокий',med:'Умеренный',low:'Низкий'};
+
+  tbody.innerHTML = strat.map(s => {
+    const rc = riskMap[s.risk] || 'low';
+    return `<tr>
+      <td style="font-weight:700">${s.s} · ${s.n}</td>
+      <td style="font-family:monospace;color:var(--muted)">${s.f}–${s.t} м</td>
+      <td><span class="risk-pill ${rc}">${riskLabel[s.risk]||s.risk}</span></td>
+      <td style="text-align:center;font-family:monospace;color:${s.incidents>2?'var(--r)':s.incidents>0?'var(--w)':'var(--g)'}">${s.incidents || 0}</td>
+      <td style="font-family:monospace;color:var(--cyan)">${s.dens} СГ</td>
+      <td style="font-family:monospace;color:var(--g)">${s.rop} м/ч</td>
+      <td style="font-size:10px;color:var(--muted);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${s.rec}">${s.rec}</td>
+    </tr>`;
+  }).join('');
+}
+
+function renderRiskMap(strat, data) {
+  const map = document.getElementById('riskMap');
+  const maxD = Math.max(...strat.map(s => s.t), 3700);
+  const riskCls = {critical:'critical',high:'high',med:'med',low:'low'};
+  const riskLbl = {critical:'🔴 КРИТИЧНО',high:'🟠 Высокий риск',med:'🟡 Умеренный',low:'🟢 Низкий'};
+
+  // Current depth from sim (if started) or 0
+  const curD = (typeof bitDepth !== 'undefined') ? bitDepth : 0;
+  const curPct = (curD / maxD * 100).toFixed(1);
+
+  map.innerHTML = strat.map(s => {
+    const top = (s.f / maxD * 100).toFixed(2);
+    const h = ((s.t - s.f) / maxD * 100).toFixed(2);
+    const rc = riskCls[s.risk] || 'low';
+    const rl = riskLbl[s.risk] || s.risk;
+    return `<div class="rz ${rc}" style="top:${top}%;height:${h}%">
+      <span class="rz-label">${rl} · ${s.s}</span>
+      <span class="rz-d">${s.f}–${s.t}</span>
+    </div>`;
+  }).join('') +
+  `<div class="depth-now-line" style="top:${curPct}%" data-label="ЗАБОЙ ${Math.round(curD)} м"></div>`;
+}
+
+function renderTimeline(incidents) {
+  const el = document.getElementById('timelineList');
+  const cls = {critical:'var(--r)',high:'#f97316',warn:'var(--w)',med:'var(--w)',info:'var(--cyan)'};
+  el.innerHTML = incidents.map(ev => {
+    const c = cls[ev.cls] || 'var(--muted)';
+    return `<div class="timeline-item">
+      <div class="tl-depth">${ev.depth} м</div>
+      <div class="tl-dot" style="background:${c}"></div>
+      <div class="tl-body">
+        <div class="tl-title" style="color:${c}">${ev.title}</div>
+        ${ev.prob ? `<div class="tl-desc">Вероятность: ${ev.prob}</div>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderMudRec(strat, data) {
+  const el = document.getElementById('mudRecPanel');
+  // Pick 4 key formations
+  const key = strat.filter(s => ['Як','Нх','Пк','Сф'].includes(s.s)).slice(0,4);
+  if (key.length === 0) { el.innerHTML = '<div style="color:var(--muted);font-size:11px;text-align:center;padding:10px">Нет данных</div>'; return; }
+  el.innerHTML = key.map(s => `
+    <div style="margin-bottom:8px;padding:7px 9px;background:var(--p2);border-radius:6px;border-left:3px solid ${s.risk==='critical'?'var(--r)':s.risk==='high'?'#f97316':'var(--w)'}">
+      <div style="font-size:11px;font-weight:700;margin-bottom:3px">${s.s} · ${s.n} <span style="font-weight:400;color:var(--muted)">(${s.f}–${s.t} м)</span></div>
+      <div style="display:flex;gap:10px;font-size:10px;color:var(--cyan);font-family:monospace">
+        <span>ρ: ${s.dens} СГ</span>
+        <span>РОП: ~${s.rop} м/ч</span>
+      </div>
+      <div style="font-size:10px;color:var(--muted);margin-top:3px;line-height:1.4">${s.rec}</div>
+    </div>
+  `).join('');
+}
+
+function updateAlertChip(critCount, insights) {
+  const chip = document.getElementById('tbAlertChip');
+  const txt = document.getElementById('tbAlertText');
+  if (critCount > 0) {
+    chip.className = 'alert-chip';
+    txt.textContent = critCount + ' критичных алерта';
+  } else if (insights && insights.length > 0) {
+    chip.className = 'alert-chip';
+    chip.style.background = 'var(--w2)';
+    chip.style.borderColor = 'rgba(255,171,0,.3)';
+    chip.style.color = 'var(--w)';
+    chip.querySelector('.adot').style.background = 'var(--w)';
+    txt.textContent = insights.length + ' AI-инсайтов';
+  } else {
+    chip.className = 'alert-chip ok';
+    txt.textContent = 'Нет алертов';
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// ARCHIVE VIEW
+// ═══════════════════════════════════════════════════════
+function renderArchive() {
+  const container = document.getElementById('archContent');
+  const allKeys = Object.keys(localStorage);
+  const indexKeys = allKeys.filter(k => k.startsWith('dmr_reports_'));
+
+  if (indexKeys.length === 0) {
+    document.getElementById('archEmpty').style.display = 'block';
+    container.innerHTML = '';
+    container.appendChild(document.getElementById('archEmpty'));
+    document.getElementById('badgeArchive').style.display = 'none';
+    return;
+  }
+
+  let totalReports = 0;
+  container.innerHTML = indexKeys.map(indexKey => {
+    let reports = [];
+    try { reports = JSON.parse(localStorage.getItem(indexKey)) || []; } catch(e) {}
+    const wellName = indexKey.replace('dmr_reports_','');
+    totalReports += reports.length;
+
+    const rows = reports.map((r, ri) => {
+      const state = r.state_key ? (() => { try { return JSON.parse(localStorage.getItem(r.state_key)) || {}; } catch(e) { return {}; } })() : {};
+      const date = state.mr_date || r.saved_at || '—';
+      const depthTo = parseFloat(state.bh_bit_depth_to) || 0;
+      const fluid = state.mr_fluid_type || state.rig_fluid_type || '—';
+      const eng = state.mr_engineer || '—';
+
+      return `<div class="arch-report">
+        <div class="arch-report-date">${date}</div>
+        <div class="arch-report-depth">${depthTo > 0 ? depthTo + ' м' : '—'}</div>
+        <div class="arch-report-fluid">${fluid}</div>
+        <div class="arch-report-eng">${eng}</div>
+        <button class="arch-open-btn" onclick="openDMRReport('${r.state_key || ''}')">Открыть →</button>
+      </div>`;
+    }).join('');
+
+    return `<div class="arch-well-group">
+      <div class="arch-well-hdr">
+        <span class="arch-well-name">Скважина ${wellName}</span>
+        <span class="arch-well-cnt">${reports.length} рапортов</span>
+      </div>
+      <div style="padding:2px 0;font-size:9px;display:flex;gap:0;padding:4px 16px;border-bottom:1px solid var(--line2);color:var(--muted2)">
+        <span style="width:88px">Дата</span>
+        <span style="width:78px">Глубина</span>
+        <span style="flex:1">Тип р-ра</span>
+        <span style="margin-right:80px">Инженер</span>
+      </div>
+      ${rows}
+    </div>`;
+  }).join('');
+
+  const badge = document.getElementById('badgeArchive');
+  badge.textContent = totalReports;
+  badge.style.display = totalReports > 0 ? 'inline-flex' : 'none';
+}
+
+function openDMRReport(stateKey) {
+  if (!stateKey) return;
+  // Write open request, switch to DMR view — DMR form reads it on load
+  localStorage.setItem('ws2000_open_dmr_request', JSON.stringify({state_key: stateKey}));
+  showView('dmr');
+  // Reload iframe to pick up the request
+  const frame = document.getElementById('dmrFrame');
+  frame.src = frame.src;
+}
+
+// ═══════════════════════════════════════════════════════
+// COCKPIT — GEOLOGICAL DATA
+// ═══════════════════════════════════════════════════════
+const STRAT = [
+  {s:'Q+Тнз', n:'Четвертичные + Таназская',      f:0,    t:150,  c:'#4a5a4a',cls:'loose',
+   risk:'high',    riskLabel:'Зона ВМ — поглощения, обвалы',
+   desc:'Вечная мерзлота 0–150 м. Рыхлые суглинки, пески. Каверны. Аварийный р-р 35 м³.',
+   dens:1.18,ecd:1.20,pv:20,yp:20,gel:5,api:8.0,ph:9.0,kcl:0,cl:5000,wob:30,rpm:80,torq:6,hl:200,rop:15,dp:80},
+  {s:'Дл/Спд',n:'Долганская / Салпадаяхинская',  f:150,  t:905,  c:'#7a8070',cls:'clay',
+   risk:'med',     riskLabel:'Прихват 540–905 м — контроль',
+   desc:'Глины, пески, алевролиты. Прихватоопасная зона 540–905 м. Непрерывная циркуляция.',
+   dens:1.13,ecd:1.15,pv:15,yp:18,gel:5,api:6.0,ph:9.5,kcl:0,cl:10000,wob:50,rpm:100,torq:9,hl:220,rop:14,dp:100},
+  {s:'Дл-г',  n:'Долганская (газоносный горизонт)',f:905, t:1050, c:'#7a7050',cls:'gas',
+   risk:'high',    riskLabel:'ГАЗ 1005–1031 м — ГВА каждые 15 мин',
+   desc:'Газосодержащие прослои горизонта. ГВА-мониторинг. ПВО в боеготовности. Дегазатор.',
+   dens:1.16,ecd:1.18,pv:16,yp:20,gel:5,api:5.0,ph:9.5,kcl:0,cl:12000,wob:50,rpm:100,torq:9,hl:220,rop:10,dp:110},
+  {s:'Нсн',   n:'Насоновская',                    f:1050, t:1350, c:'#687080',cls:'argillite',
+   risk:'high',    riskLabel:'Прихват 1000–1350 м',
+   desc:'Глины, алевролиты, пески. Прихватоопасная зона. Ясс + нефт. ванна обязательны.',
+   dens:1.13,ecd:1.15,pv:14,yp:18,gel:5,api:5.5,ph:9.8,kcl:0,cl:15000,wob:55,rpm:105,torq:10,hl:230,rop:12,dp:110},
+  {s:'Вхт',   n:'Верхнехетская',                  f:1350, t:1630, c:'#6a7068',cls:'clay',
+   risk:'med',     riskLabel:'Поглощения — LCM в готовности',
+   desc:'Переслаивание глин, алевролитов, песчаников. Поглощения 1000–1350 м позади.',
+   dens:1.13,ecd:1.15,pv:14,yp:18,gel:5,api:5.0,ph:9.8,kcl:0,cl:18000,wob:60,rpm:110,torq:11,hl:235,rop:12,dp:115},
+  {s:'Як',    n:'Яковлевская Як III–VII',          f:1630, t:1937, c:'#886050',cls:'reservoir',
+   risk:'high',    riskLabel:'Нефтегазопроявления — P=16.2 МПа · ρ нефти 0.846 г/см³',
+   desc:'Коллекторы Як III–VII (P=16.2 МПа). Газ 1645–1650 м. Нефть 1650–1680 м (ρ=0.846 г/см³). Инж. по р-рам на буровой обязателен.',
+   dens:1.13,ecd:1.15,pv:15,yp:18,gel:5,api:5.0,ph:9.5,kcl:0,cl:25000,wob:65,rpm:110,torq:12,hl:240,rop:11,dp:120},
+  {s:'Схд',   n:'Суходудинская',                  f:1937, t:2040, c:'#706070',cls:'argillite',
+   risk:'med',     riskLabel:'Сужение ствола — проработка 72 ч',
+   desc:'Плотные алевролиты. Сужение ствола скважины. Проработка каждые 72 ч.',
+   dens:1.12,ecd:1.14,pv:14,yp:17,gel:4,api:5.0,ph:9.5,kcl:0,cl:20000,wob:70,rpm:110,torq:12,hl:245,rop:10,dp:125},
+  {s:'Млх',   n:'Малохетская',                    f:2040, t:2570, c:'#605870',cls:'argillite',
+   risk:'med',     riskLabel:'Тугой ход 2040–2570 м',
+   desc:'Плотные глинисто-алевролитовые породы. Тугой ход. 2 цикла промывки перед подъёмом.',
+   dens:1.12,ecd:1.14,pv:15,yp:18,gel:5,api:4.5,ph:10.0,kcl:0,cl:22000,wob:75,rpm:110,torq:14,hl:255,rop:9,dp:140},
+  {s:'Нх I',  n:'Нижнехетская Нх I',              f:2570, t:2750, c:'#504060',cls:'reservoir',
+   risk:'critical', riskLabel:'ПРИХВАТ кровли — P=254 атм · РОП ≤5 м/ч',
+   desc:'Нестабильные аргиллиты 2665–2727 м ТВД. Прихваты на кустах 7 и 12. P=254 атм. Нефтепроявления.',
+   dens:1.20,ecd:1.23,pv:20,yp:22,gel:6,api:3.8,ph:10.2,kcl:0,cl:40000,wob:60,rpm:90,torq:16,hl:265,rop:5,dp:160},
+  {s:'Нх34',  n:'Нижнехетская Нх III–IV (ЦЕЛЬ ★)',f:2750, t:3050, c:'#304060',cls:'reservoir',
+   risk:'critical', riskLabel:'АВПД P=274 атм — ОСНОВНАЯ ЦЕЛЬ',
+   desc:'Нефтяной коллектор АВПД P=274 атм. Флуоресценция 100%. ρ строго 1.18–1.20. Контроль ежечасно.',
+   dens:1.20,ecd:1.23,pv:22,yp:24,gel:7,api:3.5,ph:10.2,kcl:0,cl:45000,wob:55,rpm:85,torq:18,hl:270,rop:5,dp:170},
+  {s:'ГС',    n:'Горизонтальный ствол Ø114 мм',   f:3050, t:3353, c:'#203850',cls:'reservoir',
+   risk:'critical', riskLabel:'Горизонт. ствол — KCl-полимерный р-р',
+   desc:'Горизонтальный участок Нх I. ρ=1.06 г/см³. KCl 30 кг/м³. Пыжевые промывки каждые 200 м.',
+   dens:1.06,ecd:1.09,pv:14,yp:25,gel:8,api:4.0,ph:9.5,kcl:30,cl:15000,wob:50,rpm:80,torq:20,hl:260,rop:8,dp:150},
+];
+
+const CASING_PROGRAM = [
+  {od:324, shoe:620,  label:'Ø324 мм @620м (кондуктор)',  color:'#7eb8f0', durH:10},
+  {od:245, shoe:1780, label:'Ø245 мм @1780м (тех. кол.)', color:'#a0c8a0', durH:14},
+  {od:178, shoe:3050, label:'Ø178 мм @3050м (экспл.)',    color:'#d4a060', durH:18},
+];
+let cementedSet = new Set();
+
+const PHASES = [
+  {id:1, type:'drill',   from:0,    to:620,  name:'Бурение кондуктора Ø393.7 мм',         holeDiam:393},
+  {id:2, type:'runcsg',  from:0,    to:620,  name:'Спуск кондуктора Ø324 мм @620 м',      csgIdx:0},
+  {id:3, type:'cement',              name:'ОЗЦ кондуктора — 10 ч',                         csgIdx:0},
+  {id:4, type:'rih',     from:0,    to:620,  name:'Спуск КНБК Ø295.3 мм'},
+  {id:5, type:'drill',   from:620,  to:1780, name:'Бурение 2-го интервала Ø295.3 мм',      holeDiam:295},
+  {id:6, type:'pooh',    from:1780, to:0,    name:'Подъём КНБК · ГИС-планирование'},
+  {id:7, type:'runcsg',  from:0,    to:1780, name:'Спуск тех. колонны Ø245 мм @1780 м',   csgIdx:1},
+  {id:8, type:'cement',              name:'ОЗЦ тех. колонны — 14 ч',                       csgIdx:1},
+  {id:9, type:'rih',     from:0,    to:1780, name:'Спуск КНБК Ø219.1 мм'},
+  {id:10,type:'drill',   from:1780, to:3050, name:'Бурение экспл. интервала Ø219.1 мм',    holeDiam:219},
+  {id:11,type:'pooh',    from:3050, to:0,    name:'Подъём · ГИС · НКТ'},
+  {id:12,type:'runcsg',  from:0,    to:3050, name:'Спуск экспл. колонны Ø178 мм @3050 м', csgIdx:2},
+  {id:13,type:'cement',              name:'ОЗЦ экспл. колонны — 18 ч',                     csgIdx:2},
+  {id:14,type:'rih',     from:0,    to:3050, name:'Спуск хвостовика Ø114 мм'},
+  {id:15,type:'drill',   from:3050, to:3353, name:'Горизонтальный ствол Ø152.4 мм',        holeDiam:152},
+];
+
+const EVENTS = [
+  {d:300,  cls:'warn',icon:'❄️',title:'Зона ВМ — контроль поглощений',
+   body:'Вечная мерзлота позади. Зона трещинно-каверновых поглощений до 540 м.',
+   rec:'1. Аварийный р-р ≥35 м³ на буровой\n2. Профилакт. отрывы КНБК каждые 1 м\n3. Давление ниже Pпогл\n4. LCM в готовности',prob:'',ack:'Принято',overlay:false},
+  {d:620,  cls:'ok',  icon:'🔩',title:'Кондуктор Ø324 мм спущен — смена КНБК',
+   body:'Ø393.7 мм завершён. ОЗЦ 10 ч. Переход на Ø295.3 мм. Р-р полимер-глин. 1.13.',
+   rec:'1. Долото PDC Ø295.3 мм\n2. Проверить КНБК\n3. Р-р скорректировать на 1.13 г/см³',prob:'',ack:'Выполнено',overlay:false},
+  {d:700,  cls:'warn',icon:'⚓',title:'Прихватоопасная зона — 540–905 м',
+   body:'Зона прихвата начата. Инструмент может садиться. Непрерывная циркуляция.',
+   rec:'1. Ясс на компоновке\n2. Нефт. ванна готовность\n3. Промывка 2 цикла перед каждым подъёмом',prob:'Риск: 28%',ack:'Контроль',overlay:false},
+  {d:1005, cls:'crit',icon:'⚠️',title:'ГАЗОПРОЯВЛЕНИЕ — Долганская 1005–1031 м',
+   body:'Газосодержащие прослои! ГВА превышение. Порог 5% УВ. ПВО в боеготовности.',
+   rec:'1. ρ до 1.16 г/см³ НЕМЕДЛЕННО\n2. ГВА каждые 15 мин\n3. ПВО задраить\n4. Дегазатор на max\n5. Уведомить гл. инженера',prob:'Риск выброса: 38%',ack:'Меры приняты',overlay:true},
+  {d:1200, cls:'warn',icon:'⚓',title:'Прихват — Насоновская 1000–1350 м',
+   body:'Посадки инструмента. ДНС нарастает. Зона 1000–1350 м активна.',
+   rec:'1. Дефлокулянт 3–4 кг/м³\n2. Расхаживание каждые 30 мин\n3. Промывка 2 цикла перед подъёмом',prob:'Риск прихвата: 38%',ack:'Обработка',overlay:false},
+  {d:1630, cls:'high',icon:'🛢️',title:'ЯКОВЛЕВСКАЯ Як III–VII — P=16.2 МПа',
+   body:'Нефтегазоносный коллектор. P=16.2 МПа. Флуоресценция шлама.',
+   rec:'1. Инж. по р-рам на буровой ОБЯЗАТЕЛЬНО\n2. Контроль каждые 15 мин\n3. ρ 1.13 г/см³ строго\n4. ГИС при выходе из пласта\n5. Шлам каждые 3 м',prob:'Нефтепроявление',ack:'ALERT',overlay:true},
+  {d:1645, cls:'crit',icon:'⛽',title:'ГАЗ — Яковлевская 1645–1650 м · ρ газа 0.58 г/см³',
+   body:'Газосодержащий прослой. ρ газа 0.58 г/см³. Опасный горизонт выявлен по ГТН скв. 7-002.',
+   rec:'1. ГВА мониторинг каждые 15 мин\n2. ρ р-ра 1.13 г/см³ строго\n3. Шлам каждые 3 м\n4. ПВО в готовности\n5. Уведомить гл. инженера',prob:'Риск: высокий',ack:'Контроль',overlay:true},
+  {d:1937, cls:'info',icon:'🔄',title:'Яковлевская пройдена — плановая смена КНБК',
+   body:'Выход из Як III–VII. Плановый подъём. Переход на Ø219.1 мм.',
+   rec:'1. 2 цикла промывки перед подъёмом\n2. Визинг-трип\n3. ГИС по Яковлевской',prob:'',ack:'Принято',overlay:false},
+  {d:2150, cls:'crit',icon:'💊',title:'ВВЕСТИ СТАБИЛИЗАТОР АРГИЛЛИТОВ — по программе с 2200 м ТВД',
+   body:'По программе бурения скв. 7-002: стабилизатор аргиллитов 10–14 кг/м³ вводится с 2200 м ТВД. Обязательная превентивная мера перед зоной нестабильных аргиллитов кровли Нх I (2665–2727 м ТВД). Без него риск прихвата критический.',
+   rec:'1. Ввести стабилизатор аргиллитов 10–14 кг/м³ НЕМЕДЛЕННО\n2. Следить за ДНС: при росте > 2 lb/сутки → дефлокулянт\n3. Ингибитор набухания глин 2 кг/м³ — подтвердить наличие\n4. KCl-систему подготовить к горизонтальному стволу\n5. Крутящий момент — мониторинг',prob:'Прихват без стабил.: 70%+',ack:'Стабилизатор введён',overlay:true},
+  {d:2200, cls:'warn',icon:'🔧',title:'Тугой ход — Малохетская 2040–2570 м',
+   body:'Периодические сужения ствола. Тугой ход инструмента.',
+   rec:'1. Проработка каждые 72 ч\n2. Визинг-трип перед ГИС\n3. Смазочная добавка 5–10 кг/м³\n4. Мин. 2 цикла перед подъёмом',prob:'',ack:'Проработка',overlay:false},
+  {d:2570, cls:'crit',icon:'🚨',title:'КРОВЛЯ Нх I — ПРИХВАТООПАСНО! 2665–2727 м',
+   body:'КРИТИЧЕСКАЯ ЗОНА. Нестабильные аргиллиты. Прихваты на кустах 7 и 12.',
+   rec:'1. Стабилизатор ствола 10–14 кг/м³ НЕМЕДЛЕННО\n2. РОП ≤ 3–5 м/ч СТРОГО\n3. ЗАПРЕТ промывания при наращивании\n4. ρ 1.18–1.20 г/см³\n5. ДНС ≥ 15 lb/100ft²',prob:'Прихват: КРИТИЧНО',ack:'Меры приняты',overlay:true},
+  {d:2700, cls:'warn',icon:'📈',title:'AI: ДНС ↑ + РОП ↓ — прихват 48–72 ч',
+   body:'ДНС: 22→26→30 lb/100ft². РОП упал с 10 до 6 м/ч.',
+   rec:'1. Дефлокулянт 4–5 кг/м³ НЕМЕДЛЕННО\n2. ДНС до 20–22\n3. Промывка 2 цикла\n4. Расхаживание каждые 30 мин\n5. Смазочные добавки 10 кг/м³',prob:'Риск прихвата: 68%',ack:'Обработка',overlay:true},
+  {d:2750, cls:'high',icon:'🛢️',title:'Нх I — НЕФТЯНОЙ КОЛЛЕКТОР P=254 атм',
+   body:'Флуоресценция шлама! Нефтепроявления 2630–2785 м. P=254 атм.',
+   rec:'1. Контроль ρ КАЖДЫЙ ЧАС\n2. LWD реального времени\n3. ρ строго 1.18–1.20\n4. Уведомить геолога',prob:'Нефтеприток',ack:'ALERT',overlay:true},
+  {d:2841, cls:'crit',icon:'🚨',title:'ПРИХВАТ — НПВ АКТИВНО',
+   body:'РОП = 0. Нагрузка аномальная. Кровля Нх III–IV. $60 000/сутки.',
+   rec:'1. Нефтяная ванна 5–8 м³\n2. Ротор 40–60 об/мин с вибрацией\n3. Если ≥ 4–6 ч — ударный инструмент (ясс)\n4. Ловильный инструмент: колокол + овершот\n5. Доложить супервайзеру',prob:'НПВ: $60 000/сут',ack:'Ликвидация',overlay:true},
+  {d:2960, cls:'ok',  icon:'✅',title:'Прихват ликвидирован. Бурение возобновлено.',
+   body:'Нефтяная ванна сработала. 9 суток НПВ завершено. Ликвидация успешна.',
+   rec:'1. ДНС до 22–24\n2. Доп. стабилизатор ствола\n3. Проверить КНБК\n4. РОП ≤ 5 м/ч',prob:'',ack:'Продолжаем',overlay:false},
+  {d:3050, cls:'high',icon:'🛢️',title:'Нх III–IV — ОСНОВНАЯ ЦЕЛЬ! P=274 атм АВПД',
+   body:'Флуоресценция 100%! P=274 атм. Режим ALERT. Переход на KCl-полим. р-р ρ=1.06.',
+   rec:'1. Контроль ρ КАЖДЫЙ ЧАС\n2. Перейти на KCl-полим. р-р ρ=1.06\n3. KCl 30 кг/м³\n4. LWD реального времени\n5. Уведомить геолога и гл. инженера',prob:'P=274 атм · АВПД',ack:'ALERT',overlay:true},
+  {d:3353, cls:'ok',  icon:'🏆',title:'ЗАБОЙ ДОСТИГНУТ! ТД = 3 353 м MD · Скв. 7-002',
+   body:'Горизонтальный ствол завершён. Нх III–IV вскрыт. Дебит: 100+ т/сут.',
+   rec:'1. Финальный суточный рапорт\n2. Финальный ГИС\n3. Перфорация и освоение\n4. Хвостовик Ø114 мм',prob:'Дебит: 100+ т/сут',ack:'Победа!',overlay:true},
+];
+
+// ═══════════════════════════════════════════════════════
+// SIMULATION STATE
+// ═══════════════════════════════════════════════════════
+const TD = 3353; // Скв. 7-002, Куст 7, Ванкорское НГМ (MD)
+let bitDepth = 0, playing = false, speed = 5, animId = null, lastTs = null;
+let phaseIdx = 0, phaseElapsed = 0;
+let triggeredEvents = new Set(), nptActive = false, nptDays = 0;
+let pendingAlert = null, alertOpen = false, prevYP = 20;
+
+const sm  = {wob:0,rpm:0,torq:0,hl:280,rop:100,dp:0,ecd:1.10,pit:0,flow:0,spm:0,dens:1.10,t:38,pv:10,yp:20,gel:4,api:4.5,ph:9.5,kcl:100};
+const tgt = {...sm};
+let lastTgtUpdate = 0;
+
+// Manual override (live input panel)
+let manualMode = false;
+
+function seededR(a,b){const n=Math.sin(a*127.1+b*311.7)*43758.5453;return n-Math.floor(n);}
+
+// ═══════════════════════════════════════════════════════
+// PHASE / FORMATION HELPERS
+// ═══════════════════════════════════════════════════════
+function getForm(d){for(let i=STRAT.length-1;i>=0;i--)if(d>=STRAT[i].f)return STRAT[i];return STRAT[0];}
+function currentDrillDepth(){
+  let d=0;
+  for(let i=0;i<phaseIdx;i++) if(PHASES[i].type==='drill') d=PHASES[i].to;
+  if(PHASES[phaseIdx]&&PHASES[phaseIdx].type==='drill') d=bitDepth;
+  return d;
+}
+function getHolePx(hd){return 14+(hd-100)/250*14;}
+
+// ═══════════════════════════════════════════════════════
+// HELPERS + CANVAS SETUP
+// ═══════════════════════════════════════════════════════
+function rrect(c,x,y,w,h,r){
+  c.beginPath();c.moveTo(x+r,y);c.lineTo(x+w-r,y);c.quadraticCurveTo(x+w,y,x+w,y+r);
+  c.lineTo(x+w,y+h-r);c.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  c.lineTo(x+r,y+h);c.quadraticCurveTo(x,y+h,x,y+h-r);
+  c.lineTo(x,y+r);c.quadraticCurveTo(x,y,x+r,y);c.closePath();
+}
+const EV_C  = {crit:'#ef4444',warn:'#f59e0b',high:'#f97316',info:'#00d4ff',ok:'#22c55e'};
+const EV_BG = {crit:'rgba(239,68,68,.14)',warn:'rgba(245,158,11,.14)',high:'rgba(249,115,22,.14)',info:'rgba(0,212,255,.10)',ok:'rgba(34,197,94,.10)'};
+
+const canvas = document.getElementById('wellCanvas');
+const ctx = canvas.getContext('2d');
+const PARTS = [];
+
+function resizeCanvas(){
+  const wrap = document.getElementById('canvas-wrap');
+  canvas.width  = wrap.offsetWidth;
+  canvas.height = wrap.offsetHeight;
+}
+
+// ═══════════════════════════════════════════════════════
+// LITHOLOGY TEXTURES
+// ═══════════════════════════════════════════════════════
+function drawLitho(c,cls,x,y,w,h,df){
+  if(h<2||w<2)return;
+  c.save();c.beginPath();c.rect(x,y,w,h);c.clip();
+  if(cls==='loose'){
+    for(let row=0;row<Math.ceil(h/6);row++)for(let col=0;col<Math.ceil(w/7);col++){
+      const r=seededR(df+row*37,col*19);if(r>.35){c.beginPath();c.arc(x+col*7+seededR(df+row,col)*3,y+row*6+3,1.5+seededR(row,col*3)*1.5,0,Math.PI*2);c.fillStyle=`rgba(255,240,200,${.06+seededR(row*2,col)*.06})`;c.fill();}
+    }
+  }else if(cls==='clay'){
+    c.lineWidth=.7;
+    for(let row=3;row<h;row+=4){c.beginPath();c.strokeStyle=`rgba(140,168,190,${.08+seededR(df+row,1)*.04})`;c.moveTo(x,y+row);for(let dx=0;dx<w;dx+=5){c.lineTo(x+dx,y+row+Math.sin((df+row+dx)*.18)*1.2);}c.stroke();}
+  }else if(cls==='argillite'){
+    c.lineWidth=.6;
+    for(let row=2;row<h;row+=3){c.beginPath();c.strokeStyle=`rgba(130,155,140,${.07+(row%6===0?.04:0)})`;c.moveTo(x,y+row);c.lineTo(x+w,y+row);c.stroke();}
+  }else if(cls==='sand'||cls==='gas'){
+    const bH=7,bW=14;c.lineWidth=.5;c.strokeStyle='rgba(200,175,110,.12)';
+    for(let row=0;row*bH<h+bH;row++){const off=(row%2)*(bW/2),yy=y+row*bH;c.beginPath();c.moveTo(x,yy);c.lineTo(x+w,yy);c.stroke();for(let col=-1;col*bW<w+bW;col++){const xx=x+col*bW+off;c.beginPath();c.moveTo(xx,yy);c.lineTo(xx,yy+bH);c.stroke();}}
+  }else if(cls==='reservoir'){
+    const bH=8,bW=15;c.lineWidth=.5;c.strokeStyle='rgba(0,180,100,.15)';
+    for(let row=0;row*bH<h+bH;row++){const off=(row%2)*(bW/2),yy=y+row*bH;c.beginPath();c.moveTo(x,yy);c.lineTo(x+w,yy);c.stroke();for(let col=-1;col*bW<w+bW;col++){const xx=x+col*bW+off;c.beginPath();c.moveTo(xx,yy);c.lineTo(xx,yy+bH);c.stroke();if(seededR(df+row*31,col*23)>.45){c.fillStyle='rgba(0,120,60,.18)';c.fillRect(xx+.5,yy+.5,bW-1,bH-1);}}}
+  }
+  c.restore();
+}
+
+// ═══════════════════════════════════════════════════════
+// DRAW WELL
+// ═══════════════════════════════════════════════════════
+function drawWell(){
+  const W=canvas.width,H=canvas.height;if(!W||!H)return;
+  ctx.clearRect(0,0,W,H);
+  const phase=PHASES[phaseIdx]||PHASES[PHASES.length-1];
+  const VIEW=700,bohDepth=currentDrillDepth();
+  const camTop=Math.max(0,bitDepth-H*.72);
+  const scale=H/VIEW,wellX=W*.40,lithoW=44;
+  function toY(m){return(m-camTop)*scale;}
+  function holePxAt(d){
+    for(let i=0;i<PHASES.length;i++){if(PHASES[i].type==='drill'&&d>=PHASES[i].from&&d<=PHASES[i].to)return getHolePx(PHASES[i].holeDiam);if(PHASES[i].type==='drill'&&d<PHASES[i].from)return getHolePx(PHASES[i].holeDiam);}
+    return getHolePx(114);
+  }
+
+  // Background
+  ctx.fillStyle='#050810';ctx.fillRect(0,0,W,H);
+
+  // Litho + formation bands
+  STRAT.forEach(s=>{
+    const y1=toY(s.f),y2=toY(s.t);if(y2<0||y1>H)return;
+    const gy1=Math.max(-2,y1),gy2=Math.min(H+2,y2),bh=gy2-gy1;if(bh<1)return;
+    const g=ctx.createLinearGradient(0,gy1,0,gy2);g.addColorStop(0,s.c+'ee');g.addColorStop(1,s.c+'bb');
+    ctx.fillStyle=g;ctx.fillRect(0,gy1,lithoW,bh);
+    drawLitho(ctx,s.cls,1,gy1,lithoW-2,bh,s.f);
+    ctx.fillStyle=s.c+'28';ctx.fillRect(lithoW,gy1,W-lithoW,bh);
+    if(bh>16){ctx.save();ctx.fillStyle='rgba(255,255,255,.7)';ctx.font='bold 9px system-ui';ctx.textAlign='left';ctx.fillText(s.s,3,gy1+Math.min(13,bh*.55));if(bh>26){ctx.fillStyle='rgba(255,255,255,.3)';ctx.font='8px system-ui';ctx.fillText(s.f+'m',3,gy1+Math.min(23,bh*.8));}ctx.restore();}
+  });
+
+  ctx.strokeStyle='rgba(255,255,255,.08)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(lithoW,0);ctx.lineTo(lithoW,H);ctx.stroke();
+
+  STRAT.forEach(s=>{
+    const y=toY(s.f);if(y<0||y>H)return;
+    ctx.strokeStyle='rgba(255,255,255,.06)';ctx.lineWidth=1;ctx.setLineDash([4,7]);
+    ctx.beginPath();ctx.moveTo(lithoW,y);ctx.lineTo(W-48,y);ctx.stroke();ctx.setLineDash([]);
+  });
+
+  // Casings
+  const sortedCsg=[...cementedSet].sort((a,b)=>CASING_PROGRAM[b].shoe-CASING_PROGRAM[a].shoe);
+  sortedCsg.forEach(ci=>{
+    const csg=CASING_PROGRAM[ci],y0=toY(0),y1=toY(csg.shoe);
+    if(y1<0&&y0<0)return;
+    const gy0=Math.max(0,y0),gy1=Math.min(H,y1),odPx=10+csg.od/295*24,idPx=odPx-3;
+    const hw=holePxAt(csg.shoe/2);
+    ctx.fillStyle='rgba(120,130,140,.18)';ctx.fillRect(wellX-hw,Math.min(gy0,gy1),hw*2,Math.abs(gy1-gy0));
+    ctx.strokeStyle=csg.color;ctx.lineWidth=2.5;
+    ctx.beginPath();ctx.moveTo(wellX-odPx,Math.min(gy0,gy1));ctx.lineTo(wellX-odPx,Math.max(gy0,gy1));ctx.stroke();
+    ctx.beginPath();ctx.moveTo(wellX+odPx,Math.min(gy0,gy1));ctx.lineTo(wellX+odPx,Math.max(gy0,gy1));ctx.stroke();
+    ctx.fillStyle='rgba(6,12,28,.85)';ctx.fillRect(wellX-idPx,Math.min(gy0,gy1),idPx*2,Math.abs(gy1-gy0));
+    const shoeY=toY(csg.shoe);
+    if(shoeY>-10&&shoeY<H+10){ctx.fillStyle=csg.color;ctx.fillRect(wellX-odPx-6,shoeY-4,(odPx+6)*2,6);ctx.fillStyle='rgba(255,255,255,.6)';ctx.font='bold 8px system-ui';ctx.textAlign='left';ctx.fillText(csg.label,wellX+odPx+10,shoeY+2);}
+  });
+
+  // Open hole
+  const lowestShoe=sortedCsg.length>0?CASING_PROGRAM[sortedCsg[sortedCsg.length-1]].shoe:0;
+  if(bohDepth>lowestShoe){
+    const ywf=toY(lowestShoe),ywt=toY(bohDepth),gyf=Math.max(0,ywf),gyt=Math.min(H,ywt),hw=getHolePx(phase.holeDiam||295);
+    const mg=ctx.createLinearGradient(wellX-hw,0,wellX+hw,0);mg.addColorStop(0,'rgba(0,50,120,.5)');mg.addColorStop(.5,'rgba(0,80,180,.6)');mg.addColorStop(1,'rgba(0,50,120,.5)');
+    ctx.fillStyle=mg;ctx.fillRect(wellX-hw,gyf,hw*2,gyt-gyf);
+    ctx.strokeStyle='rgba(0,180,255,.3)';ctx.lineWidth=1.5;
+    ctx.beginPath();ctx.moveTo(wellX-hw,gyf);ctx.lineTo(wellX-hw,gyt);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(wellX+hw,gyf);ctx.lineTo(wellX+hw,gyt);ctx.stroke();
+  }
+
+  // Drill string
+  const showDrill=['drill','rih','pooh'].includes(phase.type);
+  const showCsg=phase.type==='runcsg';
+  if(showDrill&&bitDepth>2){
+    ctx.strokeStyle='rgba(140,170,210,.55)';ctx.lineWidth=3;
+    const y0=Math.max(0,toY(0)),y1=Math.min(H,toY(bitDepth));
+    ctx.beginPath();ctx.moveTo(wellX,y0);ctx.lineTo(wellX,y1);ctx.stroke();
+    ctx.strokeStyle='rgba(190,210,240,.3)';ctx.lineWidth=6;
+    const jFrom=Math.ceil((camTop)/9.5)*9.5;
+    for(let jd=jFrom;jd<=bitDepth;jd+=9.5){const jy=toY(jd);if(jy<0||jy>H)continue;ctx.beginPath();ctx.moveTo(wellX-3,jy);ctx.lineTo(wellX+3,jy);ctx.stroke();}
+  }
+  if(showCsg&&bitDepth>2){
+    const csg=CASING_PROGRAM[phase.csgIdx];
+    if(csg){const odPx=10+csg.od/295*24;ctx.strokeStyle=csg.color;ctx.lineWidth=2;const y0=Math.max(0,toY(0)),y1=Math.min(H,toY(bitDepth));ctx.beginPath();ctx.moveTo(wellX-odPx,y0);ctx.lineTo(wellX-odPx,y1);ctx.stroke();ctx.beginPath();ctx.moveTo(wellX+odPx,y0);ctx.lineTo(wellX+odPx,y1);ctx.stroke();}
+  }
+
+  // NPT highlight
+  if(nptActive){const ny=toY(bitDepth);ctx.fillStyle='rgba(255,30,30,.07)';ctx.fillRect(lithoW,Math.max(0,ny-60),W-lithoW-50,80);ctx.strokeStyle='#ff3d3d';ctx.lineWidth=1.5;ctx.setLineDash([3,5]);ctx.strokeRect(lithoW,Math.max(0,ny-60),W-lithoW-50,80);ctx.setLineDash([]);}
+
+  // Bit
+  const bitY=toY(bitDepth);
+  if(bitY>-30&&bitY<H+30){
+    if(showDrill){
+      if(!nptActive){ctx.fillStyle='#4080c0';ctx.fillRect(wellX-5,bitY-35,10,35);}
+      ctx.fillStyle=nptActive?'#ff3d3d':'#dde8f4';
+      ctx.beginPath();ctx.moveTo(wellX,bitY+14);ctx.lineTo(wellX-11,bitY-2);ctx.lineTo(wellX-7,bitY-2);ctx.lineTo(wellX-7,bitY-14);ctx.lineTo(wellX+7,bitY-14);ctx.lineTo(wellX+7,bitY-2);ctx.lineTo(wellX+11,bitY-2);ctx.closePath();ctx.fill();
+      ctx.fillStyle=nptActive?'#ff8080':'#7eb8f0';
+      for(let i=-2;i<=2;i++)ctx.fillRect(wellX+i*3-1,bitY+2,2.5,5);
+      if(playing&&!nptActive){const grd=ctx.createRadialGradient(wellX,bitY+6,0,wellX,bitY+6,28);grd.addColorStop(0,'rgba(0,180,255,.22)');grd.addColorStop(1,'rgba(0,180,255,0)');ctx.fillStyle=grd;ctx.fillRect(wellX-28,bitY-8,56,42);}
+      if(nptActive){ctx.fillStyle='#ff3d3d';ctx.font='bold 10px system-ui';ctx.textAlign='center';ctx.fillText('НПВ',wellX,bitY+28);}
+    }
+    if(showCsg){const csg=CASING_PROGRAM[phase.csgIdx];if(csg){const odPx=10+csg.od/295*24;ctx.fillStyle=csg.color;ctx.fillRect(wellX-odPx-4,bitY,(odPx+4)*2,6);}}
+  }
+
+  // Cuttings
+  if(phase.type==='drill'&&playing&&!nptActive){
+    const form=getForm(bitDepth);if(Math.random()<.25)PARTS.push({x:wellX+(Math.random()-.5)*10,y:bitY,vx:(Math.random()-.5)*.4,vy:-.8-Math.random()*1.2,life:1,size:1+Math.random()*2,color:form.c+'cc'});
+  }
+  for(let i=PARTS.length-1;i>=0;i--){const p=PARTS[i];p.x+=p.vx;p.y+=p.vy;p.vy+=.05;p.life-=.022;if(p.life<=0){PARTS.splice(i,1);continue;}ctx.beginPath();ctx.arc(p.x,p.y,p.size,0,Math.PI*2);ctx.fillStyle=p.color?p.color.substring(0,7)+Math.floor(p.life*200).toString(16).padStart(2,'0'):`rgba(200,175,120,${p.life*.55})`;ctx.fill();}
+
+  // Depth scale
+  ctx.fillStyle='rgba(107,127,150,.75)';ctx.font='9px monospace';ctx.textAlign='right';
+  const scaleStep=100,startMark=Math.ceil(camTop/scaleStep)*scaleStep;
+  for(let m=startMark;m<=camTop+VIEW;m+=scaleStep){const y=toY(m);if(y<0||y>H)continue;ctx.fillText(m+'м',W-4,y+3);ctx.strokeStyle='rgba(107,127,150,.15)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(W-48,y);ctx.lineTo(W-12,y);ctx.stroke();}
+
+  // Current depth label
+  if(bitY>0&&bitY<H){ctx.fillStyle='rgba(0,212,255,.85)';ctx.font='bold 10px monospace';ctx.textAlign='left';ctx.fillText('← '+Math.round(bitDepth)+' м',wellX+16,Math.max(14,Math.min(H-6,bitY+4)));}
+
+  // ── Canvas event overlays ──────────────────────────
+  // Upcoming ghost markers
+  EVENTS.forEach(ev=>{
+    if(triggeredEvents.has(ev.d)||ev.cls==='ok'||ev.d<=bitDepth)return;
+    const ey=toY(ev.d);if(ey<0||ey>H)return;
+    const c=EV_C[ev.cls]||'#888',dist=Math.round(ev.d-bitDepth);
+    ctx.save();ctx.strokeStyle=c+'70';ctx.lineWidth=1;ctx.setLineDash([2,3]);ctx.beginPath();ctx.arc(wellX+13,ey,4,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);
+    ctx.font='8px system-ui';ctx.fillStyle=c+'80';ctx.textAlign='left';ctx.fillText(ev.icon+' '+ev.title.substring(0,18)+'  [−'+dist+'м]',wellX+20,ey+3);ctx.restore();
+  });
+
+  // Triggered markers
+  const usedY=[];
+  EVENTS.forEach(ev=>{
+    if(!triggeredEvents.has(ev.d))return;
+    const ey=toY(ev.d);if(ey<-10||ey>H+10)return;
+    const c=EV_C[ev.cls]||'#888',mx=wellX+13;
+    ctx.save();
+    ctx.strokeStyle=c+'50';ctx.lineWidth=1;ctx.setLineDash([2,4]);ctx.beginPath();ctx.moveTo(wellX+8,ey);ctx.lineTo(mx+68,ey);ctx.stroke();ctx.setLineDash([]);
+    ctx.fillStyle=c;ctx.beginPath();ctx.arc(mx,ey,4.5,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='rgba(255,255,255,.6)';ctx.beginPath();ctx.arc(mx,ey,1.5,0,Math.PI*2);ctx.fill();
+    const tooClose=usedY.some(py=>Math.abs(py-ey)<16);
+    if(!tooClose){usedY.push(ey);ctx.font='bold 8px system-ui';ctx.fillStyle=c;ctx.textAlign='left';ctx.fillText(ev.icon+' '+ev.title.substring(0,22),mx+8,ey-2);ctx.fillStyle='rgba(255,255,255,.35)';ctx.font='7px system-ui';ctx.fillText(Math.round(ev.d)+' м',mx+8,ey+9);}
+    ctx.restore();
+  });
+
+  // Active alert banner near bit
+  if(showDrill){
+    const near=EVENTS.filter(ev=>triggeredEvents.has(ev.d)&&ev.cls!=='ok'&&ev.cls!=='info'&&bitDepth-ev.d>=0&&bitDepth-ev.d<400);
+    if(near.length>0){
+      const ev=near[near.length-1],c=EV_C[ev.cls]||'#888',bg=EV_BG[ev.cls]||'rgba(100,100,100,.12)';
+      const bx=wellX+26,bw=Math.min(W-bx-58,215),bh=ev.prob?62:48;
+      const by2=Math.max(8,Math.min(H-bh-8,toY(bitDepth)-bh/2-5));
+      ctx.save();
+      ctx.strokeStyle=c+'50';ctx.lineWidth=1;ctx.setLineDash([2,3]);ctx.beginPath();ctx.moveTo(wellX+12,toY(bitDepth));ctx.lineTo(bx,by2+bh/2);ctx.stroke();ctx.setLineDash([]);
+      rrect(ctx,bx,by2,bw,bh,6);ctx.fillStyle=bg;ctx.fill();ctx.strokeStyle=c+'80';ctx.lineWidth=1.5;ctx.stroke();
+      ctx.fillStyle=c;ctx.fillRect(bx,by2,3,bh);
+      ctx.font='bold 9px system-ui';ctx.fillStyle=c;ctx.textAlign='left';ctx.fillText(ev.icon+'  '+ev.title.substring(0,26),bx+9,by2+14);
+      if(ev.prob){rrect(ctx,bx+9,by2+18,Math.min(ev.prob.length*6.2+6,bw-18),13,3);ctx.fillStyle=c+'28';ctx.fill();ctx.fillStyle=c;ctx.font='bold 7.5px system-ui';ctx.fillText(ev.prob,bx+13,by2+28);}
+      ctx.fillStyle='rgba(255,255,255,.5)';ctx.font='8px system-ui';ctx.fillText(ev.body.substring(0,44),bx+9,by2+(ev.prob?bh-12:30));
+      ctx.restore();
+    }
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// SMOOTH TARGETS
+// ═══════════════════════════════════════════════════════
+function updateTargets(now){
+  if(manualMode)return; // manual override — don't change targets
+  if(now-lastTgtUpdate<3000)return;
+  lastTgtUpdate=now;
+  const phase=PHASES[phaseIdx]||{},form=getForm(bitDepth),j=()=>(Math.random()-.5);
+  if(phase.type==='drill'&&!nptActive){
+    let ypMod=0;if(bitDepth>3200&&bitDepth<3328)ypMod=(bitDepth-3200)/128*5;
+    tgt.wob=Math.max(0,form.wob+j()*6);tgt.rpm=Math.max(0,form.rpm+j()*4);tgt.torq=Math.max(0,form.torq+j()*2);
+    tgt.hl=Math.max(0,form.hl-form.wob*.3+j()*8);tgt.rop=sm.rop; // держим РОП на текущем значении (100 м/ч по умолчанию)
+    tgt.dp=Math.max(0,form.dp+j()*10);tgt.ecd=form.ecd+j()*.004;
+    tgt.flow=28+j()*1.5;tgt.spm=65+j()*3;tgt.pit=j()*3;
+    // tgt.dens не трогаем — остаётся тем, что задал пользователь
+    tgt.t=47+j()*2;tgt.pv=form.pv+j();
+    tgt.yp=form.yp+ypMod+j()*1.5;tgt.gel=form.gel+j()*.5;tgt.api=form.api+j()*.15;
+    tgt.ph=form.ph+j()*.08;tgt.kcl=form.kcl+j()*1.5;
+  }else if(nptActive){
+    tgt.wob=0;tgt.rpm=0;tgt.torq=0;tgt.hl=480+j()*15;tgt.rop=0;tgt.dp=form.dp*.3+j()*8;tgt.ecd=form.ecd-.01;tgt.pit=j()*2;tgt.yp=form.yp+6+j();
+  }else if(phase.type==='pooh'||phase.type==='rih'){
+    tgt.wob=0;tgt.rpm=80+j()*5;tgt.torq=5+j();tgt.hl=220+j()*15;tgt.rop=0;tgt.dp=form.dp*.45+j()*8;tgt.ecd=form.ecd*.95;tgt.flow=18+j()*2;tgt.spm=45+j()*3;
+  }else if(phase.type==='runcsg'){
+    tgt.wob=0;tgt.rpm=0;tgt.torq=2+j()*.5;tgt.hl=350+j()*20;tgt.rop=0;tgt.dp=30+j()*5;tgt.ecd=1.1;tgt.flow=5+j();tgt.spm=10+j()*2;
+  }
+}
+function lerpSmooth(){const a=.025;for(const k in sm)sm[k]+=(tgt[k]-sm[k])*a;}
+
+function setArc(id,val,max,color){
+  const total=220,frac=Math.max(0,Math.min(1,max===1?val:val/max));
+  const el=document.getElementById(id);el.setAttribute('stroke-dashoffset',total*(1-frac));el.setAttribute('stroke',color);
+}
+
+// ═══════════════════════════════════════════════════════
+// UPDATE UI
+// ═══════════════════════════════════════════════════════
+function updateUI(now){
+  updateTargets(now);lerpSmooth();
+  const phase=PHASES[phaseIdx]||{},form=getForm(bitDepth);
+
+  setArc('gWOB',sm.wob,200,'#00d4ff');document.getElementById('gWOBv').textContent=Math.round(sm.wob);
+  setArc('gRPM',sm.rpm,200,'#a78bfa');document.getElementById('gRPMv').textContent=Math.round(sm.rpm);
+  setArc('gTQ',sm.torq,35,'#f97316');document.getElementById('gTQv').textContent=sm.torq.toFixed(1);
+  const ropD=Math.round(sm.rop);
+  document.getElementById('gROPv').innerHTML=ropD+' <span style="font-size:10px">м/ч</span>';
+  document.getElementById('gROPbar').style.width=Math.min(100,ropD/30*100)+'%';
+  document.getElementById('gROPbar').style.background=ropD<5?'#ef4444':ropD<10?'#f59e0b':'var(--cyan)';
+  const dpD=Math.round(sm.dp);
+  document.getElementById('gDPv').innerHTML=dpD+' <span style="font-size:10px">бар</span>';
+  document.getElementById('gDPbar').style.width=Math.min(100,dpD/250*100)+'%';
+  document.getElementById('gDPbar').style.background=dpD>220?'#ef4444':dpD>190?'#f59e0b':'var(--g)';
+  document.getElementById('gDPv').className='gauge-val '+(dpD>220?'crit':dpD>190?'warn':'ok');
+  setArc('gECD',(sm.ecd-1.05)/.40,1,sm.ecd>1.38?'#ef4444':'#f59e0b');
+  document.getElementById('gECDv').textContent=sm.ecd.toFixed(3);
+  document.getElementById('gHL').textContent=Math.round(sm.hl);
+  document.getElementById('gSPM').textContent=Math.round(sm.spm);
+  document.getElementById('gFlow').textContent=sm.flow.toFixed(1);
+  const pitV=sm.pit,pitOk=Math.abs(pitV)<5;
+  document.getElementById('gPit').innerHTML=(pitV>0?'+':'')+pitV.toFixed(1)+' <span style="font-size:9px">л/мин</span>';
+  document.getElementById('gPit').className='gauge-val '+(pitOk?'ok':'crit');
+  document.getElementById('gPitStatus').textContent=pitOk?'Норма':(pitV<0?'⚠ Поглощение':'⚠ Приток');
+  document.getElementById('gPitStatus').style.color=pitOk?'var(--muted)':'var(--r)';
+
+  const ypV=sm.yp,ypCls=ypV>=34?'crit':ypV>=31?'warn':'ok';
+  const ypTrend=ypV>prevYP+.3?'↑':ypV<prevYP-.3?'↓':'→';prevYP=ypV;
+  document.getElementById('rDens').textContent=sm.dens.toFixed(3)+' г/см³';
+  document.getElementById('rT').textContent=Math.round(sm.t)+' сек';
+  document.getElementById('rPV').textContent=Math.round(sm.pv)+' сПз';
+  document.getElementById('rYP').textContent=Math.round(ypV)+' lb/100ft²';
+  document.getElementById('rYP').className='prop-val '+ypCls;
+  document.getElementById('ypTrend').textContent=ypTrend;
+  document.getElementById('ypTrend').className='trend-arrow '+(ypTrend==='↑'?'trend-up':ypTrend==='↓'?'trend-dn':'trend-ok');
+  document.getElementById('rGel').textContent=Math.round(sm.gel)+' lb/100ft²';
+  document.getElementById('rAPI').textContent=sm.api.toFixed(1)+' мл';
+  document.getElementById('rPH').textContent=sm.ph.toFixed(1);
+  document.getElementById('rKCl').textContent=Math.round(sm.kcl)+' кг/м³';
+  document.getElementById('rCl').textContent=Math.round(form.cl/1000)+' 000 мг/л';
+
+  const fBadge=document.getElementById('formBadge');
+  fBadge.textContent=form.s;fBadge.className='form-badge '+form.cls;
+  document.getElementById('form-name').textContent=form.n;
+  document.getElementById('form-depth-range').textContent=form.f+'–'+form.t+' м';
+  document.getElementById('formDetailName').textContent=form.n;
+  document.getElementById('formDetailDesc').textContent=form.desc;
+  const riskEl=document.getElementById('formRisk');
+  riskEl.textContent='● '+form.riskLabel;
+  riskEl.className='form-risk '+form.risk;
+
+  // Phase label
+  const chip=document.getElementById('phaseChip');
+  if(chip){chip.textContent=phase.name||'';chip.className='nav-item '+(nptActive?'active':'');}
+
+  // Topbar depth
+  const bohD=currentDrillDepth();
+  document.getElementById('tb-depth').textContent=Math.round(bohD).toLocaleString('ru-RU')+' м';
+  document.getElementById('sbDepthVal').innerHTML=Math.round(bohD)+' <span style="font-size:12px;opacity:.4">м</span>';
+  document.getElementById('sbDepthSub').textContent=(bohD/TD*100).toFixed(1)+'% · '+phase.name;
+  document.getElementById('sbDepthFill').style.width=(bohD/TD*100)+'%';
+
+  // Progress bar
+  document.getElementById('progressFill').style.width=(bohD/TD*100)+'%';
+  document.getElementById('depthInput').value=Math.round(bohD);
+  const nS=2841/TD*100,nE=2960/TD*100;
+  document.getElementById('progressNPT').style.left=nS+'%';
+  document.getElementById('progressNPT').style.width=(nE-nS)+'%';
+
+  // Cost
+  const days=Math.round(bohD/25),nptR=Math.round(nptDays);
+  document.getElementById('cDays').textContent=days;
+  document.getElementById('cNPT').textContent=nptR+(nptActive?' ← активно':'');
+  document.getElementById('cNPT').className='prop-val '+(nptR>0?'crit':'ok');
+  const cost=nptR*60000;
+  document.getElementById('cCost').textContent=cost>0?'$'+cost.toLocaleString('en-US'):'$0';
+  document.getElementById('cCost').className='prop-val '+(cost>0?'crit':'ok');
+  document.getElementById('cSaved').textContent=Math.max(0,cost-60000)>0?'+$'+Math.max(0,cost-60000).toLocaleString('en-US')+' с AI':'—';
+
+  // Formation forecast
+  const fcEl=document.getElementById('formForecast');
+  if(fcEl){
+    const nf=STRAT.filter(s=>s.f>bitDepth).slice(0,4);
+    const rl={low:'Низкий',med:'Умерен.',high:'Высокий',critical:'КРИТИЧ.'};
+    fcEl.innerHTML=nf.length===0?'<div style="font-size:10px;color:var(--muted)">Забой достигнут.</div>':
+      nf.map(s=>`<div class="fc-row"><div class="fc-dot" style="background:${s.c}"></div><div class="fc-body"><div class="fc-name">${s.s} · ${s.n}</div><div class="fc-sub">${s.f}м · −${Math.round(s.f-bitDepth)}м · ρ${s.dens}</div></div><div class="fc-risk ${s.risk}">${rl[s.risk]||s.risk}</div></div>`).join('');
+  }
+
+  // Drilling recommendations
+  const recEl=document.getElementById('drillingRec');
+  if(recEl) recEl.innerHTML=buildRecHTML(phase,form);
+
+  // Risk map depth line (update if analytics loaded)
+  if(typeof loadedWells!=='undefined'&&loadedWells){
+    const line=document.querySelector('.depth-now-line');
+    if(line){const pct=(bitDepth/TD*100).toFixed(1);line.style.top=pct+'%';line.setAttribute('data-label','ЗАБОЙ '+Math.round(bitDepth)+' м');}
+  }
+}
+
+function buildRecHTML(phase,form){
+  if(phase.type!=='drill')return'<div class="rec-line">Бурение не активно.</div>';
+  if(nptActive)return'<div class="rec-line crit">🚨 НПВ АКТИВНО — ликвидация прихвата.</div>';
+  const lines=[];
+  if(form.risk==='critical')lines.push({cls:'crit',t:'🚨 Критическая зона! '+form.riskLabel});
+  else if(form.risk==='high')lines.push({cls:'warn',t:'⚠️ '+form.riskLabel});
+  else lines.push({cls:'ok',t:'✓ '+form.riskLabel});
+  if(sm.yp>33)lines.push({cls:'crit',t:'↑ ДНС='+Math.round(sm.yp)+' — дефлокулянт срочно'});
+  else if(sm.yp>30)lines.push({cls:'warn',t:'↑ ДНС='+Math.round(sm.yp)+' — готовить дефлокулянт'});
+  if(sm.ecd>1.37)lines.push({cls:'crit',t:'ECD='+sm.ecd.toFixed(3)+' — риск поглощения!'});
+  if(sm.dp>215)lines.push({cls:'warn',t:'ΔP='+Math.round(sm.dp)+' бар — высокое'});
+  if(sm.pit<-5)lines.push({cls:'warn',t:'Поглощение '+sm.pit.toFixed(1)+' л/мин — LCM!'});
+  else if(sm.pit>5)lines.push({cls:'crit',t:'ПРИТОК +'+sm.pit.toFixed(1)+' л/мин!'});
+  if(form.cls==='clay'||form.cls==='argillite')lines.push({cls:'info',t:'KCl '+Math.round(sm.kcl)+' кг/м³ · pH '+sm.ph.toFixed(1)});
+  if(form.cls==='reservoir')lines.push({cls:'warn',t:'🛢️ Коллектор — контроль ρ каждый час'});
+  EVENTS.filter(ev=>!triggeredEvents.has(ev.d)&&ev.d>bitDepth&&ev.d-bitDepth<250&&ev.cls!=='ok')
+    .forEach(ev=>{const ec=ev.cls==='crit'?'crit':ev.cls==='warn'||ev.cls==='high'?'warn':'info';lines.push({cls:ec,t:ev.icon+' Через '+Math.round(ev.d-bitDepth)+'м: '+ev.title.substring(0,28)});});
+  lines.push({cls:'info',t:'Цель: ρ='+form.dens+' · РОП~'+form.rop+' м/ч · WOB~'+form.wob+' кН'});
+  return lines.map(l=>`<div class="rec-line ${l.cls}">${l.t}</div>`).join('');
+}
+
+// ═══════════════════════════════════════════════════════
+// EVENTS + ALERTS
+// ═══════════════════════════════════════════════════════
+function checkEvents(d){
+  EVENTS.forEach(ev=>{
+    if(triggeredEvents.has(ev.d))return;
+    if(d>=ev.d){
+      triggeredEvents.add(ev.d);addFeedEvent(ev);
+      if(ev.d===2841)nptActive=true;if(ev.d===2960)nptActive=false;
+      if(ev.overlay&&!alertOpen)showAlert(ev);
+      // Update topbar alert chip
+      const crits=EVENTS.filter(e=>triggeredEvents.has(e.d)&&(e.cls==='crit'||e.cls==='high')&&e.cls!=='ok').length;
+      if(crits>0){const chip=document.getElementById('tbAlertChip');chip.className='alert-chip';document.getElementById('tbAlertText').textContent=crits+' активных алерта';}
+    }
+  });
+}
+function addFeedEvent(ev){
+  const feed=document.getElementById('aiFeed');
+  const el=document.createElement('div');el.className='ai-event '+ev.cls;
+  el.innerHTML=`<div class="ai-event-time">${Math.round(ev.d)} м · ${ev.icon}</div><div class="ai-event-title">${ev.title}</div><div class="ai-event-body">${ev.body.substring(0,70)}${ev.body.length>70?'…':''}</div>`;
+  el.onclick=()=>openEventModal(ev);feed.insertBefore(el,feed.firstChild);
+  while(feed.children.length>6)feed.removeChild(feed.lastChild);
+}
+function addPhaseEvent(phase){
+  const feed=document.getElementById('aiFeed');
+  const el=document.createElement('div');el.className='ai-event info';
+  const icons={drill:'⛏',pooh:'⬆',rih:'⬇',runcsg:'🔩',cement:'🏗'};
+  el.innerHTML=`<div class="ai-event-time">${Math.round(currentDrillDepth())} м · ${icons[phase.type]||'•'}</div><div class="ai-event-title" style="color:var(--cyan)">${phase.name}</div>`;
+  feed.insertBefore(el,feed.firstChild);while(feed.children.length>6)feed.removeChild(feed.lastChild);
+}
+function showAlert(ev){
+  alertOpen=true;playing=false;pendingAlert=ev;
+  const box=document.getElementById('alertBox');box.className=ev.cls==='ok'?'ok':ev.cls;
+  document.getElementById('aIcon').textContent=ev.icon;
+  document.getElementById('aTitle').textContent=ev.title;
+  document.getElementById('aBody').textContent=ev.body;
+  const probRow=document.getElementById('aProbRow');
+  if(ev.prob){probRow.style.display='block';const chip=document.getElementById('aProb');chip.textContent=ev.prob;const c=ev.cls==='crit'?['var(--r2)','var(--r)']:ev.cls==='warn'?['var(--w2)','var(--w)']:['var(--g2)','var(--g)'];chip.style.background=c[0];chip.style.color=c[1];}
+  else probRow.style.display='none';
+  document.getElementById('ackBtn').textContent=ev.ack||'Принял';
+  document.getElementById('alertOverlay').classList.add('show');
+}
+function ackAlert(){document.getElementById('alertOverlay').classList.remove('show');alertOpen=false;playing=true;pendingAlert=null;lastTs=null;requestAnimationFrame(tick);}
+function dismissAlert(){document.getElementById('alertOverlay').classList.remove('show');alertOpen=false;playing=true;pendingAlert=null;lastTs=null;requestAnimationFrame(tick);}
+function openEventModal(ev){
+  document.getElementById('emDepth').textContent=Math.round(ev.d)+' м · '+ev.icon;
+  document.getElementById('emTitle').textContent=ev.title;
+  document.getElementById('emBody').textContent=ev.body;
+  document.getElementById('emRec').textContent=ev.rec||'—';
+  document.getElementById('eventModal').classList.add('show');
+}
+function closeEventModal(){document.getElementById('eventModal').classList.remove('show');}
+document.getElementById('eventModal').addEventListener('click',function(e){if(e.target===this)closeEventModal();});
+
+// ═══════════════════════════════════════════════════════
+// PHASE TRANSITIONS
+// ═══════════════════════════════════════════════════════
+function nextPhase(){
+  if(phaseIdx>=PHASES.length-1)return;
+  phaseIdx++;phaseElapsed=0;
+  bitDepth=PHASES[phaseIdx].from!==undefined?PHASES[phaseIdx].from:bitDepth;
+  lastTs=null;addPhaseEvent(PHASES[phaseIdx]);
+}
+function skipPhase(){
+  document.getElementById('cementBar').classList.remove('show');
+  if(PHASES[phaseIdx]&&PHASES[phaseIdx].type==='cement'){const ci=PHASES[phaseIdx].csgIdx;if(ci!==undefined)cementedSet.add(ci);}
+  nextPhase();if(playing){lastTs=null;requestAnimationFrame(tick);}
+}
+
+// ═══════════════════════════════════════════════════════
+// MAIN LOOP
+// ═══════════════════════════════════════════════════════
+function tick(ts){
+  if(!playing||alertOpen){lastTs=null;return;}
+  if(!lastTs)lastTs=ts;
+  const dt=Math.min(ts-lastTs,120)/1000;lastTs=ts;
+  const phase=PHASES[phaseIdx];if(!phase)return;
+
+  if(phase.type==='drill'){
+    const form=getForm(bitDepth),rate=nptActive?0:(sm.rop*speed/3600);
+    if(nptActive)nptDays+=dt*speed/86400;
+    bitDepth=Math.min(phase.to,bitDepth+rate*dt);
+    checkEvents(bitDepth);
+    if(bitDepth>=phase.to&&!nptActive)nextPhase();
+  }else if(phase.type==='pooh'){
+    const rate=Math.abs(phase.from-phase.to)/18;
+    bitDepth=Math.max(phase.to,bitDepth-rate*dt);if(bitDepth<=phase.to)nextPhase();
+  }else if(phase.type==='rih'){
+    const rate=Math.abs(phase.to-phase.from)/14;
+    bitDepth=Math.min(phase.to,bitDepth+rate*dt);if(bitDepth>=phase.to)nextPhase();
+  }else if(phase.type==='runcsg'){
+    const rate=(phase.to-phase.from)/22;
+    bitDepth=Math.min(phase.to,bitDepth+rate*dt);if(bitDepth>=phase.to)nextPhase();
+  }else if(phase.type==='cement'){
+    const csg=CASING_PROGRAM[phase.csgIdx],totalWall=22;
+    phaseElapsed+=dt;const pct=Math.min(1,phaseElapsed/totalWall);
+    const hoursDisp=(pct*(csg?csg.durH:8)).toFixed(1);
+    document.getElementById('cementBar').classList.add('show');
+    document.getElementById('cementTitle').textContent=phase.name;
+    document.getElementById('cementSub').textContent=hoursDisp+' / '+(csg?csg.durH:8)+'.0 ч';
+    document.getElementById('cementFill').style.width=(pct*100)+'%';
+    if(pct>=1){document.getElementById('cementBar').classList.remove('show');if(phase.csgIdx!==undefined)cementedSet.add(phase.csgIdx);nextPhase();}
+  }
+
+  updateUI(ts);drawWell();
+  if(phaseIdx<PHASES.length)animId=requestAnimationFrame(tick);
+  else{playing=false;document.getElementById('btnPlay').textContent='▶ Пуск';document.getElementById('btnPlay').classList.remove('active');}
+}
+
+// ═══════════════════════════════════════════════════════
+// COCKPIT CONTROLS
+// ═══════════════════════════════════════════════════════
+function togglePlay(){
+  playing=!playing;
+  const btn=document.getElementById('btnPlay');
+  btn.textContent=playing?'⏸ Пауза':'▶ Пуск';btn.classList.toggle('active',playing);
+  if(playing){lastTs=null;requestAnimationFrame(tick);}
+}
+function resetSim(){
+  playing=false;cancelAnimationFrame(animId);
+  bitDepth=0;phaseIdx=0;phaseElapsed=0;nptDays=0;nptActive=false;prevYP=20;
+  cementedSet.clear();triggeredEvents.clear();manualMode=false;
+  document.getElementById('aiFeed').innerHTML='';
+  document.getElementById('cementBar').classList.remove('show');
+  document.getElementById('alertOverlay').classList.remove('show');
+  alertOpen=false;
+  document.getElementById('btnPlay').textContent='▶ Пуск';document.getElementById('btnPlay').classList.remove('active');
+  document.getElementById('liveDrawer').classList.remove('open');
+  document.getElementById('liveToggle').classList.remove('on');
+  Object.assign(sm,{wob:0,rpm:0,torq:0,hl:280,rop:100,dp:0,ecd:1.10,pit:0,flow:0,spm:0,dens:1.10,t:38,pv:10,yp:20,gel:4,api:4.5,ph:9.5,kcl:100});
+  Object.assign(tgt,{...sm});
+  loadDMRData();updateUI(0);drawWell();
+}
+function setSpeed(s){
+  speed=s;
+  ['sp1','sp5','sp20'].forEach(id=>document.getElementById(id).classList.remove('active'));
+  document.getElementById('sp'+s).classList.add('active');
+}
+function seekDepth(v){
+  const d=Math.max(0,Math.min(TD,parseFloat(v)||0));
+  let pi=0,bd=d;
+  for(let i=0;i<PHASES.length;i++){
+    if(PHASES[i].type==='drill'&&d>=PHASES[i].from&&d<=PHASES[i].to){pi=i;bd=d;break;}
+    if(PHASES[i].type==='drill'&&d>=PHASES[i].to)pi=Math.min(PHASES.length-1,i+1);
+  }
+  phaseIdx=pi;bitDepth=bd;phaseElapsed=0;
+  nptActive=d>=2841&&d<=2960;nptDays=nptActive?((d-2841)/119*9):(d>2960?9:0);
+  cementedSet.clear();CASING_PROGRAM.forEach((c,ci)=>{if(d>c.shoe)cementedSet.add(ci);});
+  triggeredEvents.clear();document.getElementById('aiFeed').innerHTML='';
+  EVENTS.forEach(ev=>{if(ev.d<=d){triggeredEvents.add(ev.d);addFeedEvent(ev);}});
+  updateUI(0);drawWell();
+}
+function seekClick(e){
+  const rect=document.getElementById('progressTrack').getBoundingClientRect();
+  seekDepth(Math.max(0,Math.min(1,(e.clientX-rect.left)/rect.width))*TD);
+}
+
+// ═══════════════════════════════════════════════════════
+// LIVE PARAMETER INPUT
+// ═══════════════════════════════════════════════════════
+function toggleLiveInput(){
+  manualMode=!manualMode;
+  document.getElementById('liveDrawer').classList.toggle('open',manualMode);
+  document.getElementById('liveToggle').classList.toggle('on',manualMode);
+  // Pre-fill inputs with current values
+  if(manualMode){
+    const bohD=currentDrillDepth();
+    document.getElementById('li_depth').value=Math.round(bohD)||'';
+    document.getElementById('li_wob').value=Math.round(sm.wob)||'';
+    document.getElementById('li_rpm').value=Math.round(sm.rpm)||'';
+    document.getElementById('li_rop').value=sm.rop.toFixed(1)||'';
+    document.getElementById('li_dp').value=Math.round(sm.dp)||'';
+    document.getElementById('li_dens').value=sm.dens.toFixed(3)||'';
+    document.getElementById('li_pv').value=Math.round(sm.pv)||'';
+    document.getElementById('li_yp').value=Math.round(sm.yp)||'';
+  }
+}
+
+function applyLiveParams(){
+  const gv=(id,fallback)=>{const v=parseFloat(document.getElementById(id).value);return isNaN(v)?fallback:v;};
+  const depth=gv('li_depth',null);
+  if(depth!==null&&depth!==currentDrillDepth())seekDepth(depth);
+  const wob=gv('li_wob',null); if(wob!==null){sm.wob=wob;tgt.wob=wob;}
+  const rpm=gv('li_rpm',null); if(rpm!==null){sm.rpm=rpm;tgt.rpm=rpm;}
+  const rop=gv('li_rop',null); if(rop!==null){sm.rop=rop;tgt.rop=rop;}
+  const dp=gv('li_dp',null);   if(dp!==null){sm.dp=dp;tgt.dp=dp;}
+  const dens=gv('li_dens',null);if(dens!==null&&dens>.8&&dens<2.5){sm.dens=dens;tgt.dens=dens;STRAT.forEach(s=>s.dens=+(s.dens+(dens-1.10)*.5).toFixed(3));}
+  const pv=gv('li_pv',null);   if(pv!==null){sm.pv=pv;tgt.pv=pv;}
+  const yp=gv('li_yp',null);   if(yp!==null){sm.yp=yp;tgt.yp=yp;prevYP=yp;}
+  updateUI(0);drawWell();
+  // Visual feedback
+  document.getElementById('btnApplyLive').textContent='✓ Применено';
+  setTimeout(()=>document.getElementById('btnApplyLive').textContent='Применить ↵',1500);
+}
+
+// Enter key applies params
+document.getElementById('liveDrawer').addEventListener('keydown',e=>{if(e.key==='Enter')applyLiveParams();});
+
+// ═══════════════════════════════════════════════════════
+// DMR DATA LOADING (from project_well_dmr_entry localStorage)
+// ═══════════════════════════════════════════════════════
+function loadDMRData(){
+  const candidates=['ws2000_dmr_saved_7002_1','ws2000_dmr_saved_7002_2','ws2000_dmr_saved_7002_3',
+    'ws2000_dmr_saved_7_002_1','ws2000_dmr_saved_23_1','ws2000_dmr_saved_23_2'];
+  try{const idx=localStorage.getItem('dmr_reports_23');if(idx)JSON.parse(idx).forEach(r=>{if(r.state_key)candidates.push(r.state_key);});}catch(e){}
+  let st=null;
+  for(const key of candidates){try{const raw=localStorage.getItem(key);if(raw){st=JSON.parse(raw);break;}}catch(e){}}
+  // Читаем dq_* из app-input.html (приоритет — данные, введённые пользователем вручную)
+  const dqDens=parseFloat(localStorage.getItem('dq_density'));
+  if(dqDens>.8&&dqDens<2.5){sm.dens=dqDens;tgt.dens=dqDens;const off=dqDens-1.10;STRAT.forEach(s=>s.dens=+(s.dens+off*.5).toFixed(3));}
+  const dqRop=parseFloat(localStorage.getItem('dq_rop'));
+  if(dqRop>0&&dqRop<=200){sm.rop=dqRop;tgt.rop=dqRop;}
+
+  if(!st)return;
+  const g=(id,fb)=>{const v=parseFloat(st[id]);return isNaN(v)?fb:v;};
+  const dens=g('rig_mud_weight',null);if(dens&&dens>.8&&dens<2.5&&!dqDens){sm.dens=dens;tgt.dens=dens;const off=dens-1.10;STRAT.forEach(s=>s.dens=+(s.dens+off*.5).toFixed(3));}
+  const pv=g('bh_pv',null);  if(pv>0){sm.pv=pv;tgt.pv=pv;STRAT.forEach(s=>s.pv=pv);}
+  const yp=g('bh_yp',null);  if(yp>0){sm.yp=yp;tgt.yp=yp;prevYP=yp;STRAT.forEach(s=>s.yp=yp);}
+  const gel=g('bh_gel1',null);if(gel>0){sm.gel=gel;tgt.gel=gel;}
+  const api=g('rig_api',null);if(api>0){sm.api=api;tgt.api=api;}
+  const ph=g('bh_ph',null);  if(ph>0){sm.ph=ph;tgt.ph=ph;}
+  const kcl=g('rig_kcl',null);if(kcl>0){sm.kcl=kcl;tgt.kcl=kcl;STRAT.forEach(s=>s.kcl=kcl);}
+  const depth=g('bh_bit_depth_to',null)||g('bh_bit_depth_from',null);
+  if(depth&&depth>0&&depth<=TD)seekDepth(depth);
+  const eng=(st.mr_engineer||'').trim(),wname=(st.well_name||'23').trim(),fluid=(st.mr_fluid_type||'').trim();
+  const badge=document.getElementById('dmrBadge');if(badge){badge.style.display='block';badge.textContent='📋 DMR · Скв. '+wname+(fluid?' · '+fluid:'')+(eng?' · '+eng:'');}
+  document.getElementById('tbWellName').textContent='Скв. '+wname;
+}
+
+// ═══════════════════════════════════════════════════════
+// RESIZE + INIT
+// ═══════════════════════════════════════════════════════
+window.addEventListener('resize',()=>{if(cockpitStarted){resizeCanvas();drawWell();}});
+
+// Button: go to cockpit from analytics
+function goToCockpit(){showView('cockpit');}
+
+// ═══════════════════════════════════════════════════════
+// AI COCKPIT IMPORT  (data passed from drilling_cockpit.html)
+// ═══════════════════════════════════════════════════════
+(function checkCockpitImport(){
+  const raw = localStorage.getItem('dq_cockpit_import');
+  if(!raw) return;
+  try {
+    localStorage.removeItem('dq_cockpit_import'); // consume once
+    const payload = JSON.parse(raw);
+    if(!payload || payload.source !== 'cockpit_import') return;
+
+    // 1. Update topbar well name
+    const info = payload.well_info || {};
+    const wname = info.name || 'Проектная скважина';
+    const wnameEl = document.getElementById('tbWellName');
+    if(wnameEl) wnameEl.textContent = wname;
+    const fnameEl = document.getElementById('tbFieldName');
+    if(fnameEl && info.field) fnameEl.textContent = info.field;
+
+    // 2. Show import badge in topbar
+    const badge = document.getElementById('dmrBadge');
+    if(badge){
+      badge.style.display = 'block';
+      badge.textContent = '🧠 AI Import · ' + wname + (info.field ? ' · ' + info.field : '');
+    }
+
+    // 3. Build loadedWells and call processAndRender
+    const loadedData = {
+      source: 'cockpit_import',
+      wells:  payload.wells    || [],
+      strat:  payload.strat    || VANKOR_STRAT_REF,
+      incidents: payload.incidents || KNOWN_INCIDENTS,
+    };
+    processAndRender(loadedData);
+    showLoadStatus('ok',
+      '🧠 Данные загружены из AI Cockpit: скважина «' + wname + '»' +
+      (info.field ? ', ' + info.field : '') +
+      ', проектная глубина ' + (info.depth_proj || '—') + ' м.');
+
+    // 4. Navigate to analytics view to show results
+    showView('analytics');
+
+    // 5. If current depth > 0 — seek to it in cockpit simulation
+    if(info.depth_cur > 0){
+      setTimeout(()=>{ try{ seekDepth(info.depth_cur); } catch(e){} }, 800);
+    }
+  } catch(e){
+    console.warn('dq_cockpit_import parse error:', e);
+  }
+})();
+</script>
+
+</body>
+</html>

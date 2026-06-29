@@ -1,0 +1,1161 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>144 · Nexus Catalog Workbench</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Condensed:wght@500;600;700&display=swap");
+
+    :root {
+      --panel: rgba(255, 255, 255, 0.96);
+      --surface: #f8fbfd;
+      --line: rgba(18, 48, 71, 0.12);
+      --text: #17324a;
+      --muted: #617487;
+      --gold: #ba7a1f;
+      --mint: #0e7490;
+      --cyan: #2f6fa3;
+      --danger: #c0563c;
+      --success: #1f7a4f;
+      --shadow: 0 22px 56px rgba(28, 51, 84, 0.1);
+    }
+
+    * { box-sizing: border-box; }
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+      font-family: "IBM Plex Sans", sans-serif;
+      background:
+        radial-gradient(820px 420px at 0% 0%, rgba(14, 116, 144, 0.08), transparent 70%),
+        radial-gradient(780px 420px at 100% 0%, rgba(186, 122, 31, 0.1), transparent 72%),
+        linear-gradient(180deg, #f7fafc 0%, #eef3f6 54%, #e9eef2 100%);
+      color: var(--text);
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        linear-gradient(to right, rgba(23, 50, 74, 0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(23, 50, 74, 0.04) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none;
+      opacity: 0.45;
+    }
+
+    .page {
+      position: relative;
+      z-index: 1;
+      width: min(1480px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 20px 0 42px;
+    }
+
+    .topbar,
+    .hero,
+    .workspace,
+    .panel,
+    .side-panel,
+    .summary-box,
+    .product-row,
+    .supplier-card {
+      border: 1px solid var(--line);
+      border-radius: 26px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      padding: 14px 18px;
+      margin-bottom: 16px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .brand-mark {
+      width: 14px;
+      height: 14px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #ebaf54 0%, #d1811d 100%);
+      box-shadow: 0 0 0 6px rgba(209, 129, 29, 0.12);
+    }
+
+    .top-actions,
+    .toggle-row,
+    .hero-actions,
+    .chip-row,
+    .row-actions,
+    .panel-actions,
+    .supplier-stats,
+    .shortlist-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .button,
+    .button-secondary,
+    .toggle,
+    .chip,
+    .row-button,
+    .mini-button,
+    .remove-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      padding: 0 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(18, 48, 71, 0.12);
+      background: rgba(255, 255, 255, 0.92);
+      color: var(--text);
+      font: inherit;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .button,
+    .row-button.primary,
+    .mini-button.primary {
+      color: #ffffff;
+      background: linear-gradient(135deg, #d38b28 0%, #b56f16 100%);
+      border-color: rgba(181, 111, 22, 0.45);
+    }
+
+    .remove-button {
+      min-width: 40px;
+      padding: 0;
+      color: var(--danger);
+      background: rgba(192, 86, 60, 0.08);
+      border-color: rgba(192, 86, 60, 0.18);
+    }
+
+    .toggle.active,
+    .chip.active {
+      background: rgba(14, 116, 144, 0.1);
+      border-color: rgba(14, 116, 144, 0.3);
+      color: var(--mint);
+    }
+
+    .mini-button {
+      min-height: 34px;
+      padding: 0 12px;
+      font-size: 11px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.36fr) minmax(320px, 0.64fr);
+      gap: 18px;
+      padding: 26px;
+      margin-bottom: 16px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      right: -80px;
+      bottom: -80px;
+      width: 320px;
+      height: 320px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(47, 111, 163, 0.12), transparent 72%);
+      pointer-events: none;
+    }
+
+    .eyebrow,
+    .tag,
+    .status-pill,
+    .row-tag,
+    .small-label,
+    .supplier-badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      padding: 0 12px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow,
+    .tag,
+    .row-tag,
+    .small-label {
+      background: rgba(14, 116, 144, 0.1);
+      color: var(--mint);
+    }
+
+    .status-pill,
+    .supplier-badge {
+      background: rgba(31, 122, 79, 0.1);
+      color: var(--success);
+    }
+
+    h1,
+    h2,
+    h3 {
+      margin: 0;
+      font-family: "IBM Plex Sans Condensed", sans-serif;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin-top: 14px;
+      font-size: clamp(38px, 4.8vw, 66px);
+      line-height: 0.94;
+      max-width: 820px;
+    }
+
+    .hero-copy,
+    .panel-copy,
+    .muted,
+    .row-copy,
+    .shortlist-copy,
+    .summary-copy,
+    .supplier-copy,
+    .empty {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .hero-copy {
+      margin-top: 16px;
+      max-width: 760px;
+    }
+
+    .hero-metrics,
+    .hero-side,
+    .status-list,
+    .filter-stack,
+    .results-list,
+    .shortlist-list,
+    .supplier-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .hero-metrics {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      margin-top: 22px;
+    }
+
+    .metric-box {
+      padding: 16px;
+      border-radius: 22px;
+      background: var(--surface);
+      border: 1px solid rgba(18, 48, 71, 0.08);
+    }
+
+    .metric-value {
+      margin-top: 8px;
+      font-family: "IBM Plex Sans Condensed", sans-serif;
+      font-size: 32px;
+      line-height: 1;
+      color: var(--gold);
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: 280px minmax(0, 1fr) 330px;
+      gap: 16px;
+      padding: 18px;
+      margin-bottom: 16px;
+    }
+
+    .side-panel,
+    .panel {
+      padding: 18px;
+      background: var(--surface);
+    }
+
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .search-bar {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px;
+      padding: 14px;
+      border-radius: 24px;
+      border: 1px solid rgba(18, 48, 71, 0.1);
+      background: linear-gradient(135deg, #f9fbfd 0%, #eef5fb 100%);
+    }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-height: 56px;
+      padding: 0 16px;
+      border-radius: 18px;
+      border: 1px solid rgba(18, 48, 71, 0.08);
+      background: #ffffff;
+    }
+
+    .search-box input {
+      width: 100%;
+      border: 0;
+      outline: none;
+      background: transparent;
+      color: var(--text);
+      font: inherit;
+    }
+
+    .search-box input::placeholder {
+      color: rgba(97, 116, 135, 0.8);
+    }
+
+    .filter-group,
+    .shortlist-item,
+    .summary-box {
+      padding: 14px;
+      border-radius: 20px;
+      background: #ffffff;
+      border: 1px solid rgba(18, 48, 71, 0.08);
+    }
+
+    .filter-items {
+      display: grid;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .filter-row,
+    .status-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: baseline;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .filter-row strong,
+    .status-row strong {
+      color: var(--text);
+    }
+
+    .result-head,
+    .result-grid,
+    .shortlist-row,
+    .supplier-top {
+      display: grid;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .result-head,
+    .result-grid {
+      grid-template-columns: minmax(0, 1.5fr) 140px 150px 140px 140px 120px;
+    }
+
+    .result-head {
+      margin-bottom: 12px;
+    }
+
+    .result-label {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .product-row {
+      padding: 16px 18px;
+      background: #ffffff;
+    }
+
+    .product-title {
+      font-family: "IBM Plex Sans Condensed", sans-serif;
+      font-size: 28px;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    .row-copy {
+      margin-top: 8px;
+      max-width: 560px;
+    }
+
+    .cell {
+      display: grid;
+      gap: 4px;
+    }
+
+    .cell strong {
+      color: var(--text);
+      font-size: 14px;
+    }
+
+    .cell span {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .row-actions {
+      margin-top: 14px;
+    }
+
+    .summary-value {
+      margin-top: 8px;
+      font-family: "IBM Plex Sans Condensed", sans-serif;
+      font-size: 34px;
+      line-height: 1;
+    }
+
+    .shortlist-list {
+      margin-top: 14px;
+      max-height: 520px;
+      overflow: auto;
+    }
+
+    .shortlist-row {
+      grid-template-columns: minmax(0, 1fr) auto;
+    }
+
+    .shortlist-title {
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.45;
+    }
+
+    .supplier-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .supplier-card {
+      padding: 18px;
+      background: var(--surface);
+    }
+
+    .supplier-top {
+      grid-template-columns: minmax(0, 1fr) auto;
+    }
+
+    .supplier-name {
+      margin-top: 10px;
+      font-family: "IBM Plex Sans Condensed", sans-serif;
+      font-size: 24px;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    .supplier-value {
+      font-family: "IBM Plex Sans Condensed", sans-serif;
+      font-size: 30px;
+      line-height: 1;
+      color: var(--gold);
+    }
+
+    .supplier-stats {
+      margin-top: 12px;
+    }
+
+    .stat-chip {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      padding: 0 10px;
+      border-radius: 999px;
+      background: rgba(23, 50, 74, 0.06);
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .hidden { display: none; }
+
+    @media (max-width: 1260px) {
+      .workspace {
+        grid-template-columns: 1fr;
+      }
+
+      .supplier-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 1040px) {
+      .hero,
+      .hero-metrics,
+      .result-head,
+      .result-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .page {
+        width: min(100% - 20px, 1480px);
+      }
+
+      .topbar,
+      .hero,
+      .hero-metrics,
+      .search-bar,
+      .result-head,
+      .result-grid,
+      .supplier-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .topbar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+  <main class="page">
+    <section class="topbar" aria-label="Верхняя навигация Nexus Catalog">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span id="brandLabel">Nexus Catalog Workbench</span>
+      </div>
+      <div class="top-actions">
+        <a class="button-secondary" href="../index.html">Nexus</a>
+        <a class="button-secondary" href="143_nexus_marketplace_hub.html">Marketplace Hub</a>
+        <a class="button" href="146_nexus_rfq_command.html" id="rfqTopCta">Open RFQ</a>
+      </div>
+    </section>
+
+    <section class="hero">
+      <article>
+        <span class="eyebrow" id="heroEyebrow"></span>
+        <h1 id="heroTitle"></h1>
+        <p class="hero-copy" id="heroCopy"></p>
+        <div class="hero-actions" style="margin-top: 22px;">
+          <a class="button" href="145_nexus_supplier_trust_desk.html" id="supplierCta"></a>
+          <a class="button-secondary" href="146_nexus_rfq_command.html" id="heroRfqCta"></a>
+        </div>
+        <div class="hero-metrics" id="heroMetrics"></div>
+      </article>
+
+      <aside class="hero-side">
+        <div class="panel">
+          <div class="panel-head">
+            <div>
+              <div class="tag" id="langTag"></div>
+              <h2 id="langTitle"></h2>
+              <p class="panel-copy" id="langCopy"></p>
+            </div>
+            <div class="status-pill" id="langStatus"></div>
+          </div>
+          <div class="toggle-row">
+            <button class="toggle active" data-lang="ru" type="button">RU</button>
+            <button class="toggle" data-lang="en" type="button">EN</button>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <div>
+              <div class="tag" id="unitTag"></div>
+              <h2 id="unitTitle"></h2>
+              <p class="panel-copy" id="unitCopy"></p>
+            </div>
+            <div class="status-pill" id="unitStatus"></div>
+          </div>
+          <div class="toggle-row">
+            <button class="toggle active" data-unit="si" type="button">SI</button>
+            <button class="toggle" data-unit="field" type="button">Field</button>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <div>
+              <div class="tag" id="focusTag"></div>
+              <h2 id="focusTitle"></h2>
+              <p class="panel-copy" id="focusCopy"></p>
+            </div>
+          </div>
+          <div class="chip-row" id="categoryChips"></div>
+          <div class="status-list" id="focusList"></div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="workspace">
+      <aside class="side-panel">
+        <div class="panel-head">
+          <div>
+            <div class="tag" id="filterTag"></div>
+            <h2 id="filterTitle"></h2>
+            <p class="panel-copy" id="filterCopy"></p>
+          </div>
+        </div>
+        <div class="filter-stack" id="filterStack"></div>
+      </aside>
+
+      <section>
+        <div class="panel">
+          <div class="panel-head">
+            <div>
+              <div class="tag" id="searchTag"></div>
+              <h2 id="searchTitle"></h2>
+              <p class="panel-copy" id="searchCopy"></p>
+            </div>
+            <div class="panel-actions" id="searchActions"></div>
+          </div>
+          <div class="search-bar">
+            <label class="search-box" for="catalogSearchInput">
+              <span>⌕</span>
+              <input id="catalogSearchInput" type="text" />
+            </label>
+            <button class="button-secondary" id="clearFiltersButton" type="button"></button>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <div>
+              <div class="tag" id="resultsTag"></div>
+              <h2 id="resultsTitle"></h2>
+              <p class="panel-copy" id="resultsCopy"></p>
+            </div>
+            <div class="status-pill" id="resultsStatus"></div>
+          </div>
+          <div class="result-head" id="resultHead"></div>
+          <div class="results-list" id="resultsList"></div>
+          <div class="empty hidden" id="emptyState"></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <div>
+              <div class="tag" id="supplierLaneTag"></div>
+              <h2 id="supplierLaneTitle"></h2>
+              <p class="panel-copy" id="supplierLaneCopy"></p>
+            </div>
+          </div>
+          <div class="supplier-grid" id="supplierGrid"></div>
+        </div>
+      </section>
+
+      <aside class="side-panel">
+        <div class="panel-head">
+          <div>
+            <div class="tag" id="shortlistTag"></div>
+            <h2 id="shortlistTitle"></h2>
+            <p class="shortlist-copy" id="shortlistCopy"></p>
+          </div>
+          <div class="status-pill" id="shortlistStatus"></div>
+        </div>
+
+        <div class="summary-box">
+          <div class="small-label" id="summaryLabel"></div>
+          <div class="summary-value" id="summaryValue"></div>
+          <div class="summary-copy" id="summaryCopy"></div>
+        </div>
+
+        <div class="shortlist-list" id="shortlistList"></div>
+        <div class="empty" id="shortlistEmpty"></div>
+
+        <div class="shortlist-actions">
+          <button class="button" id="exportButton" type="button"></button>
+          <button class="button-secondary" id="clearShortlistButton" type="button"></button>
+        </div>
+      </aside>
+    </section>
+  </main>
+  <script src="assets/js/global-auth-widget.js"></script>
+  <script>
+    (function () {
+      var SHORTLIST_STORAGE_KEY = 'nexus-marketplace-shortlist';
+      var CONTEXT_STORAGE_KEY = 'nexus-marketplace-context';
+
+      var dictionary = {
+        ru: {
+          brandLabel: 'Nexus Catalog Workbench',
+          heroEyebrow: 'Oilfield catalog desk',
+          heroTitle: 'Каталог Для Реальной Закупки, А Не Для Просмотра Красивых Карточек',
+          heroCopy: 'Рабочая поверхность buyer-side команды: найти товар по назначению и спецификации, сравнить supplier fit, собрать shortlist и открыть квалифицированный RFQ.',
+          supplierCta: 'Открыть Supplier Desk',
+          heroRfqCta: 'Перейти в RFQ',
+          heroMetrics: [
+            { tag: 'Visible lines', value: '6', copy: 'Текущая рабочая выборка по стартовым вертикалям.' },
+            { tag: 'Verified suppliers', value: '5', copy: 'Поставщики с понятным trust и response signal.' },
+            { tag: 'Active shortlist', value: '0', copy: 'Количество линий, уже собранных в inquiry pack.' }
+          ],
+          langTag: 'Interface',
+          langTitle: 'Язык Рабочей Оболочки',
+          langCopy: 'Один каталог и один shortlist, без дубля логики.',
+          langStatus: 'RU active',
+          unitTag: 'Measurement',
+          unitTitle: 'Система Единиц',
+          unitCopy: 'Specs и диапазоны меняются без разрыва модели.',
+          unitStatus: 'SI',
+          focusTag: 'Category focus',
+          focusTitle: 'Что Фильтровать Сразу',
+          focusCopy: 'Фокус на узких нефтегазовых вертикалях, а не на бесконечной мешанине SKU.',
+          focusItems: [
+            { left: 'Буровая химия', right: '420 SKU mapped' },
+            { left: 'Completion fluids', right: 'Offshore-ready lines' },
+            { left: 'Solids control', right: 'Emergency stock' }
+          ],
+          categoryNames: {
+            all: 'Все', drilling: 'Буровые растворы', chemistry: 'Химреагенты', completion: 'Заканчивание', solids: 'Солид-контроль'
+          },
+          filterTag: 'Buyer filters',
+          filterTitle: 'Фильтры И Коммерческие Сигналы',
+          filterCopy: 'Слева всегда видно, где реально есть поставка, документы и короткий путь в RFQ.',
+          filters: [
+            { label: 'Регионы', items: [['EU / Rotterdam', '8 suppliers'], ['MENA / Dubai', '6 suppliers'], ['Houston / US Gulf', '5 suppliers']] },
+            { label: 'Документы', items: [['COA / SDS linked', '64 lines'], ['REACH / NACE', '31 lines'], ['Export-cleared', '27 lines']] },
+            { label: 'Коммерция', items: [['72h availability', '18 offers'], ['A/B RFQ ready', '12 suppliers'], ['Exclusive lane', '4 live deals']] }
+          ],
+          searchTag: 'Search by spec',
+          searchTitle: 'Поиск По Продукту, Функции И Supplier Fit',
+          searchCopy: 'Каталог должен вести к действию: быстро сузить выбор, а не утомить плитками.',
+          searchPlaceholder: 'Ищи: lubricity, shaker screen, completion brine, cement spacer, Houston stock...',
+          clearFilters: 'Сбросить',
+          searchActions: ['Upload spec', 'Parse PDF', 'Import analog'],
+          resultsTag: 'Catalog results',
+          resultsTitle: 'Рабочая Выдача',
+          resultsCopy: 'В каждой строке есть товар, supplier, регион, доступность, lead time и следующий шаг.',
+          resultsStatus: '6 lines visible',
+          resultHeaders: ['Product', 'Supplier', 'Region', 'Availability', 'Lead time', 'Price'],
+          resultsEmpty: 'Ничего не найдено. Измени запрос или сбрось фильтры.',
+          openSupplier: 'Поставщик',
+          addToRfq: 'В shortlist',
+          added: 'В shortlist',
+          remove: 'Удалить',
+          shortlistTag: 'Inquiry pack',
+          shortlistTitle: 'Shortlist Для RFQ',
+          shortlistCopy: 'Сюда уходит то, что buyer реально хочет отправить в RFQ, а не просто посмотреть.',
+          shortlistStatus: '0 items',
+          summaryLabel: 'Package value',
+          summaryEmpty: 'Пока shortlist пустой. Добавь линии из выдачи.',
+          shortlistEmpty: 'Shortlist пуст. Начни с основной выдачи.',
+          exportButton: 'Собрать RFQ',
+          clearShortlist: 'Очистить',
+          exportSummary: 'Позиций в shortlist',
+          exportReady: 'Пакет собран и готов к переходу в RFQ.',
+          supplierLaneTag: 'Supplier lanes',
+          supplierLaneTitle: 'Кого Уже Можно Пускать В Трафик',
+          supplierLaneCopy: 'Supplier desk должен читаться как торговый вход: docs, response discipline, delivery route.',
+          verified: 'Verified',
+          pending: 'Pending',
+          supplierDesk: 'Open Supplier Desk',
+          fields: {
+            dosage: 'Дозировка', package: 'Упаковка', temperature: 'Температура', application: 'Применение', minOrder: 'Мин. партия', region: 'Регион', availability: 'Наличие'
+          }
+        },
+        en: {
+          brandLabel: 'Nexus Catalog Workbench',
+          heroEyebrow: 'Oilfield catalog desk',
+          heroTitle: 'A Catalog For Real Sourcing, Not For Looking At Pretty Cards',
+          heroCopy: 'A working surface for buyer-side teams: find the line by use case and spec, compare supplier fit, build a shortlist, and open a qualified RFQ.',
+          supplierCta: 'Open Supplier Desk',
+          heroRfqCta: 'Go To RFQ',
+          heroMetrics: [
+            { tag: 'Visible lines', value: '6', copy: 'Current working selection across the launch verticals.' },
+            { tag: 'Verified suppliers', value: '5', copy: 'Suppliers with visible trust and response signal.' },
+            { tag: 'Active shortlist', value: '0', copy: 'Number of lines already assembled into the inquiry pack.' }
+          ],
+          langTag: 'Interface',
+          langTitle: 'Workspace Language',
+          langCopy: 'One catalog and one shortlist without duplicated logic.',
+          langStatus: 'EN active',
+          unitTag: 'Measurement',
+          unitTitle: 'Unit System',
+          unitCopy: 'Specs and operating ranges switch without breaking the model.',
+          unitStatus: 'Field',
+          focusTag: 'Category focus',
+          focusTitle: 'What To Filter First',
+          focusCopy: 'Focus on narrow oilfield verticals instead of endless SKU noise.',
+          focusItems: [
+            { left: 'Drilling chemicals', right: '420 SKU mapped' },
+            { left: 'Completion fluids', right: 'Offshore-ready lines' },
+            { left: 'Solids control', right: 'Emergency stock' }
+          ],
+          categoryNames: {
+            all: 'All', drilling: 'Drilling Fluids', chemistry: 'Chemicals', completion: 'Completion', solids: 'Solids Control'
+          },
+          filterTag: 'Buyer filters',
+          filterTitle: 'Filters And Commercial Signal',
+          filterCopy: 'The left rail always shows where there is real supply, documentation, and a short path into RFQ.',
+          filters: [
+            { label: 'Regions', items: [['EU / Rotterdam', '8 suppliers'], ['MENA / Dubai', '6 suppliers'], ['Houston / US Gulf', '5 suppliers']] },
+            { label: 'Documents', items: [['COA / SDS linked', '64 lines'], ['REACH / NACE', '31 lines'], ['Export-cleared', '27 lines']] },
+            { label: 'Commercial', items: [['72h availability', '18 offers'], ['A/B RFQ ready', '12 suppliers'], ['Exclusive lane', '4 live deals']] }
+          ],
+          searchTag: 'Search by spec',
+          searchTitle: 'Search By Product, Function, And Supplier Fit',
+          searchCopy: 'The catalog must drive action: narrow down fast instead of drowning users in tiles.',
+          searchPlaceholder: 'Search: lubricity, shaker screen, completion brine, cement spacer, Houston stock...',
+          clearFilters: 'Reset',
+          searchActions: ['Upload spec', 'Parse PDF', 'Import analog'],
+          resultsTag: 'Catalog results',
+          resultsTitle: 'Working Results',
+          resultsCopy: 'Each row shows the product, supplier, region, availability, lead time, and next move.',
+          resultsStatus: '6 lines visible',
+          resultHeaders: ['Product', 'Supplier', 'Region', 'Availability', 'Lead time', 'Price'],
+          resultsEmpty: 'No matches found. Change the query or reset filters.',
+          openSupplier: 'Supplier',
+          addToRfq: 'To shortlist',
+          added: 'In shortlist',
+          remove: 'Remove',
+          shortlistTag: 'Inquiry pack',
+          shortlistTitle: 'RFQ Shortlist',
+          shortlistCopy: 'This is where the buyer puts what should actually move into RFQ, not just what looked interesting.',
+          shortlistStatus: '0 items',
+          summaryLabel: 'Package value',
+          summaryEmpty: 'The shortlist is empty. Add lines from the result lane.',
+          shortlistEmpty: 'The shortlist is empty. Start from the main result lane.',
+          exportButton: 'Build RFQ',
+          clearShortlist: 'Clear',
+          exportSummary: 'Items in shortlist',
+          exportReady: 'The package is assembled and ready to move into RFQ.',
+          supplierLaneTag: 'Supplier lanes',
+          supplierLaneTitle: 'Who Is Already Ready For Traffic',
+          supplierLaneCopy: 'The supplier desk must read like a trade entry point: docs, response discipline, and delivery route.',
+          verified: 'Verified',
+          pending: 'Pending',
+          supplierDesk: 'Open Supplier Desk',
+          fields: {
+            dosage: 'Dosage', package: 'Package', temperature: 'Temperature', application: 'Application', minOrder: 'Min lot', region: 'Region', availability: 'Availability'
+          }
+        }
+      };
+
+      var supplierCards = {
+        ru: [
+          { badge: 'Verified', name: 'Nouryon', value: '126 SKU', copy: 'Сильная позиция по lubricity и specialty chemistry с 72h shipping lane.', stats: ['EU / MENA', '6h response', '18 analog links'], href: '145_nexus_supplier_trust_desk.html?supplier=Nouryon' },
+          { badge: 'Verified', name: 'MI-SWACO', value: '184 SKU', copy: 'Field-proven drilling fluids catalog с быстрым ответом и stock hubs.', stats: ['Houston / Jubail', '4h response', '26 analog links'], href: '145_nexus_supplier_trust_desk.html?supplier=MI-SWACO' },
+          { badge: 'Offshore', name: 'TETRA', value: '84 SKU', copy: 'Completion brines и offshore delivery board с blend-on-demand workflow.', stats: ['North Sea / GCC', '7 day lead', 'Blend-ready'], href: '145_nexus_supplier_trust_desk.html?supplier=TETRA' }
+        ],
+        en: [
+          { badge: 'Verified', name: 'Nouryon', value: '126 SKU', copy: 'Strong position in lubricity and specialty chemistry with a 72h shipping lane.', stats: ['EU / MENA', '6h response', '18 analog links'], href: '145_nexus_supplier_trust_desk.html?supplier=Nouryon' },
+          { badge: 'Verified', name: 'MI-SWACO', value: '184 SKU', copy: 'Field-proven drilling fluids catalog with fast replies and stock hubs.', stats: ['Houston / Jubail', '4h response', '26 analog links'], href: '145_nexus_supplier_trust_desk.html?supplier=MI-SWACO' },
+          { badge: 'Offshore', name: 'TETRA', value: '84 SKU', copy: 'Completion brines and offshore delivery board with blend-on-demand workflow.', stats: ['North Sea / GCC', '7 day lead', 'Blend-ready'], href: '145_nexus_supplier_trust_desk.html?supplier=TETRA' }
+        ]
+      };
+
+      var products = [
+        { id: 'wbm-xp-7', category: 'drilling', title: { ru: 'WBM XP-7', en: 'WBM XP-7' }, description: { ru: 'Подходит для наклонно-направленных секций с требованием к стабильности ствола и low solids build-up.', en: 'Built for directional sections where wellbore stability and low solids build-up are required.' }, supplier: 'MI-SWACO', region: { ru: 'США, Ближний Восток', en: 'US, Middle East' }, verified: true, availability: { ru: 'На складе в Хьюстоне', en: 'Stock in Houston' }, leadTime: { ru: '5 дней', en: '5 days' }, minOrder: { ru: '18 т', en: '18 t' }, application: { ru: '12 1/4" секция, high angle well', en: '12 1/4" section, high angle well' }, price: { ru: '$1 840 / т', en: '$1,840 / t' }, package: { si: '1000 кг IBC', field: '2205 lb tote' }, dosage: { si: '18-32 кг/м3', field: '6.3-11.2 lb/bbl' }, temperature: { si: 'до 142°C', field: 'up to 288°F' } },
+        { id: 'lubricor-22', category: 'chemistry', title: { ru: 'Lubricor 22', en: 'Lubricor 22' }, description: { ru: 'Снижает torque and drag на extended reach участках и совместим с PAC/XCD пакетами.', en: 'Reduces torque and drag on extended reach sections and remains compatible with PAC/XCD packages.' }, supplier: 'Nouryon', region: { ru: 'Европа, Россия, MENA', en: 'Europe, Russia, MENA' }, verified: true, availability: { ru: 'Готов к отгрузке за 72 часа', en: 'Ready to ship in 72 hours' }, leadTime: { ru: '3 дня', en: '3 days' }, minOrder: { ru: '4 т', en: '4 t' }, application: { ru: 'Torque and drag mitigation', en: 'Torque and drag mitigation' }, price: { ru: '$2 260 / т', en: '$2,260 / t' }, package: { si: '200 кг бочка', field: '441 lb drum' }, dosage: { si: '8-16 кг/м3', field: '2.8-5.6 lb/bbl' }, temperature: { si: 'до 165°C', field: 'up to 329°F' } },
+        { id: 'clearbrine-ca', category: 'completion', title: { ru: 'ClearBrine CaBr2', en: 'ClearBrine CaBr2' }, description: { ru: 'Для заканчивания и ремонта скважин, где нужна чистая жидкость с контролируемой плотностью без твердой фазы.', en: 'Designed for completion and workover operations requiring solids-free, density-controlled fluid.' }, supplier: 'TETRA', region: { ru: 'Северное море, GCC, US Gulf', en: 'North Sea, GCC, US Gulf' }, verified: true, availability: { ru: 'Blend on demand', en: 'Blend on demand' }, leadTime: { ru: '7 дней', en: '7 days' }, minOrder: { ru: '25 м3', en: '157 bbl' }, application: { ru: 'Completion packer fluid', en: 'Completion packer fluid' }, price: { ru: '$690 / м3', en: '$110 / bbl' }, package: { si: '20 м3 tank', field: '126 bbl tank' }, dosage: { si: '1.44-1.70 SG', field: '12.0-14.2 ppg' }, temperature: { si: 'до 177°C', field: 'up to 350°F' } },
+        { id: 'screenpulse-4', category: 'solids', title: { ru: 'ScreenPulse 4', en: 'ScreenPulse 4' }, description: { ru: 'Комплект для rig package, где критичны throughput, cut point и ресурс сеток.', en: 'Rig package for cases where throughput, cut point, and screen life are critical.' }, supplier: 'NOV Brandt', region: { ru: 'США, LATAM, Каспий', en: 'US, LATAM, Caspian' }, verified: true, availability: { ru: 'Отгрузка в течение недели', en: 'Ships within one week' }, leadTime: { ru: '6 дней', en: '6 days' }, minOrder: { ru: '24 панели', en: '24 panels' }, application: { ru: 'Primary solids removal', en: 'Primary solids removal' }, price: { ru: '$140 / панель', en: '$140 / panel' }, package: { si: '24 панели / crate', field: '24 panels / crate' }, dosage: { si: 'API 140-200', field: 'API 140-200' }, temperature: { si: 'до 93°C', field: 'up to 200°F' } },
+        { id: 'cement-spacer-hp', category: 'chemistry', title: { ru: 'Spacer HP-11', en: 'Spacer HP-11' }, description: { ru: 'Используется перед цементированием для разделения растворов и улучшения displacement efficiency.', en: 'Used ahead of cementing to separate fluid systems and improve displacement efficiency.' }, supplier: 'Halliburton', region: { ru: 'Global supply', en: 'Global supply' }, verified: false, availability: { ru: 'Под подтверждение партии', en: 'Batch confirmation required' }, leadTime: { ru: '9 дней', en: '9 days' }, minOrder: { ru: '12 т', en: '12 t' }, application: { ru: 'Cement spacer train', en: 'Cement spacer train' }, price: { ru: '$1 380 / т', en: '$1,380 / t' }, package: { si: '1000 кг tote', field: '2205 lb tote' }, dosage: { si: '28-46 кг/м3', field: '9.8-16.1 lb/bbl' }, temperature: { si: 'до 149°C', field: 'up to 300°F' } },
+        { id: 'brine-clean-2', category: 'completion', title: { ru: 'BrineClean 2', en: 'BrineClean 2' }, description: { ru: 'Помогает сохранить чистоту completion brine и снизить риск загрязнения продуктивного интервала.', en: 'Helps keep completion brine clean and reduce formation damage risk in the pay zone.' }, supplier: 'Baker Hughes', region: { ru: 'Global offshore', en: 'Global offshore' }, verified: true, availability: { ru: 'Поставка из Дубая', en: 'Supply from Dubai hub' }, leadTime: { ru: '4 дня', en: '4 days' }, minOrder: { ru: '2.5 т', en: '2.5 t' }, application: { ru: 'Reservoir drill-in and completion cleanup', en: 'Reservoir drill-in and completion cleanup' }, price: { ru: '$2 980 / т', en: '$2,980 / t' }, package: { si: '25 кг мешок', field: '55 lb sack' }, dosage: { si: '6-12 кг/м3', field: '2.1-4.2 lb/bbl' }, temperature: { si: 'до 135°C', field: 'up to 275°F' } }
+      ];
+
+      var state = { lang: 'ru', unit: 'si', category: 'all', query: '', shortlist: [] };
+
+      try {
+        var savedContext = JSON.parse(localStorage.getItem(CONTEXT_STORAGE_KEY) || '{}') || {};
+        state.lang = savedContext.lang === 'en' ? 'en' : 'ru';
+        state.unit = savedContext.unit === 'field' ? 'field' : 'si';
+      } catch (error) {}
+
+      try {
+        var savedShortlist = JSON.parse(localStorage.getItem(SHORTLIST_STORAGE_KEY) || '[]');
+        if (Array.isArray(savedShortlist)) {
+          state.shortlist = savedShortlist.filter(function (id) {
+            return products.some(function (product) { return product.id === id; });
+          });
+        }
+      } catch (error) {}
+
+      var brandLabel = document.getElementById('brandLabel');
+      var heroEyebrow = document.getElementById('heroEyebrow');
+      var heroTitle = document.getElementById('heroTitle');
+      var heroCopy = document.getElementById('heroCopy');
+      var supplierCta = document.getElementById('supplierCta');
+      var heroRfqCta = document.getElementById('heroRfqCta');
+      var heroMetrics = document.getElementById('heroMetrics');
+      var langTag = document.getElementById('langTag');
+      var langTitle = document.getElementById('langTitle');
+      var langCopy = document.getElementById('langCopy');
+      var langStatus = document.getElementById('langStatus');
+      var unitTag = document.getElementById('unitTag');
+      var unitTitle = document.getElementById('unitTitle');
+      var unitCopy = document.getElementById('unitCopy');
+      var unitStatus = document.getElementById('unitStatus');
+      var focusTag = document.getElementById('focusTag');
+      var focusTitle = document.getElementById('focusTitle');
+      var focusCopy = document.getElementById('focusCopy');
+      var focusList = document.getElementById('focusList');
+      var categoryChips = document.getElementById('categoryChips');
+      var filterTag = document.getElementById('filterTag');
+      var filterTitle = document.getElementById('filterTitle');
+      var filterCopy = document.getElementById('filterCopy');
+      var filterStack = document.getElementById('filterStack');
+      var searchTag = document.getElementById('searchTag');
+      var searchTitle = document.getElementById('searchTitle');
+      var searchCopy = document.getElementById('searchCopy');
+      var searchActions = document.getElementById('searchActions');
+      var searchInput = document.getElementById('catalogSearchInput');
+      var clearFiltersButton = document.getElementById('clearFiltersButton');
+      var resultsTag = document.getElementById('resultsTag');
+      var resultsTitle = document.getElementById('resultsTitle');
+      var resultsCopy = document.getElementById('resultsCopy');
+      var resultsStatus = document.getElementById('resultsStatus');
+      var resultHead = document.getElementById('resultHead');
+      var resultsList = document.getElementById('resultsList');
+      var emptyState = document.getElementById('emptyState');
+      var supplierLaneTag = document.getElementById('supplierLaneTag');
+      var supplierLaneTitle = document.getElementById('supplierLaneTitle');
+      var supplierLaneCopy = document.getElementById('supplierLaneCopy');
+      var supplierGrid = document.getElementById('supplierGrid');
+      var shortlistTag = document.getElementById('shortlistTag');
+      var shortlistTitle = document.getElementById('shortlistTitle');
+      var shortlistCopy = document.getElementById('shortlistCopy');
+      var shortlistStatus = document.getElementById('shortlistStatus');
+      var summaryLabel = document.getElementById('summaryLabel');
+      var summaryValue = document.getElementById('summaryValue');
+      var summaryCopy = document.getElementById('summaryCopy');
+      var shortlistList = document.getElementById('shortlistList');
+      var shortlistEmpty = document.getElementById('shortlistEmpty');
+      var exportButton = document.getElementById('exportButton');
+      var clearShortlistButton = document.getElementById('clearShortlistButton');
+      var langButtons = Array.prototype.slice.call(document.querySelectorAll('[data-lang]'));
+      var unitButtons = Array.prototype.slice.call(document.querySelectorAll('[data-unit]'));
+
+      function copy() { return dictionary[state.lang]; }
+
+      function persist(extra) {
+        var payload = { lang: state.lang, unit: state.unit, shortlist: state.shortlist.slice() };
+        if (extra) {
+          Object.keys(extra).forEach(function (key) { payload[key] = extra[key]; });
+        }
+        localStorage.setItem(CONTEXT_STORAGE_KEY, JSON.stringify(payload));
+        localStorage.setItem(SHORTLIST_STORAGE_KEY, JSON.stringify(state.shortlist));
+      }
+
+      function getVisibleProducts() {
+        return products.filter(function (product) {
+          var haystack = [
+            product.title[state.lang],
+            product.description[state.lang],
+            product.supplier,
+            product.region[state.lang],
+            product.application[state.lang],
+            copy().categoryNames[product.category]
+          ].join(' ').toLowerCase();
+          var matchesQuery = !state.query || haystack.indexOf(state.query) !== -1;
+          var matchesCategory = state.category === 'all' || product.category === state.category;
+          return matchesQuery && matchesCategory;
+        });
+      }
+
+      function getShortlistProducts() {
+        return state.shortlist.map(function (id) {
+          return products.find(function (product) { return product.id === id; });
+        }).filter(Boolean);
+      }
+
+      function updateHeroMetrics(visibleProducts) {
+        var metrics = copy().heroMetrics.slice();
+        metrics[0].value = String(visibleProducts.length);
+        metrics[2].value = String(state.shortlist.length);
+        heroMetrics.innerHTML = metrics.map(function (item) {
+          return '<article class="metric-box"><div class="small-label">' + item.tag + '</div><div class="metric-value">' + item.value + '</div><div class="muted">' + item.copy + '</div></article>';
+        }).join('');
+      }
+
+      function renderResults() {
+        var current = copy();
+        var visibleProducts = getVisibleProducts();
+        updateHeroMetrics(visibleProducts);
+        resultsStatus.textContent = visibleProducts.length + ' items';
+        resultHead.innerHTML = current.resultHeaders.map(function (item) {
+          return '<div class="result-label">' + item + '</div>';
+        }).join('');
+        resultsList.innerHTML = visibleProducts.map(function (product) {
+          var inShortlist = state.shortlist.indexOf(product.id) !== -1;
+          var supplierHref = '145_nexus_supplier_trust_desk.html?supplier=' + encodeURIComponent(product.supplier);
+          return '<article class="product-row"><div class="result-grid"><div><div class="row-tag">' + current.categoryNames[product.category] + '</div><div class="product-title">' + product.title[state.lang] + '</div><div class="row-copy">' + product.description[state.lang] + '</div></div><div class="cell"><strong>' + product.supplier + '</strong><span>' + (product.verified ? current.verified : current.pending) + '</span></div><div class="cell"><strong>' + product.region[state.lang] + '</strong><span>' + current.fields.region + '</span></div><div class="cell"><strong>' + product.availability[state.lang] + '</strong><span>' + current.fields.availability + '</span></div><div class="cell"><strong>' + product.leadTime[state.lang] + '</strong><span>' + current.fields.minOrder + ': ' + product.minOrder[state.lang] + '</span></div><div class="cell"><strong>' + product.price[state.lang] + '</strong><span>' + current.fields.package + ': ' + product.package[state.unit] + '</span></div></div><div class="row-actions"><a class="row-button" href="' + supplierHref + '">' + current.openSupplier + '</a><button class="row-button primary" type="button" data-add="' + product.id + '">' + (inShortlist ? current.added : current.addToRfq) + '</button><span class="stat-chip">' + current.fields.dosage + ': ' + product.dosage[state.unit] + '</span><span class="stat-chip">' + current.fields.temperature + ': ' + product.temperature[state.unit] + '</span></div></article>';
+        }).join('');
+        emptyState.textContent = current.resultsEmpty;
+        emptyState.classList.toggle('hidden', visibleProducts.length > 0);
+      }
+
+      function renderShortlist() {
+        var current = copy();
+        var shortlistProducts = getShortlistProducts();
+        shortlistStatus.textContent = shortlistProducts.length + ' items';
+        summaryValue.textContent = String(shortlistProducts.length);
+        summaryCopy.textContent = shortlistProducts.length ? current.exportReady : current.summaryEmpty;
+        shortlistList.innerHTML = shortlistProducts.map(function (product) {
+          return '<div class="shortlist-item"><div class="shortlist-row"><div><div class="shortlist-title">' + product.title[state.lang] + '</div><div class="shortlist-copy">' + product.supplier + ' · ' + product.region[state.lang] + '</div><div class="shortlist-copy">' + product.application[state.lang] + '</div></div><button class="remove-button" type="button" data-remove="' + product.id + '">×</button></div></div>';
+        }).join('');
+        shortlistEmpty.textContent = current.shortlistEmpty;
+        shortlistEmpty.classList.toggle('hidden', shortlistProducts.length > 0);
+      }
+
+      function render() {
+        var current = copy();
+        brandLabel.textContent = current.brandLabel;
+        heroEyebrow.textContent = current.heroEyebrow;
+        heroTitle.textContent = current.heroTitle;
+        heroCopy.textContent = current.heroCopy;
+        supplierCta.textContent = current.supplierCta;
+        heroRfqCta.textContent = current.heroRfqCta;
+        langTag.textContent = current.langTag;
+        langTitle.textContent = current.langTitle;
+        langCopy.textContent = current.langCopy;
+        langStatus.textContent = current.langStatus;
+        unitTag.textContent = current.unitTag;
+        unitTitle.textContent = current.unitTitle;
+        unitCopy.textContent = current.unitCopy;
+        unitStatus.textContent = state.unit === 'si' ? 'SI' : 'Field';
+        focusTag.textContent = current.focusTag;
+        focusTitle.textContent = current.focusTitle;
+        focusCopy.textContent = current.focusCopy;
+        focusList.innerHTML = current.focusItems.map(function (item) {
+          return '<div class="status-row"><strong>' + item.left + '</strong><span>' + item.right + '</span></div>';
+        }).join('');
+        categoryChips.innerHTML = ['all', 'drilling', 'chemistry', 'completion', 'solids'].map(function (category) {
+          return '<button class="chip' + (state.category === category ? ' active' : '') + '" data-category="' + category + '" type="button">' + current.categoryNames[category] + '</button>';
+        }).join('');
+        filterTag.textContent = current.filterTag;
+        filterTitle.textContent = current.filterTitle;
+        filterCopy.textContent = current.filterCopy;
+        filterStack.innerHTML = current.filters.map(function (group) {
+          return '<article class="filter-group"><div class="small-label">' + group.label + '</div><div class="filter-items">' + group.items.map(function (item) { return '<div class="filter-row"><strong>' + item[0] + '</strong><span>' + item[1] + '</span></div>'; }).join('') + '</div></article>';
+        }).join('');
+        searchTag.textContent = current.searchTag;
+        searchTitle.textContent = current.searchTitle;
+        searchCopy.textContent = current.searchCopy;
+        searchInput.placeholder = current.searchPlaceholder;
+        clearFiltersButton.textContent = current.clearFilters;
+        searchActions.innerHTML = current.searchActions.map(function (item) {
+          return '<button class="mini-button" type="button">' + item + '</button>';
+        }).join('');
+        resultsTag.textContent = current.resultsTag;
+        resultsTitle.textContent = current.resultsTitle;
+        resultsCopy.textContent = current.resultsCopy;
+        shortlistTag.textContent = current.shortlistTag;
+        shortlistTitle.textContent = current.shortlistTitle;
+        shortlistCopy.textContent = current.shortlistCopy;
+        summaryLabel.textContent = current.summaryLabel;
+        exportButton.textContent = current.exportButton;
+        clearShortlistButton.textContent = current.clearShortlist;
+        supplierLaneTag.textContent = current.supplierLaneTag;
+        supplierLaneTitle.textContent = current.supplierLaneTitle;
+        supplierLaneCopy.textContent = current.supplierLaneCopy;
+        supplierGrid.innerHTML = supplierCards[state.lang].map(function (item) {
+          return '<article class="supplier-card"><div class="supplier-top"><div class="supplier-badge">' + item.badge + '</div><div class="supplier-value">' + item.value + '</div></div><div class="supplier-name">' + item.name + '</div><div class="supplier-copy">' + item.copy + '</div><div class="supplier-stats">' + item.stats.map(function (line) { return '<span class="stat-chip">' + line + '</span>'; }).join('') + '</div><div class="row-actions"><a class="row-button primary" href="' + item.href + '">Open Supplier Desk</a></div></article>';
+        }).join('');
+        renderResults();
+        renderShortlist();
+
+        langButtons.forEach(function (button) {
+          button.classList.toggle('active', button.getAttribute('data-lang') === state.lang);
+        });
+        unitButtons.forEach(function (button) {
+          button.classList.toggle('active', button.getAttribute('data-unit') === state.unit);
+        });
+      }
+
+      document.addEventListener('click', function (event) {
+        var lang = event.target.getAttribute('data-lang');
+        var unit = event.target.getAttribute('data-unit');
+        var category = event.target.getAttribute('data-category');
+        var add = event.target.getAttribute('data-add');
+        var remove = event.target.getAttribute('data-remove');
+
+        if (lang) {
+          state.lang = lang;
+          persist();
+          render();
+          return;
+        }
+        if (unit) {
+          state.unit = unit;
+          persist();
+          render();
+          return;
+        }
+        if (category) {
+          state.category = category;
+          render();
+          return;
+        }
+        if (add) {
+          if (state.shortlist.indexOf(add) === -1) {
+            state.shortlist.push(add);
+            persist();
+          }
+          render();
+          return;
+        }
+        if (remove) {
+          state.shortlist = state.shortlist.filter(function (id) { return id !== remove; });
+          persist();
+          render();
+        }
+      });
+
+      searchInput.addEventListener('input', function () {
+        state.query = searchInput.value.trim().toLowerCase();
+        renderResults();
+      });
+
+      clearFiltersButton.addEventListener('click', function () {
+        state.query = '';
+        state.category = 'all';
+        searchInput.value = '';
+        render();
+      });
+
+      clearShortlistButton.addEventListener('click', function () {
+        state.shortlist = [];
+        persist();
+        render();
+      });
+
+      exportButton.addEventListener('click', function () {
+        var shortlistProducts = getShortlistProducts();
+        persist({ supplierName: shortlistProducts[0] ? shortlistProducts[0].supplier : '' });
+        window.location.href = '146_nexus_rfq_command.html';
+      });
+
+      render();
+    })();
+  </script>
+</body>
+</html>

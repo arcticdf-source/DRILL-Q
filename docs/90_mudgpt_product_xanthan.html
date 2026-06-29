@@ -1,0 +1,115 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>90 · MudGPT Product · Xanthan</title>
+  <style>
+    :root {
+      --bg: #0d0e18;
+      --panel: rgba(27, 25, 47, 0.82);
+      --panel-soft: rgba(38, 34, 67, 0.7);
+      --line: rgba(190, 177, 255, 0.13);
+      --text: #f4f2ff;
+      --muted: #b8b2da;
+      --accent: #b7a5ff;
+      --accent-2: #f0ca6e;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Bahnschrift", "Trebuchet MS", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 12% 20%, rgba(183, 165, 255, 0.22), transparent 26%),
+        radial-gradient(circle at 86% 14%, rgba(240, 202, 110, 0.13), transparent 20%),
+        linear-gradient(160deg, #0d0e18 0%, #111426 46%, #090b12 100%);
+    }
+    .page { width: min(1320px, calc(100vw - 40px)); margin: 26px auto 36px; }
+    .topbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+    .topbar-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .topbar a { color: var(--text); text-decoration: none; padding: 10px 14px; border-radius: 14px; border: 1px solid var(--line); background: rgba(255,255,255,0.04); }
+    .admin-edit-button { display: none; color: #140f2e; background: linear-gradient(135deg, var(--accent-2), var(--accent)); border-color: rgba(183,165,255,0.34); font-weight: 800; }
+    .admin-edit-button.is-visible { display: inline-flex; }
+    .hero {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 20px;
+      padding: 28px;
+      border-radius: 32px;
+      border: 1px solid var(--line);
+      background: linear-gradient(135deg, rgba(28, 26, 51, 0.96), rgba(16, 17, 31, 0.94));
+      box-shadow: 0 28px 80px rgba(0,0,0,0.34);
+    }
+    .eyebrow { color: var(--accent); text-transform: uppercase; letter-spacing: 0.18em; font-size: 13px; margin-bottom: 12px; }
+    h1 { margin: 0; font-size: clamp(42px, 6vw, 82px); line-height: 0.92; letter-spacing: -0.05em; }
+    .lead { margin: 16px 0 0; color: var(--muted); line-height: 1.7; font-size: 18px; max-width: 660px; }
+    .visual {
+      min-height: 320px;
+      border-radius: 28px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background:
+        linear-gradient(135deg, rgba(183,165,255,0.18), rgba(255,255,255,0.03)),
+        repeating-linear-gradient(135deg, rgba(255,255,255,0.02) 0 14px, transparent 14px 28px);
+      position: relative;
+      overflow: hidden;
+    }
+    .visual::before,
+    .visual::after {
+      content: "";
+      position: absolute;
+      border-radius: 999px;
+    }
+    .visual::before {
+      width: 220px;
+      height: 220px;
+      right: 18px;
+      top: 20px;
+      background: radial-gradient(circle, rgba(183,165,255,0.42), transparent 72%);
+    }
+    .visual::after {
+      width: 200px;
+      height: 200px;
+      left: 18px;
+      bottom: 12px;
+      background: radial-gradient(circle, rgba(240,202,110,0.22), transparent 72%);
+    }
+    .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin-top: 20px; }
+    .card { padding: 20px; border-radius: 24px; border: 1px solid var(--line); background: var(--panel-soft); }
+    .card strong { display: block; margin-bottom: 8px; color: var(--accent-2); font-size: 18px; }
+    .card p { margin: 0; color: var(--muted); line-height: 1.65; }
+    @media (max-width: 980px) {
+      .page { width: min(1320px, calc(100vw - 20px)); }
+      .hero { grid-template-columns: 1fr; padding: 20px; }
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+  <main class="page">
+    <div class="topbar">
+      <div class="topbar-actions">
+        <a href="87_mudgpt_chemicals_materials.html">Назад к каталогу</a>
+        <a href="84_drilling_fluids_entry_dashboard.html">К fluids dashboard</a>
+        <a href="65_my_wells_auth.html">Аккаунт / admin access</a>
+      </div>
+      <a class="admin-edit-button is-visible" id="editProductButton" href="#">Изменить продукт</a>
+    </div>
+    <section class="hero">
+      <div>
+        <div class="eyebrow">MudGPT product page</div>
+        <h1>MudGPT - Ксантан</h1>
+        <p class="lead">Отдельная стильная страница-заготовка под ксантан. Информацию сюда пока не добавлял специально: дизайн готов, содержимое ждет твоего следующего пакета данных.</p>
+      </div>
+      <div class="visual" aria-hidden="true"></div>
+    </section>
+    <section class="grid">
+      <div class="card"><strong>Обзор</strong><p>Пустой блок под будущее описание продукта.</p></div>
+      <div class="card"><strong>Инженерная роль</strong><p>Блок оставлен свободным до твоего наполнения.</p></div>
+      <div class="card"><strong>Практическое применение</strong><p>Здесь позже соберем прикладную часть по работе с продуктом.</p></div>
+    </section>
+  </main>
+</body>
+</html>

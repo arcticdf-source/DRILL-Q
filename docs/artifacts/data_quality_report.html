@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Отчет по качеству данных — Бурение Этап 1 | NEXUS OILFIELD AI</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap");
+    :root{--bg:#060a10;--bg1:#0d1522;--panel:rgba(10,16,28,.75);--text:#e8f0ff;--muted:#94a3bb;--cyan:#1ad8b5;--amber:#ffbc4c;--red:#ff7070;--line:rgba(220,235,255,.13);--lines:rgba(220,235,255,.07);--sh:0 18px 44px rgba(0,0,0,.42)}
+    *,*::before,*::after{box-sizing:border-box;margin:0}
+    html,body{min-height:100%;background:radial-gradient(620px 320px at 5% -8%,rgba(26,216,181,.2),transparent),radial-gradient(560px 280px at 98% 4%,rgba(255,188,76,.14),transparent),linear-gradient(148deg,var(--bg),var(--bg1) 55%,#101c32);color:var(--text);font-family:"Manrope",sans-serif}
+    body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;background:linear-gradient(to right,rgba(255,255,255,.02) 1px,transparent 1px),linear-gradient(to bottom,rgba(255,255,255,.02) 1px,transparent 1px);background-size:38px 38px;mask-image:radial-gradient(circle at 50% 20%,rgba(0,0,0,.85),transparent 66%)}
+    .wrap{position:relative;z-index:1;width:min(1120px,94vw);margin:0 auto;padding:26px 0 72px}
+    .topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:11px 16px;border-radius:12px;border:1px solid var(--lines);background:rgba(6,11,20,.55);backdrop-filter:blur(10px);position:sticky;top:14px;z-index:99}
+    .brand{display:flex;align-items:center;gap:9px;font-family:"Oswald",sans-serif;font-size:16px;letter-spacing:.06em;text-transform:uppercase}
+    .bdot{width:11px;height:11px;border-radius:999px;background:radial-gradient(circle at 30% 30%,#b2fff2,#1ad8b5);box-shadow:0 0 0 0 rgba(26,216,181,.7);animation:pulse 2.4s infinite}
+    .actions{display:flex;gap:10px;flex-wrap:wrap}
+    .back{font-size:12px;color:var(--muted);text-decoration:none;letter-spacing:.04em;text-transform:uppercase;border:1px solid var(--lines);border-radius:999px;padding:6px 12px;transition:border-color 160ms,color 160ms}
+    .back:hover{border-color:var(--cyan);color:var(--cyan)}
+    .hero{margin-top:22px;border-radius:22px;border:1px solid var(--line);padding:clamp(18px,3vw,36px);background:linear-gradient(140deg,rgba(26,216,181,.09),rgba(12,20,36,.88) 46%,rgba(255,188,76,.07)),var(--panel);box-shadow:var(--sh);position:relative;overflow:hidden;isolation:isolate}
+    .hero::before{content:"";position:absolute;width:300px;height:300px;right:-80px;bottom:-80px;border-radius:999px;background:radial-gradient(circle,rgba(26,216,181,.18),transparent 70%);filter:blur(16px);z-index:-1}
+    .badge{display:inline-flex;align-items:center;gap:7px;padding:5px 10px;border-radius:999px;border:1px solid var(--lines);background:rgba(255,255,255,.04);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#b8c9e0}
+    .bdot2{width:6px;height:6px;border-radius:999px;background:var(--amber)}
+    .hero h1{margin-top:11px;font-family:"Oswald",sans-serif;font-size:clamp(30px,4.5vw,52px);line-height:1.02;text-transform:uppercase;letter-spacing:.01em}
+    .hero h1 span{color:var(--cyan)}
+    .hero-meta{margin-top:14px;display:flex;flex-wrap:wrap;gap:10px}
+    .meta-pill{border:1px solid var(--lines);border-radius:999px;padding:6px 12px;font-size:12px;color:#c5d4e8;letter-spacing:.04em}
+    .lead{margin-top:14px;max-width:760px;color:#abc0d8;font-size:14px;line-height:1.55}
+    .section{margin-top:20px;border:1px solid var(--lines);border-radius:18px;background:var(--panel);box-shadow:var(--sh);padding:18px}
+    .stitle{font-family:"Oswald",sans-serif;font-size:20px;letter-spacing:.06em;text-transform:uppercase;padding-bottom:12px;border-bottom:1px solid var(--lines);margin-bottom:14px}
+    .sdesc{font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.5}
+    .sync-grid,.stats-grid,.sign-grid{display:grid;gap:12px}
+    .sync-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+    .stats-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+    .sign-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .sync-field,.stat-card,.sign-box{border:1px solid var(--lines);border-radius:12px;background:rgba(255,255,255,.025);padding:13px}
+    .sync-field{display:grid;gap:6px}
+    .sync-field--wide{grid-column:1/-1}
+    .sync-field label,.stat-card span,.sign-role{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+    .sync-field input,.sync-field select,.sync-field textarea,.stat-card input,.stat-card textarea,.sign-box input,td input,td select,td textarea{
+      width:100%;background:rgba(255,255,255,.04);border:1px solid var(--lines);border-radius:8px;color:var(--text);font-family:"Manrope",sans-serif;font-size:12px;padding:7px 9px;outline:none;resize:vertical;-webkit-appearance:none;appearance:none
+    }
+    .sync-field input:focus,.sync-field select:focus,.sync-field textarea:focus,.stat-card input:focus,.stat-card textarea:focus,.sign-box input:focus,td input:focus,td select:focus,td textarea:focus{border-color:rgba(26,216,181,.55)}
+    .stat-card strong{display:block;margin-top:8px;font-size:26px;color:#dff8f3}
+    .stat-card p{margin-top:8px;font-size:12px;line-height:1.45;color:#adc1d7}
+    .table-wrap{overflow-x:auto;border-radius:12px;border:1px solid var(--lines)}
+    table{width:100%;border-collapse:collapse;min-width:900px}
+    thead tr{background:rgba(26,216,181,.09)}
+    th{padding:9px 11px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#9fd6c8;text-align:left;white-space:nowrap}
+    td{padding:9px 11px;font-size:12px;color:#c4d2e4;border-top:1px solid var(--lines);vertical-align:top;line-height:1.45}
+    tr:hover td{background:rgba(255,255,255,.02)}
+    .btn-row{display:flex;gap:10px;margin-top:16px}
+    .btn{display:inline-flex;align-items:center;gap:7px;padding:10px 18px;border-radius:999px;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:.04em;text-transform:uppercase;border:1px solid rgba(26,216,181,.5);background:rgba(26,216,181,.12);color:var(--cyan);transition:background 160ms;font-family:"Manrope",sans-serif}
+    .btn:hover{background:rgba(26,216,181,.22)}
+    .btn-amber{border-color:rgba(255,188,76,.5);background:rgba(255,188,76,.1);color:var(--amber)}
+    .btn-amber:hover{background:rgba(255,188,76,.2);border-color:var(--amber)}
+    .sign-box .field{margin-top:10px}
+    .footer{margin-top:20px;text-align:center;font-size:11px;color:#4e5f76;letter-spacing:.07em;text-transform:uppercase}
+    @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(26,216,181,.7)}70%{box-shadow:0 0 0 12px rgba(26,216,181,0)}100%{box-shadow:0 0 0 0 rgba(26,216,181,0)}}
+    @media print{body{background:#fff;color:#000}.topbar,.btn-row{display:none}td input,td select,td textarea,.sync-field input,.sync-field select,.sync-field textarea,.stat-card input,.stat-card textarea,.sign-box input{border-color:#ccc;color:#000;background:#f9f9f9}}
+    @media(max-width:880px){.sync-grid,.stats-grid,.sign-grid{grid-template-columns:1fr 1fr}.topbar{position:static}}
+    @media(max-width:620px){.sync-grid,.stats-grid,.sign-grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<main class="wrap">
+  <header class="topbar">
+    <div class="brand"><span class="bdot"></span>Nexus Oilfield AI</div>
+    <div class="actions">
+      <a class="back" href="../20_drilling_stage_1_execution_playbook.html">← Playbook</a>
+      <a class="back" href="../19_drilling_stage_1_design.html">Stage 1 cockpit</a>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="badge"><span class="bdot2"></span>Артефакт 03 из 06</div>
+    <h1>Отчет по <span>Качеству Данных</span></h1>
+    <div class="hero-meta">
+      <span class="meta-pill">Бурение — Этап 1</span>
+      <span class="meta-pill">Версия: 1.0</span>
+      <span class="meta-pill">Дата: <span id="today"></span></span>
+    </div>
+    <p class="lead">Рабочая форма для профилирования критичных каналов Stage 1: полнота, задержка, выбросы, проблемные поля и план дожима до целевого quality score. Управленческий статус A3 синхронизируется с playbook и Stage 1 cockpit.</p>
+  </section>
+
+  <section class="section">
+    <div class="stitle">Управление артефактом</div>
+    <div class="sdesc">Сначала зафиксируйте управленческий статус A3, затем ведите детальную матрицу качества и журнал дефектов.</div>
+    <div class="sync-grid">
+      <div class="sync-field">
+        <label for="artifactStatus">Статус артефакта</label>
+        <select id="artifactStatus" data-artifact-sync="status">
+          <option value="not_started">Не начат</option>
+          <option value="in_progress">В работе</option>
+          <option value="review">На проверке</option>
+          <option value="approved">Утвержден</option>
+        </select>
+      </div>
+      <div class="sync-field">
+        <label for="artifactOwner">Владелец</label>
+        <input id="artifactOwner" type="text" data-artifact-sync="owner" placeholder="Инженер по данным"/>
+      </div>
+      <div class="sync-field sync-field--wide">
+        <label for="artifactNextAction">Ближайшее действие</label>
+        <input id="artifactNextAction" type="text" data-artifact-sync="nextAction" placeholder="Дожать качество критичных полей до целевого порога."/>
+      </div>
+      <div class="sync-field sync-field--wide">
+        <label for="artifactNote">Рабочая заметка</label>
+        <textarea id="artifactNote" rows="3" data-artifact-sync="note" placeholder="Какие каналы остаются в риске, где источник деградирует и какой дожим нужен до readiness review."></textarea>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="stitle">Итоговая сводка качества</div>
+    <div class="stats-grid">
+      <div class="stat-card"><span>Покрытие критичных полей, %</span><strong><input type="number" min="0" max="100" placeholder="80"/></strong><p>Доля критичных полей, реально доступных для Stage 1 моделей и контроля.</p></div>
+      <div class="stat-card"><span>Поля без задержек, %</span><strong><input type="number" min="0" max="100" placeholder="75"/></strong><p>Сколько критичных каналов укладывается в согласованный latency SLA.</p></div>
+      <div class="stat-card"><span>Открытые дефекты</span><strong><input type="number" min="0" placeholder="4"/></strong><p>Количество проблем, которые мешают закрыть quality gate без оговорок.</p></div>
+      <div class="stat-card"><span>Итоговый quality score</span><strong><input type="number" min="0" max="100" placeholder="82"/></strong><p>Сводный балл для go/no-go обсуждения на Stage 1.</p></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="stitle">Матрица качества критичных каналов</div>
+    <div class="sdesc">Заполните строку по каждому каналу, который влияет на алерты, readiness и оперативные решения.</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Канал</th>
+            <th>Полнота, %</th>
+            <th>Задержка / SLA</th>
+            <th>Аномалии / выбросы</th>
+            <th>Последнее обновление</th>
+            <th>Владелец</th>
+            <th>Действие дожима</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>WITS / WITSML</td>
+            <td><input type="number" min="0" max="100" placeholder="96"/></td>
+            <td><input type="text" placeholder="1.8 c / <= 2 c"/></td>
+            <td><textarea rows="2" placeholder="Разрывы на RPM в ночных сменах"></textarea></td>
+            <td><input type="datetime-local"/></td>
+            <td><input type="text" placeholder="Дата-лид"/></td>
+            <td><textarea rows="2" placeholder="Проверить буферизацию и сверить таймстемпы"></textarea></td>
+          </tr>
+          <tr>
+            <td>Буровые суточные рапорты</td>
+            <td><input type="number" min="0" max="100" placeholder="72"/></td>
+            <td><input type="text" placeholder="D+1 / требуется D0"/></td>
+            <td><textarea rows="2" placeholder="Пропуски по NPT кодам и длительности"></textarea></td>
+            <td><input type="datetime-local"/></td>
+            <td><input type="text" placeholder="Буровой мастер"/></td>
+            <td><textarea rows="2" placeholder="Стандартизировать шаблон и OCR pipeline"></textarea></td>
+          </tr>
+          <tr>
+            <td>MWD / бурраствор</td>
+            <td><input type="number" min="0" max="100" placeholder="81"/></td>
+            <td><input type="text" placeholder="15 мин / <= 10 мин"/></td>
+            <td><textarea rows="2" placeholder="Прыжки плотности на ручном вводе"></textarea></td>
+            <td><input type="datetime-local"/></td>
+            <td><input type="text" placeholder="Технолог по бурению"/></td>
+            <td><textarea rows="2" placeholder="Убрать ручные дубли и зафиксировать единицы"></textarea></td>
+          </tr>
+          <tr>
+            <td>Hydraulics model feed</td>
+            <td><input type="number" min="0" max="100" placeholder="88"/></td>
+            <td><input type="text" placeholder="5 мин / <= 5 мин"/></td>
+            <td><textarea rows="2" placeholder="Редкие провалы по ECD"></textarea></td>
+            <td><input type="datetime-local"/></td>
+            <td><input type="text" placeholder="Hydraulics engineer"/></td>
+            <td><textarea rows="2" placeholder="Проверить расчетный контур и входные плотности"></textarea></td>
+          </tr>
+          <tr>
+            <td><input type="text" placeholder="Новый канал"/></td>
+            <td><input type="number" min="0" max="100" placeholder="0"/></td>
+            <td><input type="text" placeholder="Latency / SLA"/></td>
+            <td><textarea rows="2" placeholder="Описание отклонения"></textarea></td>
+            <td><input type="datetime-local"/></td>
+            <td><input type="text" placeholder="Владелец"/></td>
+            <td><textarea rows="2" placeholder="Что делаем дальше"></textarea></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="stitle">Журнал дефектов качества</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Дефект</th>
+            <th>Влияние на Stage 1</th>
+            <th>Владелец</th>
+            <th>Срок закрытия</th>
+            <th>Статус</th>
+            <th>Комментарий</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><input type="text" placeholder="Нет таймстемпов UTC на WITS"></td>
+            <td><textarea rows="2" placeholder="Ломает сопоставление с событиями"></textarea></td>
+            <td><input type="text" placeholder="IT / дата-лид"></td>
+            <td><input type="date"></td>
+            <td><select><option>Открыт</option><option>В работе</option><option>На проверке</option><option>Закрыт</option></select></td>
+            <td><textarea rows="2" placeholder="Нужен патч на стороне шлюза"></textarea></td>
+          </tr>
+          <tr>
+            <td><input type="text" placeholder="Неполные коды NPT в суточках"></td>
+            <td><textarea rows="2" placeholder="Занижает baseline по простоям"></textarea></td>
+            <td><input type="text" placeholder="Супервайзер бурения"></td>
+            <td><input type="date"></td>
+            <td><select><option>Открыт</option><option>В работе</option><option>На проверке</option><option>Закрыт</option></select></td>
+            <td><textarea rows="2" placeholder="Нужен единый справочник причин"></textarea></td>
+          </tr>
+          <tr>
+            <td><input type="text" placeholder="Новый дефект"></td>
+            <td><textarea rows="2" placeholder="Чем мешает pilot readiness"></textarea></td>
+            <td><input type="text" placeholder="Владелец"></td>
+            <td><input type="date"></td>
+            <td><select><option>Открыт</option><option>В работе</option><option>На проверке</option><option>Закрыт</option></select></td>
+            <td><textarea rows="2" placeholder="Комментарий"></textarea></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="stitle">Подтверждение отчета</div>
+    <div class="sign-grid">
+      <div class="sign-box">
+        <div class="sign-role">Инженер по данным</div>
+        <div class="field"><input type="text" placeholder="ФИО"/></div>
+        <div class="field"><input type="text" placeholder="Должность"/></div>
+        <div class="field"><input type="date"/></div>
+      </div>
+      <div class="sign-box">
+        <div class="sign-role">Владелец данных от заказчика</div>
+        <div class="field"><input type="text" placeholder="ФИО"/></div>
+        <div class="field"><input type="text" placeholder="Должность"/></div>
+        <div class="field"><input type="date"/></div>
+      </div>
+      <div class="sign-box">
+        <div class="sign-role">Руководитель проекта</div>
+        <div class="field"><input type="text" placeholder="ФИО"/></div>
+        <div class="field"><input type="text" placeholder="Должность"/></div>
+        <div class="field"><input type="date"/></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="btn-row">
+    <button class="btn" onclick="window.print()">Распечатать</button>
+    <button class="btn btn-amber" onclick="saveData(this)">Сохранить черновик</button>
+  </div>
+  <p class="footer">Nexus Oilfield AI — Отчет по качеству данных — Бурение Этап 01</p>
+</main>
+<script>
+  document.getElementById("today").textContent = new Date().toLocaleDateString("ru-RU");
+
+  const DRAFT_KEY = "stage1_data_quality_report_v1";
+  const ARTIFACTS_KEY = "nexus_stage1_artifact_workbench_v1";
+  const ARTIFACT_ID = "a3";
+  const ARTIFACT_DEFAULTS = {
+    status: "not_started",
+    owner: "Инженер по данным",
+    nextAction: "Дожать качество критичных полей до целевого порога.",
+    note: ""
+  };
+
+  function readJson(key) {
+    try {
+      return JSON.parse(localStorage.getItem(key) || "null");
+    } catch (error) {
+      return null;
+    }
+  }
+
+  function saveJson(key, value) {
+    localStorage.setItem(key, JSON.stringify(value));
+  }
+
+  function loadArtifactState() {
+    const state = readJson(ARTIFACTS_KEY) || {};
+    const current = Object.assign({}, ARTIFACT_DEFAULTS, state[ARTIFACT_ID] || {});
+    document.getElementById("artifactStatus").value = current.status;
+    document.getElementById("artifactOwner").value = current.owner;
+    document.getElementById("artifactNextAction").value = current.nextAction;
+    document.getElementById("artifactNote").value = current.note;
+  }
+
+  function saveArtifactState() {
+    const state = readJson(ARTIFACTS_KEY) || {};
+    state[ARTIFACT_ID] = {
+      status: document.getElementById("artifactStatus").value,
+      owner: document.getElementById("artifactOwner").value,
+      nextAction: document.getElementById("artifactNextAction").value,
+      note: document.getElementById("artifactNote").value
+    };
+    saveJson(ARTIFACTS_KEY, state);
+  }
+
+  function saveData(button) {
+    saveArtifactState();
+    const inputs = document.querySelectorAll("input, select, textarea");
+    const data = {};
+    inputs.forEach((el, index) => { data[index] = el.value; });
+    localStorage.setItem(DRAFT_KEY, JSON.stringify(data));
+    const original = button.innerHTML;
+    button.textContent = "✓ Сохранено";
+    setTimeout(() => { button.innerHTML = original; }, 1800);
+  }
+
+  const saved = localStorage.getItem(DRAFT_KEY);
+  if (saved) {
+    const data = JSON.parse(saved);
+    document.querySelectorAll("input, select, textarea").forEach((el, index) => {
+      if (data[index] !== undefined) {
+        el.value = data[index];
+      }
+    });
+  }
+
+  loadArtifactState();
+  document.querySelectorAll("[data-artifact-sync]").forEach((node) => {
+    node.addEventListener("change", saveArtifactState);
+    node.addEventListener("blur", saveArtifactState, true);
+  });
+</script>
+<script src="../assets/js/global-auth-widget.js"></script>
+</body>
+</html>

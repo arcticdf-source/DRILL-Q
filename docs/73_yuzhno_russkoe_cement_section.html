@@ -1,0 +1,406 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Раздел 7 · Крепление скважины</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap");
+    :root {
+      --bg-0:#070d15; --bg-1:#111f33; --bg-2:#1d3247;
+      --panel:rgba(10,20,33,.85); --line:rgba(226,237,255,.16); --line-soft:rgba(226,237,255,.10);
+      --text:#ecf4ff; --muted:#a8bdd2; --cyan:#20d9b4; --amber:#ffbf66; --blue:#8db4ff; --violet:#c6a6ff; --danger:#ff8d78; --ok:#83f0bf;
+      --c1:#6fd7b7; --c2:#8db4ff; --c3:#ffd089; --c4:#ff9b9b; --c5:#c6a6ff;
+      --shadow:0 24px 56px rgba(0,0,0,.42);
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;font-family:"Manrope",sans-serif;color:var(--text);background:radial-gradient(900px 460px at 0% -10%,rgba(32,217,180,.18),transparent),radial-gradient(820px 460px at 100% 0%,rgba(255,191,102,.18),transparent),linear-gradient(145deg,var(--bg-0),var(--bg-1) 46%,var(--bg-2))}
+    .wrap{width:min(1320px,94vw);margin:0 auto;padding:24px 0 64px}
+    .top{display:flex;justify-content:space-between;align-items:center;gap:10px;border:1px solid var(--line-soft);border-radius:14px;padding:12px 14px;background:rgba(8,15,24,.66);position:sticky;top:12px;z-index:20}
+    .brand{display:flex;align-items:center;gap:10px;font-family:"Oswald",sans-serif;text-transform:uppercase;letter-spacing:.05em;font-size:20px;color:var(--text);text-decoration:none}.dot{width:12px;height:12px;border-radius:999px;background:radial-gradient(circle at 35% 35%,#d6fff7,var(--cyan))}
+    .nav{display:flex;flex-wrap:wrap;gap:8px}.nav a{text-decoration:none;font-size:12px;text-transform:uppercase;letter-spacing:.06em;font-weight:800;border-radius:10px;padding:8px 12px;color:#082922;background:linear-gradient(130deg,#a0f9eb,#22d7b4);border:1px solid rgba(34,215,180,.75)}
+    .hero,.panel{margin-top:18px;border:1px solid var(--line);border-radius:22px;background:var(--panel);box-shadow:var(--shadow);padding:22px}
+    .hero h1{margin:0 0 10px;font-family:"Oswald",sans-serif;font-size:clamp(28px,4vw,44px)}.hero p{margin:0;color:#c7d7ec;line-height:1.65}
+    .meta{margin-top:14px;display:inline-flex;border:1px solid var(--line-soft);border-radius:999px;padding:6px 12px;font-size:12px;color:#d8e5f6;text-transform:uppercase;letter-spacing:.08em}
+    .hero-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:18px}.stat{border:1px solid var(--line);border-radius:14px;padding:12px;background:rgba(255,255,255,.03)}.stat strong{display:block;font-size:20px}.stat span{display:block;margin-top:4px;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.08em}
+    .legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}.chip{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line-soft);border-radius:999px;padding:5px 11px;font-size:12px;color:#d6e5f7;background:rgba(255,255,255,.03)}.dot-chip{width:12px;height:12px;border-radius:999px}
+    .section-head{display:flex;justify-content:space-between;align-items:flex-end;gap:10px;margin-bottom:12px}.section-head h2{margin:0;font-size:22px}.section-head span{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+    .grid-2{display:grid;grid-template-columns:1.05fr .95fr;gap:16px}.grid-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.grid-4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+    .card,.metric,.chart-wrap,.table-box,.tab-pane,.mini-card,.system-card,.schematic-box{border:1px solid var(--line-soft);border-radius:16px;background:rgba(255,255,255,.03);padding:14px}
+    .card p,.mini-card p,.system-card p{margin:0;color:#ccdcf0;line-height:1.6;font-size:13px}.metric .k{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}.metric .v{margin-top:6px;font-size:15px;line-height:1.45}
+    .note{margin-top:12px;border:1px solid rgba(198,166,255,.24);border-radius:14px;background:rgba(198,166,255,.08);padding:12px;color:#e2d8ff;font-size:13px;line-height:1.55}
+    .tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}.tab-btn{font-family:"Manrope",sans-serif;font-weight:800;font-size:13px;text-transform:uppercase;letter-spacing:.06em;border:2px solid var(--line);border-radius:12px;padding:10px 16px;background:rgba(255,255,255,.04);color:var(--muted);cursor:pointer;transition:all .2s}.tab-btn.active,.tab-btn:hover{transform:translateY(-1px)}.tab-btn.c1.active,.tab-btn.c1:hover{background:var(--c1);border-color:transparent;color:#06241c}.tab-btn.c2.active,.tab-btn.c2:hover{background:var(--c2);border-color:transparent;color:#071a2d}.tab-btn.c3.active,.tab-btn.c3:hover{background:var(--c3);border-color:transparent;color:#2b1900}
+    .tab-pane{display:none}.tab-pane.active{display:block}
+    .stripe{border-radius:16px;padding:18px 20px;margin-bottom:14px;display:flex;flex-wrap:wrap;gap:12px;align-items:center}.stripe .name{font-family:"Oswald",sans-serif;font-size:28px;line-height:1}.stripe .system{font-size:13px;font-weight:700;opacity:.92}.stripe .meta-row{display:flex;flex-wrap:wrap;gap:8px;width:100%}.pill{display:inline-flex;border-radius:999px;padding:5px 10px;background:rgba(0,0,0,.26);font-size:12px;font-weight:700}
+    .vol-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.vol-card{border:1px solid var(--line-soft);border-radius:12px;padding:10px 12px;background:rgba(255,255,255,.03)}.vol-card .lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}.vol-card .val{margin-top:4px;font-size:18px;font-weight:800}
+    .system-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.system-card h4{margin:0 0 8px;font-size:15px;color:#edf4ff}.system-meta{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}.system-pill{display:inline-flex;border-radius:999px;padding:5px 10px;background:rgba(255,255,255,.06);font-size:11px;font-weight:800;color:#dce9f8;text-transform:uppercase;letter-spacing:.06em}
+    table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px solid var(--line-soft);padding:9px 10px;text-align:left;vertical-align:top}th{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#bfd3e8;background:rgba(255,255,255,.04)}tr:last-child td{border-bottom:none}.table-wrap{overflow:auto}.good{color:var(--ok);font-weight:700}.warn{color:var(--amber);font-weight:700}.bad{color:var(--danger);font-weight:700}
+    .chart-shell{width:100%;overflow:auto}.chart-shell svg,.schematic-box svg{width:100%;height:auto;display:block}.caption{margin-top:10px;color:var(--muted);font-size:12px;line-height:1.55}
+    .footer{margin-top:14px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-size:12px;text-align:center}
+    @media (max-width:1100px){.hero-stats,.grid-4,.grid-3,.vol-grid,.grid-2,.system-grid{grid-template-columns:1fr 1fr}}
+    @media (max-width:860px){.top{position:static;flex-direction:column;align-items:flex-start}.hero-stats,.grid-4,.grid-3,.grid-2,.vol-grid,.system-grid{grid-template-columns:1fr}.section-head{flex-direction:column;align-items:flex-start}}
+  </style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+  <main class="wrap">
+    <header class="top">
+      <a class="brand" href="56_fields_projects_dashboard.html"><span class="dot"></span><span>Nexus Oilfield AI</span></a>
+      <nav class="nav" id="nav"></nav>
+    </header>
+
+    <section class="hero">
+      <h1 id="title">Раздел 7. Крепление скважины</h1>
+      <p id="desc">Программы цементирования по колоннам, буферные жидкости, варианты тампонажных систем, контроль ОЗЦ и материальная нагрузка по креплению скважины.</p>
+      <span class="meta" id="meta">Модуль 7</span>
+      <div id="heroStats" class="hero-stats"></div>
+      <div id="heroLegend" class="legend"></div>
+    </section>
+
+    <section class="panel">
+      <div class="section-head"><h2>Архитектура крепления</h2><span>разделы 6 и 7.1-7.4</span></div>
+      <div class="grid-4" id="metricGrid"></div>
+      <div class="note">В исходных листах есть расхождение между кратким описанием и расчетными таблицами по глубине кондуктора и эксплуатационной колонны. На графиках и табличных карточках ниже за расчетную основу приняты значения из таблиц 7.1-7.4, а текстовое несоответствие сохранено как инженерное замечание.</div>
+    </section>
+
+    <section class="panel">
+      <div class="section-head"><h2>Схема цементирования и контроль ОЗЦ</h2><span>инфографика</span></div>
+      <div class="grid-2">
+        <div class="schematic-box"><h3>Интервалы крепления</h3><div id="cementScheme"></div><div class="caption">Цветная заливка показывает интервалы цементирования. Для эксплуатационной колонны отдельно выделены тяжелая и облегченная части цементного столба.</div></div>
+        <div class="chart-wrap"><h3>Ожидание затвердевания цемента</h3><div class="chart-shell" id="ozcChart"></div><div class="caption">Горизонтальные полосы сравнивают длительность ОЗЦ для направления, кондуктора и эксплуатационной колонны. Чем длиннее полоса, тем выше влияние операции на календарь строительства.</div></div>
+      </div>
+      <div class="grid-2" style="margin-top:16px">
+        <div class="chart-wrap"><h3>Плотности систем по колоннам</h3><div class="chart-shell" id="densityChart"></div><div class="caption">На графике сопоставлены буферные и цементные системы. Для кондуктора и эксплуатационной колонны показано разделение на облегченную и тяжелую порции.</div></div>
+        <div class="chart-wrap"><h3>Материальная нагрузка по колоннам</h3><div class="chart-shell" id="cementMassChart"></div><div class="caption">Суммарная масса основных тампонажных материалов взята из таблицы 7.4. Это быстрый индикатор логистической нагрузки по каждой колонне.</div></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="section-head"><h2>Технология цементирования</h2><span>краткий инженерный обзор</span></div>
+      <div class="grid-3" id="techCards"></div>
+    </section>
+
+    <section class="panel">
+      <div class="section-head"><h2>Интервалы цементирования</h2><span>варианты, свойства, материалы</span></div>
+      <div class="tabs" id="cementTabs"></div>
+      <div id="cementPanes"></div>
+    </section>
+
+    <p class="footer">South-Russian field · Cementing section</p>
+  </main>
+
+  <script>
+    function getParam(key, fallback) {
+      const params = new URLSearchParams(window.location.search);
+      return params.get(key) || fallback;
+    }
+
+    function buildProjectLink(page, name, well) {
+      const params = new URLSearchParams();
+      params.set('name', name);
+      if (well) {
+        params.set('well', well);
+      }
+      return `${page}?${params.toString()}`;
+    }
+
+    function formatNumber(value, digits = 1) {
+      if (typeof value !== 'number' || !Number.isFinite(value)) return value;
+      const rounded = Math.abs(value - Math.round(value)) < 0.001 ? String(Math.round(value)) : value.toFixed(digits);
+      return rounded.replace('.', ',');
+    }
+
+    function createSvg(width, height, inner) {
+      return `<svg viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">${inner}</svg>`;
+    }
+
+    const projectName = getParam('name', 'Южно-Русское месторождение');
+    const wellName = getParam('well', '5101');
+
+    document.title = `${projectName} · Скважина ${wellName} · Раздел 7`;
+    document.getElementById('title').textContent = `${projectName} · Скважина ${wellName} · Раздел 7. Крепление скважины`;
+    document.getElementById('desc').textContent = `Раздел крепления по скважине ${wellName}: программы цементирования по колоннам, буферные системы, свойства тампонажных растворов, материалы и техника.`;
+    document.getElementById('meta').textContent = `${projectName} · Скважина ${wellName}`;
+    document.getElementById('nav').innerHTML = `
+      <a href="${buildProjectLink('64_yuzhno_russkoe_project_dashboard.html', projectName, wellName)}">К скважине ${wellName}</a>
+      <a href="${buildProjectLink('69_yuzhno_russkoe_well_construction.html', projectName, wellName)}">Раздел 3</a>
+      <a href="${buildProjectLink('70_yuzhno_russkoe_well_profile.html', projectName, wellName)}">Раздел 4</a>
+      <a href="${buildProjectLink('72_yuzhno_russkoe_mud_section.html', projectName, wellName)}">Раздел 5</a>
+    `;
+
+    const stages = [
+      {
+        id: 'cement-1', key: 'c1', title: 'Направление', color: 'var(--c1)', casing: '324 мм', shoeDepth: 150, shoeByHole: 150, cementTop: 'до устья', ozc: 24,
+        fillVertical: '0-150 м', fillHole: '0-150 м', overview: 'Направление цементируется прямым способом в одну ступень. В базовом тексте указан интервал 0-150 м и ОЗЦ 24 часа.',
+        variants: [
+          ['Вариант 1', 'ЦТРС-50 Арм + 0,47 р CaCl₂ (1030 кг/м³)', '1860 кг/м³', '200 мм', '0,1-0,2', '2:30-4:00 при 22°C; 6:10-7:50 при 5°C', 'непроницаемый'],
+          ['Вариант 2', 'ПЦТ I-G-CC-1 + 0,75 FLOSS 500 + 0,1 GM-EA + 0,5 DPC + 0,1 NO FOAM + 3 CaCl₂', '1860 кг/м³', '—', '—', '0:30', 'непроницаемый']
+        ],
+        buffer: [
+          ['СБП-3 АМ', '4,68 т'], ['Техническая вода', '5,40 м³'], ['CaCl₂', '0,24 т'], ['ТПФН', '0,08 т'], ['Плотность', '1300 кг/м³'], ['Условная вязкость', '60-80 с'], ['ПВ / ДНС', '20-25 / 120-140'], ['СНС', '8/8']
+        ],
+        materials: [
+          ['ЦТРС-Арм', 'Тампонажный раствор, вариант 1', '33,38 т'], ['ПЦТ I-G-CC-1', 'Тампонажный раствор, вариант 2', '33,38 т'], ['CaCl₂', 'Ускоритель / антифриз', '0,63 т'], ['Техническая вода затворения', 'Затворение', '15,00 м³'], ['СБП-3 АМ', 'Буферная жидкость', '4,68 т']
+        ],
+        equipment: [
+          ['ЦА-320М', '4'], ['УНГ 2x320x40', '2'], ['СМН-20', '4'], ['СКЦ-2М', '1'], ['БМ-700', '1'], ['ППУ-3М', '1']
+        ]
+      },
+      {
+        id: 'cement-2', key: 'c2', title: 'Кондуктор', color: 'var(--c2)', casing: '245 мм', shoeDepth: 600, shoeByHole: 622, cementTop: 'до устья', ozc: 36,
+        fillVertical: '0-600 м', fillHole: '406-622 м тяжелая + 0-406 м облегченная', overview: 'Кондуктор в исходном описании указан до 650 м, но расчетные таблицы 7.1-7.4 даны для 600/622 м. На модуле приняты табличные значения как расчетная база.',
+        variants: [
+          ['Вариант 1 · тяжелая порция', 'ЦТРС-50 Арм + 0,47 р CaCl₂ (1030 кг/м³)', '1860 кг/м³', '200 мм', '0,1-0,2', '2:30-4:00 при 22°C; 6:10-7:50 при 5°C', 'непроницаемый'],
+          ['Вариант 1 · облегченная порция', 'ЦТРО-Арм + 0,57 р CaCl₂ (1030 кг/м³)', '1500 кг/м³', '220 мм', '0,1', '3:40-4:40 при 22°C; 9:30-11:30 при 5°C', 'непроницаемый'],
+          ['Вариант 2 · тяжелая порция', 'ПЦТ I-G-CC-1 + 0,75 FLOSS 500 + 0,1 GM-EA + 0,5 DPC + 0,1 NO FOAM + 3 CaCl₂', '1860 кг/м³', '—', '—', '0:30', 'непроницаемый'],
+          ['Вариант 2 · облегченная порция', 'ЦТРО-Арм + 0,57 р CaCl₂', '1500 кг/м³', '220 мм', '0,1', '3:40-4:40 при 22°C; 9:30-11:30 при 5°C', 'непроницаемый']
+        ],
+        buffer: [
+          ['СБП-3 АМ', '4,68 т'], ['Техническая вода', '5,40 м³'], ['CaCl₂', '0,24 т'], ['ТПФН', '0,08 т'], ['Плотность', '1300 кг/м³'], ['Условная вязкость', '60-80 с'], ['ПВ / ДНС', '20-25 / 120-140'], ['СНС', '8/8']
+        ],
+        materials: [
+          ['ПЦТ I-G-CC-1', 'Тампонажный раствор, вариант 2', '12,67 т'], ['ЦТРО-Арм', 'Облегченный цементный раствор', '14,89 т'], ['CaCl₂', 'Ускоритель / антифриз', '0,58 т'], ['Техническая вода затворения', 'Затворение', '13,75 м³'], ['СБП-3 АМ', 'Буферная жидкость', '4,68 т']
+        ],
+        equipment: [
+          ['ЦА-320М', '4'], ['УНГ 2x320x40', '2'], ['СМН-20', '4'], ['СКЦ-2М', '1'], ['БМ-700', '1'], ['ППУ-3М', '1']
+        ]
+      },
+      {
+        id: 'cement-3', key: 'c3', title: 'Эксплуатационная колонна', color: 'var(--c3)', casing: '168 мм', shoeDepth: 772, shoeByHole: 952, cementTop: 'до устья', ozc: 48,
+        fillVertical: '0-772 м', fillHole: '538-952 м тяжелая + 0-538 м облегченная', overview: 'Наиболее нагруженный этап крепления. По краткому тексту колонна спускается на 1900 м, но цементирование и расчетные свойства в таблицах даны для интервалов 0-772 м по вертикали и 0-952 м по стволу.',
+        variants: [
+          ['Вариант 1 · тяжелая порция', 'ЦТРС-50 Арм + 0,5 % AQU-4176 + 0,05 % Пента-466 + 0,47 р CaCl₂', '1860 кг/м³', '230 мм', '0,1', '4:30-4:50 при 22°C', 'непроницаемый'],
+          ['Вариант 1 · облегченная порция', 'ЦТРО-Арм + 0,57 р CaCl₂ (1030 кг/м³)', '1500 кг/м³', '220 мм', '0,1', '3:40-4:40 при 22°C; 9:30-11:30 при 5°C', 'непроницаемый'],
+          ['Вариант 2 · тяжелая порция', 'ПЦТ I-G-CC-1 + 0,75 FLOSS 500 + 0,1 GM-EA + 0,5 DPC + 0,1 NO FOAM + 3 CaCl₂', '1860 кг/м³', '—', '—', '0:30', 'непроницаемый'],
+          ['Вариант 2 · облегченная порция', 'ЦТРО-Арм + 0,57 р CaCl₂', '1500 кг/м³', '220 мм', '0,1', '3:40-4:40 при 22°C; 9:30-11:30 при 5°C', 'непроницаемый']
+        ],
+        buffer: [
+          ['СБП-4 РУО', '4,75 т'], ['Техническая вода', '6,16 м³'], ['CaCl₂', '0,25 т'], ['Дизельное топливо', '1,5 м³'], ['Плотность', '1410 кг/м³'], ['Условная вязкость', '40-55 с'], ['ПВ / ДНС', '20-25 / 80-100'], ['СНС', '7/7']
+        ],
+        materials: [
+          ['ЦТРС-Арм', 'Тяжелая порция, вариант 1', '10,29 т'], ['ПЦТ I-G-CC-1', 'Тяжелая порция, вариант 2', '10,29 т'], ['ЦТРО-Арм', 'Облегченная порция', '10,49 т'], ['CaCl₂', 'Ускоритель / антифриз', '0,43 т'], ['AQU-4176', 'Снижение фильтрации и контроль миграции газа', '0,051 т'], ['Пента-466', 'Пеногаситель', '0,005 т'], ['Техническая вода затворения', 'Затворение', '10,38 м³'], ['СБП-4 РУО', 'Буферная жидкость', '4,75 т']
+        ],
+        equipment: [
+          ['ЦА-320М', '2'], ['УНГ 2x320x40', '2'], ['СМН-20', '3'], ['СКЦ-2М', '1'], ['БМ-700', '1'], ['ППУ-3М', '1']
+        ]
+      }
+    ];
+
+    const techCards = [
+      {
+        title: 'Направление 324 мм',
+        text: 'Цементируется до устья прямым способом в одну ступень. Основная задача: быстрое формирование устойчивого цементного стакана в верхнем интервале 0-150 м с ОЗЦ 24 часа.'
+      },
+      {
+        title: 'Кондуктор 245 мм',
+        text: 'Цементируется до устья двумя плотностными порциями. Тяжелая часть работает на нижний интервал 406-622 м, облегченная - на верхний подъем к устью. ОЗЦ 36 часов.'
+      },
+      {
+        title: 'Эксплуатационная колонна 168 мм',
+        text: 'Наиболее ответственный этап крепления. Тяжелая система работает в интервале 538-952 м, облегченная - в интервале 0-538 м. По тексту ОЗЦ 48 часов, с отдельным буфером для замещения РУО.'
+      }
+    ];
+
+    document.getElementById('heroStats').innerHTML = [
+      ['3', 'цементируемые колонны'],
+      ['48 часов', 'максимальный ОЗЦ'],
+      ['2', 'варианта цементных систем'],
+      ['772 / 952 м', 'верхний расчетный башмак ЭК']
+    ].map((item) => `<div class="stat"><strong>${item[0]}</strong><span>${item[1]}</span></div>`).join('');
+    document.getElementById('heroLegend').innerHTML = stages.map((stage) => `<span class="chip"><span class="dot-chip" style="background:${stage.color}"></span>${stage.title} · ${stage.casing}</span>`).join('');
+    document.getElementById('metricGrid').innerHTML = [
+      ['Цементирование до устья', 'Направление, кондуктор и эксплуатационная колонна поднимаются до устья.'],
+      ['Две плотностные порции', 'Для кондуктора и ЭК явно выделены тяжелая и облегченная части цементного столба.'],
+      ['Буферные жидкости', 'СБП-3 АМ для верхних колонн и СБП-4 РУО для замещения РУО на ЭК.'],
+      ['Материальная нагрузка', 'Основной тоннаж сидит в цементных системах и воде затворения; дополнительные реагенты сосредоточены на ЭК.']
+    ].map((item) => `<div class="metric"><div class="k">${item[0]}</div><div class="v">${item[1]}</div></div>`).join('');
+    document.getElementById('techCards').innerHTML = techCards.map((card) => `<div class="card"><p><strong>${card.title}</strong><br>${card.text}</p></div>`).join('');
+
+    function renderCementScheme() {
+      const width = 880;
+      const height = 420;
+      const maxDepth = 1000;
+      const scaleY = (depth) => 34 + (depth / maxDepth) * 310;
+      const xPositions = [150, 400, 650];
+      const marks = [0, 150, 300, 538, 600, 772, 952].map((depth) => `<line x1="36" y1="${scaleY(depth)}" x2="830" y2="${scaleY(depth)}" stroke="rgba(255,255,255,0.06)" /><text x="26" y="${scaleY(depth) + 4}" text-anchor="end" font-size="11" fill="#bfd3e8">${depth}</text>`).join('');
+      const columns = stages.map((stage, index) => {
+        const x = xPositions[index];
+        const casingWidth = 28 - index * 2;
+        const shoeY = scaleY(stage.shoeByHole);
+        const topY = 34;
+        const cementBlocks = stage.title === 'Направление'
+          ? `<rect x="${x - 24}" y="${scaleY(0)}" width="48" height="${shoeY - scaleY(0)}" fill="${stage.color}" opacity="0.16" />`
+          : stage.title === 'Кондуктор'
+            ? `<rect x="${x - 24}" y="${scaleY(406)}" width="48" height="${shoeY - scaleY(406)}" fill="#ffbf66" opacity="0.20" /><rect x="${x - 24}" y="${scaleY(0)}" width="48" height="${scaleY(406) - scaleY(0)}" fill="#20d9b4" opacity="0.18" />`
+            : `<rect x="${x - 24}" y="${scaleY(538)}" width="48" height="${scaleY(952) - scaleY(538)}" fill="#ffbf66" opacity="0.20" /><rect x="${x - 24}" y="${scaleY(0)}" width="48" height="${scaleY(538) - scaleY(0)}" fill="#20d9b4" opacity="0.18" />`;
+        const labels = stage.title === 'Направление'
+          ? `<text x="${x + 42}" y="${scaleY(80)}" font-size="11" fill="#d7f7ef">ЦТРС-АРМ 1860</text>`
+          : stage.title === 'Кондуктор'
+            ? `<text x="${x + 42}" y="${scaleY(180)}" font-size="11" fill="#d7f7ef">ЦТРО-АРМ 1500</text><text x="${x + 42}" y="${scaleY(510)}" font-size="11" fill="#ffe5b8">ЦТРС-АРМ 1860</text>`
+            : `<text x="${x + 42}" y="${scaleY(240)}" font-size="11" fill="#d7f7ef">ЦТРО-АРМ 1500</text><text x="${x + 42}" y="${scaleY(740)}" font-size="11" fill="#ffe5b8">ЦТРС-АРМ 1860</text>`;
+        return `${cementBlocks}<rect x="${x - casingWidth / 2}" y="${topY}" width="${casingWidth}" height="${shoeY - topY}" fill="none" stroke="${stage.color}" stroke-width="6" /><path d="M ${x - casingWidth / 2} ${shoeY} L ${x - casingWidth / 2 - 12} ${shoeY + 14} L ${x - casingWidth / 2} ${shoeY + 14} Z" fill="${stage.color}" /><path d="M ${x + casingWidth / 2} ${shoeY} L ${x + casingWidth / 2 + 12} ${shoeY + 14} L ${x + casingWidth / 2} ${shoeY + 14} Z" fill="${stage.color}" /><text x="${x}" y="18" text-anchor="middle" font-size="12" fill="#ecf4ff">${stage.title}</text><text x="${x + 34}" y="${shoeY + 4}" font-size="11" fill="#bfd3e8">${stage.shoeByHole} м</text>${labels}`;
+      }).join('');
+      return createSvg(width, height, `${marks}${columns}<text x="30" y="22" text-anchor="end" font-size="11" fill="#a8bdd2">м</text>`);
+    }
+
+    function renderOzcChart() {
+      const width = 820;
+      const height = 260;
+      const margin = { top: 24, right: 24, bottom: 40, left: 130 };
+      const plotWidth = width - margin.left - margin.right;
+      const maxHours = 50;
+      const bars = stages.map((stage, index) => {
+        const y = margin.top + index * 62;
+        const w = (stage.ozc / maxHours) * plotWidth;
+        return `<text x="${margin.left - 14}" y="${y + 20}" text-anchor="end" font-size="12" fill="#dbe8f8">${stage.title}</text><rect x="${margin.left}" y="${y}" width="${plotWidth}" height="28" rx="14" fill="rgba(255,255,255,0.06)" /><rect x="${margin.left}" y="${y}" width="${w}" height="28" rx="14" fill="${stage.color}" /><text x="${margin.left + w + 10}" y="${y + 19}" font-size="12" fill="#ecf4ff">${stage.ozc} ч</text>`;
+      }).join('');
+      const ticks = [0, 12, 24, 36, 48].map((hour) => {
+        const x = margin.left + (hour / maxHours) * plotWidth;
+        return `<line x1="${x}" y1="${margin.top - 8}" x2="${x}" y2="${height - margin.bottom}" stroke="rgba(255,255,255,0.08)" /><text x="${x}" y="${height - 12}" text-anchor="middle" font-size="11" fill="#bfd3e8">${hour}</text>`;
+      }).join('');
+      return createSvg(width, height, `${ticks}${bars}<text x="${width / 2}" y="${height - 12}" text-anchor="middle" font-size="12" fill="#bfd3e8">Ожидание затвердевания цемента, часы</text>`);
+    }
+
+    function renderDensityChart() {
+      const groups = [
+        { label: 'Направление', values: [{ name: 'Буфер', value: 1300, color: '#8db4ff' }, { name: 'Цемент', value: 1860, color: '#20d9b4' }] },
+        { label: 'Кондуктор', values: [{ name: 'Буфер', value: 1300, color: '#8db4ff' }, { name: 'ЦТРО', value: 1500, color: '#20d9b4' }, { name: 'ЦТРС', value: 1860, color: '#ffbf66' }] },
+        { label: 'ЭК', values: [{ name: 'Буфер', value: 1410, color: '#8db4ff' }, { name: 'ЦТРО', value: 1500, color: '#20d9b4' }, { name: 'ЦТРС', value: 1860, color: '#ffbf66' }] }
+      ];
+      const width = 820;
+      const height = 320;
+      const margin = { top: 24, right: 24, bottom: 52, left: 72 };
+      const plotWidth = width - margin.left - margin.right;
+      const plotHeight = height - margin.top - margin.bottom;
+      const minVal = 1200;
+      const maxVal = 1900;
+      const scaleY = (value) => margin.top + plotHeight - ((value - minVal) / (maxVal - minVal)) * plotHeight;
+      const groupWidth = plotWidth / groups.length;
+      const grid = [1200, 1400, 1600, 1800].map((value) => {
+        const y = scaleY(value);
+        return `<line x1="${margin.left}" y1="${y}" x2="${width - margin.right}" y2="${y}" stroke="rgba(255,255,255,0.08)" /><text x="${margin.left - 12}" y="${y + 4}" text-anchor="end" font-size="11" fill="#bfd3e8">${value}</text>`;
+      }).join('');
+      const bars = groups.map((group, groupIndex) => {
+        return group.values.map((item, itemIndex) => {
+          const barWidth = 36;
+          const gap = 12;
+          const startX = margin.left + groupIndex * groupWidth + 26 + itemIndex * (barWidth + gap);
+          const y = scaleY(item.value);
+          const h = margin.top + plotHeight - y;
+          return `<rect x="${startX}" y="${y}" width="${barWidth}" height="${h}" rx="10" fill="${item.color}" /><text x="${startX + barWidth / 2}" y="${y - 8}" text-anchor="middle" font-size="11" fill="#ecf4ff">${item.value}</text><text x="${startX + barWidth / 2}" y="${height - margin.bottom + 16}" text-anchor="middle" font-size="10" fill="#bfd3e8">${item.name}</text>${itemIndex === 0 ? `<text x="${margin.left + groupIndex * groupWidth + groupWidth / 2}" y="${height - 10}" text-anchor="middle" font-size="12" fill="#dbe8f8">${group.label}</text>` : ''}`;
+        }).join('');
+      }).join('');
+      return createSvg(width, height, `${grid}${bars}`);
+    }
+
+    function renderMassChart() {
+      const items = [
+        { label: 'Направление', value: 33.38, color: 'var(--c1)' },
+        { label: 'Кондуктор', value: 27.56, color: 'var(--c2)' },
+        { label: 'ЭК', value: 20.78, color: 'var(--c3)' }
+      ];
+      const width = 820;
+      const height = 320;
+      const margin = { top: 24, right: 24, bottom: 52, left: 72 };
+      const plotWidth = width - margin.left - margin.right;
+      const plotHeight = height - margin.top - margin.bottom;
+      const maxVal = 36;
+      const scaleY = (value) => margin.top + plotHeight - (value / maxVal) * plotHeight;
+      const barWidth = plotWidth / items.length - 36;
+      const grid = [0, 10, 20, 30].map((value) => {
+        const y = scaleY(value);
+        return `<line x1="${margin.left}" y1="${y}" x2="${width - margin.right}" y2="${y}" stroke="rgba(255,255,255,0.08)" /><text x="${margin.left - 12}" y="${y + 4}" text-anchor="end" font-size="11" fill="#bfd3e8">${value}</text>`;
+      }).join('');
+      const bars = items.map((item, index) => {
+        const x = margin.left + index * (plotWidth / items.length) + 18;
+        const y = scaleY(item.value);
+        const h = margin.top + plotHeight - y;
+        return `<rect x="${x}" y="${y}" width="${barWidth}" height="${h}" rx="12" fill="${item.color}" /><text x="${x + barWidth / 2}" y="${y - 8}" text-anchor="middle" font-size="11" fill="#ecf4ff">${formatNumber(item.value, 2)} т</text><text x="${x + barWidth / 2}" y="${height - 10}" text-anchor="middle" font-size="12" fill="#dbe8f8">${item.label}</text>`;
+      }).join('');
+      return createSvg(width, height, `${grid}${bars}`);
+    }
+
+    document.getElementById('cementScheme').innerHTML = renderCementScheme();
+    document.getElementById('ozcChart').innerHTML = renderOzcChart();
+    document.getElementById('densityChart').innerHTML = renderDensityChart();
+    document.getElementById('cementMassChart').innerHTML = renderMassChart();
+
+    const cementTabs = document.getElementById('cementTabs');
+    const cementPanes = document.getElementById('cementPanes');
+    cementTabs.innerHTML = stages.map((stage, index) => `<button class="tab-btn ${stage.key} ${index === 0 ? 'active' : ''}" data-target="${stage.id}">${stage.title}<br><small>${stage.casing}</small></button>`).join('');
+    cementPanes.innerHTML = stages.map((stage, index) => `
+      <div class="tab-pane ${index === 0 ? 'active' : ''}" id="${stage.id}">
+        <div class="stripe" style="background:color-mix(in srgb, ${stage.color} 10%, transparent);border:1px solid color-mix(in srgb, ${stage.color} 30%, transparent)">
+          <div>
+            <div class="name" style="color:${stage.color}">${stage.title}</div>
+            <div class="system">${stage.overview}</div>
+          </div>
+          <div class="meta-row">
+            <span class="pill">📏 ${stage.fillVertical}</span>
+            <span class="pill">🧱 ${stage.fillHole}</span>
+            <span class="pill">⏱ ОЗЦ ${stage.ozc} ч</span>
+            <span class="pill">🔩 ${stage.casing}</span>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="table-box">
+            <h3>Глубины, заполнение и контроль</h3>
+            <div class="vol-grid">
+              <div class="vol-card"><div class="lbl">Башмак по вертикали</div><div class="val" style="color:${stage.color}">${stage.shoeDepth} м</div></div>
+              <div class="vol-card"><div class="lbl">Башмак по стволу</div><div class="val">${stage.shoeByHole} м</div></div>
+              <div class="vol-card"><div class="lbl">Подъем цемента</div><div class="val">${stage.cementTop}</div></div>
+              <div class="vol-card"><div class="lbl">Заполнение по вертикали</div><div class="val">${stage.fillVertical}</div></div>
+              <div class="vol-card"><div class="lbl">Заполнение по стволу</div><div class="val">${stage.fillHole}</div></div>
+              <div class="vol-card"><div class="lbl">ОЗЦ</div><div class="val warn">${stage.ozc} ч</div></div>
+            </div>
+            <div class="note">${stage.title === 'Кондуктор' ? 'Расчетная база модуля опирается на таблицы 7.1-7.4, где глубина кондуктора дана как 600/622 м, несмотря на упоминание 650 м в текстовом описании.' : 'Показатели на вкладке собраны по листам 6, 7.1, 7.2, 7.3 и 7.4. Здесь сведены глубины, подъем цемента, буфер и контрольные интервалы.'}</div>
+          </div>
+          <div class="table-box">
+            <h3>Буферная жидкость</h3>
+            <div class="table-wrap"><table><thead><tr><th>Параметр</th><th>Значение</th></tr></thead><tbody>${stage.buffer.map((row) => `<tr><td>${row[0]}</td><td>${row[1]}</td></tr>`).join('')}</tbody></table></div>
+          </div>
+        </div>
+
+        <div class="system-grid" style="margin-top:14px">${stage.variants.map((variant) => `
+          <div class="system-card">
+            <h4>${variant[0]}</h4>
+            <div class="system-meta">
+              <span class="system-pill">${variant[2]}</span>
+              <span class="system-pill">растекаемость ${variant[3]}</span>
+              <span class="system-pill">водоотделение ${variant[4]}</span>
+            </div>
+            <p>${variant[1]}</p>
+            <div class="table-wrap" style="margin-top:10px"><table><thead><tr><th>Показатель</th><th>Значение</th></tr></thead><tbody>
+              <tr><td>Плотность</td><td>${variant[2]}</td></tr>
+              <tr><td>Растекаемость</td><td>${variant[3]}</td></tr>
+              <tr><td>Водоотделение</td><td>${variant[4]}</td></tr>
+              <tr><td>Время загустевания</td><td>${variant[5]}</td></tr>
+              <tr><td>Газопроницаемость</td><td>${variant[6]}</td></tr>
+            </tbody></table></div>
+          </div>`).join('')}</div>
+
+        <div class="grid-2" style="margin-top:14px">
+          <div class="table-box">
+            <h3>Материалы по колонне</h3>
+            <div class="table-wrap"><table><thead><tr><th>Материал</th><th>Назначение</th><th>Количество</th></tr></thead><tbody>${stage.materials.map((row) => `<tr><td>${row[0]}</td><td>${row[1]}</td><td class="good">${row[2]}</td></tr>`).join('')}</tbody></table></div>
+          </div>
+          <div class="table-box">
+            <h3>Цементировочная техника</h3>
+            <div class="table-wrap"><table><thead><tr><th>Позиция</th><th>Количество</th></tr></thead><tbody>${stage.equipment.map((row) => `<tr><td>${row[0]}</td><td>${row[1]}</td></tr>`).join('')}</tbody></table></div>
+          </div>
+        </div>
+      </div>`).join('');
+
+    cementTabs.querySelectorAll('.tab-btn').forEach((button) => {
+      button.addEventListener('click', () => {
+        const target = button.dataset.target;
+        cementTabs.querySelectorAll('.tab-btn').forEach((btn) => btn.classList.remove('active'));
+        cementPanes.querySelectorAll('.tab-pane').forEach((pane) => pane.classList.remove('active'));
+        button.classList.add('active');
+        document.getElementById(target).classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>

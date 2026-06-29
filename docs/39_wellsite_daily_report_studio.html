@@ -1,0 +1,548 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>39 · WELLSIGHT Daily Report Studio</title>
+<style>
+  :root{--bg:#0d1117;--panel:#161b22;--card:#1c2330;--line:#30363d;--txt:#e6edf3;--muted:#8b949e;--a:#1ad8b5;--w:#f0a500;--r:#f85149;--g:#3fb950}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--txt);line-height:1.5}
+  header{padding:22px 30px;border-bottom:1px solid var(--line);background:linear-gradient(135deg,#0b2137,#0d1117 60%)}
+  h1{font-size:24px;color:var(--a)}
+  header p{color:var(--muted);margin-top:5px}
+  nav{display:flex;gap:4px;overflow:auto;padding:0 30px;background:var(--panel);border-bottom:1px solid var(--line)}
+  nav button{background:none;border:none;color:var(--muted);padding:11px 14px;cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent}
+  nav button.active,nav button:hover{color:var(--a);border-bottom-color:var(--a)}
+  main{max-width:1380px;margin:0 auto;padding:20px 30px}
+  section{display:none}
+  section.active{display:block}
+  h2{font-size:19px;color:var(--a);margin-bottom:14px;border-bottom:1px solid var(--line);padding-bottom:8px}
+  h3{font-size:14px;color:#ffbc4c;margin:14px 0 8px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:14px}
+  label{display:block;font-size:12px;color:var(--muted);margin:8px 0 4px}
+  input,select,textarea{width:100%;background:#0b1220;border:1px solid var(--line);color:var(--txt);border-radius:5px;padding:7px 9px;font-size:13px}
+  textarea{min-height:72px;resize:vertical}
+  .row{display:flex;gap:8px;align-items:center}
+  .row>*{flex:1}
+  .btn{background:var(--a);color:#0b1320;border:none;border-radius:6px;padding:9px 14px;font-weight:700;cursor:pointer;margin-top:12px}
+  .btn.alt{background:#1a2536;color:#9fdde0;border:1px solid #2b3c55}
+  .out{margin-top:10px;background:#0a1b2d;border:1px solid #1a3a5c;border-radius:7px;padding:11px}
+  .orow{display:flex;justify-content:space-between;border-bottom:1px dotted #1a3a5c;padding:4px 0;font-size:13px}
+  .orow:last-child{border-bottom:none}
+  .v{font-weight:700;color:var(--a);font-family:Consolas,monospace}
+  .ok{color:var(--g)} .warn{color:var(--w)} .bad{color:var(--r)}
+  table{width:100%;border-collapse:collapse;margin-top:8px}
+  th,td{border:1px solid var(--line);padding:7px 8px;font-size:12px;text-align:left}
+  th{background:#11192a;color:var(--a)}
+  .pill{display:inline-block;padding:2px 8px;border:1px solid var(--line);border-radius:999px;font-size:11px;color:#c7d4ea}
+  .runtime-bar{margin:18px auto 0;max-width:1380px;padding:14px 18px;border:1px solid rgba(26,216,181,.16);border-radius:10px;background:#132235;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  .runtime-bar strong{display:block;color:var(--txt);font-size:13px}
+  .runtime-bar p{margin-top:6px;color:#b8c8da;font-size:12px;max-width:860px}
+  .runtime-pill{display:inline-flex;align-items:center;border-radius:999px;padding:7px 12px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;border:1px solid var(--line);background:rgba(255,255,255,.04);color:#dbe8f5}
+  .runtime-pill.ready{color:var(--g);border-color:rgba(63,185,80,.35);background:rgba(63,185,80,.12)}
+  .runtime-pill.active{color:var(--w);border-color:rgba(240,165,0,.35);background:rgba(240,165,0,.12)}
+  .runtime-pill.at_risk{color:var(--r);border-color:rgba(248,81,73,.35);background:rgba(248,81,73,.12)}
+</style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+<header>
+  <h1>WELLSIGHT Daily Report Studio (аналог программы инжиниринга буровых растворов)</h1>
+  <p>Интерактивный прототип по структуре WS2000: Well Data → Daily Report → Volumes/Losses → Hydraulics → Costing → Issues → Report</p>
+</header>
+<nav>
+  <button class="active" onclick="tab('well',this)">1. Скважина</button>
+  <button onclick="tab('daily',this)">2. Daily Report</button>
+  <button onclick="tab('vol',this)">3. Volumes & Losses</button>
+  <button onclick="tab('fluid',this)">4. Fluid & Hydraulics</button>
+  <button onclick="tab('cost',this)">5. Inventory & Costing</button>
+  <button onclick="tab('issues',this)">6. Issues</button>
+  <button onclick="tab('audit',this)">7. Post Well Audit</button>
+  <button onclick="tab('report',this)">8. Report Manager</button>
+</nav>
+<div class="runtime-bar">
+  <div>
+    <strong>I5 Runtime Sync</strong>
+    <p id="i5RuntimeSummary">Document pipeline is waiting for well data, daily validation, and balance checks before it can be treated as a ready ingestion and reporting engine.</p>
+  </div>
+  <div class="runtime-pill active" id="i5RuntimePill">Active</div>
+</div>
+<main>
+
+<section id="well" class="active">
+  <h2>Well Data</h2>
+  <div class="grid2">
+    <div class="card">
+      <h3>Паспорт скважины</h3>
+      <label>Well name</label><input id="w_name" value="Well-12 North">
+      <div class="row">
+        <div><label>API / PCN</label><input id="w_api" value="API-78431"></div>
+        <div><label>Operator</label><input id="w_op" value="NEXUS OIL"></div>
+      </div>
+      <div class="row">
+        <div><label>Profile</label><select id="w_profile"><option>Vertical</option><option selected>Deviated</option><option>Horizontal</option></select></div>
+        <div><label>Category</label><select id="w_cat"><option>Land</option><option>Shelf</option><option>DeepWater</option></select></div>
+      </div>
+      <div class="row">
+        <div><label>MD (m)</label><input id="w_md" type="number" value="3667"></div>
+        <div><label>TVD (m)</label><input id="w_tvd" type="number" value="3600"></div>
+      </div>
+      <label>Unit system</label><select id="w_units"><option selected>Metric (SI)</option><option>Imperial</option></select>
+      <label><input id="w_tight" type="checkbox"> Tight Hole (ограниченный доступ)</label>
+      <button class="btn" onclick="saveWell()">Сохранить Well Data</button>
+      <div id="well_out" class="out" style="display:none"></div>
+    </div>
+    <div class="card">
+      <h3>Casing & Sections</h3>
+      <div class="row">
+        <div><label>Casing shoe TVD (m)</label><input id="c_shoe" type="number" value="1800"></div>
+        <div><label>Open hole OD (mm)</label><input id="c_hole" type="number" value="215.9"></div>
+      </div>
+      <div class="row">
+        <div><label>Pipe OD (mm)</label><input id="c_pod" type="number" value="127"></div>
+        <div><label>Pipe ID (mm)</label><input id="c_pid" type="number" value="108.6"></div>
+      </div>
+      <button class="btn alt" onclick="calcSections()">Проверить геометрию</button>
+      <div id="sec_out" class="out" style="display:none"></div>
+    </div>
+  </div>
+</section>
+
+<section id="daily">
+  <h2>Daily Report</h2>
+  <div class="grid2">
+    <div class="card">
+      <h3>Статус отчета</h3>
+      <div class="row">
+        <div><label>Report date</label><input id="d_date" type="date"></div>
+        <div><label>Status</label><select id="d_status"><option>Draft</option><option>Completed</option><option>Approved</option></select></div>
+      </div>
+      <label>Main fluid set</label><select id="d_fluid"><option>WBM KCl</option><option selected>OBM Petrofree</option><option>Synthetic</option></select>
+      <div class="row">
+        <div><label>Current depth MD (m)</label><input id="d_curmd" type="number" value="3667"></div>
+        <div><label>Bit run #</label><input id="d_run" type="number" value="12"></div>
+      </div>
+      <label>Activity summary</label><textarea id="d_activity">Drilling + circulation + mud treatment.</textarea>
+      <button class="btn" onclick="validateDaily()">Проверить Daily Report</button>
+      <div id="daily_out" class="out" style="display:none"></div>
+    </div>
+    <div class="card">
+      <h3>Bit Records / Time Breakdown</h3>
+      <div class="row">
+        <div><label>Bit type</label><input id="b_type" value="PDC 12-1/4"></div>
+        <div><label>IADC</label><input id="b_iadc" value="M323"></div>
+      </div>
+      <div class="row">
+        <div><label>Footage this run (m)</label><input id="b_foot" type="number" value="312"></div>
+        <div><label>Hours drilling</label><input id="t_drill" type="number" value="14"></div>
+      </div>
+      <div class="row">
+        <div><label>Hours circulation</label><input id="t_circ" type="number" value="6"></div>
+        <div><label>Hours NPT</label><input id="t_npt" type="number" value="4"></div>
+      </div>
+      <button class="btn alt" onclick="calcBitTime()">Рассчитать KPI рейса</button>
+      <div id="bit_out" class="out" style="display:none"></div>
+    </div>
+  </div>
+</section>
+
+<section id="vol">
+  <h2>Volumes & Losses (ключевая сверка WS2000)</h2>
+  <div class="grid2">
+    <div class="card">
+      <h3>Volumes tab</h3>
+      <div class="row">
+        <div><label>Previous total system volume (m3)</label><input id="v_prev" type="number" value="180"></div>
+        <div><label>Current total system volume (m3)</label><input id="v_cur" type="number" value="176"></div>
+      </div>
+      <div class="row">
+        <div><label>Annular volume (m3)</label><input id="v_ann" type="number" value="20.5"></div>
+        <div><label>Pits total (m3)</label><input id="v_pits" type="number" value="120"></div>
+      </div>
+      <button class="btn alt" onclick="calcVolumes()">Рассчитать Net Volume Change</button>
+      <div id="vol_out" class="out" style="display:none"></div>
+    </div>
+    <div class="card">
+      <h3>Losses & Gains tab</h3>
+      <div class="row">
+        <div><label>Documented gains (m3)</label><input id="lg_gain" type="number" value="2.0"></div>
+        <div><label>Documented losses (m3)</label><input id="lg_loss" type="number" value="6.0"></div>
+      </div>
+      <label>Loss type</label>
+      <select id="lg_type"><option>Differential pressure</option><option>Filtration</option><option>Downhole loss</option><option>Surface handling</option></select>
+      <label>Explanation</label><textarea id="lg_note">Observed losses in open hole interval.</textarea>
+      <button class="btn" onclick="reconcileVolumes()">Сверить балансы (blocking rule)</button>
+      <div id="lg_out" class="out" style="display:none"></div>
+    </div>
+  </div>
+</section>
+
+<section id="fluid">
+  <h2>Fluid Properties & Hydraulics</h2>
+  <div class="grid2">
+    <div class="card">
+      <h3>Fluid Properties</h3>
+      <div class="row">
+        <div><label>Mud density (g/cc)</label><input id="f_rho" type="number" value="1.42" step="0.01"></div>
+        <div><label>PV (mPa·s)</label><input id="f_pv" type="number" value="24"></div>
+      </div>
+      <div class="row">
+        <div><label>YP (lb/100ft2)</label><input id="f_yp" type="number" value="14"></div>
+        <div><label>Filtrate API (ml)</label><input id="f_fl" type="number" value="7"></div>
+      </div>
+      <label>Salt (mg/L)</label><input id="f_salt" type="number" value="55000">
+      <button class="btn alt" onclick="checkFluid()">Проверить against targets</button>
+      <div id="fluid_out" class="out" style="display:none"></div>
+    </div>
+    <div class="card">
+      <h3>Hydraulics</h3>
+      <div class="row">
+        <div><label>Flow rate (L/min)</label><input id="h_q" type="number" value="2000"></div>
+        <div><label>Annular ΔP (MPa)</label><input id="h_dp" type="number" value="2.4" step="0.1"></div>
+      </div>
+      <div class="row">
+        <div><label>TVD (m)</label><input id="h_tvd" type="number" value="3600"></div>
+        <div><label>Nozzle velocity (m/s)</label><input id="h_vn" type="number" value="98"></div>
+      </div>
+      <button class="btn" onclick="calcHydraulics()">Рассчитать ECD и риск</button>
+      <div id="hyd_out" class="out" style="display:none"></div>
+    </div>
+  </div>
+</section>
+
+<section id="cost">
+  <h2>Inventory & Costing</h2>
+  <div class="grid2">
+    <div class="card">
+      <h3>Материалы</h3>
+      <table>
+        <tr><th>Product</th><th>Qty</th><th>Unit price</th></tr>
+        <tr><td>Barite</td><td><input id="c_q1" type="number" value="4200"></td><td><input id="c_p1" type="number" value="0.52"></td></tr>
+        <tr><td>Emulsifier</td><td><input id="c_q2" type="number" value="180"></td><td><input id="c_p2" type="number" value="4.8"></td></tr>
+        <tr><td>Caustic</td><td><input id="c_q3" type="number" value="95"></td><td><input id="c_p3" type="number" value="1.9"></td></tr>
+      </table>
+      <label>Other charges (USD)</label><input id="c_other" type="number" value="2200">
+      <button class="btn" onclick="calcCost()">Считать total costing</button>
+      <div id="cost_out" class="out" style="display:none"></div>
+    </div>
+    <div class="card">
+      <h3>Inventory control</h3>
+      <div class="row">
+        <div><label>Received whole fluid (m3)</label><input id="i_in" type="number" value="18"></div>
+        <div><label>Consumed whole fluid (m3)</label><input id="i_out" type="number" value="22"></div>
+      </div>
+      <div class="row">
+        <div><label>Opening stock (m3)</label><input id="i_open" type="number" value="40"></div>
+        <div><label>Closing stock reported (m3)</label><input id="i_close" type="number" value="36"></div>
+      </div>
+      <button class="btn alt" onclick="checkInventory()">Проверить остатки</button>
+      <div id="inv_out" class="out" style="display:none"></div>
+    </div>
+  </div>
+</section>
+
+<section id="issues">
+  <h2>Issues / Non-conformities</h2>
+  <div class="grid2">
+    <div class="card">
+      <h3>Регистрация проблемы</h3>
+      <label>Category</label><select id="is_cat"><option>Lost circulation</option><option>Pipe sticking</option><option>Equipment</option><option>Data quality</option></select>
+      <label>Impact</label><select id="is_imp"><option>Low</option><option selected>Medium</option><option>High</option></select>
+      <label>Description</label><textarea id="is_desc">Volume mismatch between Volumes and Losses tabs.</textarea>
+      <label>Corrective action</label><textarea id="is_fix">Reconcile pit transfer logs and re-check downhole losses.</textarea>
+      <button class="btn" onclick="saveIssue()">Добавить issue</button>
+    </div>
+    <div class="card">
+      <h3>Issue log</h3>
+      <div id="issue_log" class="out">Пока пусто</div>
+    </div>
+  </div>
+</section>
+
+<section id="audit">
+  <h2>Post Well Audit (interval recap)</h2>
+  <div class="grid2">
+    <div class="card">
+      <h3>Интервалы</h3>
+      <table>
+        <tr><th>Interval</th><th>From (m)</th><th>To (m)</th><th>Cost (USD)</th></tr>
+        <tr><td>12 1/4" OH</td><td><input id="a_f1" type="number" value="2500"></td><td><input id="a_t1" type="number" value="3200"></td><td><input id="a_c1" type="number" value="82400"></td></tr>
+        <tr><td>8 1/2" OH</td><td><input id="a_f2" type="number" value="3200"></td><td><input id="a_t2" type="number" value="3667"></td><td><input id="a_c2" type="number" value="76800"></td></tr>
+      </table>
+      <button class="btn" onclick="buildAudit()">Build recap</button>
+      <div id="audit_out" class="out" style="display:none"></div>
+    </div>
+    <div class="card">
+      <h3>Status gates</h3>
+      <ul style="padding-left:20px;color:var(--muted)">
+        <li>All Daily Reports must be <span class="pill">Completed</span></li>
+        <li>Volume reconciliation must be <span class="pill">OK</span></li>
+        <li>Costing totals must be consistent with inventory</li>
+        <li>Final audit status must be <span class="pill">Closed</span></li>
+      </ul>
+      <button class="btn alt" onclick="checkGates()">Run quality gates</button>
+      <div id="gate_out" class="out" style="display:none"></div>
+    </div>
+  </div>
+</section>
+
+<section id="report">
+  <h2>Report Manager (симуляция)</h2>
+  <div class="grid2">
+    <div class="card">
+      <h3>Параметры отчета</h3>
+      <label>Report type</label>
+      <select id="r_type"><option>Daily Report</option><option>Summary Report</option><option>Recap Costs</option><option>Recap Volumes</option></select>
+      <label>Output format</label>
+      <select id="r_fmt"><option>PDF</option><option>XLSX</option><option>DOCX</option></select>
+      <label>Language</label>
+      <select id="r_lang"><option>Русский</option><option>English</option><option>Español</option><option>Deutsch</option><option>Português</option></select>
+      <label><input id="r_tight" type="checkbox"> Restrict distribution (Tight Hole)</label>
+      <button class="btn" onclick="generateReport()">Generate report</button>
+      <div id="rep_out" class="out" style="display:none"></div>
+    </div>
+    <div class="card">
+      <h3>Контроль перед отправкой</h3>
+      <div id="qc_table" class="out">
+        <div class="orow"><span>Mandatory fields</span><span class="v">PENDING</span></div>
+        <div class="orow"><span>Volume reconciliation</span><span class="v">PENDING</span></div>
+        <div class="orow"><span>Cost consistency</span><span class="v">PENDING</span></div>
+        <div class="orow"><span>Audit status</span><span class="v">PENDING</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+<script>
+const I5_RUNTIME_KEY = 'nexus_i5_document_pipeline_runtime_v1';
+const state = { wellSaved:false, volDelta:null, docDelta:null, costTotal:null, issueList:[] };
+
+function tab(id,btn){
+  document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+
+function row(label,val,unit=''){ return `<div class="orow"><span>${label}</span><span class="v">${val} ${unit}</span></div>`; }
+
+function saveWell(){
+  const name = document.getElementById('w_name').value.trim();
+  const api = document.getElementById('w_api').value.trim();
+  const md = +document.getElementById('w_md').value;
+  const tvd = +document.getElementById('w_tvd').value;
+  const out = document.getElementById('well_out'); out.style.display='';
+  if(!name || !api || md<=0 || tvd<=0){ out.innerHTML = '<span class="bad">Error: заполните mandatory fields.</span>'; state.wellSaved=false; return; }
+  const ok = md >= tvd;
+  state.wellSaved = ok;
+  out.innerHTML = row('Well',name) + row('API/PCN',api) + row('MD/TVD',`${md}/${tvd}`,'m') +
+    `<div class="orow"><span>Validation</span><span class="v ${ok?'ok':'bad'}">${ok?'OK':'MD must be >= TVD'}</span></div>`;
+  saveI5RuntimeState();
+}
+
+function calcSections(){
+  const dh = +document.getElementById('c_hole').value;
+  const pod = +document.getElementById('c_pod').value;
+  const pid = +document.getElementById('c_pid').value;
+  const out = document.getElementById('sec_out'); out.style.display='';
+  const capAnn = (dh*dh-pod*pod)/1273.24;
+  const capPipe = (pid*pid)/1273.24;
+  out.innerHTML = row('Annular capacity',capAnn.toFixed(2),'L/m') + row('Pipe capacity',capPipe.toFixed(2),'L/m') +
+    `<div class="orow"><span>Geometry</span><span class="v ${dh>pod?'ok':'bad'}">${dh>pod?'VALID':'INVALID (hole OD <= pipe OD)'}</span></div>`;
+}
+
+function validateDaily(){
+  const date = document.getElementById('d_date').value;
+  const depth = +document.getElementById('d_curmd').value;
+  const st = document.getElementById('d_status').value;
+  const out = document.getElementById('daily_out'); out.style.display='';
+  const mandatory = state.wellSaved && !!date && depth>0;
+  out.innerHTML = row('Status',st) + row('Current depth',depth,'m') +
+    `<div class="orow"><span>Mandatory checks</span><span class="v ${mandatory?'ok':'bad'}">${mandatory?'PASS':'FAIL'}</span></div>`;
+  saveI5RuntimeState();
+}
+
+function calcBitTime(){
+  const m = +document.getElementById('b_foot').value;
+  const h = +document.getElementById('t_drill').value;
+  const npt = +document.getElementById('t_npt').value;
+  const rop = h>0 ? m/h : 0;
+  const out = document.getElementById('bit_out'); out.style.display='';
+  out.innerHTML = row('ROP',rop.toFixed(2),'m/h') + row('NPT',npt.toFixed(1),'h') +
+    `<div class="orow"><span>Performance</span><span class="v ${rop>=15?'ok':'warn'}">${rop>=15?'GOOD':'CHECK'}</span></div>`;
+}
+
+function calcVolumes(){
+  const prev = +document.getElementById('v_prev').value;
+  const cur = +document.getElementById('v_cur').value;
+  state.volDelta = cur-prev;
+  const out = document.getElementById('vol_out'); out.style.display='';
+  out.innerHTML = row('Previous',prev.toFixed(2),'m3') + row('Current',cur.toFixed(2),'m3') + row('Net volume change',state.volDelta.toFixed(2),'m3');
+  saveI5RuntimeState();
+}
+
+function reconcileVolumes(){
+  const gain = +document.getElementById('lg_gain').value;
+  const loss = +document.getElementById('lg_loss').value;
+  state.docDelta = gain-loss;
+  const out = document.getElementById('lg_out'); out.style.display='';
+  const diff = (state.volDelta===null) ? null : Math.abs(state.volDelta-state.docDelta);
+  const ok = diff!==null && diff < 0.01;
+  out.innerHTML = row('Documented net change',state.docDelta.toFixed(2),'m3') +
+    (state.volDelta===null ? '<div class="orow"><span>Need Volumes calc first</span><span class="v bad">BLOCKED</span></div>' : row('Difference vs Volumes',diff.toFixed(3),'m3')) +
+    `<div class="orow"><span>Blocking rule</span><span class="v ${ok?'ok':'bad'}">${ok?'PASS':'FAIL'}</span></div>`;
+  saveI5RuntimeState();
+}
+
+function checkFluid(){
+  const rho = +document.getElementById('f_rho').value;
+  const pv = +document.getElementById('f_pv').value;
+  const fl = +document.getElementById('f_fl').value;
+  const pvLim = 17*rho;
+  const out = document.getElementById('fluid_out'); out.style.display='';
+  out.innerHTML = row('Density',rho.toFixed(2),'g/cc') + row('PV limit',pvLim.toFixed(1),'mPa·s') +
+    `<div class="orow"><span>PV check</span><span class="v ${pv<=pvLim?'ok':'warn'}">${pv<=pvLim?'OK':'HIGH'}</span></div>`+
+    `<div class="orow"><span>Filtrate check</span><span class="v ${fl<=8?'ok':'warn'}">${fl<=8?'OK':'WATCH'}</span></div>`;
+}
+
+function calcHydraulics(){
+  const rho = +document.getElementById('f_rho').value;
+  const dp = +document.getElementById('h_dp').value;
+  const tvd = +document.getElementById('h_tvd').value;
+  const vn = +document.getElementById('h_vn').value;
+  const ecd = rho + dp/(tvd*0.00981);
+  const out = document.getElementById('hyd_out'); out.style.display='';
+  const vClass = vn<76?'warn':(vn>137?'bad':'ok');
+  out.innerHTML = row('ECD',ecd.toFixed(4),'g/cc') + row('Nozzle velocity',vn.toFixed(1),'m/s') +
+    `<div class="orow"><span>Nozzle range</span><span class="v ${vClass}">${vClass==='ok'?'76-137 OK':(vClass==='warn'?'LOW':'HIGH')}</span></div>`;
+}
+
+function calcCost(){
+  const q1=+document.getElementById('c_q1').value, p1=+document.getElementById('c_p1').value;
+  const q2=+document.getElementById('c_q2').value, p2=+document.getElementById('c_p2').value;
+  const q3=+document.getElementById('c_q3').value, p3=+document.getElementById('c_p3').value;
+  const other=+document.getElementById('c_other').value;
+  state.costTotal = q1*p1 + q2*p2 + q3*p3 + other;
+  const out = document.getElementById('cost_out'); out.style.display='';
+  out.innerHTML = row('Materials subtotal',(state.costTotal-other).toFixed(2),'USD') + row('Other charges',other.toFixed(2),'USD') + row('Total cost',state.costTotal.toFixed(2),'USD');
+  saveI5RuntimeState();
+}
+
+function checkInventory(){
+  const iin=+document.getElementById('i_in').value, iout=+document.getElementById('i_out').value;
+  const open=+document.getElementById('i_open').value, close=+document.getElementById('i_close').value;
+  const calcClose = open + iin - iout;
+  const diff = Math.abs(calcClose-close);
+  const out = document.getElementById('inv_out'); out.style.display='';
+  out.innerHTML = row('Calculated closing',calcClose.toFixed(2),'m3') + row('Reported closing',close.toFixed(2),'m3') +
+    `<div class="orow"><span>Inventory consistency</span><span class="v ${diff<0.01?'ok':'warn'}">${diff<0.01?'OK':'CHECK'}</span></div>`;
+  saveI5RuntimeState();
+}
+
+function saveIssue(){
+  const cat=document.getElementById('is_cat').value;
+  const imp=document.getElementById('is_imp').value;
+  const desc=document.getElementById('is_desc').value.trim();
+  if(!desc) return;
+  state.issueList.push({cat,imp,desc});
+  const log=document.getElementById('issue_log');
+  log.innerHTML = state.issueList.map((x,i)=>`<div class="orow"><span>#${i+1} ${x.cat} (${x.imp})</span><span class="v">OPEN</span></div>`).join('') + `<div style="margin-top:8px;color:#9cb5d9">${state.issueList.length} issue(s)</div>`;
+  saveI5RuntimeState();
+}
+
+function buildAudit(){
+  const f1=+document.getElementById('a_f1').value,t1=+document.getElementById('a_t1').value,c1=+document.getElementById('a_c1').value;
+  const f2=+document.getElementById('a_f2').value,t2=+document.getElementById('a_t2').value,c2=+document.getElementById('a_c2').value;
+  const m1=t1-f1,m2=t2-f2,totm=m1+m2,totc=c1+c2;
+  const out=document.getElementById('audit_out'); out.style.display='';
+  out.innerHTML = row('Interval meters',totm.toFixed(1),'m') + row('Total interval cost',totc.toFixed(0),'USD') + row('Avg cost', (totc/Math.max(totm,1)).toFixed(2),'USD/m');
+  saveI5RuntimeState();
+}
+
+function checkGates(){
+  const volOk = state.volDelta!==null && state.docDelta!==null && Math.abs(state.volDelta-state.docDelta)<0.01;
+  const costOk = state.costTotal!==null;
+  const out=document.getElementById('gate_out'); out.style.display='';
+  out.innerHTML =
+    `<div class="orow"><span>Well saved</span><span class="v ${state.wellSaved?'ok':'bad'}">${state.wellSaved?'OK':'FAIL'}</span></div>`+
+    `<div class="orow"><span>Volume reconciliation</span><span class="v ${volOk?'ok':'bad'}">${volOk?'OK':'FAIL'}</span></div>`+
+    `<div class="orow"><span>Costing calculated</span><span class="v ${costOk?'ok':'warn'}">${costOk?'OK':'PENDING'}</span></div>`+
+    `<div class="orow"><span>Post Well Audit</span><span class="v ${volOk&&costOk?'ok':'warn'}">${volOk&&costOk?'READY TO CLOSE':'IN PROGRESS'}</span></div>`;
+  saveI5RuntimeState();
+}
+
+function generateReport(){
+  const t=document.getElementById('r_type').value;
+  const f=document.getElementById('r_fmt').value;
+  const l=document.getElementById('r_lang').value;
+  const tight=document.getElementById('r_tight').checked;
+  const volOk = state.volDelta!==null && state.docDelta!==null && Math.abs(state.volDelta-state.docDelta)<0.01;
+  const canGenerate = state.wellSaved && volOk && state.costTotal!==null;
+
+  const out=document.getElementById('rep_out'); out.style.display='';
+  out.innerHTML = row('Report',t) + row('Format',f) + row('Language',l) + row('Distribution', tight?'Restricted (Tight Hole)':'Standard') +
+    `<div class="orow"><span>Final QC</span><span class="v ${canGenerate?'ok':'bad'}">${canGenerate?'PASS':'FAIL'}</span></div>` +
+    `<div style="margin-top:8px;color:${canGenerate?'#3fb950':'#f85149'}">${canGenerate?'Report generated successfully (simulation).':'Complete mandatory checks before generation.'}</div>`;
+  saveI5RuntimeState();
+}
+
+function saveI5RuntimeState(){
+  const volOk = state.volDelta!==null && state.docDelta!==null && Math.abs(state.volDelta-state.docDelta)<0.01;
+  const issuesHigh = state.issueList.filter((item)=>item.imp==='High').length;
+  let status = 'active';
+  let pill = 'Active';
+  let health = 64;
+  const blockers = [];
+  const actions = [];
+
+  if(!state.wellSaved){ blockers.push('Well data is not fully validated.'); health -= 20; }
+  if(!volOk){ blockers.push('Volume reconciliation is not yet passing the blocking WS2000 rule.'); health -= 20; }
+  if(state.costTotal===null){ blockers.push('Costing has not been calculated yet.'); health -= 10; }
+  if(issuesHigh){ blockers.push('There are ' + issuesHigh + ' high-impact open issues in the daily report flow.'); health -= 14; }
+
+  if(state.wellSaved && volOk && state.costTotal!==null && issuesHigh===0){
+    status = 'ready';
+    pill = 'Ready';
+    health = 90;
+    actions.push('Document pipeline is ready for report generation and controlled distribution.');
+  } else if (health <= 40) {
+    status = 'at_risk';
+    pill = 'At risk';
+    actions.push('Close blocking data-quality gaps before daily report export.');
+  } else {
+    actions.push('Keep daily report, volumes/losses, and costing in the same review cycle.');
+  }
+
+  const summary = status === 'ready'
+    ? 'Document pipeline is ready: well data, volume reconciliation, and costing are aligned for controlled report generation.'
+    : status === 'at_risk'
+      ? 'Document pipeline is at risk: mandatory checks or balance rules are still open, so report generation should stay blocked.'
+      : 'Document pipeline is active but still needs a tighter daily QC loop before it becomes a dependable ingestion-and-reporting engine.';
+
+  localStorage.setItem(I5_RUNTIME_KEY, JSON.stringify({
+    status: status,
+    pill: pill,
+    health: health,
+    summary: summary,
+    blockers: blockers,
+    actions: actions.slice(0,5),
+    issueCount: state.issueList.length,
+    updatedAt: new Date().toISOString()
+  }));
+
+  const pillNode = document.getElementById('i5RuntimePill');
+  const summaryNode = document.getElementById('i5RuntimeSummary');
+  pillNode.className = 'runtime-pill ' + status;
+  pillNode.textContent = pill;
+  summaryNode.textContent = summary;
+}
+
+saveI5RuntimeState();
+</script>
+  <script src="assets/js/global-auth-widget.js"></script>
+</body>
+</html>

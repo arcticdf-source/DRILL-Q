@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Engineering Tools — CLOTO Platform</title>
+  <link rel="stylesheet" href="cloto.css">
+  <style>
+    .ic { display:flex; align-items:center; justify-content:center; }
+    .ic svg { width:16px; height:16px; stroke-width:1.5; stroke:currentColor; fill:none; stroke-linecap:round; stroke-linejoin:round; }
+    .tool-card-icon-wrap .ic { width:100%; height:100%; }
+    .ic-mudgpt  { color:#6D28D9; background:#F3F0FF; }
+    .ic-calc    { color:var(--accent); background:var(--accent-light); }
+    .ic-ai      { color:#0891B2; background:#ECFEFF; }
+    .ic-tender  { color:var(--orange); background:var(--orange-light); }
+    .ic-mud     { color:#0369A1; background:#F0F9FF; }
+    .ic-ops     { color:var(--green); background:var(--green-light); }
+    .ic-well    { color:var(--amber); background:var(--amber-light); }
+    .ic-report  { color:#6B7280; background:#F9FAFB; }
+    .ic-strat   { color:#DC2626; background:#FEF2F2; }
+    .tools-search-bar {
+      display:flex; align-items:center; gap:10px;
+      background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15);
+      border-radius:8px; padding:8px 14px; max-width:360px; margin-top:20px;
+    }
+    .tools-search-bar input {
+      background:transparent; border:none; outline:none;
+      color:#fff; font-size:13px; font-family:inherit; width:100%;
+    }
+    .tools-search-bar input::placeholder { color:rgba(255,255,255,0.35); }
+    .tools-hero-meta { display:flex; align-items:center; gap:16px; margin-top:12px; flex-wrap:wrap; }
+    .tools-hero-stat { font-size:12px; color:rgba(255,255,255,0.4); }
+    .tools-hero-stat strong { color:rgba(255,255,255,0.75); font-weight:600; }
+  </style>
+</head>
+<body>
+
+<!-- TICKER -->
+<div class="ticker-bar">
+  <div class="ticker-track">
+    <span class="ticker-item"><span class="lbl">CLOTO</span> Engineering Platform · 90+ modules</span>
+    <span class="ticker-item"><span class="lbl">AI</span> RAG Console · AI Assistant · MudGPT active</span>
+    <span class="ticker-item"><span class="lbl">TENDERS</span> Rosneft VCHNG — documentation loaded</span>
+    <span class="ticker-item"><span class="lbl">HYDRAULICS</span> DFG Lab · ECD calculation active</span>
+    <span class="ticker-item"><span class="lbl">MI MANUAL</span> Knowledge Base indexed</span>
+    <span class="ticker-item"><span class="lbl">CLOTO</span> Engineering Platform · 90+ modules</span>
+    <span class="ticker-item"><span class="lbl">AI</span> RAG Console · AI Assistant · MudGPT active</span>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="index-en.html">
+    <div class="logo-mark">CL</div>
+    <div>
+      <div class="logo-text">CL<span>OTO</span></div>
+      <div class="logo-sub">Oilfield Chemistry</div>
+    </div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index-en.html">Platform</a></li>
+    <li><a href="catalog-en.html">Products</a></li>
+    <li><a href="proposal-en.html">AI Proposal</a></li>
+    <li><a href="tools-en.html" class="active">Tools</a></li>
+  </ul>
+  <div class="nav-right">
+    <a href="tools-ru.html" class="lang-link">🇷🇺 RU</a>
+    <a href="proposal-en.html" class="btn-orange" style="padding:7px 16px;font-size:12px;">Get a Proposal</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="tools-hero">
+  <div class="section-label" style="color:rgba(255,255,255,0.5);margin-bottom:8px;">Engineering Platform</div>
+  <h1 style="color:#fff;font-size:32px;letter-spacing:-0.04em;font-weight:600;margin-bottom:8px;">Tools &amp; Modules</h1>
+  <p style="color:rgba(255,255,255,0.5);font-size:14px;max-width:520px;line-height:1.6;">Calculators, AI consoles, dashboards, knowledge bases, tender modules, well construction projects — all in one place.</p>
+  <div class="tools-search-bar">
+    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input type="text" id="toolSearch" placeholder="Search tools..." oninput="filterTools()">
+  </div>
+  <div class="tools-hero-meta">
+    <span class="tools-hero-stat"><strong>9</strong> categories</span>
+    <span class="tools-hero-stat" style="color:rgba(255,255,255,0.2);">·</span>
+    <span class="tools-hero-stat"><strong id="toolCount">52</strong> tools</span>
+    <span class="tools-hero-stat" style="color:rgba(255,255,255,0.2);">·</span>
+    <span class="tools-hero-stat"><strong>196</strong> files indexed</span>
+  </div>
+</div>
+
+<!-- LAYOUT: SIDEBAR + MAIN -->
+<div class="tools-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="tools-sidebar">
+    <div class="tools-sidebar-section">
+      <div class="tools-sidebar-label">Categories</div>
+      <a class="tools-sidebar-item active" href="#mudgpt" onclick="setActive(this)">
+        <span style="color:#6D28D9;">⬡</span> MudGPT Chemicals
+        <span class="tools-sidebar-count">7</span>
+      </a>
+      <a class="tools-sidebar-item" href="#calc" onclick="setActive(this)">
+        <span style="color:var(--accent);">⊞</span> Calculators
+        <span class="tools-sidebar-count">7</span>
+      </a>
+      <a class="tools-sidebar-item" href="#ai" onclick="setActive(this)">
+        <span style="color:#0891B2;">◎</span> AI &amp; Knowledge Bases
+        <span class="tools-sidebar-count">6</span>
+      </a>
+      <a class="tools-sidebar-item" href="#tender" onclick="setActive(this)">
+        <span style="color:var(--orange);">▣</span> Tender Modules
+        <span class="tools-sidebar-count">4</span>
+      </a>
+      <a class="tools-sidebar-item" href="#mud" onclick="setActive(this)">
+        <span style="color:#0369A1;">◈</span> Drilling Fluids
+        <span class="tools-sidebar-count">3</span>
+      </a>
+      <a class="tools-sidebar-item" href="#ops" onclick="setActive(this)">
+        <span style="color:var(--green);">◉</span> Operations Dashboards
+        <span class="tools-sidebar-count">7</span>
+      </a>
+      <a class="tools-sidebar-item" href="#well" onclick="setActive(this)">
+        <span style="color:var(--amber);">◇</span> Well Projects
+        <span class="tools-sidebar-count">8</span>
+      </a>
+      <a class="tools-sidebar-item" href="#report" onclick="setActive(this)">
+        <span style="color:#6B7280;">▤</span> Daily Reports
+        <span class="tools-sidebar-count">3</span>
+      </a>
+      <a class="tools-sidebar-item" href="#strat" onclick="setActive(this)">
+        <span style="color:#DC2626;">◆</span> Strategy
+        <span class="tools-sidebar-count">6</span>
+      </a>
+    </div>
+    <div class="tools-sidebar-section" style="border-top:1px solid var(--border);margin-top:8px;padding-top:16px;">
+      <div class="tools-sidebar-label">Platform</div>
+      <a class="tools-sidebar-item" href="index-en.html">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Home
+      </a>
+      <a class="tools-sidebar-item" href="catalog-en.html">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+        Product Catalog
+      </a>
+      <a class="tools-sidebar-item" href="proposal-en.html">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        AI Proposal
+      </a>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="tools-main">
+    <div class="tools-main-header">
+      <div class="tools-search-wrap">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-tertiary);flex-shrink:0;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="toolSearch2" placeholder="Search..." oninput="filterTools2()">
+      </div>
+      <div class="tools-count-label" id="toolCount2">52 tools</div>
+    </div>
+
+    <div id="noResults" class="no-results">No results found. Try a different search term.</div>
+
+    <!-- MUDGPT -->
+    <div class="tools-category" id="mudgpt" data-cat>
+      <div class="tools-category-title">
+        <span style="font-size:15px;">⬡</span> MudGPT — Chemicals &amp; Materials
+      </div>
+      <div class="tools-grid">
+
+        <a class="tool-card" href="docs/87_mudgpt_chemicals_materials.html" target="_blank" data-name="mudgpt chemicals materials database catalog search">
+          <div class="tool-card-icon-wrap ic ic-mudgpt">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9 3h6v8l3.6 6.8A2 2 0 0 1 17 21H7a2 2 0 0 1-1.6-3.2L9 11V3z"/><line x1="9" y1="3" x2="15" y2="3"/></svg>
+          </div>
+          <div class="tool-card-name">Chemicals &amp; Materials Database</div>
+          <div class="tool-card-desc">Search and characterize all chemical reagents for drilling fluid systems</div>
+          <span class="tool-card-tag tool-tag-ai">MudGPT</span>
+        </a>
+
+        <a class="tool-card" href="docs/88_mudgpt_product_asphalt.html" target="_blank" data-name="asphalt gilsonite soltex sulfonated mudgpt">
+          <div class="tool-card-icon-wrap ic ic-mudgpt">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          </div>
+          <div class="tool-card-name">Product: Asphalt / Gilsonite</div>
+          <div class="tool-card-desc">Sulfonated asphalt — properties, applications, SOLTEX competitor comparison</div>
+          <span class="tool-card-tag tool-tag-ai">MudGPT</span>
+        </a>
+
+        <a class="tool-card" href="docs/89_mudgpt_product_pac.html" target="_blank" data-name="pac polyanionic cellulose cmc mudgpt filtration wbm">
+          <div class="tool-card-icon-wrap ic ic-mudgpt">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+          </div>
+          <div class="tool-card-name">Product: PAC / CMC</div>
+          <div class="tool-card-desc">Polyanionic cellulose — filtration control and rheology for WBM systems</div>
+          <span class="tool-card-tag tool-tag-ai">MudGPT</span>
+        </a>
+
+        <a class="tool-card" href="docs/90_mudgpt_product_xanthan.html" target="_blank" data-name="xanthan gum biopolymer viscosifier rheology mudgpt">
+          <div class="tool-card-icon-wrap ic ic-mudgpt">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <div class="tool-card-name">Product: Xanthan Gum</div>
+          <div class="tool-card-desc">Biopolymer viscosifier — rheology control and hole cleaning performance</div>
+          <span class="tool-card-tag tool-tag-ai">MudGPT</span>
+        </a>
+
+        <a class="tool-card" href="docs/91_mudgpt_materials_admin.html" target="_blank" data-name="mudgpt admin database materials management update">
+          <div class="tool-card-icon-wrap ic ic-mudgpt">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          </div>
+          <div class="tool-card-name">Materials Database Admin</div>
+          <div class="tool-card-desc">Manage and update the MudGPT chemical reagents database</div>
+          <span class="tool-card-tag tool-tag-ai">Admin</span>
+        </a>
+
+        <a class="tool-card" href="docs/94_mudgpt_products_catalog.html" target="_blank" data-name="mudgpt products catalog chemicals list search tds">
+          <div class="tool-card-icon-wrap ic ic-mudgpt">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+          </div>
+          <div class="tool-card-name">MudGPT Products Catalog</div>
+          <div class="tool-card-desc">Full reagent catalog — search, filter, TDS access</div>
+          <span class="tool-card-tag tool-tag-ai">Catalog</span>
+        </a>
+
+        <a class="tool-card" href="docs/93_mudgpt_stock_arkhangelsk.html" target="_blank" data-name="warehouse arkhangelsk stock inventory chemicals availability">
+          <div class="tool-card-icon-wrap ic ic-mudgpt">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+          </div>
+          <div class="tool-card-name">Arkhangelsk Warehouse Stock</div>
+          <div class="tool-card-desc">Current inventory and availability of chemicals at Arkhangelsk warehouse</div>
+          <span class="tool-card-tag tool-tag-ai">Warehouse</span>
+        </a>
+
+      </div>
+    </div>
+
+    <!-- CALCULATORS -->
+    <div class="tools-category" id="calc" data-cat>
+      <div class="tools-category-title">
+        <span style="font-size:15px;color:var(--accent);">⊞</span> Engineering Calculators
+      </div>
+      <div class="tools-grid">
+
+        <a class="tool-card" href="docs/41_dfg_drilling_fluids_hydraulics_lab.html" target="_blank" data-name="hydraulics drilling fluids dfg lab ecd pressure losses">
+          <div class="tool-card-icon-wrap ic ic-calc">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          </div>
+          <div class="tool-card-name">Drilling Fluid Hydraulics — DFG Lab</div>
+          <div class="tool-card-desc">ECD calculation, pressure losses by interval, full hydraulics program</div>
+          <span class="tool-card-tag tool-tag-calc">Calculator</span>
+        </a>
+
+        <a class="tool-card" href="docs/85_lcm_calculator.html" target="_blank" data-name="lcm loss circulation psd fracture grading calculator">
+          <div class="tool-card-icon-wrap ic ic-calc">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+          <div class="tool-card-name">LCM — PSD Calculator</div>
+          <div class="tool-card-desc">LCM blend design by PSD for bridging lost circulation fractures</div>
+          <span class="tool-card-tag tool-tag-calc">Calculator</span>
+        </a>
+
+        <a class="tool-card" href="docs/43_cementing_calculator.html" target="_blank" data-name="cementing volume pressure calculator woc job design">
+          <div class="tool-card-icon-wrap ic ic-calc">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="12" y2="14"/><line x1="8" y1="18" x2="12" y2="18"/></svg>
+          </div>
+          <div class="tool-card-name">Cementing Calculator</div>
+          <div class="tool-card-desc">Slurry volume, cementing pressures, WOC time by casing interval</div>
+          <span class="tool-card-tag tool-tag-calc">Calculator</span>
+        </a>
+
+        <a class="tool-card" href="docs/44_cementing_recipe_builder.html" target="_blank" data-name="cement recipe builder slurry design additives hpht">
+          <div class="tool-card-icon-wrap ic ic-calc">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><polyline points="9 15 12 18 15 15"/></svg>
+          </div>
+          <div class="tool-card-name">Cement Recipe Builder</div>
+          <div class="tool-card-desc">Design cement slurry formulations with additives for well conditions</div>
+          <span class="tool-card-tag tool-tag-calc">Design</span>
+        </a>
+
+        <a class="tool-card" href="docs/29_roi_calculator_interactive.html" target="_blank" data-name="roi calculator economics npt savings payback interactive">
+          <div class="tool-card-icon-wrap ic ic-calc">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </div>
+          <div class="tool-card-name">ROI Calculator</div>
+          <div class="tool-card-desc">Economic impact analysis — NPT savings, cost reduction, payback period</div>
+          <span class="tool-card-tag tool-tag-calc">Economics</span>
+        </a>
+
+        <a class="tool-card" href="docs/120_drilling_calculations_menu.html" target="_blank" data-name="drilling calculations menu volume density solids well">
+          <div class="tool-card-icon-wrap ic ic-calc">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="12" y2="14"/></svg>
+          </div>
+          <div class="tool-card-name">Drilling Calculations Menu</div>
+          <div class="tool-card-desc">Full suite of engineering calculators — volume, density, solids control</div>
+          <span class="tool-card-tag tool-tag-calc">Calculators</span>
+        </a>
+
+        <a class="tool-card" href="docs/36_hydraulics_calculator_interactive.html" target="_blank" data-name="hydraulics interactive calculator flow regime pressure ecd">
+          <div class="tool-card-icon-wrap ic ic-calc">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          </div>
+          <div class="tool-card-name">Hydraulics — Interactive</div>
+          <div class="tool-card-desc">Interactive hydraulics calculator — flow regimes, ECD, pressure losses</div>
+          <span class="tool-card-tag tool-tag-calc">Calculator</span>
+        </a>
+
+      </div>
+    </div>
+
+    <!-- AI & KNOWLEDGE BASES -->
+    <div class="tools-category" id="ai" data-cat>
+      <div class="tools-category-title">
+        <span style="font-size:15px;color:#0891B2;">◎</span> AI Consoles &amp; Knowledge Bases
+      </div>
+      <div class="tools-grid">
+
+        <a class="tool-card" href="docs/80_ai_assistant_chat.html" target="_blank" data-name="ai assistant chat drilling questions kpi fluids">
+          <div class="tool-card-icon-wrap ic ic-ai">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          </div>
+          <div class="tool-card-name">AI Assistant (Chat)</div>
+          <div class="tool-card-desc">Smart drilling chat — fluids, hydraulics, KPIs. Fast, precise answers</div>
+          <span class="tool-card-tag tool-tag-ai">AI Chat</span>
+        </a>
+
+        <a class="tool-card" href="docs/48_ai_engineer_console.html" target="_blank" data-name="ai engineer console rag knowledge base index search">
+          <div class="tool-card-icon-wrap ic ic-ai">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+          </div>
+          <div class="tool-card-name">AI Engineer Console</div>
+          <div class="tool-card-desc">Local RAG console — search the project knowledge base, browser history</div>
+          <span class="tool-card-tag tool-tag-ai">RAG</span>
+        </a>
+
+        <a class="tool-card" href="docs/49_knowledge_center.html" target="_blank" data-name="knowledge center structure drilling technology">
+          <div class="tool-card-icon-wrap ic ic-ai">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          </div>
+          <div class="tool-card-name">Knowledge Center</div>
+          <div class="tool-card-desc">Structured knowledge base covering drilling, fluid technology, and regulations</div>
+          <span class="tool-card-tag tool-tag-ai">Library</span>
+        </a>
+
+        <a class="tool-card" href="docs/35_hydraulics_knowledge_base.html" target="_blank" data-name="hydraulics knowledge base formulas flow regime ecd">
+          <div class="tool-card-icon-wrap ic ic-ai">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 5.3c-.29 1.45-1.14 2.84-2.29 3.76S3 11.1 3 12.25c0 2.22 1.8 4.05 4 4.05z"/><path d="M12.56 6.6A10.97 10.97 0 0 0 14 3.02c.5 2.5 2 4.9 4 6.5s3 3.5 3 5.5a6.98 6.98 0 0 1-11.91 4.97"/></svg>
+          </div>
+          <div class="tool-card-name">Knowledge Base: Hydraulics</div>
+          <div class="tool-card-desc">Interactive reference — formulas, flow regimes, ECD, pressure calculations</div>
+          <span class="tool-card-tag tool-tag-doc">Reference</span>
+        </a>
+
+        <a class="tool-card" href="docs/38_wellsite_engineering_knowledge_base.html" target="_blank" data-name="wellsite engineer knowledge base complications parameters">
+          <div class="tool-card-icon-wrap ic ic-ai">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          </div>
+          <div class="tool-card-name">Knowledge Base: Wellsite Engineering</div>
+          <div class="tool-card-desc">Reference guide — troubleshooting complications, drilling parameter control</div>
+          <span class="tool-card-tag tool-tag-doc">Reference</span>
+        </a>
+
+        <a class="tool-card" href="docs/45_drilling_fluids_mi_knowledge_map.html" target="_blank" data-name="mi manual knowledge map drilling fluids complications chemistry">
+          <div class="tool-card-icon-wrap ic ic-ai">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+          </div>
+          <div class="tool-card-name">MI Drilling Fluids Knowledge Map</div>
+          <div class="tool-card-desc">Knowledge map based on MI SWACO manual — fluids, complications, chemistry</div>
+          <span class="tool-card-tag tool-tag-doc">MI Manual</span>
+        </a>
+
+      </div>
+    </div>
+
+    <!-- TENDER MODULES -->
+    <div class="tools-category" id="tender" data-cat>
+      <div class="tools-category-title">
+        <span style="font-size:15px;color:var(--orange);">▣</span> Tender Modules
+      </div>
+      <div class="tools-grid">
+
+        <a class="tool-card" href="docs/55_tender_project_intake.html" target="_blank" data-name="tender intake form qualification request rfq screening">
+          <div class="tool-card-icon-wrap ic ic-tender">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          </div>
+          <div class="tool-card-name">Tender Intake</div>
+          <div class="tool-card-desc">Initial RFQ processing — classification, prioritization, qualification screening</div>
+          <span class="tool-card-tag tool-tag-tender">Intake</span>
+        </a>
+
+        <a class="tool-card" href="docs/50_drilling_fluids_tender_project.html" target="_blank" data-name="tender project drilling fluids full calculation rfq bid">
+          <div class="tool-card-icon-wrap ic ic-tender">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><path d="m9 14 2 2 4-4"/></svg>
+          </div>
+          <div class="tool-card-name">Drilling Fluids Tender Project</div>
+          <div class="tool-card-desc">Full tender project module for drilling fluid bid calculations</div>
+          <span class="tool-card-tag tool-tag-tender">Tender</span>
+        </a>
+
+        <a class="tool-card" href="docs/50_tender_project_calc.html" target="_blank" data-name="tender price calculation cost margin offer commercial">
+          <div class="tool-card-icon-wrap ic ic-tender">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </div>
+          <div class="tool-card-name">Tender Price Calculator</div>
+          <div class="tool-card-desc">Commercial offer pricing calculator — costs, margin, final bid price</div>
+          <span class="tool-card-tag tool-tag-tender">Calculator</span>
+        </a>
+
+        <a class="tool-card" href="docs/50_drilling_npt_flow.html" target="_blank" data-name="npt non-productive time flow tree analysis causes losses">
+          <div class="tool-card-icon-wrap ic ic-tender">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <div class="tool-card-name">NPT Flow — Loss Tree</div>
+          <div class="tool-card-desc">Non-productive time root cause analysis, NPT flow diagram</div>
+          <span class="tool-card-tag tool-tag-tender">Analysis</span>
+        </a>
+
+      </div>
+    </div>
+
+    <!-- DRILLING FLUIDS -->
+    <div class="tools-category" id="mud" data-cat>
+      <div class="tools-category-title">
+        <span style="font-size:15px;color:#0369A1;">◈</span> Drilling Fluids
+      </div>
+      <div class="tools-grid">
+
+        <a class="tool-card" href="docs/42_drilling_fluids_dashboard.html" target="_blank" data-name="drilling fluid dashboard monitor parameters rheology density">
+          <div class="tool-card-icon-wrap ic ic-mud">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          </div>
+          <div class="tool-card-name">Drilling Fluid Dashboard</div>
+          <div class="tool-card-desc">Real-time fluid parameters — rheology, filtration, density monitoring</div>
+          <span class="tool-card-tag tool-tag-dash">Monitor</span>
+        </a>
+
+        <a class="tool-card" href="docs/46_drilling_fluids_system_designer.html" target="_blank" data-name="fluid system designer design composition formulation wbm obm">
+          <div class="tool-card-icon-wrap ic ic-mud">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+          </div>
+          <div class="tool-card-name">Fluid System Designer</div>
+          <div class="tool-card-desc">Design fluid composition and program for specific well conditions</div>
+          <span class="tool-card-tag tool-tag-calc">Design</span>
+        </a>
+
+        <a class="tool-card" href="docs/47_drilling_fluid_system_selection.html" target="_blank" data-name="fluid system selection wbm obm synthetic ai recommendation">
+          <div class="tool-card-icon-wrap ic ic-mud">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </div>
+          <div class="tool-card-name">Fluid System Selection</div>
+          <div class="tool-card-desc">AI recommendation for WBM/OBM/SBM based on geology, temperature, objectives</div>
+          <span class="tool-card-tag tool-tag-ai">AI Select</span>
+        </a>
+
+      </div>
+    </div>
+
+    <!-- OPERATIONS DASHBOARDS -->
+    <div class="tools-category" id="ops" data-cat>
+      <div class="tools-category-title">
+        <span style="font-size:15px;color:var(--green);">◉</span> Operations Dashboards
+      </div>
+      <div class="tools-grid">
+
+        <a class="tool-card" href="docs/81_drilling_daily_intelligence_fusion.html" target="_blank" data-name="daily intelligence fusion drilling dashboard summary wells">
+          <div class="tool-card-icon-wrap ic ic-ops">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          </div>
+          <div class="tool-card-name">Daily Intelligence Fusion</div>
+          <div class="tool-card-desc">Consolidated daily operations summary across all active wells</div>
+          <span class="tool-card-tag tool-tag-dash">Dashboard</span>
+        </a>
+
+        <a class="tool-card" href="docs/78_drilling_lifecycle_cockpit.html" target="_blank" data-name="drilling lifecycle cockpit well management planning completion">
+          <div class="tool-card-icon-wrap ic ic-ops">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+          </div>
+          <div class="tool-card-name">Drilling Lifecycle Cockpit</div>
+          <div class="tool-card-desc">Well lifecycle management — from planning through drilling to handover</div>
+          <span class="tool-card-tag tool-tag-dash">Cockpit</span>
+        </a>
+
+        <a class="tool-card" href="docs/77_i3_losses_cockpit.html" target="_blank" data-name="losses cockpit i3 complications lost circulation pressure monitor">
+          <div class="tool-card-icon-wrap ic ic-ops">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          </div>
+          <div class="tool-card-name">I3 Losses Cockpit</div>
+          <div class="tool-card-desc">Monitor and analyze pressure losses, lost circulation, and complications</div>
+          <span class="tool-card-tag tool-tag-dash">Cockpit</span>
+        </a>
+
+        <a class="tool-card" href="docs/79_drilling_manager_brief.html" target="_blank" data-name="drilling manager brief kpi status risks executive summary">
+          <div class="tool-card-icon-wrap ic ic-ops">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+          </div>
+          <div class="tool-card-name">Drilling Manager Brief</div>
+          <div class="tool-card-desc">Executive management report — KPIs, well status, risks, decisions</div>
+          <span class="tool-card-tag tool-tag-dash">Executive</span>
+        </a>
+
+        <a class="tool-card" href="docs/82_ctis_fleet_tracker.html" target="_blank" data-name="fleet tracker drilling rigs status location ctis dispatch">
+          <div class="tool-card-icon-wrap ic ic-ops">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+          </div>
+          <div class="tool-card-name">Rig Fleet Tracker</div>
+          <div class="tool-card-desc">Track drilling rigs — status, location, and assignment by project</div>
+          <span class="tool-card-tag tool-tag-dash">Fleet</span>
+        </a>
+
+        <a class="tool-card" href="docs/34_digital_control_center.html" target="_blank" data-name="digital control center single window operations monitoring">
+          <div class="tool-card-icon-wrap ic ic-ops">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+          </div>
+          <div class="tool-card-name">Digital Control Center</div>
+          <div class="tool-card-desc">Single-pane operations monitoring across all sites and projects</div>
+          <span class="tool-card-tag tool-tag-dash">Control</span>
+        </a>
+
+        <a class="tool-card" href="docs/27_digitalization_analysis_dashboard_v2.html" target="_blank" data-name="digitalization analysis dashboard kpi initiatives progress">
+          <div class="tool-card-icon-wrap ic ic-ops">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          </div>
+          <div class="tool-card-name">Digitalization Dashboard</div>
+          <div class="tool-card-desc">Track digital initiatives I1–I5 progress, metrics, and project KPIs</div>
+          <span class="tool-card-tag tool-tag-dash">KPI</span>
+        </a>
+
+      </div>
+    </div>
+
+    <!-- WELL PROJECTS -->
+    <div class="tools-category" id="well" data-cat>
+      <div class="tools-category-title">
+        <span style="font-size:15px;color:var(--amber);">◇</span> Well Projects
+      </div>
+      <div class="tools-grid">
+
+        <a class="tool-card" href="docs/66_my_wells.html" target="_blank" data-name="my wells list projects portfolio quick access">
+          <div class="tool-card-icon-wrap ic ic-well">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+          </div>
+          <div class="tool-card-name">My Wells</div>
+          <div class="tool-card-desc">All well portfolio with quick access to projects and dashboards</div>
+          <span class="tool-card-tag tool-tag-doc">Portfolio</span>
+        </a>
+
+        <a class="tool-card" href="docs/project_general_data.html" target="_blank" data-name="project general data well technical specifications">
+          <div class="tool-card-icon-wrap ic ic-well">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          </div>
+          <div class="tool-card-name">Project: General Data</div>
+          <div class="tool-card-desc">General technical data for well construction projects</div>
+          <span class="tool-card-tag tool-tag-doc">Project</span>
+        </a>
+
+        <a class="tool-card" href="docs/project_geology.html" target="_blank" data-name="project geology cross section lithology stratigraphy pressure">
+          <div class="tool-card-icon-wrap ic ic-well">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          </div>
+          <div class="tool-card-name">Project: Geological Section</div>
+          <div class="tool-card-desc">Lithology, stratigraphy, pore and fracture pressure gradients</div>
+          <span class="tool-card-tag tool-tag-doc">Geology</span>
+        </a>
+
+        <a class="tool-card" href="docs/project_well_construction.html" target="_blank" data-name="well construction casing program diameters intervals">
+          <div class="tool-card-icon-wrap ic ic-well">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><line x1="12" y1="2" x2="12" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </div>
+          <div class="tool-card-name">Project: Well Construction</div>
+          <div class="tool-card-desc">Well design — bit diameters, casing strings, setting depths</div>
+          <span class="tool-card-tag tool-tag-doc">Project</span>
+        </a>
+
+        <a class="tool-card" href="docs/project_well_mud_program.html" target="_blank" data-name="mud program intervals parameters composition fluid design">
+          <div class="tool-card-icon-wrap ic ic-well">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 5.3c-.29 1.45-1.14 2.84-2.29 3.76S3 11.1 3 12.25c0 2.22 1.8 4.05 4 4.05z"/><path d="M12.56 6.6A10.97 10.97 0 0 0 14 3.02c.5 2.5 2 4.9 4 6.5s3 3.5 3 5.5a6.98 6.98 0 0 1-11.91 4.97"/></svg>
+          </div>
+          <div class="tool-card-name">Project: Mud Program</div>
+          <div class="tool-card-desc">Drilling fluid program by interval — system type, parameters, components</div>
+          <span class="tool-card-tag tool-tag-doc">Program</span>
+        </a>
+
+        <a class="tool-card" href="docs/project_well_cement_program.html" target="_blank" data-name="cement program casing volumes recipe pressure design">
+          <div class="tool-card-icon-wrap ic ic-well">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+          </div>
+          <div class="tool-card-name">Project: Cement Program</div>
+          <div class="tool-card-desc">Casing cementing program — volumes, slurry recipe, pressure parameters</div>
+          <span class="tool-card-tag tool-tag-doc">Program</span>
+        </a>
+
+        <a class="tool-card" href="docs/64_yuzhno_russkoe_project_dashboard.html" target="_blank" data-name="yuzhno russkoe project dashboard kpi progress depth">
+          <div class="tool-card-icon-wrap ic ic-well">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          </div>
+          <div class="tool-card-name">Yuzhno-Russkoye: Dashboard</div>
+          <div class="tool-card-desc">Project dashboard — KPI, progress, depth-day curve</div>
+          <span class="tool-card-tag tool-tag-dash">Project</span>
+        </a>
+
+        <a class="tool-card" href="docs/58_yuzhno_obskoe_project_dashboard.html" target="_blank" data-name="yuzhno obskoye project dashboard status kpi mud intervals">
+          <div class="tool-card-icon-wrap ic ic-well">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          </div>
+          <div class="tool-card-name">Yuzhno-Obskoye: Dashboard</div>
+          <div class="tool-card-desc">Project dashboard — status, KPI, drilling fluid intervals</div>
+          <span class="tool-card-tag tool-tag-dash">Project</span>
+        </a>
+
+      </div>
+    </div>
+
+    <!-- DAILY REPORTS -->
+    <div class="tools-category" id="report" data-cat>
+      <div class="tools-category-title">
+        <span style="font-size:15px;color:#6B7280;">▤</span> Daily Reports &amp; Programs
+      </div>
+      <div class="tools-grid">
+
+        <a class="tool-card" href="docs/39_wellsite_daily_report_studio.html" target="_blank" data-name="daily report wellsite ddr studio builder gto">
+          <div class="tool-card-icon-wrap ic ic-report">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          </div>
+          <div class="tool-card-name">Daily Report Studio</div>
+          <div class="tool-card-desc">Geological-engineering daily report builder (DDR/GTO format)</div>
+          <span class="tool-card-tag tool-tag-doc">Report</span>
+        </a>
+
+        <a class="tool-card" href="docs/40_wellsite_program_site_edition.html" target="_blank" data-name="drilling program wellsite field edition print site">
+          <div class="tool-card-icon-wrap ic ic-report">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          </div>
+          <div class="tool-card-name">Well Site Program (Field Edition)</div>
+          <div class="tool-card-desc">Field-ready drilling program — print-optimized for the rig site</div>
+          <span class="tool-card-tag tool-tag-doc">Program</span>
+        </a>
+
+        <a class="tool-card" href="extracted/dmr16_sample.html" target="_blank" data-name="dmr daily morning report sample template dmr16">
+          <div class="tool-card-icon-wrap ic ic-report">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          </div>
+          <div class="tool-card-name">DMR — Sample Report</div>
+          <div class="tool-card-desc">Completed Daily Morning Report sample (DMR16 format)</div>
+          <span class="tool-card-tag tool-tag-doc">Sample</span>
+        </a>
+
+      </div>
+    </div>
+
+    <!-- STRATEGY -->
+    <div class="tools-category" id="strat" data-cat>
+      <div class="tools-category-title">
+        <span style="font-size:15px;color:#DC2626;">◆</span> Strategy &amp; Digital Initiatives
+      </div>
+      <div class="tools-grid">
+
+        <a class="tool-card" href="docs/01_strategy.html" target="_blank" data-name="platform strategy ai digitalization vision goals competitive">
+          <div class="tool-card-icon-wrap ic ic-strat">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+          </div>
+          <div class="tool-card-name">Platform Strategy</div>
+          <div class="tool-card-desc">AI drilling platform — vision, goals, competitive advantages</div>
+          <span class="tool-card-tag tool-tag-doc">Strategy</span>
+        </a>
+
+        <a class="tool-card" href="docs/26_digitalization_master_roadmap.html" target="_blank" data-name="digitalization master roadmap i1 i2 i3 i4 i5 initiatives">
+          <div class="tool-card-icon-wrap ic ic-strat">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+          </div>
+          <div class="tool-card-name">Master Roadmap</div>
+          <div class="tool-card-desc">All digital initiatives I1–I5 on a unified timeline horizon</div>
+          <span class="tool-card-tag tool-tag-doc">Roadmap</span>
+        </a>
+
+        <a class="tool-card" href="docs/10_first_client_pitch.html" target="_blank" data-name="client pitch first meeting presentation sales deck">
+          <div class="tool-card-icon-wrap ic ic-strat">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+          <div class="tool-card-name">First Client Pitch</div>
+          <div class="tool-card-desc">First meeting presentation template — structure and key arguments</div>
+          <span class="tool-card-tag tool-tag-doc">Sales</span>
+        </a>
+
+        <a class="tool-card" href="docs/05_financial_model.html" target="_blank" data-name="financial model revenue costs roi payback economics">
+          <div class="tool-card-icon-wrap ic ic-strat">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </div>
+          <div class="tool-card-name">Financial Model</div>
+          <div class="tool-card-desc">Revenue, costs, payback, and financial projections for the platform</div>
+          <span class="tool-card-tag tool-tag-calc">Finance</span>
+        </a>
+
+        <a class="tool-card" href="docs/06_implementation_roadmap_180d.html" target="_blank" data-name="implementation roadmap 180 days plan milestones kpi phases">
+          <div class="tool-card-icon-wrap ic ic-strat">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          </div>
+          <div class="tool-card-name">Implementation Roadmap (180 Days)</div>
+          <div class="tool-card-desc">Step-by-step 180-day platform implementation plan with milestones and KPIs</div>
+          <span class="tool-card-tag tool-tag-doc">Roadmap</span>
+        </a>
+
+        <a class="tool-card" href="docs/30_gantt_665_operations_detailed.html" target="_blank" data-name="gantt chart 665 days operations detailed plan drilling">
+          <div class="tool-card-icon-wrap ic ic-strat">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+          </div>
+          <div class="tool-card-name">Gantt: Detailed Operations Plan (665 days)</div>
+          <div class="tool-card-desc">Detailed drilling operations Gantt chart spanning 665 days</div>
+          <span class="tool-card-tag tool-tag-doc">Planning</span>
+        </a>
+
+      </div>
+    </div>
+
+  </main>
+</div><!-- /tools-layout -->
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a class="nav-logo" href="index-en.html" style="text-decoration:none;">
+        <div class="logo-mark">CL</div>
+        <div>
+          <div class="logo-text">CL<span>OTO</span></div>
+          <div class="logo-sub">Oilfield Chemistry</div>
+        </div>
+      </a>
+      <p>Engineering platform for drilling projects. Calculations, AI, tenders, knowledge bases, dashboards.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Platform</h4>
+      <ul>
+        <li><a href="index-en.html">Home</a></li>
+        <li><a href="catalog-en.html">Product Catalog</a></li>
+        <li><a href="proposal-en.html">AI Proposal</a></li>
+        <li><a href="tools-en.html">All Tools</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Quick Access</h4>
+      <ul>
+        <li><a href="docs/80_ai_assistant_chat.html" target="_blank">AI Assistant</a></li>
+        <li><a href="docs/85_lcm_calculator.html" target="_blank">LCM Calculator</a></li>
+        <li><a href="docs/87_mudgpt_chemicals_materials.html" target="_blank">MudGPT Database</a></li>
+        <li><a href="docs/41_dfg_drilling_fluids_hydraulics_lab.html" target="_blank">DFG Hydraulics</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <ul>
+        <li><a href="mailto:info@cloto.ru">info@cloto.ru</a></li>
+        <li><a href="tel:+78182234596">+7 (8182) 23-45-96</a></li>
+        <li><a href="https://cloto.ru" target="_blank">cloto.ru</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 CLOTO LLC · Arkhangelsk · Est. 1991</span>
+    <div class="footer-links">
+      <a href="tools-ru.html">Русский</a>
+      <a href="index-en.html">Home</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+function setActive(el) {
+  document.querySelectorAll('.tools-sidebar-item').forEach(i => i.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function filterTools() {
+  const q = document.getElementById('toolSearch').value;
+  document.getElementById('toolSearch2').value = q;
+  runFilter(q);
+}
+function filterTools2() {
+  const q = document.getElementById('toolSearch2').value;
+  document.getElementById('toolSearch').value = q;
+  runFilter(q);
+}
+function runFilter(q) {
+  q = q.toLowerCase().trim();
+  const cards = document.querySelectorAll('.tool-card');
+  const cats = document.querySelectorAll('[data-cat]');
+  let total = 0;
+  cards.forEach(c => {
+    const t = (c.dataset.name||'').toLowerCase() + ' ' + (c.textContent||'').toLowerCase();
+    const match = !q || t.includes(q);
+    c.style.display = match ? '' : 'none';
+    if (match) total++;
+  });
+  cats.forEach(cat => {
+    const visible = [...cat.querySelectorAll('.tool-card')].some(c => c.style.display !== 'none');
+    cat.style.display = visible ? '' : 'none';
+  });
+  document.getElementById('toolCount').textContent = total;
+  document.getElementById('toolCount2').textContent = q ? `${total} tools found` : '52 tools';
+  document.getElementById('noResults').style.display = (total === 0) ? 'block' : 'none';
+}
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const id = e.target.id;
+      document.querySelectorAll('.tools-sidebar-item').forEach(i => {
+        i.classList.toggle('active', i.getAttribute('href') === '#' + id);
+      });
+    }
+  });
+}, { threshold: 0.3, rootMargin: '-80px 0px -60% 0px' });
+document.querySelectorAll('[data-cat]').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>

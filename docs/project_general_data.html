@@ -1,0 +1,129 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Раздел 1 · Общие сведения</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap");
+    :root {
+      --bg-0: #071018; --bg-1: #102030; --bg-2: #1b3041;
+      --panel: rgba(11, 20, 31, 0.84); --line: rgba(227, 238, 255, 0.14);
+      --line-soft: rgba(227, 238, 255, 0.08); --text: #edf5ff;
+      --muted: #a8bdd2; --cyan: #22d7b4; --amber: #f8bd5f;
+      --shadow: 0 20px 48px rgba(0, 0, 0, 0.42);
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0; min-height: 100%; font-family: "Manrope", sans-serif; color: var(--text);
+      background:
+        radial-gradient(900px 460px at 0% -10%, rgba(34, 215, 180, 0.18), rgba(34, 215, 180, 0)),
+        radial-gradient(760px 420px at 100% 0%, rgba(248, 189, 95, 0.16), rgba(248, 189, 95, 0)),
+        linear-gradient(145deg, var(--bg-0), var(--bg-1) 46%, var(--bg-2));
+    }
+    .wrap { width: min(1220px, 92vw); margin: 0 auto; padding: 24px 0 64px; }
+    .top {
+      display: flex; justify-content: space-between; align-items: center; gap: 10px;
+      border: 1px solid var(--line-soft); border-radius: 14px; padding: 12px 14px;
+      background: rgba(8, 15, 24, 0.66); position: sticky; top: 12px; z-index: 20;
+    }
+    .brand {
+      display: flex; align-items: center; gap: 10px; font-family: "Oswald", sans-serif;
+      text-transform: uppercase; letter-spacing: 0.05em; font-size: 20px;
+    }
+    .dot { width: 12px; height: 12px; border-radius: 999px; background: radial-gradient(circle at 35% 35%, #d6fff7, var(--cyan)); }
+    .nav { display: flex; flex-wrap: wrap; gap: 8px; }
+    .nav a {
+      text-decoration: none; font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em;
+      font-weight: 800; border-radius: 10px; padding: 8px 12px; color: #082922;
+      background: linear-gradient(130deg, #a0f9eb, #22d7b4); border: 1px solid rgba(34, 215, 180, 0.75);
+    }
+    .hero, .panel {
+      margin-top: 18px; border: 1px solid var(--line); border-radius: 20px;
+      background: var(--panel); box-shadow: var(--shadow); padding: 22px;
+    }
+    .hero h1 {
+      margin: 0 0 10px; font-family: "Oswald", sans-serif;
+      letter-spacing: -0.01em; font-size: clamp(28px, 4vw, 44px);
+    }
+    .hero p { margin: 0; color: #c7d7ec; line-height: 1.65; }
+    .meta {
+      margin-top: 14px; display: inline-flex; border: 1px solid var(--line-soft);
+      border-radius: 999px; padding: 6px 12px; font-size: 12px; color: #d8e5f6;
+      text-transform: uppercase; letter-spacing: 0.08em;
+    }
+    h2 { margin: 0 0 12px; font-size: 22px; letter-spacing: -0.01em; }
+    .list { display: grid; gap: 10px; }
+    .item {
+      border: 1px solid var(--line-soft); border-radius: 12px; padding: 12px;
+      background: rgba(255, 255, 255, 0.03); color: #d1def0; line-height: 1.55; font-size: 14px;
+    }
+    .footer {
+      margin-top: 14px; color: var(--muted); text-transform: uppercase;
+      letter-spacing: 0.08em; font-size: 12px; text-align: center;
+    }
+    @media (max-width: 860px) { .top { position: static; flex-direction: column; align-items: flex-start; } }
+  </style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+  <main class="wrap">
+    <header class="top">
+      <div class="brand"><span class="dot"></span><span>Nexus Oilfield AI</span></div>
+      <nav class="nav" id="nav"></nav>
+    </header>
+
+    <section class="hero">
+      <h1 id="title">Раздел 1. Общие сведения</h1>
+      <p id="desc">Базовый паспорт проекта: оператор, район работ, тип скважин, цели бурения и комплект исходных документов.</p>
+      <span class="meta" id="meta">Проектный раздел · Общие сведения</span>
+    </section>
+
+    <section class="panel">
+      <h2>Ключевые блоки раздела</h2>
+      <div class="list" id="contentList"></div>
+    </section>
+
+    <p class="footer">Dynamic project section · General data</p>
+  </main>
+  <script>
+    function getProjectNameFromUrl() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('name') || 'Проект';
+    }
+
+    function buildProjectLink(page, name) {
+      return `${page}?name=${encodeURIComponent(name)}`;
+    }
+
+    const projectName = getProjectNameFromUrl();
+    document.title = `${projectName} · Раздел 1 · Общие сведения`;
+    document.getElementById('title').textContent = `${projectName} · Раздел 1. Общие сведения`;
+    document.getElementById('desc').textContent = `Автоматически собранный паспорт проекта по месторождению "${projectName}" на основе основного ТЗ по скважинам 9301, 9302 и 9303.`;
+    document.getElementById('meta').textContent = `${projectName} · Паспорт проекта · Авторазбор ТЗ`;
+
+    document.getElementById('nav').innerHTML = `
+      <a href="${buildProjectLink('project_well_dashboard.html', projectName, '9301')}">К дашборду проекта</a>
+      <a href="${buildProjectLink('project_geology.html', projectName)}">Раздел 2</a>
+      <a href="${buildProjectLink('project_well_construction.html', projectName)}">Раздел 3</a>
+      <a href="${buildProjectLink('project_well_profile.html', projectName)}">Раздел 4</a>
+    `;
+
+    const items = [
+      `Объект: строительство скважин 9301, 9302, 9303 на ${projectName}.`,
+      'Месторождение и участок недр: Уренгойское месторождение, Олимпийский лицензионный участок.',
+      'Кустовая площадка: куст 93.',
+      'Заказчик: ООО «НОВАТЭК-ТАРКОСАЛЕНЕФТЕГАЗ».',
+      'Формат работ по ТЗ: интегрированный сервис.',
+      'Старт выполнения работ по ТЗ: июль 2026 года.',
+      'Тип скважин: горизонтальные.',
+      'Проектный горизонт: Ач4 + Ач4, сортымская свита, ачимовская толща.',
+      'Базовый комплект источников для авторазметки: основное ТЗ, приложения по буровым растворам, ННБ, цементированию, снижению рисков МКД и эксплуатации БИ.',
+      'Статус страницы: первичное автозаполнение из PDF; отдельные блоки, особенно из сканированных приложений, требуют последующей верификации.'
+    ];
+
+    document.getElementById('contentList').innerHTML = items.map((item) => `<div class="item">${item}</div>`).join('');
+  </script>
+  <script src="assets/js/global-auth-widget.js"></script>
+</body>
+</html>

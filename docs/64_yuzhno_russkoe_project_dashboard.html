@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Южно-Русское — DRILL-Q</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Arial, sans-serif; background: #F5F5F7; color: #1D1D1F; font-size: 15px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+:root { --white:#FFFFFF; --bg:#F5F5F7; --text:#1D1D1F; --text2:#6E6E73; --text3:#AEAEB2; --blue:#2563EB; --blue-l:#EFF6FF; --border:rgba(0,0,0,0.08); --sh-sm:0 1px 4px rgba(0,0,0,0.06); --sh:0 4px 20px rgba(0,0,0,0.08); --r:16px; --r-sm:10px; }
+nav { position:sticky; top:0; z-index:100; background:rgba(255,255,255,0.85); backdrop-filter:saturate(180%) blur(20px); border-bottom:1px solid var(--border); height:56px; display:flex; align-items:center; padding:0 40px; justify-content:space-between; }
+.nav-logo { display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--text); }
+.nav-mark { width:28px; height:28px; border-radius:7px; background:var(--blue); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:#fff; }
+.nav-name { font-size:15px; font-weight:700; letter-spacing:-.4px; }
+.btn-ghost { padding:7px 16px; border-radius:var(--r-sm); border:1px solid var(--border); background:transparent; color:var(--text); font-size:13px; font-weight:500; text-decoration:none; } .btn-ghost:hover { background:var(--bg); }
+.btn-nav { padding:7px 16px; border-radius:var(--r-sm); background:var(--blue); color:#fff; font-size:13px; font-weight:600; text-decoration:none; } .btn-nav:hover { background:#1D4ED8; }
+.nav-right { display:flex; gap:10px; }
+.wrap { width:min(1120px, 92vw); margin:0 auto; padding:48px 0 80px; }
+.breadcrumb { display:flex; align-items:center; gap:6px; font-size:13px; color:var(--text3); margin-bottom:28px; }
+.breadcrumb a { color:var(--text3); text-decoration:none; } .breadcrumb a:hover { color:var(--blue); }
+.hero { background:var(--white); border:1.5px solid var(--border); border-radius:var(--r); padding:40px; margin-bottom:24px; box-shadow:var(--sh-sm); }
+.hero-eyebrow { display:inline-flex; align-items:center; gap:8px; background:var(--blue-l); color:var(--blue); border-radius:99px; padding:4px 14px; font-size:12px; font-weight:600; margin-bottom:16px; }
+.hero h1 { font-size:clamp(26px, 4vw, 42px); font-weight:700; letter-spacing:-.8px; line-height:1.1; margin-bottom:14px; }
+.hero p { color:var(--text2); font-size:15px; max-width:700px; line-height:1.65; margin-bottom:24px; }
+.stats-row { display:grid; grid-template-columns:repeat(4, 1fr); gap:16px; }
+.stat-card { background:var(--bg); border:1px solid var(--border); border-radius:var(--r-sm); padding:16px; }
+.stat-card strong { display:block; font-size:22px; font-weight:700; letter-spacing:-.4px; margin-bottom:4px; }
+.stat-card span { font-size:11px; color:var(--text3); font-weight:500; text-transform:uppercase; letter-spacing:.06em; }
+.wells-panel { background:var(--white); border:1.5px solid var(--border); border-radius:var(--r); padding:28px 32px; margin-bottom:24px; box-shadow:var(--sh-sm); }
+.wells-panel h2 { font-size:16px; font-weight:700; margin-bottom:6px; }
+.wells-panel p { color:var(--text2); font-size:13px; margin-bottom:20px; }
+.wells-row { display:flex; flex-wrap:wrap; gap:10px; }
+.well-pair { display:flex; flex-direction:column; gap:6px; }
+.well-btn { padding:8px 18px; border-radius:var(--r-sm); border:1.5px solid var(--border); background:var(--bg); color:var(--text); font-size:13px; font-weight:600; text-decoration:none; text-align:center; transition:all .15s; white-space:nowrap; }
+.well-btn:hover { border-color:var(--blue); color:var(--blue); background:var(--blue-l); }
+.well-btn.active { background:var(--blue); border-color:var(--blue); color:#fff; }
+.well-sub { padding:5px 12px; border-radius:var(--r-sm); border:1.5px solid var(--border); background:var(--bg); color:var(--text2); font-size:11px; font-weight:500; text-decoration:none; text-align:center; transition:all .15s; }
+.well-sub:hover { border-color:var(--blue); color:var(--blue); }
+.section { background:var(--white); border:1.5px solid var(--border); border-radius:var(--r); padding:32px; box-shadow:var(--sh-sm); }
+.section h2 { font-size:20px; font-weight:700; letter-spacing:-.3px; margin-bottom:6px; }
+.section-sub { color:var(--text2); font-size:14px; margin-bottom:24px; }
+.cards { display:grid; grid-template-columns:repeat(auto-fill, minmax(260px, 1fr)); gap:14px; }
+.mod-card { background:var(--bg); border:1.5px solid var(--border); border-radius:var(--r-sm); padding:20px; text-decoration:none; color:inherit; display:flex; align-items:flex-start; gap:14px; transition:all .2s; }
+.mod-card:hover { background:var(--white); border-color:var(--blue); box-shadow:var(--sh); }
+.mod-num { width:36px; height:36px; border-radius:9px; background:var(--blue-l); color:var(--blue); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; flex-shrink:0; }
+.mod-info h3 { font-size:14px; font-weight:700; letter-spacing:-.1px; margin-bottom:4px; }
+.mod-info p { color:var(--text2); font-size:12px; line-height:1.5; }
+@media(max-width:640px){ nav{padding:0 20px;} .wrap{padding:32px 0 60px;} .stats-row{grid-template-columns:1fr 1fr;} .cards{grid-template-columns:1fr;} }
+</style>
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="../index.html"><div class="nav-mark">DQ</div><span class="nav-name">DRILL-Q</span></a>
+  <div class="nav-right">
+    <a class="btn-ghost" href="56_fields_projects_dashboard.html">← Все месторождения</a>
+    <a class="btn-nav" href="../app.html">Приложение →</a>
+  </div>
+</nav>
+<div class="wrap">
+  <div class="breadcrumb">
+    <a href="../index.html">DRILL-Q</a> <span>/</span>
+    <a href="56_fields_projects_dashboard.html">Месторождения</a> <span>/</span>
+    <span style="color:var(--text)" id="pageTitle">Южно-Русское</span>
+  </div>
+  <div class="hero">
+    <div class="hero-eyebrow">⛽ Месторождение · ЯМАЛ</div>
+    <h1 id="heroTitle">Южно-Русское месторождение</h1>
+    <p>Полный проектный контур из 12 разделов по скважине: геология и стратиграфия, конструкция, буровые растворы, ННБ и КНБК, крепление, испытание и автоматизация технологических процессов.</p>
+    <div class="stats-row">
+      <div class="stat-card"><strong>12</strong><span>разделов по скважине</span></div>
+      <div class="stat-card"><strong>5</strong><span>скважин фонда</span></div>
+      <div class="stat-card"><strong>ЯМАЛ</strong><span>регион</span></div>
+      <div class="stat-card"><strong>Полный контур</strong><span>статус проекта</span></div>
+    </div>
+  </div>
+
+  <div class="wells-panel">
+    <h2>Фонд скважин</h2>
+    <p>Выберите скважину — контент разделов обновится автоматически</p>
+    <div class="wells-row" id="wellsRow"></div>
+  </div>
+
+  <div class="section">
+    <h2>Разделы по скважине</h2>
+    <p class="section-sub">12 инженерных разделов · Кликните чтобы открыть</p>
+    <div class="cards" id="sectionsGrid"></div>
+  </div>
+</div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const fieldName = params.get('name') || 'Южно-Русское месторождение';
+const wellName = params.get('well') || '5101';
+const wells = ['5101','5102','4901','4902','4903'];
+const workDate = '14.04.2026';
+
+document.title = fieldName + ' · DRILL-Q';
+document.getElementById('heroTitle').textContent = fieldName;
+document.getElementById('pageTitle').textContent = fieldName;
+
+const sections = [
+  { n:'1', t:'Общие сведения', d:'Базовые вводные по проекту: объект, оператор, цели бурения, глубины, ограничения и статус исходных данных.' },
+  { n:'2', t:'Геология', d:'Литология, стратиграфия, осложнения, давления и температуры по месторождению.' },
+  { n:'3', t:'Конструкция скважин', d:'Каркас обсадных колонн, диаметры, глубины спуска и логика цементирования.' },
+  { n:'4', t:'Профиль ствола', d:'Траектория, MD/TVD, зенитные углы и целевой профиль ствола.' },
+  { n:'5', t:'Буровые растворы', d:'Системы раствора, переходы между интервалами, контроль свойств и программа химобработки.' },
+  { n:'6', t:'График «Глубина/день»', d:'Depth/day, режимы бурения, очерёдность КНБК, спуски колонн и ключевые операции.' },
+  { n:'7', t:'Крепление скважины', d:'Интервалы крепления, цементирование, контроль качества изоляции и требования к колоннам.' },
+  { n:'8', t:'Испытание скважины', d:'План испытаний, освоение, отбор проб, замеры дебита и критерии готовности.' },
+  { n:'9', t:'Продолжительность строительства', d:'Календарный график, длительность по фазам, критический путь и резервы времени.' },
+  { n:'10', t:'Автоматизация', d:'Контуры автоматизации, датчики, alerting и автоматизированные решения.' },
+  { n:'11', t:'Предотвращение осложнений', d:'Профилактика поглощений, прихватов, ГНВП, осыпей и других осложнений.' },
+  { n:'12', t:'ННБ / КНБК', d:'Наклонно-направленное бурение, матрица КНБК, долота, ВЗД, РУС и телеметрия.' },
+];
+
+function mkLink(page, n, w) {
+  return page + '?name=' + encodeURIComponent(n) + (w ? '&well=' + w : '');
+}
+
+document.getElementById('wellsRow').innerHTML = wells.map(w => `
+  <a class="well-btn ${w===wellName?'active':''}" href="${mkLink('64_yuzhno_russkoe_project_dashboard.html', fieldName, w)}">Скважина ${w}</a>
+`).join('');
+
+document.getElementById('sectionsGrid').innerHTML = sections.map(s => `
+  <a class="mod-card" href="#">
+    <div class="mod-num">${s.n}</div>
+    <div class="mod-info">
+      <h3>${s.t}</h3>
+      <p>${s.d.replace('КНБК','').replace(/\.$/, '')} · скв. ${wellName}</p>
+    </div>
+  </a>
+`).join('');
+</script>
+</body>
+</html>

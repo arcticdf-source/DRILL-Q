@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DRILL-Q · Нефтегаз 2026 · Справочник экспонентов</title>
+  <link rel="stylesheet" href="drill-q.css">
+  <style>
+    .mp-wrap { max-width:1360px;margin:0 auto;padding:36px 48px 80px; }
+    .pg-header { display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:28px;gap:20px; }
+    .pg-title { font-size:30px;font-weight:700;letter-spacing:-.03em;color:rgba(255,255,255,.97);margin:0 0 6px; }
+    .pg-sub { font-size:13px;color:rgba(255,255,255,.4); }
+    .pg-btn { display:inline-flex;align-items:center;gap:7px;background:var(--blue);border:1px solid #2563EB;color:#fff;border-radius:8px;padding:11px 18px;font-size:13px;font-weight:600;text-decoration:none;transition:all .15s; }
+    .pg-btn:hover { background:#2563EB; }
+
+    .ng-stats { display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:24px; }
+    .ng-stat { background:var(--bg-02);border:1px solid var(--b-01);border-radius:var(--r2);padding:16px 18px; }
+    .ng-stat-val { font-size:28px;font-weight:700;letter-spacing:-.03em;color:rgba(255,255,255,.97); }
+    .ng-stat-lbl { font-size:11px;color:rgba(255,255,255,.38);margin-top:3px; }
+
+    .ng-toolbar { display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap; }
+    .ng-search { flex:1;min-width:260px;display:flex;align-items:center;gap:8px;background:var(--bg-02);border:1px solid var(--b-01);border-radius:8px;padding:10px 14px; }
+    .ng-search input { background:transparent;border:none;outline:none;color:rgba(255,255,255,.9);font-size:13px;font-family:inherit;width:100%; }
+    .ng-search input::placeholder { color:rgba(255,255,255,.3); }
+    .ng-tabs { display:flex;gap:6px;flex-wrap:wrap; }
+    .ng-tab { background:var(--bg-02);border:1px solid var(--b-01);border-radius:6px;padding:8px 14px;font-size:12px;color:rgba(255,255,255,.5);cursor:pointer;transition:all .15s;white-space:nowrap; }
+    .ng-tab.active { background:rgba(59,130,246,.12);border-color:rgba(59,130,246,.3);color:var(--blue); }
+    .ng-tab:hover { border-color:rgba(255,255,255,.2);color:rgba(255,255,255,.8); }
+
+    .ng-count { font-size:12px;color:rgba(255,255,255,.3);font-family:var(--mono);margin-bottom:14px; }
+
+    .ng-table-wrap { background:var(--bg-02);border:1px solid var(--b-01);border-radius:var(--r2);overflow:hidden; }
+    .ng-table { width:100%;border-collapse:collapse; }
+    .ng-table th { text-align:left;font-size:10px;font-family:var(--mono);color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.08em;padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.02);white-space:nowrap; }
+    .ng-table td { padding:13px 14px;border-bottom:1px solid rgba(255,255,255,.04);font-size:13px;vertical-align:middle; }
+    .ng-table tr:last-child td { border-bottom:none; }
+    .ng-table tr:hover td { background:rgba(255,255,255,.02); }
+
+    .ng-code { font-family:var(--mono);font-size:11px;background:rgba(255,255,255,.06);border-radius:4px;padding:2px 7px;color:rgba(255,255,255,.45); }
+    .ng-name { font-size:13px;font-weight:500;color:rgba(255,255,255,.88); }
+    .ng-spec { font-size:11px;color:rgba(255,255,255,.38);margin-top:2px; }
+    .ng-hall { font-family:var(--mono);font-size:11px; }
+    .hall-38 { color:#3B82F6; }
+    .hall-39 { color:#10B981; }
+    .hall-5 { color:#F59E0B; }
+
+    .flag-RU { }
+    .ng-country { font-size:12px;color:rgba(255,255,255,.45); }
+    .ng-web { font-size:12px;color:var(--blue);text-decoration:none; }
+    .ng-web:hover { text-decoration:underline; }
+    .ng-rfq { font-size:12px;color:rgba(255,255,255,.3);font-weight:500; }
+
+    .country-badge { display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-family:var(--mono);font-weight:600;letter-spacing:.04em; }
+    .cb-RU { background:rgba(59,130,246,.1);color:#3B82F6; }
+    .cb-CN { background:rgba(239,68,68,.1);color:#EF4444; }
+    .cb-TR { background:rgba(245,158,11,.1);color:#F59E0B; }
+    .cb-IN { background:rgba(16,185,129,.1);color:#10B981; }
+    .cb-BY { background:rgba(139,92,246,.1);color:#8B5CF6; }
+    .cb-KR { background:rgba(34,197,94,.1);color:#22C55E; }
+    .cb-NL { background:rgba(249,115,22,.1);color:#F97316; }
+    .cb-XX { background:rgba(255,255,255,.06);color:rgba(255,255,255,.4); }
+  </style>
+</head>
+<body>
+
+<div class="ticker-bar">
+  <div class="ticker-track">
+    <span class="ticker-item"><span class="lbl">НЕФТЕГАЗ 2026</span><span class="t-blue">327 записей · Зал 38 · Зал 39 · Зал 5 (2024)</span></span>
+    <span class="ticker-item sep">·</span>
+    <span class="ticker-item"><span class="lbl">ЗАЛ 38</span><span class="t-up">46 компаний · Арматура · Машиностроение</span></span>
+    <span class="ticker-item sep">·</span>
+    <span class="ticker-item"><span class="lbl">ЗАЛ 39</span><span class="t-blue">133 компании · КИП · Автоматизация · Китай</span></span>
+    <span class="ticker-item sep">·</span>
+    <span class="ticker-item"><span class="lbl">КЛОТО</span><span class="t-up">с 1991 · Буровые растворы и химия</span></span>
+  </div>
+</div>
+
+<nav>
+  <a class="nav-logo" href="index-ru.html">
+    <div class="dq-mark">DQ</div>
+    <div class="dq-wordmark">
+      <div class="dq-name">DRILL-Q</div>
+      <div class="dq-powered">powered by <span>cloto</span></div>
+    </div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index-ru.html">Платформа</a></li>
+    <li><a href="catalog-ru.html">Химия</a></li>
+    <li><a href="proposal-ru.html">Тендеры</a></li>
+    <li><a href="tools-ru.html">Инструменты</a></li>
+    <li><a href="marketplace-ru.html"><span class="nav-dot"></span>Маркетплейс</a></li>
+  </ul>
+  <div class="nav-right">
+    <a class="lang-link" href="#">EN</a>
+    <a class="btn-primary" href="marketplace-rfq.html">Создать RFQ</a>
+  </div>
+</nav>
+
+<div class="mp-wrap">
+  <div class="pg-header">
+    <div>
+      <div class="pg-title">Нефтегаз 2026 · Справочник экспонентов</div>
+      <div class="pg-sub"><a href="marketplace-ru.html" style="color:rgba(255,255,255,.3);">← Маркетплейс</a> · Официальные участники выставки · Зал 38 и Зал 39</div>
+    </div>
+    <a class="pg-btn" href="marketplace-rfq.html">+ Создать RFQ</a>
+  </div>
+
+  <div class="ng-stats">
+    <div class="ng-stat"><div class="ng-stat-val">327</div><div class="ng-stat-lbl">Записей в реестре</div></div>
+    <div class="ng-stat"><div class="ng-stat-val">46</div><div class="ng-stat-lbl">Зал 38 · 2026</div></div>
+    <div class="ng-stat"><div class="ng-stat-val">207</div><div class="ng-stat-lbl">Зал 39 · 2026</div></div>
+    <div class="ng-stat"><div class="ng-stat-val">74</div><div class="ng-stat-lbl">Зал 5 · 2024</div></div>
+    <div class="ng-stat"><div class="ng-stat-val">15+</div><div class="ng-stat-lbl">Стран</div></div>
+  </div>
+
+  <div class="ng-toolbar">
+    <div class="ng-search">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="ngSearch" placeholder="Поиск по названию, стенду, стране, специализации..." oninput="filterNg()">
+    </div>
+    <div class="ng-tabs">
+      <div class="ng-tab active" onclick="setHall(this,'')">Все</div>
+      <div class="ng-tab" onclick="setHall(this,'38')">Зал 38 · 2026</div>
+      <div class="ng-tab" onclick="setHall(this,'39')">Зал 39 · 2026</div>
+      <div class="ng-tab" onclick="setHall(this,'5')">Зал 5 · 2024</div>
+      <div class="ng-tab" onclick="setHall(this,'CN')">Китай</div>
+      <div class="ng-tab" onclick="setHall(this,'RU')">Россия</div>
+    </div>
+  </div>
+
+  <div class="ng-count" id="ngCount">Загрузка...</div>
+
+  <div class="ng-table-wrap">
+    <table class="ng-table">
+      <thead>
+        <tr>
+          <th>Стенд</th>
+          <th>Зал</th>
+          <th>Компания</th>
+          <th>Страна</th>
+          <th>Специализация</th>
+          <th>Сайт</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="ngTable"></tbody>
+    </table>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-grid">
+    <div>
+      <a class="nav-logo" style="margin-bottom:16px;display:inline-flex;" href="index-ru.html">
+        <div class="dq-mark">DQ</div>
+        <div class="dq-wordmark"><div class="dq-name">DRILL-Q</div><div class="dq-powered">powered by <span>cloto</span></div></div>
+      </a>
+      <p class="footer-brand-desc">Маркетплейс закупок буровых растворов и химических реагентов.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Маркетплейс</h4>
+      <ul>
+        <li><a href="marketplace-ru.html">Обзор</a></li>
+        <li><a href="marketplace-catalog.html">Каталог</a></li>
+        <li><a href="marketplace-warehouses.html">Склады</a></li>
+        <li><a href="marketplace-rfq.html">Закупки / RFQ</a></li>
+        <li><a href="marketplace-ai.html">AI Инженер</a></li>
+        <li><a href="marketplace-neftegaz.html">Нефтегаз 2026</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>DRILL-Q</h4>
+      <ul>
+        <li><a href="index-ru.html">Платформа</a></li>
+        <li><a href="tools-ru.html">Инструменты</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Клото</h4>
+      <ul>
+        <li><a href="proposal-ru.html">Запрос доступа</a></li>
+        <li><a href="mailto:arcticdf@gmail.com">arcticdf@gmail.com</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 ООО «КЛОТО» · DRILL-Q Platform · Архангельск</span>
+    <div style="display:flex;gap:20px;"><a href="marketplace-ru.html">Маркетплейс</a><a href="marketplace-neftegaz.html">Нефтегаз 2026</a></div>
+  </div>
+</footer>
+
+<script>
+// ── Data ─────────────────────────────────────────────────────────────────────
+var EXHIBITORS = [
+// ── Зал 38 · 2026 ────────────────────────────────────────────────────────────
+{hall:'38',code:'7A020',name:'ИЖЕВСКИЙ АВИАЦИОННЫЙ ЗАВОД',country:'RU',web:'iaz-aero.ru'},
+{hall:'38',code:'7A040',name:'ТЯЖПРОММАШ, ПО, АО',country:'RU',web:'po-tpm.com'},
+{hall:'38',code:'7A090',name:'ЭР-МАШ, ООО',country:'RU',web:'er-mash.ru'},
+{hall:'38',code:'7A180',name:'CHONGQING CHUANYI AUTOMATION CO. LTD',country:'CN',web:'chuanyi.com.cn'},
+{hall:'38',code:'7B005',name:'KPSR GRUPP, ООО',country:'BY',web:'kpsr.by'},
+{hall:'38',code:'7B020',name:'РУСТ-95, АО',country:'RU',web:'roost.ru'},
+{hall:'38',code:'7B030',name:'СПбГМТУ (Санкт-Петербургский государственный морской технический университет)',country:'RU',web:'smtu.ru'},
+{hall:'38',code:'7B065',name:'ЧКЗ, ООО',country:'RU',web:'chkz.ru'},
+{hall:'38',code:'7B065',name:'ГЛОБАЛТЕХЭКСПОРТ, ООО',country:'RU',web:''},
+{hall:'38',code:'7B090',name:'ЗиО, Группа компаний',country:'RU',web:'podolskmash.ru'},
+{hall:'38',code:'7B100',name:'ПОЖТЕХСПАС, ООО',country:'RU',web:'lafet01.ru'},
+{hall:'38',code:'7B100',name:'ТЭКО Рус, ООО',country:'RU',web:'tekorus.ru'},
+{hall:'38',code:'7B100',name:'АЛСОАРМ, ООО',country:'RU',web:''},
+{hall:'38',code:'7B100',name:'БИЛТЕХ, ГК, ООО',country:'RU',web:''},
+{hall:'38',code:'7B140',name:'ДФХК НЕФТЕМАШ РУС',country:'RU',web:''},
+{hall:'38',code:'7B165',name:'СНФ ВОСТОК, ООО',country:'RU',web:'snf.com'},
+{hall:'38',code:'7B170',name:'РТП, ГРУППА КОМПАНИЙ',country:'RU',web:'npf-rtp.ru'},
+{hall:'38',code:'7B181',name:'СЕРВИСРЕММАШ, ООО',country:'RU',web:'srm18.ru'},
+{hall:'38',code:'7B184',name:'HUANGSHAN RSP MANUFACTURING CO. LTD',country:'CN',web:''},
+{hall:'38',code:'7B214',name:'ТПП ТИТАН, ООО',country:'RU',web:'tpp-titan.ru'},
+{hall:'38',code:'7B216',name:'ПРОМСТЕКЛОЦЕНТР, ПК',country:'RU',web:'prom-steklo.ru'},
+{hall:'38',code:'7C001',name:'СИМОЙЛ, ООО',country:'RU',web:'symoil.ru'},
+{hall:'38',code:'7C010',name:'К5, ООО',country:'RU',web:''},
+{hall:'38',code:'7C035',name:'РУСАРМКОМПЛЕКТ, ООО',country:'RU',web:'rusarmkomplekt.ru'},
+{hall:'38',code:'7C050',name:'ЮНИФРАК ТРЕЙД, ООО',country:'RU',web:'unifrac-trade.com'},
+{hall:'38',code:'7C060',name:'КАЛУГАРЕМПУТЬМАШ-СЕРВИС ПТК, ООО',country:'RU',web:'krpms.ru'},
+{hall:'38',code:'7C065',name:'ТЕХНОПАР, ООО',country:'RU',web:'tehnopar.ru'},
+{hall:'38',code:'7C085',name:'БЕЛОМО-ММЗ ИМ. С.И. ВАВИЛОВА, ОАО',country:'BY',web:''},
+{hall:'38',code:'7C094',name:'ARMTORG.RU (Вестник Арматуростроителя)',country:'RU',web:'armtorg.ru'},
+{hall:'38',code:'7C120',name:'УРДЮГА',country:'RU',web:''},
+{hall:'38',code:'7C150',name:'CHINA VIGOR DRILLING OIL TOOLS AND EQUIPMENT CO. LTD',country:'CN',web:''},
+{hall:'38',code:'7C150',name:'TIANJIN JINGZHOU METAL PRODUCTS CO. LTD',country:'CN',web:''},
+{hall:'38',code:'7C160',name:'ХАЙЛОН РУС, ТД, ООО',country:'RU',web:''},
+{hall:'38',code:'7C170',name:'СЕЙЛССОЛЮШЕН, ООО',country:'RU',web:''},
+{hall:'38',code:'7C216',name:'СПЕЦИАЛЬНЫЕ МЕТАЛЛЫ И СПЛАВЫ НПЦ, ООО',country:'RU',web:''},
+{hall:'38',code:'7D010',name:'САМАРСКАЯ ОБЛАСТЬ',country:'RU',web:''},
+{hall:'38',code:'7D050',name:'JIANGSU OILWAY MACHINERY CO. LTD',country:'CN',web:''},
+{hall:'38',code:'7D070',name:'УЛЬЯНОВСКИЙ ЗАВОД ПРОМЫШЛЕННОЙ АРМАТУРЫ, ООО',country:'RU',web:''},
+{hall:'38',code:'7D080',name:'ТОРУС ПКФ, ООО',country:'RU',web:''},
+{hall:'38',code:'7D130',name:'СТАЛЬНОЙ СОКОЛ АК, ООО',country:'RU',web:''},
+{hall:'38',code:'7D150',name:'DALGAKIRAN',country:'TR',web:'dalgakiran.com'},
+{hall:'38',code:'7D160',name:'ЭЛЕКТРОПРИВОДЫ ГЗ, ООО',country:'RU',web:''},
+{hall:'38',code:'7D212',name:'ГЕО-ВЕСТА РУС, ООО',country:'RU',web:''},
+{hall:'38',code:'7E090',name:'ТМС — МОНТАЖНЫЕ СИСТЕМЫ, ООО',country:'RU',web:''},
+{hall:'38',code:'7E110',name:'АНЕКО, ПРОМЫШЛЕННАЯ КОМПАНИЯ, ООО',country:'RU',web:''},
+
+// ── Зал 39 · 2026 ────────────────────────────────────────────────────────────
+{hall:'39',code:'8A010',name:'СФЕРА НЕФТЬ И ГАЗ, ЖУРНАЛ',country:'RU',web:''},
+{hall:'39',code:'8A030',name:'РТСИМ, ООО',country:'RU',web:''},
+{hall:'39',code:'8A040',name:'ЭКСПОЗИЦИЯ НЕФТЬ ГАЗ, ЖУРНАЛ',country:'RU',web:''},
+{hall:'39',code:'8A050',name:'КОМКОНТ ТЕКНОЛОДЖИС, ООО',country:'RU',web:'comcont.tech'},
+{hall:'39',code:'8A055',name:'INNERICA',country:'RU',web:''},
+{hall:'39',code:'8A060',name:'БИЗНЕСИСТ, ТД',country:'RU',web:''},
+{hall:'39',code:'8A066',name:'ПЬЕЗУС, ООО',country:'RU',web:''},
+{hall:'39',code:'8A070',name:'БД, ООО',country:'RU',web:''},
+{hall:'39',code:'8A080',name:'ТОРИ НПФ, ООО',country:'RU',web:''},
+{hall:'39',code:'8A090',name:'ZHEJIANG DIANTAI VALVE CO. LTD',country:'CN',web:''},
+{hall:'39',code:'8A110',name:'ОВЛ-ЭНЕРГО, АО',country:'RU',web:''},
+{hall:'39',code:'8A120',name:'АСПЕКТ',country:'RU',web:''},
+{hall:'39',code:'8A130',name:'ФРОСТО-СЕРВИС, ООО',country:'RU',web:''},
+{hall:'39',code:'8A135',name:'ЛИКНЕТ СИСТЕМ, ООО',country:'RU',web:''},
+{hall:'39',code:'8A135',name:'МИГНА, ООО',country:'RU',web:''},
+{hall:'39',code:'8A150',name:'SAVECONS',country:'RU',web:''},
+{hall:'39',code:'8A170',name:'SUZHOU SKYFLOW TECHNOLOGY CO. LTD',country:'CN',web:''},
+{hall:'39',code:'8A175',name:'SENBEN LIGHTING CO. LTD',country:'CN',web:''},
+{hall:'39',code:'8B001',name:'ВИДЕО МЕДИА ГРУПП, ООО',country:'RU',web:''},
+{hall:'39',code:'8B015',name:'АЛЬМА Cервисез Компани, ООО',country:'RU',web:''},
+{hall:'39',code:'8B018',name:'ПРОМСЕНСОР, ООО',country:'RU',web:''},
+{hall:'39',code:'8B020',name:'НЕФТЬГАЗИССЛЕДОВАНИЕ, ООО',country:'RU',web:''},
+{hall:'39',code:'8B025',name:'К-Систем, ООО',country:'RU',web:''},
+{hall:'39',code:'8B030',name:'ИНКОМСИСТЕМ, НАУЧНО-ИНЖЕНЕРНЫЙ ЦЕНТР, АО',country:'RU',web:''},
+{hall:'39',code:'8B040',name:'НТЭС, НПО, ООО',country:'RU',web:''},
+{hall:'39',code:'8B045',name:'CNPC JICHAI POWER COMPANY LIMITED',country:'CN',web:''},
+{hall:'39',code:'8B050',name:'КСТ ЭНЕРГО ИНЖИНИРИНГ',country:'RU',web:''},
+{hall:'39',code:'8B052',name:'СВД ВС, ООО',country:'RU',web:''},
+{hall:'39',code:'8B054',name:'ДИАТЕХ НПО, ООО',country:'RU',web:''},
+{hall:'39',code:'8B056',name:'ПРИВОДЫ ЭМИКО, ООО',country:'RU',web:''},
+{hall:'39',code:'8B060',name:'ИНТЕЛИС, ООО',country:'RU',web:''},
+{hall:'39',code:'8B064',name:'ГОРИЗОНТ ПОКРЫТИЙ, ООО',country:'RU',web:''},
+{hall:'39',code:'8B068',name:'А9 СИСТЕМС, ООО',country:'RU',web:''},
+{hall:'39',code:'8B070',name:'ВЗЛЕТ',country:'RU',web:''},
+{hall:'39',code:'8B075',name:'КОНСЭРГО, ООО',country:'RU',web:'consergo.ru'},
+{hall:'39',code:'8B075',name:'КРУГ НПФ, ООО',country:'RU',web:'krug2000.ru'},
+{hall:'39',code:'8B075',name:'ТЕХНОКОНСОЛЬ, OOO',country:'RU',web:''},
+{hall:'39',code:'8B088',name:'ПИЭЛСИ ТЕХНОЛОДЖИ, ООО',country:'RU',web:''},
+{hall:'39',code:'8B090',name:'BEIJING ZHH FLOW CONTROL SYSTEM CO. LTD',country:'CN',web:''},
+{hall:'39',code:'8B091',name:'WENZHOU DONGYI MACHINERY MANUFACTURING CO. LTD',country:'CN',web:''},
+{hall:'39',code:'8B095',name:'БЕСПИЛОТНЫЕ СИСТЕМЫ, ГРУППА КОМПАНИЙ',country:'RU',web:''},
+{hall:'39',code:'8B100',name:'ТЭК-СИСТЕМС, ООО',country:'RU',web:''},
+{hall:'39',code:'8B110',name:'FEEJOY',country:'RU',web:''},
+{hall:'39',code:'8B110',name:'УЛЬТРА, ГРУППА КОМПАНИЙ, ООО',country:'RU',web:''},
+{hall:'39',code:'8B110',name:'WEMETRO',country:'RU',web:''},
+{hall:'39',code:'8B130',name:'НГП ИНФОРМ, ООО',country:'RU',web:''},
+{hall:'39',code:'8B135',name:'SHANGHAI VALVE FACTORY CO. LTD',country:'CN',web:''},
+{hall:'39',code:'8B150',name:'ПЕТРО ТЕХНОЛОДЖИ, ООО',country:'RU',web:''},
+{hall:'39',code:'8B160',name:'АЙСО-ИНТЕГРО, ООО',country:'RU',web:''},
+{hall:'39',code:'8B170',name:'SICHUAN XIONGCHEN TECHNOLOGY CO. LTD',country:'CN',web:''},
+{hall:'39',code:'8B174',name:'HEILONGJIANG NORTH SHUANGJIA DRILLING TOOLS CO. LTD',country:'CN',web:''},
+{hall:'39',code:'8B178',name:'WUHAN LINMEI HEAD PLATE CO. LTD',country:'CN',web:''},
+{hall:'39',code:'8B180',name:'TIANJIN RICHSEN OIL EQUIPMENT CO. LTD',country:'CN',web:''},
+{hall:'39',code:'8B184',name:'ANPING COUNTY GUANGMING METAL PRODUCTS CO. LTD',country:'CN',web:''},
+{hall:'39',code:'8B188',name:'HEBEI OUHAO PIPELINE EQUIPMENT CO. LTD',country:'CN',web:''},
+{hall:'39',code:'8B190',name:'МИР НЕФТЕПРОДУКТОВ',country:'RU',web:''},
+{hall:'39',code:'8B190',name:'НПАА (Научно-промышленная ассоциация арматуростроителей)',country:'RU',web:''},
+{hall:'39',code:'8B190',name:'НЕФТЕГАЗ ЭКСПО, ЖУРНАЛ',country:'RU',web:''},
+{hall:'39',code:'8B190',name:'НЕФТЕГАЗОВАЯ ПРОМЫШЛЕННОСТЬ, ЖУРНАЛ',country:'RU',web:''},
+{hall:'39',code:'8B190',name:'НЕФТЬ. ГАЗ. НОВАЦИИ, ЖУРНАЛ',country:'RU',web:''},
+{hall:'39',code:'8B190',name:'ПРОМЫШЛЕННЫЙ ЕЖЕНЕДЕЛЬНИК, МЕЖОТРАСЛЕВАЯ ГАЗЕТА',country:'RU',web:''},
+{hall:'39',code:'8B190',name:'ТЕХНОСФЕРА, РИЦ, АО',country:'RU',web:''},
+{hall:'39',code:'8B190',name:'ЭНЕРГЕТИКА И ПРОМЫШЛЕННОСТЬ РОССИИ',country:'RU',web:''},
+{hall:'39',code:'8C001',name:'АИС-НН, ООО',country:'RU',web:''},
+{hall:'39',code:'8C005',name:'МИКРОТЕНЗОР, ООО',country:'RU',web:''},
+{hall:'39',code:'8C010',name:'РМ ИНЖИНИРИНГ, ООО',country:'RU',web:''},
+{hall:'39',code:'8C020',name:'МЕТРОЛОГИЯ-КОМПЛЕКТ, ООО',country:'RU',web:''},
+{hall:'39',code:'8C028',name:'ПАСКАЛЬ СОЛЮШНС, ООО',country:'RU',web:''},
+{hall:'39',code:'8C030',name:'ТИК',country:'RU',web:''},
+{hall:'39',code:'8C032',name:'СИББУРМАШ ППН, ООО',country:'RU',web:''},
+{hall:'39',code:'8C033',name:'Т1',country:'RU',web:''},
+{hall:'39',code:'8C046',name:'НИЕНШАНЦ-АВТОМАТИКА',country:'RU',web:''},
+{hall:'39',code:'8C050',name:'СИБКОМ ИТ, ООО',country:'RU',web:''},
+{hall:'39',code:'8C054',name:'EPC-КОМПЛЕКТ',country:'RU',web:'epc.su'},
+{hall:'39',code:'8C054',name:'SELECTRIC',country:'RU',web:''},
+{hall:'39',code:'8C058',name:'СПЕЦКАБЕЛЬ, НПП, ООО',country:'RU',web:''},
+{hall:'39',code:'8C060',name:'СМД, КОМПАНИЯ, ООО',country:'RU',web:''},
+{hall:'39',code:'8C070',name:'МИРАКС, ООО',country:'RU',web:''},
+{hall:'39',code:'8C072',name:'SHANDONG FUTURE ROBOT CO. LTD',country:'CN',web:''},
+{hall:'39',code:'8C075',name:'FX FLOW CONTROL BV',country:'NL',web:''},
+{hall:'39',code:'8C080',name:'ПРИВОДЫ ХАЙТВЭЛ, ООО',country:'RU',web:''},
+{hall:'39',code:'8C090',name:'КОНТРАВТ, НПФ, ООО',country:'RU',web:'contravt.ru'},
+{hall:'39',code:'8C095',name:'БЕСПИЛОТНЫЕ СИСТЕМЫ, ГРУППА КОМПАНИЙ',country:'RU',web:''},
+{hall:'39',code:'8C100',name:'РОСМА, ЗАО',country:'RU',web:''},
+{hall:'39',code:'8C105',name:'АС КОНТРОЛЗ, ООО',country:'RU',web:''},
+{hall:'39',code:'8C110',name:'АЛЬФАМЕТРИКС',country:'RU',web:''},
+{hall:'39',code:'8C120',name:'РУБЕЖ, ООО',country:'RU',web:''},
+{hall:'39',code:'8C130',name:'РУНА, ПК, ООО',country:'RU',web:''},
+{hall:'39',code:'8C132',name:'ГИДРОМАРКЕТ КОММЕРЧЕСКИЕ МАШИНЫ, ТПК, ООО',country:'RU',web:''},
+{hall:'39',code:'8C135',name:'СТАЛЬТЕХ ПФ, ООО',country:'RU',web:''},
+{hall:'39',code:'8C140',name:'ЦЕНТР ПОДДЕРЖКИ ЭКСПОРТА НИЖЕГОРОДСКОЙ ОБЛАСТИ',country:'RU',web:''},
+{hall:'39',code:'8C150',name:'ИНСАТ, ООО',country:'RU',web:''},
+{hall:'39',code:'8C151',name:'ЕВРОТЕХЛАБ, ООО',country:'RU',web:''},
+{hall:'39',code:'8C160',name:'ТОСОЛ-СИНТЕЗ-ИНВЕСТ',country:'RU',web:''},
+{hall:'39',code:'8C165',name:'SUZHOU EKIPOR POWER TECHNOLOGIES CO. LTD',country:'CN',web:''},
+{hall:'39',code:'8C170',name:'HQ Seals',country:'CN',web:''},
+{hall:'39',code:'8C174',name:'JIUJIANG LANZO NEW MATERIAL TECHNOLOGY CO. LTD',country:'CN',web:''},
+{hall:'39',code:'8C178',name:'XINTAI VALVE GROUP CO. LTD',country:'CN',web:''},
+{hall:'39',code:'8C180',name:'SUNKYE INTERNATIONAL CO. LTD',country:'CN',web:''},
+{hall:'39',code:'8C188',name:'GIAHAR PRECISION METAL CO. LTD',country:'CN',web:''},
+{hall:'39',code:'8C196',name:'CNPS.COM LIMITED',country:'CN',web:'cnps.com'},
+{hall:'39',code:'8D010',name:'ГАУСС, ООО',country:'RU',web:''},
+{hall:'39',code:'8D012',name:'БХС РУС, ООО',country:'RU',web:''},
+{hall:'39',code:'8D015',name:'БАКС, НТФ, ООО',country:'RU',web:''},
+{hall:'39',code:'8D025',name:'ЭМИКОН, AO',country:'RU',web:''},
+{hall:'39',code:'8D030',name:'АВАЛОНЭЛЕКТРОТЕХ НПО, ООО',country:'RU',web:'avalonelectrotech.ru'},
+{hall:'39',code:'8D040',name:'ЭЛЕМЕР, НПП, ООО',country:'RU',web:''},
+{hall:'39',code:'8D045',name:'ЭЛЕСИ, АО',country:'RU',web:''},
+{hall:'39',code:'8D050',name:'НЕКСТ ИНЖИНИРИНГ, ООО',country:'RU',web:''},
+{hall:'39',code:'8D054',name:'ЭНЕРГОПРОМ, ГК',country:'RU',web:''},
+{hall:'39',code:'8D058',name:'АВИАТРОН, НПП, ООО',country:'RU',web:'aviatron.ru'},
+{hall:'39',code:'8D060',name:'СИСТЕМЫ НЕФТЬ И ГАЗ, ООО',country:'RU',web:''},
+{hall:'39',code:'8D065',name:'НТА-ПРОМ, ООО',country:'RU',web:''},
+{hall:'39',code:'8D080',name:'МЦЭ-ИНЖИНИРИНГ, ООО',country:'RU',web:''},
+{hall:'39',code:'8D090',name:'МОСЭЛЕКТРОЩИТ',country:'RU',web:''},
+{hall:'39',code:'8D090',name:'РТК-ЭЛЕКТРО-М',country:'RU',web:''},
+{hall:'39',code:'8D090',name:'ЮНИТЕЛ ИНЖИНИРИНГ, ООО',country:'RU',web:''},
+{hall:'39',code:'8D110',name:'БОЛИД, НВП, АО',country:'RU',web:''},
+{hall:'39',code:'8D110',name:'СПЕКТРОН, ООО',country:'RU',web:''},
+{hall:'39',code:'8D130',name:'ИМПЭКС ЭЛЕКТРО, ООО',country:'RU',web:''},
+{hall:'39',code:'8D140',name:'ПЭНАМ ИНЖИНИРЗ, ООО',country:'RU',web:''},
+{hall:'39',code:'8D150',name:'GREATALL DYNAMIC CO. LTD',country:'CN',web:''},
+{hall:'39',code:'8D150',name:'HEBEI JERRY PUMP CO. LTD',country:'CN',web:''},
+{hall:'39',code:'8D150',name:'SHIJIAZHUANG SIPAITUO INTERNATIONAL TRADE CO. LTD',country:'CN',web:''},
+{hall:'39',code:'8D150',name:'XINDELI VALVE CO. LTD',country:'CN',web:''},
+{hall:'39',code:'8D155',name:'ASHAPURA INTERNATIONAL LTD',country:'IN',web:'ashapura.com'},
+{hall:'39',code:'8D160',name:'СМС-АВТОМАТИЗАЦИЯ',country:'RU',web:''},
+{hall:'39',code:'8D170',name:'HUATONG',country:'CN',web:''},
+{hall:'39',code:'8D174',name:'SHANDONG WEIMA EQUIPMENT SCIENCE & TECHNOLOGY CORPORATION LIMITED',country:'CN',web:''},
+{hall:'39',code:'8D180',name:'XUZHOU LIYUAN CELLULOSE TECHNOLOGY CO. LTD',country:'CN',web:''},
+{hall:'39',code:'8D182',name:'JIANGSU RUDONG LIANFENG PETROLEUM MACHINERY CO. LTD',country:'CN',web:''},
+{hall:'39',code:'8D184',name:'NINGBO KINGLI FASTENER CO. LTD',country:'CN',web:''},
+{hall:'39',code:'8D186',name:'JIANGYIN FANGYUAN RINGLIKE FORGING & FLANGE CO. LTD',country:'CN',web:''},
+{hall:'39',code:'8D190',name:'GUANGHAN N&D CARBIDE CO. LTD',country:'CN',web:''},
+{hall:'39',code:'8D191',name:'SICHUAN XINWEI RUBBER CO. LTD',country:'CN',web:''},
+{hall:'39',code:'8D192',name:'JIANGSU HUAYING VALVES CO. LTD',country:'CN',web:''},
+{hall:'39',code:'8E010',name:'РЕГЛАБ, ООО',country:'RU',web:''},
+{hall:'39',code:'8E020',name:'ПРОСОФТ-СИСТЕМЫ, Группа компаний',country:'RU',web:''},
+{hall:'39',code:'8E025',name:'РЕГСЕНСОР',country:'RU',web:''},
+{hall:'39',code:'8E030',name:'МВИФ, ООО',country:'RU',web:''},
+{hall:'39',code:'8E030',name:'ФЛЮИД-ЛАЙН, ООО',country:'RU',web:''},
+{hall:'39',code:'8E035',name:'ЭЛМЕТРО-ИНЖИНИРИНГ, ООО',country:'RU',web:''},
+{hall:'39',code:'8E045',name:'ЭЛЕСИ, АО',country:'RU',web:''},
+{hall:'39',code:'8E055',name:'ВИРА РЕАЛТАЙМ, НПА, OOO',country:'RU',web:''},
+{hall:'39',code:'8E058',name:'ГРИНСИСТЕМС, ООО',country:'RU',web:''},
+{hall:'39',code:'8E058',name:'ФЛОУБЕТТЕР',country:'RU',web:''},
+{hall:'39',code:'8E060',name:'ЭЛАРА, Инженерный центр, АО',country:'RU',web:''},
+{hall:'39',code:'8E068',name:'АНАЛИТПРИБОР, ФГУП, СПО',country:'RU',web:''},
+{hall:'39',code:'8E070',name:'АБС ЗЭИМ АВТОМАТИЗАЦИЯ, АО',country:'RU',web:''},
+{hall:'39',code:'8E070',name:'ВНИИР, АО',country:'RU',web:''},
+{hall:'39',code:'8E070',name:'РЕЛЕМАТИКА, ООО',country:'RU',web:''},
+{hall:'39',code:'8E080',name:'КОМБИТ ПРО, ООО',country:'RU',web:'kombit.ru'},
+{hall:'39',code:'8E084',name:'НОРКЕМ, ООО',country:'RU',web:''},
+{hall:'39',code:'8E090',name:'МЕТРОЛОГИЯ И АВТОМАТИЗАЦИЯ',country:'RU',web:''},
+{hall:'39',code:'8E100',name:'СЕНСОР НПП, ООО',country:'RU',web:''},
+{hall:'39',code:'8E110',name:'ВЗОР, ООО',country:'RU',web:'vzor-ex.ru'},
+{hall:'39',code:'8E120',name:'НЕФТЕАВТОМАТИКА, АО',country:'RU',web:''},
+{hall:'39',code:'8E130',name:'КЛЮЧЕВОЙ КОМПОНЕНТ',country:'RU',web:'k2el.ru'},
+{hall:'39',code:'8E140',name:'ПОЖГАЗПРИБОР',country:'RU',web:''},
+{hall:'39',code:'8E150',name:'АТИСС, ООО',country:'RU',web:''},
+{hall:'39',code:'8E160',name:'ХИМПЭК',country:'RU',web:''},
+{hall:'39',code:'8E165',name:'ХРОМОС Инжиниринг, ООО',country:'RU',web:''},
+{hall:'39',code:'8E170',name:'CZ ELECTRIC CO. LTD',country:'CN',web:'cz-ex.com'},
+{hall:'39',code:'8E170',name:'PLATINUM VALVE (ZHEJIANG) CO. LTD',country:'CN',web:''},
+{hall:'39',code:'8E170',name:'WENZHOU YIYU SEALING MATERIAL CO. LTD',country:'CN',web:''},
+{hall:'39',code:'8E170',name:'ZHEJIANG ZHIJU PIPELINE INDUSTRY CO. LTD',country:'CN',web:''},
+{hall:'39',code:'8E180',name:'SHANDONG WANDA CABLE CO. LTD',country:'CN',web:''},
+{hall:'39',code:'8E185',name:'HEBEI YONGMING GEOLOGICAL PROJECT MACHINERY CO. LTD',country:'CN',web:''},
+{hall:'39',code:'8E190',name:'ИНЕЛ-ДИСПЛЕЙ, ООО',country:'RU',web:''},
+{hall:'39',code:'8E192',name:'ИТ КОСМОС, АО',country:'RU',web:''},
+{hall:'39',code:'8E195',name:'ЗАНГЕР, ООО',country:'RU',web:''},
+{hall:'39',code:'8F010',name:'АТОМИК СОФТ',country:'RU',web:''},
+{hall:'39',code:'8F020',name:'ТРЭИ, АО',country:'RU',web:''},
+{hall:'39',code:'8F030',name:'ТЕСЕЙ ПК, ООО',country:'RU',web:''},
+{hall:'39',code:'8F032',name:'ТЕХНЕКОН, ТД, ООО',country:'RU',web:''},
+{hall:'39',code:'8F033',name:'КВАЛИТЕТ, ООО',country:'RU',web:'qualitetsystem.ru'},
+{hall:'39',code:'8F048',name:'ЭМИС, АО',country:'RU',web:''},
+{hall:'39',code:'8F050',name:'АЛЬБАТРОС, АО',country:'RU',web:''},
+{hall:'39',code:'8F055',name:'ПОИНТ',country:'BY',web:''},
+{hall:'39',code:'8F060',name:'РИЗУР НПО, ООО',country:'RU',web:''},
+{hall:'39',code:'8F070',name:'СОКТРЕЙД, ООО',country:'RU',web:''},
+{hall:'39',code:'8F070',name:'ЭРИС КИП, ООО',country:'RU',web:''},
+{hall:'39',code:'8F071',name:'ЭВАКЕМ ТЕХНОЛОГИИ, ООО',country:'RU',web:''},
+{hall:'39',code:'8F080',name:'СПЕЦХИММАШ, ООО',country:'RU',web:''},
+{hall:'39',code:'8F090',name:'ТАМБОВХИММАШ ПП, ООО',country:'RU',web:''},
+{hall:'39',code:'8F100',name:'ЛПСервис, ООО',country:'RU',web:''},
+{hall:'39',code:'8F115',name:'ДИАЛКОН ТЕХНОЛОДЖИ, ООО',country:'RU',web:''},
+{hall:'39',code:'8F130',name:'ЭКОХИМПРИБОР НПП, ООО',country:'RU',web:''},
+{hall:'39',code:'8F150',name:'ПРАКСЭА РУС, ООО',country:'RU',web:''},
+{hall:'39',code:'8F160',name:'АЛЬЯНС-ЭНЕРГИЯ, ООО',country:'RU',web:''},
+{hall:'39',code:'8F165',name:'ГЕФЕСТ, ООО',country:'RU',web:''},
+{hall:'39',code:'8F168',name:'УНИХИМТЕК, НПО',country:'RU',web:''},
+{hall:'39',code:'8G010',name:'ИНКОНТРОЛ, ООО',country:'RU',web:''},
+{hall:'39',code:'8G030',name:'ЭКСАРА, ООО',country:'RU',web:''},
+{hall:'39',code:'8G050',name:'МЕТРАН, ГРУППА КОМПАНИЙ',country:'RU',web:''},
+{hall:'39',code:'8G070',name:'ЕТС, ГРУППА КОМПАНИЙ',country:'RU',web:''},
+{hall:'39',code:'8G090',name:'ЮМАС, НПО, ООО',country:'RU',web:''},
+{hall:'39',code:'8G110',name:'ЭРСТВАК, ООО',country:'RU',web:''},
+{hall:'39',code:'8G130',name:'СХТ-ТРЕЙД, ООО',country:'RU',web:''},
+{hall:'39',code:'8G150',name:'ЕКСП ГРУПП, ООО',country:'RU',web:''},
+{hall:'39',code:'8H010',name:'ХИМПРОДУКТ, ООО',country:'RU',web:''},
+{hall:'39',code:'8H020',name:'НТЦ ЭЛИНС, АО',country:'RU',web:''},
+{hall:'39',code:'8H030',name:'ЭМИ-ПРИБОР, ООО',country:'RU',web:''},
+{hall:'39',code:'8H050',name:'АЙСОРС, АО',country:'RU',web:''},
+{hall:'39',code:'8H070',name:'RealLab!',country:'RU',web:''},
+{hall:'39',code:'8H080',name:'ЭКОМЕР',country:'RU',web:''},
+{hall:'39',code:'8H090',name:'СТК, ООО',country:'RU',web:''},
+{hall:'39',code:'8H120',name:'БК-ПРИВОДНАЯ АРМАТУРА, ООО',country:'RU',web:''},
+{hall:'39',code:'8H150',name:'БД СЕНСОРС РУС, ООО',country:'RU',web:''},
+
+// ── Зал 5 · 2024 ─────────────────────────────────────────────────────────────
+{hall:'5',code:'23B40',name:'FEEJOY',country:'RU',web:''},
+{hall:'5',code:'23D85',name:'INNERICA',country:'RU',web:''},
+{hall:'5',code:'23B01',name:'RealLab!, ООО',country:'RU',web:''},
+{hall:'5',code:'23B40',name:'WEMETRO',country:'RU',web:''},
+{hall:'5',code:'23D20',name:'АВАЛОНЭЛЕКТРОТЕХ НПО, ООО',country:'RU',web:'avalonelectrotech.ru'},
+{hall:'5',code:'23D48',name:'АВИАТРОН, НПП, ООО',country:'RU',web:'aviatron.ru'},
+{hall:'5',code:'23E50',name:'АВТОМАТИЗАЦИЯ-МЕТРОЛОГИЯ-ЭКСПЕРТ, ООО',country:'RU',web:''},
+{hall:'5',code:'23B38',name:'АИС-НН, ООО',country:'RU',web:''},
+{hall:'5',code:'23B34',name:'АЛЬБАТРОС, АО',country:'RU',web:''},
+{hall:'5',code:'23B25',name:'АНАЛИТПРИБОР, ФГУП, СПО',country:'RU',web:''},
+{hall:'5',code:'23B10',name:'АТОМИК СОФТ',country:'RU',web:''},
+{hall:'5',code:'23E10',name:'БИТ, ГК, ООО',country:'RU',web:''},
+{hall:'5',code:'23A50',name:'ГВАРДА',country:'RU',web:''},
+{hall:'5',code:'23F10',name:'ГОРЭКС-СВЕТОТЕХНИКА, ЗАВОД, ООО',country:'RU',web:''},
+{hall:'5',code:'23D80',name:'ДЕЛАЙТ 2000',country:'RU',web:''},
+{hall:'5',code:'23D60',name:'ЗАВОД ИННОВАЦИОННЫХ ТЕХНОЛОГИЙ, ООО',country:'RU',web:''},
+{hall:'5',code:'23D49',name:'ИНВАРД, ООО',country:'RU',web:''},
+{hall:'5',code:'23E35',name:'ИНКАБ, ООО',country:'RU',web:''},
+{hall:'5',code:'23E20',name:'ИНКОМСИСТЕМ, НАУЧНО-ИНЖЕНЕРНЫЙ ЦЕНТР, АО',country:'RU',web:''},
+{hall:'5',code:'23C10',name:'ИНКОНТРОЛ, ООО',country:'RU',web:''},
+{hall:'5',code:'23E03',name:'ИнСАТ',country:'RU',web:''},
+{hall:'5',code:'23F30',name:'ИНСОЛ',country:'RU',web:''},
+{hall:'5',code:'23D50',name:'К-СИСТЕМ ЭЛЕКТРОНИКС',country:'RU',web:''},
+{hall:'5',code:'23B30',name:'КЛЮЧЕВОЙ КОМПОНЕНТ, ООО',country:'RU',web:'k2el.ru'},
+{hall:'5',code:'23A02',name:'КСБ-СОФТ, ООО',country:'RU',web:''},
+{hall:'5',code:'23C60',name:'КуйбышевТелеком-Метрология, НПП, ООО',country:'RU',web:''},
+{hall:'5',code:'23A10',name:'ЛАЗЕРНЫЕ КОМПОНЕНТЫ',country:'RU',web:''},
+{hall:'5',code:'23E01',name:'ЛИКНЕТ СИСТЕМ, ООО',country:'RU',web:''},
+{hall:'5',code:'23A25',name:'МЕТРОЛОГИЯ И АВТОМАТИЗАЦИЯ, ООО',country:'RU',web:''},
+{hall:'5',code:'23F32',name:'МИРАКС, ООО',country:'RU',web:''},
+{hall:'5',code:'23C71',name:'МОНТАЖПЛЮС, ООО',country:'RU',web:''},
+{hall:'5',code:'23B35',name:'МПС софт, ООО (MasterSCADA)',country:'RU',web:''},
+{hall:'5',code:'23B03',name:'ОПТОСЕНС, ООО',country:'RU',web:''},
+{hall:'5',code:'23A40',name:'ПАРК-СТРОЙ, ООО',country:'RU',web:''},
+{hall:'5',code:'23B02',name:'Петролайн-А',country:'RU',web:''},
+{hall:'5',code:'23D45',name:'ПИК, НАУЧНО-ТЕХНИЧЕСКИЙ ЦЕНТР, ООО',country:'RU',web:''},
+{hall:'5',code:'23D40',name:'ПЛАЗВАК НТППК',country:'RU',web:''},
+{hall:'5',code:'23F29',name:'ПОЖГАЗПРИБОР, ООО',country:'RU',web:''},
+{hall:'5',code:'23D42',name:'ПромМаш Тест',country:'RU',web:''},
+{hall:'5',code:'23A01',name:'ПРОМОГРУПП МЕДИА, ООО',country:'RU',web:''},
+{hall:'5',code:'23B15',name:'ПРОСОФТ-СИСТЕМЫ, ГРУППА КОМПАНИЙ',country:'RU',web:''},
+{hall:'5',code:'23B17',name:'РегЛаб, ООО',country:'RU',web:''},
+{hall:'5',code:'23E40',name:'РивалКом, ООО',country:'RU',web:''},
+{hall:'5',code:'23D10',name:'РИЗУР',country:'RU',web:''},
+{hall:'5',code:'23E49',name:'РУНА, ПРОИЗВОДСТВЕННАЯ КОМПАНИЯ',country:'RU',web:''},
+{hall:'5',code:'23D25',name:'СГЭП НТЦ',country:'RU',web:''},
+{hall:'5',code:'23D40',name:'СЕНСОР, НПП, ООО',country:'RU',web:''},
+{hall:'5',code:'23B10',name:'СИНТЕК',country:'RU',web:''},
+{hall:'5',code:'23D29',name:'СМД, КОМПАНИЯ',country:'RU',web:''},
+{hall:'5',code:'23C72',name:'ТЕХНОДАР, ТД, ООО',country:'RU',web:''},
+{hall:'5',code:'23C72',name:'ТЕХНОЛОГИИ И РЕШЕНИЯ, ООО',country:'RU',web:''},
+{hall:'5',code:'23B29',name:'ТИК, НПП',country:'RU',web:''},
+{hall:'5',code:'23C72',name:'ТРУВЕЛ, ООО',country:'RU',web:''},
+{hall:'5',code:'23D49',name:'ТЭК-СИСТЕМС, ООО',country:'RU',web:''},
+{hall:'5',code:'23D90',name:'УВП-КОМПЛЕКСНЫЕ СИСТЕМЫ, ООО',country:'RU',web:''},
+{hall:'5',code:'23B40',name:'УЛЬТРА, ГК',country:'RU',web:''},
+{hall:'5',code:'23E30',name:'ФИНДЕР, ООО',country:'RU',web:''},
+{hall:'5',code:'23A20',name:'ЭКОМЕРА, СК, ООО',country:'RU',web:''},
+{hall:'5',code:'23B28',name:'ЭКОРЕСУРС, АО',country:'RU',web:''},
+{hall:'5',code:'23C80',name:'ЭКСИТОН-АВТОМАТИКА, НПФ',country:'RU',web:''},
+{hall:'5',code:'23D70',name:'ЭЛАРА, ИНЖЕНЕРНЫЙ ЦЕНТР, АО',country:'RU',web:''},
+{hall:'5',code:'23C30',name:'ЭЛЕМЕР, НПП, ООО',country:'RU',web:''},
+{hall:'5',code:'23D15',name:'ЭЛЕСИ, ЗАВОД ПСА, ООО',country:'RU',web:''},
+{hall:'5',code:'23E25',name:'ЭлМетро-Инжиниринг, ООО',country:'RU',web:''},
+{hall:'5',code:'23D18',name:'ЭМИ-ПРИБОР',country:'RU',web:''},
+{hall:'5',code:'23B20',name:'ЭМИКОН, АО',country:'RU',web:''},
+{hall:'5',code:'23C65',name:'ЭМИС, ЗАО',country:'RU',web:''},
+{hall:'5',code:'23F20',name:'ЭНЕРГЕТИКА',country:'RU',web:''},
+{hall:'5',code:'23F82',name:'ЭНЕРГЕТИКА И ПРОМЫШЛЕННОСТЬ РОССИИ',country:'RU',web:''},
+{hall:'5',code:'23C20',name:'ЭНЕРГОМАШ, АО',country:'RU',web:''},
+{hall:'5',code:'23F25',name:'ЭРИС, ООО',country:'RU',web:''},
+{hall:'5',code:'23F01',name:'ЭТАЛОН, НПК',country:'RU',web:''},
+{hall:'5',code:'23C70',name:'ЮНИТЕЛ ИНЖИНИРИНГ, ООО',country:'RU',web:''},
+];
+
+// ── Specialties inference ────────────────────────────────────────────────────
+function inferSpec(name) {
+  var n = name.toUpperCase();
+  if (/НАСОС|PUMP|PLUNGER|CENTRIFUG/.test(n)) return 'Насосы';
+  if (/КОМПРЕСС|COMPRESSOR/.test(n)) return 'Компрессоры';
+  if (/КЛАПАН|VALVE|АРМАТУР|ЗАДВИЖК/.test(n) && !/ЦИЯ/.test(n)) return 'Арматура и клапаны';
+  if (/КАБЕЛЬ|CABLE/.test(n)) return 'Кабельная продукция';
+  if (/АВТОМАТИК|AUTOMATI|SCADA|АСУ/.test(n)) return 'АСУ ТП / Автоматизация';
+  if (/ХИМИЯ|CHEMICAL|ХИМ/.test(n)) return 'Промышленная химия';
+  if (/БУР|DRILL/.test(n)) return 'Буровое оборудование';
+  if (/НЕФТЕМАШ|НЕФТЯН|OILFIELD|PETROLEUM/.test(n)) return 'Нефтяное машиностроение';
+  if (/ТРУБОПРОВОД|PIPE|FLAN|ФЛАНЕ/.test(n)) return 'Трубопроводное оборудование';
+  if (/ЭЛЕКТР|ELECTRIC|ЭНЕРГО|POWER|ENERG/.test(n)) return 'Электрооборудование';
+  if (/ПРИБОР|МЕТРОЛ|СЕНС|SENSOR|ИЗМЕР|METER|КИП/.test(n)) return 'КИП и метрология';
+  if (/УПЛОТН|SEAL|РЕЗИН|RUBBER/.test(n)) return 'Уплотнения';
+  if (/МЕТАЛЛ|STEEL|СПЛАВ|FORGE|FORGING/.test(n)) return 'Металлопродукция';
+  if (/ПОЖАР|FIRE|ПОЖТ/.test(n)) return 'Пожарная защита';
+  if (/СВЕТ|LIGHT|LAMP|ОСВЕЩ/.test(n)) return 'Световое оборудование';
+  if (/МЕДИА|ЖУРНАЛ|JOURNAL|ГАЗЕТ|MEDIA|ЕЖЕНЕДЕЛЬНИК|ПРОМЫШЛЕНН.*ГАЗ|НЕФТЕГАЗ.*ЭКСПО|НЕФТЬ.*ГАЗ|ЭКСПОЗИЦ/.test(n)) return 'Медиа / Журнал';
+  if (/РОБОТ|ROBOT|БПЛА/.test(n)) return 'Роботизация / БПЛА';
+  if (/ХРОМОС|CHROMAT|АНАЛИЗ|ANALYT/.test(n)) return 'Аналитическое оборудование';
+  if (/ПОКРЫТ|COATIN|АНТИКОРР/.test(n)) return 'Защитные покрытия';
+  if (/ИНЖИНИР|ENGINEER/.test(n) && !/АРМ/.test(n)) return 'Инжиниринг';
+  if (/ЗАВОД|FACTORY|PLANT|МАШИН/.test(n) && !/БУР/.test(n)) return 'Машиностроение';
+  if (/УГЛЕРОД|CARBIDE|КАРБИД/.test(n)) return 'Твёрдый сплав';
+  if (/ЦЕЛЛЮЛ|CELLULOSE/.test(n)) return 'Буровая химия / CMC';
+  if (/ФЛОКУЛ|ПОЛИАКР|ПОЛИМЕР/.test(n)) return 'Полимеры / Флокулянты';
+  if (/ВАКУУМ/.test(n)) return 'Вакуумное оборудование';
+  if (/КРЕПЕЖ|FASTENER/.test(n)) return 'Крепёжные изделия';
+  if (/ПРИВОДЫ|ACTUATOR|ЭЛЕКТРОПРИВОД/.test(n)) return 'Электроприводы';
+  if (/ЛАБОРАТ|LAB/.test(n)) return 'Лабораторное оборудование';
+  if (/МОРСК|MARINE|MARITIME/.test(n)) return 'Морское оборудование';
+  return 'Промышленное оборудование';
+}
+
+function countryClass(c) {
+  return 'cb-'+(c||'XX');
+}
+function countryName(c) {
+  var map={RU:'Россия',CN:'Китай',TR:'Турция',IN:'Индия',BY:'Беларусь',KR:'Корея',NL:'Нидерланды'};
+  return map[c]||c||'—';
+}
+function hallClass(h) {
+  if(h==='38') return 'hall-38';
+  if(h==='39') return 'hall-39';
+  return 'hall-5';
+}
+function hallLabel(h) {
+  if(h==='38') return 'Зал 38';
+  if(h==='39') return 'Зал 39';
+  return 'Зал 5 · 2024';
+}
+
+var currentHall = '';
+function setHall(el, val) {
+  document.querySelectorAll('.ng-tab').forEach(function(t){ t.classList.remove('active'); });
+  el.classList.add('active');
+  currentHall = val;
+  filterNg();
+}
+
+function filterNg() {
+  var q = (document.getElementById('ngSearch').value||'').toLowerCase().trim();
+  var list = EXHIBITORS.filter(function(e) {
+    var hallMatch = !currentHall || e.hall === currentHall || e.country === currentHall;
+    var haystack = [e.code, e.name, countryName(e.country), inferSpec(e.name)].join(' ').toLowerCase();
+    var qMatch = !q || haystack.includes(q);
+    return hallMatch && qMatch;
+  });
+  render(list);
+}
+
+function render(list) {
+  document.getElementById('ngCount').textContent = 'Показано '+list.length+' из '+EXHIBITORS.length+' экспонентов';
+  var tb = document.getElementById('ngTable');
+  if(!list.length) {
+    tb.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:40px;color:rgba(255,255,255,.3)">Ничего не найдено</td></tr>';
+    return;
+  }
+  tb.innerHTML = list.map(function(e){
+    var spec = inferSpec(e.name);
+    var webHtml = e.web ? '<a class="ng-web" href="https://'+e.web+'" target="_blank" rel="noopener">'+e.web+'</a>' : '<span style="color:rgba(255,255,255,.2);font-size:12px;">—</span>';
+    return '<tr>'+
+      '<td><span class="ng-code">'+e.code+'</span></td>'+
+      '<td><span class="ng-hall '+hallClass(e.hall)+'">'+hallLabel(e.hall)+'</span></td>'+
+      '<td><div class="ng-name">'+e.name+'</div><div class="ng-spec">'+spec+'</div></td>'+
+      '<td><span class="country-badge '+countryClass(e.country)+'">'+countryName(e.country)+'</span></td>'+
+      '<td style="font-size:12px;color:rgba(255,255,255,.4);">'+spec+'</td>'+
+      '<td>'+webHtml+'</td>'+
+      '<td><a href="marketplace-rfq.html" style="font-size:11px;color:var(--blue);font-weight:500;">RFQ →</a></td>'+
+    '</tr>';
+  }).join('');
+}
+
+render(EXHIBITORS);
+</script>
+</body>
+</html>

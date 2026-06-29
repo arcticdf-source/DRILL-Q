@@ -1,0 +1,2046 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>145 · Nexus Supplier Trust Desk</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Condensed:wght@500;600;700&display=swap");
+
+    :root {
+      --panel: rgba(255,255,255,0.96);
+      --surface: #f8fbfd;
+      --line: rgba(18,48,71,0.12);
+      --text: #17324a;
+      --muted: #617487;
+      --gold: #ba7a1f;
+      --mint: #0e7490;
+      --success: #1f7a4f;
+      --danger: #c0563c;
+      --shadow: 0 22px 56px rgba(28,51,84,0.1);
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0; min-height: 100%;
+      font-family: "IBM Plex Sans", sans-serif;
+      background:
+        radial-gradient(820px 420px at 0% 0%, rgba(14,116,144,0.08), transparent 70%),
+        radial-gradient(780px 420px at 100% 0%, rgba(186,122,31,0.1), transparent 72%),
+        linear-gradient(180deg, #f7fafc 0%, #eef3f6 54%, #e9eef2 100%);
+      color: var(--text);
+    }
+    body::before {
+      content: ""; position: fixed; inset: 0;
+      background:
+        linear-gradient(to right, rgba(23,50,74,0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(23,50,74,0.04) 1px, transparent 1px);
+      background-size: 48px 48px; pointer-events: none; opacity: 0.45;
+    }
+    .page {
+      position: relative; z-index: 1;
+      width: min(1480px, calc(100% - 32px));
+      margin: 0 auto; padding: 20px 0 42px;
+    }
+
+    /* --- SHARED ATOMS --- */
+    .topbar, .hero, .panel, .side-panel,
+    .offer-card, .badge-card, .inventory-row, .step-row, .sku-row {
+      border: 1px solid var(--line);
+      border-radius: 26px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+    .topbar {
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 16px; padding: 14px 18px; margin-bottom: 16px;
+    }
+    .brand {
+      display: inline-flex; align-items: center; gap: 12px;
+      font-size: 13px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase;
+    }
+    .brand-mark {
+      width: 14px; height: 14px; border-radius: 999px;
+      background: linear-gradient(135deg, #ebaf54 0%, #d1811d 100%);
+      box-shadow: 0 0 0 6px rgba(209,129,29,0.12);
+    }
+    .button, .button-secondary, .toggle, .tab, .mini-button, .row-button {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-height: 42px; padding: 0 16px; border-radius: 999px;
+      border: 1px solid rgba(18,48,71,0.12); background: rgba(255,255,255,0.92);
+      color: var(--text); font: inherit; font-size: 12px; font-weight: 800;
+      letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; cursor: pointer;
+    }
+    .button { color: #fff; background: linear-gradient(135deg,#d38b28 0%,#b56f16 100%); border-color: rgba(181,111,22,0.45); }
+    .tab.active, .toggle.active { background: rgba(14,116,144,0.1); border-color: rgba(14,116,144,0.3); color: var(--mint); }
+    .mini-button { min-height: 34px; padding: 0 12px; font-size: 11px; }
+    .row-button { min-height: 36px; padding: 0 14px; font-size: 11px; }
+    .row-button.primary { color: #fff; background: linear-gradient(135deg,#d38b28 0%,#b56f16 100%); border-color: rgba(181,111,22,0.45); }
+
+    /* --- EYEBROW / TAG / PILL --- */
+    .eyebrow, .tag, .pill, .badge, .row-tag {
+      display: inline-flex; align-items: center; min-height: 28px; padding: 0 12px;
+      border-radius: 999px; font-size: 11px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase;
+    }
+    .eyebrow, .tag, .row-tag { background: rgba(14,116,144,0.1); color: var(--mint); }
+    .pill.verified, .badge.verified { background: rgba(31,122,79,0.1); color: var(--success); }
+    .pill.pending, .badge.pending { background: rgba(192,86,60,0.1); color: var(--danger); }
+    .pill.offline { background: rgba(183,121,31,0.1); color: var(--gold); }
+
+    /* --- TYPOGRAPHY --- */
+    h1, h2, h3 {
+      margin: 0; font-family: "IBM Plex Sans Condensed", sans-serif;
+      letter-spacing: 0.04em; text-transform: uppercase;
+    }
+    h1 { font-size: clamp(38px,4.6vw,64px); line-height: 0.94; }
+    h2 { font-size: clamp(18px,2vw,26px); }
+    h3 { font-size: 20px; }
+    .muted, .copy, .row-copy, .step-copy, .sku-copy { color: var(--muted); font-size: 14px; line-height: 1.6; }
+    .supplier-name-big {
+      font-family: "IBM Plex Sans Condensed", sans-serif;
+      font-size: clamp(52px,6vw,84px); line-height: 0.9;
+      text-transform: uppercase; letter-spacing: 0.02em; margin: 12px 0;
+    }
+    .metric-value { font-family: "IBM Plex Sans Condensed", sans-serif; font-size: 34px; line-height: 1; color: var(--gold); }
+    .metric-label { color: var(--muted); font-size: 11px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; margin-top: 6px; }
+
+    /* --- HERO --- */
+    .hero {
+      display: grid; grid-template-columns: minmax(0,1.5fr) minmax(300px,0.7fr);
+      gap: 18px; padding: 26px; margin-bottom: 16px; overflow: hidden; position: relative;
+    }
+    .hero::after {
+      content: ""; position: absolute; right: -80px; bottom: -80px;
+      width: 320px; height: 320px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(47,111,163,0.12), transparent 72%);
+      pointer-events: none;
+    }
+    .supplier-selector { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+    .hero-meta { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 14px; }
+    .hero-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+    .metric-strip {
+      display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 12px; margin-top: 20px;
+    }
+    .metric {
+      padding: 16px; border-radius: 22px;
+      background: var(--surface); border: 1px solid rgba(18,48,71,0.08);
+    }
+
+    /* --- WORKSPACE --- */
+    .workspace {
+      display: grid; grid-template-columns: minmax(0,1fr) 330px; gap: 16px;
+    }
+    .main-col { display: grid; gap: 16px; align-content: start; }
+    .side-col { display: grid; gap: 16px; align-content: start; }
+
+    /* --- PANEL --- */
+    .panel { padding: 20px; background: var(--surface); }
+    .side-panel { padding: 18px; background: var(--surface); }
+    .panel-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+    .panel-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+    /* --- OFFER GRID --- */
+    .offer-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 14px; }
+    .offer-card { padding: 18px; background: #fff; }
+    .offer-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+    .offer-value { font-family: "IBM Plex Sans Condensed", sans-serif; font-size: 30px; line-height: 1; color: var(--gold); }
+    .offer-name { font-family: "IBM Plex Sans Condensed", sans-serif; font-size: 22px; line-height: 1.1; text-transform: uppercase; margin-top: 10px; }
+    .offer-copy { color: var(--muted); font-size: 13px; line-height: 1.55; margin-top: 8px; }
+    .offer-stats { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+    .offer-stat { display: inline-flex; align-items: center; min-height: 26px; padding: 0 10px; border-radius: 999px; background: rgba(23,50,74,0.06); color: var(--muted); font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+    .offer-actions { margin-top: 14px; display: flex; gap: 10px; }
+
+    /* --- BADGE GRID --- */
+    .badge-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 14px; }
+    .badge-card { padding: 18px; background: #fff; }
+    .badge-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+    .badge-value { font-family: "IBM Plex Sans Condensed", sans-serif; font-size: 26px; line-height: 1; color: var(--mint); }
+    .badge-name { font-weight: 700; color: var(--text); margin-top: 10px; font-size: 14px; }
+    .badge-copy { color: var(--muted); font-size: 13px; margin-top: 6px; line-height: 1.5; }
+    .badge-stats { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+
+    /* --- INVENTORY ROWS --- */
+    .inventory-list { display: grid; gap: 10px; }
+    .inventory-row { padding: 14px 18px; background: #fff; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .inv-title { font-weight: 600; color: var(--text); }
+    .inv-meta { color: var(--muted); font-size: 12px; margin-top: 3px; }
+
+    /* --- TRUST TABLE --- */
+    .trust-table { display: grid; gap: 8px; }
+    .trust-row { display: grid; grid-template-columns: 200px minmax(0,1fr); gap: 16px; align-items: baseline; padding: 12px 0; border-bottom: 1px solid rgba(18,48,71,0.07); }
+    .trust-row:last-child { border-bottom: none; }
+    .trust-key { color: var(--muted); font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+    .trust-val { color: var(--text); font-size: 14px; font-weight: 600; }
+
+    /* --- WORKFLOW STEPS --- */
+    .step-list { display: grid; gap: 10px; }
+    .step-row { padding: 14px 18px; background: #fff; display: grid; grid-template-columns: 48px minmax(0,1fr); gap: 14px; align-items: start; }
+    .step-num { font-family: "IBM Plex Sans Condensed", sans-serif; font-size: 28px; color: var(--gold); line-height: 1; }
+    .step-title { font-weight: 700; color: var(--text); }
+    .step-copy { color: var(--muted); font-size: 13px; margin-top: 4px; line-height: 1.5; }
+
+    /* --- SKU ROWS --- */
+    .sku-list { display: grid; gap: 8px; }
+    .sku-row { padding: 12px 16px; background: #fff; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .sku-title { font-weight: 600; color: var(--text); font-size: 13px; }
+    .sku-copy { color: var(--muted); font-size: 12px; margin-top: 2px; }
+
+    /* --- PROGRESS BARS --- */
+    .bar-row { display: flex; align-items: center; gap: 12px; margin-top: 10px; }
+    .bar-track { flex: 1; height: 6px; border-radius: 999px; background: rgba(18,48,71,0.08); overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, #d38b28, #b56f16); transition: width 0.4s; }
+    .bar-label { font-size: 12px; font-weight: 700; color: var(--gold); white-space: nowrap; }
+
+    /* --- SUPPLIER SWITCHER STRIP --- */
+    .supplier-strip { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+    .sup-tab { display: inline-flex; align-items: center; min-height: 36px; padding: 0 14px; border-radius: 999px; border: 1px solid rgba(18,48,71,0.12); background: rgba(255,255,255,0.9); color: var(--text); font-size: 12px; font-weight: 700; cursor: pointer; }
+    .sup-tab.active { background: rgba(14,116,144,0.1); border-color: rgba(14,116,144,0.3); color: var(--mint); }
+
+    /* --- SIGNAL BARS --- */
+    .signal-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; }
+    .signal-card { padding: 14px; border-radius: 20px; background: var(--surface); border: 1px solid rgba(18,48,71,0.08); }
+    .signal-tag { font-size: 11px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+    .signal-value { font-family: "IBM Plex Sans Condensed", sans-serif; font-size: 30px; color: var(--gold); margin-top: 4px; line-height: 1; }
+    .signal-copy { color: var(--muted); font-size: 12px; margin-top: 6px; line-height: 1.45; }
+
+    /* --- LANG TOGGLE --- */
+    .toggle-row { display: flex; gap: 10px; }
+
+    /* --- COMMERCIAL --- */
+    .commercial-list { display: grid; gap: 10px; }
+    .commercial-item { padding: 14px 16px; border-radius: 18px; background: #fff; border: 1px solid rgba(18,48,71,0.08); }
+    .commercial-title { font-weight: 700; color: var(--text); font-size: 14px; }
+    .commercial-copy { color: var(--muted); font-size: 13px; margin-top: 4px; line-height: 1.5; }
+
+    @media (max-width: 1200px) { .workspace { grid-template-columns: 1fr; } }
+    @media (max-width: 1040px) { .hero { grid-template-columns: 1fr; } .metric-strip { grid-template-columns: repeat(2,1fr); } }
+    @media (max-width: 720px) { .offer-grid, .badge-grid, .signal-grid { grid-template-columns: 1fr; } .metric-strip { grid-template-columns: 1fr 1fr; } }
+  </style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+  <main class="page">
+
+    <section class="topbar">
+      <div class="brand"><span class="brand-mark"></span><span>Nexus Supplier Desk</span></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <a class="button-secondary" href="../index.html">Nexus</a>
+        <a class="button-secondary" href="143_nexus_marketplace_hub.html" id="hubLink">Marketplace Hub</a>
+        <a class="button-secondary" href="144_nexus_catalog_workbench.html" id="catalogLink">Catalog</a>
+        <a class="button" href="146_nexus_rfq_command.html" id="rfqTopCta">Open RFQ</a>
+      </div>
+    </section>
+
+    <section class="hero" id="heroSection">
+      <article>
+        <div class="supplier-strip" id="supplierStrip"></div>
+        <div class="hero-meta">
+          <span class="eyebrow" id="heroCategory"></span>
+          <span class="pill" id="verificationBadge"></span>
+        </div>
+        <div class="supplier-name-big" id="supplierNameBig"></div>
+        <p class="copy" id="supplierTagline"></p>
+        <div class="hero-actions">
+          <a class="button" href="146_nexus_rfq_command.html" id="rfqHeroCta"></a>
+          <a class="button-secondary" href="144_nexus_catalog_workbench.html" id="catalogHeroCta"></a>
+        </div>
+        <div class="metric-strip" id="metricStrip"></div>
+      </article>
+
+      <aside style="display:grid;gap:14px;align-content:start;">
+        <div class="panel">
+          <div class="panel-head">
+            <div><div class="tag" id="langTag"></div><h2 id="langTitle"></h2><p class="copy" id="langCopy"></p></div>
+            <span class="pill verified" id="langStatus"></span>
+          </div>
+          <div class="toggle-row" id="langToggleRow">
+            <button class="toggle active" data-lang="ru" type="button">RU</button>
+            <button class="toggle" data-lang="en" type="button">EN</button>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head">
+            <div><div class="tag" id="signalTag"></div><h2 id="signalTitle"></h2></div>
+          </div>
+          <div class="signal-grid" id="signalGrid"></div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="workspace">
+      <div class="main-col">
+
+        <div class="panel">
+          <div class="panel-head">
+            <div><div class="tag" id="offerTag"></div><h2 id="offerTitle"></h2><p class="copy" id="offerCopy"></p></div>
+            <span class="pill verified" id="offerBadge"></span>
+          </div>
+          <div class="offer-grid" id="offerGrid"></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <div><div class="tag" id="badgeTag"></div><h2 id="badgeTitle"></h2><p class="copy" id="badgeCopy"></p></div>
+            <span class="pill verified" id="badgeBadge"></span>
+          </div>
+          <div class="badge-grid" id="badgeGrid"></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <div><div class="tag" id="inventoryTag"></div><h2 id="inventoryTitle"></h2></div>
+          </div>
+          <div class="inventory-list" id="inventoryList"></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <div><div class="tag" id="workflowTag"></div><h2 id="workflowTitle"></h2><p class="copy" id="workflowCopy"></p></div>
+          </div>
+          <div class="step-list" id="workflowList"></div>
+        </div>
+
+      </div>
+
+      <div class="side-col">
+
+        <div class="side-panel">
+          <div class="panel-head">
+            <div><div class="tag" id="trustTag"></div><h2 id="trustTitle"></h2></div>
+          </div>
+          <div class="trust-table" id="trustTable"></div>
+        </div>
+
+        <div class="side-panel">
+          <div class="panel-head">
+            <div><div class="tag" id="commercialTag"></div><h2 id="commercialTitle"></h2><p class="copy" id="commercialCopy"></p></div>
+          </div>
+          <div class="commercial-list" id="commercialList"></div>
+        </div>
+
+        <div class="side-panel">
+          <div class="panel-head">
+            <div><div class="tag" id="onboardTag"></div><h2 id="onboardTitle"></h2><p class="copy" id="onboardCopy"></p></div>
+          </div>
+          <div class="sku-list" id="onboardList"></div>
+        </div>
+
+        <div class="side-panel" style="text-align:center;padding:24px;">
+          <div class="tag" id="ctaTag" style="margin-bottom:14px;"></div>
+          <div style="font-family:'IBM Plex Sans Condensed',sans-serif;font-size:28px;text-transform:uppercase;margin-bottom:12px;" id="ctaTitle"></div>
+          <p class="copy" id="ctaCopy" style="margin-bottom:18px;"></p>
+          <a class="button" href="146_nexus_rfq_command.html" id="rfqSideCta" style="width:100%;justify-content:center;"></a>
+        </div>
+
+      </div>
+    </section>
+  </main>
+  <script src="assets/js/global-auth-widget.js"></script>
+  <script>
+  (function () {
+    var CONTEXT_KEY = 'nexus-marketplace-context';
+    var SHORTLIST_KEY = 'nexus-marketplace-shortlist';
+
+    /* ── SUPPLIER PROFILES ── */
+    var profiles = {
+      'MI-SWACO': {
+        verification: 'verified',
+        metrics: { skus: '184', regions: '5', response: '4h', analogs: '26' },
+        category: { ru: 'Буровые растворы', en: 'Drilling Fluids' },
+        tagline: {
+          ru: 'Каталог по WBM/OBM уже загружен через операторский onboarding и привязан к рабочим сценариям бурения.',
+          en: 'The WBM/OBM catalog is already onboarded by the platform team and mapped to real drilling use cases.'
+        },
+        inventory: [
+          { ru: '72 SKU в water-based системах', en: '72 SKUs in water-based systems', tag: 'WBM/OBM', avail: 'Houston / Jubail' },
+          { ru: '26 аналогов по shale inhibition и lubricity', en: '26 analog links across shale inhibition and lubricity', tag: 'Analogs', avail: 'Mapped' },
+          { ru: 'Паспорта и HSE PDF привязаны к 81 позиции', en: 'Safety and HSE PDFs linked to 81 lines', tag: 'Docs', avail: 'Linked' },
+          { ru: 'Складовые хабы: Houston, Jubail, Muscat', en: 'Warehouse hubs: Houston, Jubail, Muscat', tag: 'Stock', avail: 'Active' }
+        ],
+        trust: [
+          { keyRu: 'Сертификаты', keyEn: 'Certifications', valRu: 'ISO, regional compliance pack', valEn: 'ISO, regional compliance pack' },
+          { keyRu: 'Экспорт', keyEn: 'Export corridors', valRu: 'MENA, US, Caspian ready', valEn: 'MENA, US, Caspian ready' },
+          { keyRu: 'Ответ на RFQ', keyEn: 'RFQ response SLA', valRu: 'до 4 часов по qualified RFQ', valEn: 'within 4 hours on qualified RFQ' },
+          { keyRu: 'Условия', keyEn: 'Commercial terms', valRu: 'Incoterms EXW, FCA, DAP', valEn: 'Incoterms EXW, FCA, DAP' }
+        ],
+        onboarding: [
+          { ru: '100% catalog uploaded via operator', en: '100% catalog uploaded via operator', fill: 100 },
+          { ru: '82% SKU normalization complete', en: '82% SKU normalization complete', fill: 82 },
+          { ru: '74% verification pack linked', en: '74% verification pack linked', fill: 74 },
+          { ru: '68% RFQ unlock ready', en: '68% RFQ unlock ready', fill: 68 }
+        ]
+      },
+      'Nouryon': {
+        verification: 'verified',
+        metrics: { skus: '126', regions: '4', response: '6h', analogs: '18' },
+        category: { ru: 'Химреагенты', en: 'Drilling Chemicals' },
+        tagline: {
+          ru: 'Специализированный поставщик химии с curated catalog, выгрузкой паспортов и рабочим ответом по qualified RFQ.',
+          en: 'A specialty chemicals supplier with curated inventory, linked documentation, and working response on qualified RFQs.'
+        },
+        inventory: [
+          { ru: '126 нормализованных SKU по lubricity, amines и completion chemistry', en: '126 normalized SKUs across lubricity, amines, and completion chemistry', tag: 'Chemicals', avail: 'EU / MENA' },
+          { ru: '18 аналоговых связок для импортозамещения', en: '18 analog mappings for import substitution', tag: 'Analogs', avail: 'Mapped' },
+          { ru: 'Сертификаты, TDS и SDS связаны с 64 SKU', en: 'Certificates, TDS, and SDS linked to 64 SKUs', tag: 'Docs', avail: 'Linked' },
+          { ru: 'Отгрузка из EU и MENA с прогнозом lead time', en: 'Dispatch from EU and MENA with forecast lead time', tag: 'Stock', avail: '72h ship' }
+        ],
+        trust: [
+          { keyRu: 'Сертификаты', keyEn: 'Certifications', valRu: 'REACH, SDS, COA pack', valEn: 'REACH, SDS, COA pack' },
+          { keyRu: 'Экспорт', keyEn: 'Export corridors', valRu: 'EU, Russia, MENA corridors', valEn: 'EU, Russia, MENA corridors' },
+          { keyRu: 'Ответ на RFQ', keyEn: 'RFQ response SLA', valRu: 'до 6 часов на рабочие запросы', valEn: 'within 6 hours on qualified requests' },
+          { keyRu: 'Условия', keyEn: 'Commercial terms', valRu: 'FCA Rotterdam, CPT Dubai', valEn: 'FCA Rotterdam, CPT Dubai' }
+        ],
+        onboarding: [
+          { ru: '100% catalog uploaded via operator', en: '100% catalog uploaded via operator', fill: 100 },
+          { ru: '88% SKU normalization complete', en: '88% SKU normalization complete', fill: 88 },
+          { ru: '79% verification pack linked', en: '79% verification pack linked', fill: 79 },
+          { ru: '72% RFQ unlock ready', en: '72% RFQ unlock ready', fill: 72 }
+        ]
+      },
+      'TETRA': {
+        verification: 'verified',
+        metrics: { skus: '84', regions: '3', response: '8h', analogs: '11' },
+        category: { ru: 'Заканчивание', en: 'Completion Fluids' },
+        tagline: {
+          ru: 'Completion brines и fluid services с понятным blend-on-demand workflow.',
+          en: 'Completion brines and fluid services with a clear blend-on-demand workflow.'
+        },
+        inventory: [
+          { ru: '84 SKU по CaBr2, CaCl2 и specialty brines', en: '84 SKUs across CaBr2, CaCl2, and specialty brines', tag: 'Brines', avail: 'North Sea / GCC' },
+          { ru: '11 аналоговых связок под разные плотности', en: '11 analog mappings across density windows', tag: 'Analogs', avail: 'Mapped' },
+          { ru: 'Паспорта качества и density envelopes загружены', en: 'Quality packs and density envelopes uploaded', tag: 'Docs', avail: 'Linked' },
+          { ru: 'Подготовка смеси по графику мобилизации', en: 'Blend scheduling aligned with mobilization plan', tag: 'Blend', avail: 'On demand' }
+        ],
+        trust: [
+          { keyRu: 'Сертификаты', keyEn: 'Certifications', valRu: 'Fluid QA, density certificates', valEn: 'Fluid QA, density certificates' },
+          { keyRu: 'Экспорт', keyEn: 'Export corridors', valRu: 'North Sea, GCC, US Gulf', valEn: 'North Sea, GCC, US Gulf' },
+          { keyRu: 'Ответ на RFQ', keyEn: 'RFQ response SLA', valRu: 'до 8 часов', valEn: 'within 8 hours' },
+          { keyRu: 'Условия', keyEn: 'Commercial terms', valRu: 'Blend slot reservation required', valEn: 'Blend slot reservation required' }
+        ],
+        onboarding: [
+          { ru: '100% catalog uploaded via operator', en: '100% catalog uploaded via operator', fill: 100 },
+          { ru: '76% SKU normalization complete', en: '76% SKU normalization complete', fill: 76 },
+          { ru: '62% verification pack linked', en: '62% verification pack linked', fill: 62 },
+          { ru: '54% RFQ unlock ready', en: '54% RFQ unlock ready', fill: 54 }
+        ]
+      },
+      'NOV Brandt': {
+        verification: 'verified',
+        metrics: { skus: '58', regions: '4', response: '10h', analogs: '9' },
+        category: { ru: 'Солид-контроль', en: 'Solids Control' },
+        tagline: {
+          ru: 'Рабочий пакет по shaker screens и solid control расходникам для rig operations.',
+          en: 'An operating package for shaker screens and solids control consumables in rig operations.'
+        },
+        inventory: [
+          { ru: '58 SKU по screen panels и расходникам', en: '58 SKUs across screen panels and consumables', tag: 'Screens', avail: 'US / LATAM' },
+          { ru: 'API mesh mapping и alternate equivalents', en: 'API mesh mapping and alternate equivalents', tag: 'Analogs', avail: 'Mapped' },
+          { ru: 'PDF и rig fit notes на ключевые позиции', en: 'PDFs and rig fit notes on critical lines', tag: 'Docs', avail: 'Linked' },
+          { ru: 'Поставка из US, LATAM и Caspian hubs', en: 'Supply from US, LATAM, and Caspian hubs', tag: 'Stock', avail: 'Active' }
+        ],
+        trust: [
+          { keyRu: 'Сертификаты', keyEn: 'Certifications', valRu: 'OEM panel specs', valEn: 'OEM panel specs' },
+          { keyRu: 'Экспорт', keyEn: 'Export corridors', valRu: 'US, LATAM, Caspian', valEn: 'US, LATAM, Caspian' },
+          { keyRu: 'Ответ на RFQ', keyEn: 'RFQ response SLA', valRu: 'до 10 часов', valEn: 'within 10 hours' },
+          { keyRu: 'Условия', keyEn: 'Commercial terms', valRu: 'MOQ by rig package', valEn: 'MOQ by rig package' }
+        ],
+        onboarding: [
+          { ru: '100% catalog uploaded via operator', en: '100% catalog uploaded via operator', fill: 100 },
+          { ru: '71% SKU normalization complete', en: '71% SKU normalization complete', fill: 71 },
+          { ru: '58% verification pack linked', en: '58% verification pack linked', fill: 58 },
+          { ru: '44% RFQ unlock ready', en: '44% RFQ unlock ready', fill: 44 }
+        ]
+      },
+      'Halliburton': {
+        verification: 'pending',
+        metrics: { skus: '92', regions: '5', response: '12h', analogs: '14' },
+        category: { ru: 'Химреагенты', en: 'Drilling Chemicals' },
+        tagline: {
+          ru: 'Профиль в работе: каталог уже поднят, но verification pack и условия anti-circumvention еще подтверждаются.',
+          en: 'Profile in progress: the catalog is onboarded, but verification and anti-circumvention pack are still under confirmation.'
+        },
+        inventory: [
+          { ru: '92 SKU загружены из operator onboarding', en: '92 SKUs uploaded through operator onboarding', tag: 'Chemicals', avail: 'Global' },
+          { ru: '14 аналоговых связок под cement spacer', en: '14 analog mappings for cement spacer', tag: 'Analogs', avail: 'Mapped' },
+          { ru: 'Часть документов в режиме pending review', en: 'Part of the document set under pending review', tag: 'Docs', avail: 'Pending' },
+          { ru: 'Global supply with controlled batch confirmation', en: 'Global supply with controlled batch confirmation', tag: 'Stock', avail: 'Confirm req.' }
+        ],
+        trust: [
+          { keyRu: 'Сертификаты', keyEn: 'Certifications', valRu: 'Under platform verification', valEn: 'Under platform verification' },
+          { keyRu: 'Экспорт', keyEn: 'Export corridors', valRu: 'Global', valEn: 'Global' },
+          { keyRu: 'Ответ на RFQ', keyEn: 'RFQ response SLA', valRu: 'до 12 часов', valEn: 'within 12 hours' },
+          { keyRu: 'Условия', keyEn: 'Commercial terms', valRu: 'Batch confirmation before unlock', valEn: 'Batch confirmation before unlock' }
+        ],
+        onboarding: [
+          { ru: '100% catalog uploaded via operator', en: '100% catalog uploaded via operator', fill: 100 },
+          { ru: '63% SKU normalization complete', en: '63% SKU normalization complete', fill: 63 },
+          { ru: '41% verification pack linked', en: '41% verification pack linked', fill: 41 },
+          { ru: '28% RFQ unlock ready', en: '28% RFQ unlock ready', fill: 28 }
+        ]
+      },
+      'Baker Hughes': {
+        verification: 'verified',
+        metrics: { skus: '101', regions: '4', response: '7h', analogs: '16' },
+        category: { ru: 'Заканчивание', en: 'Completion Fluids' },
+        tagline: {
+          ru: 'Рабочий профиль completion chemistry с offshore-ready pack и supplier-led quote discipline.',
+          en: 'A working completion chemistry profile with offshore-ready documentation and supplier-led quote discipline.'
+        },
+        inventory: [
+          { ru: '101 SKU по drill-in и completion chemistry', en: '101 SKUs across drill-in and completion chemistry', tag: 'Completion', avail: 'Dubai / Offshore' },
+          { ru: '16 аналоговых связок по reservoir cleanup', en: '16 analog links across reservoir cleanup', tag: 'Analogs', avail: 'Mapped' },
+          { ru: 'Сертификаты и QA pack на offshore supply', en: 'Certificates and QA packs for offshore supply', tag: 'Docs', avail: 'Linked' },
+          { ru: 'Доставка через Dubai и regional hubs', en: 'Delivery via Dubai and regional hubs', tag: 'Stock', avail: 'Active' }
+        ],
+        trust: [
+          { keyRu: 'Сертификаты', keyEn: 'Certifications', valRu: 'QA, completion compliance pack', valEn: 'QA, completion compliance pack' },
+          { keyRu: 'Экспорт', keyEn: 'Export corridors', valRu: 'Global offshore', valEn: 'Global offshore' },
+          { keyRu: 'Ответ на RFQ', keyEn: 'RFQ response SLA', valRu: 'до 7 часов', valEn: 'within 7 hours' },
+          { keyRu: 'Условия', keyEn: 'Commercial terms', valRu: 'Regional stock and lead time commitment', valEn: 'Regional stock and lead time commitment' }
+        ],
+        onboarding: [
+          { ru: '100% catalog uploaded via operator', en: '100% catalog uploaded via operator', fill: 100 },
+          { ru: '84% SKU normalization complete', en: '84% SKU normalization complete', fill: 84 },
+          { ru: '76% verification pack linked', en: '76% verification pack linked', fill: 76 },
+          { ru: '64% RFQ unlock ready', en: '64% RFQ unlock ready', fill: 64 }
+        ]
+      }
+    };
+
+    /* ── DICTIONARY ── */
+    var dict = {
+      ru: {
+        rfqCta: 'Открыть RFQ', catalogCta: 'В Каталог',
+        metrics: ['Нормализованных SKU', 'Активных регионов', 'Медиана ответа', 'Аналоговых связок'],
+        langTag: 'Interface', langTitle: 'Язык', langCopy: 'Один профиль, без дубля логики.', langStatus: 'RU',
+        signalTag: 'Trust signals', signalTitle: 'Сигналы Доверия',
+        signals: [
+          { tag: 'Coverage', value: '84%', copy: 'SKU и trust pack готовы к показу buyer-side команде.' },
+          { tag: 'Docs linked', value: '64', copy: 'TDS, SDS, COA и экспортные документы связаны с SKU.' },
+          { tag: 'Unlock fit', value: 'A/B', copy: 'Подходит для qualified RFQ, а не для сырого лида.' },
+          { tag: 'Deal discipline', value: '91%', copy: 'История quote и shortlist удерживается внутри платформы.' }
+        ],
+        offerTag: 'Offer lanes', offerTitle: 'Торговые Линии', offerCopy: 'Что поставщик реально может quote без ручной сборки пакета.',
+        offerBadge: 'Storefront',
+        offers: [
+          { tag: 'Fast movers', value: '42 SKU', name: 'Core chemical lane', copy: 'Самые ходовые позиции с понятным stock route и 72h shipping discipline.', stats: ['Lubricity', 'Amines', 'Completion chem'], href: '144_nexus_catalog_workbench.html' },
+          { tag: 'Analogs', value: '18', name: 'Import substitution lane', copy: 'Линия аналогов, где supplier получает повышенный шанс попасть в shortlist.', stats: ['Alt sourcing', 'Brand match', 'RFQ upsell'], href: '144_nexus_catalog_workbench.html' },
+          { tag: 'Express', value: '72h', name: 'Fast delivery offer', copy: 'Позиции с кратким горизонтом поставки и прозрачным stock route.', stats: ['EU / MENA hubs', 'Stock visible', 'Emergency fit'], href: '144_nexus_catalog_workbench.html' },
+          { tag: 'Premium', value: 'A/B', name: 'Qualified RFQ lane', copy: 'Пакеты с наилучшим lead quality — supplier получает structured scope, а не сырой запрос.', stats: ['Unlock ready', 'Verified buyer', 'Structured scope'], href: '146_nexus_rfq_command.html' }
+        ],
+        badgeTag: 'Trade badges', badgeTitle: 'Compliance, Export И Delivery', badgeCopy: 'Supplier должен сразу показывать, где он safe по документам, экспорту и срокам реакции.',
+        badgeBadge: 'Visible trust',
+        badges: [
+          { tag: 'Compliance', value: 'REACH', name: 'Документы готовы', copy: 'Supplier быстро проходит первый барьер buyer trust.', stats: ['COA linked', 'SDS/TDS', 'Review-ready'] },
+          { tag: 'Export', value: '3 corridors', name: 'Экспортные маршруты', copy: 'Видно, по каким регионам supplier реально работает.', stats: ['EU', 'Russia', 'MENA'] },
+          { tag: 'SLA', value: '6h', name: 'Response discipline', copy: 'Критично для qualified RFQ и hot buyer demand.', stats: ['Fast reply', 'Follow-up safe', 'Platform scored'] },
+          { tag: 'Delivery', value: '72h', name: 'Stock visibility', copy: 'Buyer понимает, может ли supplier закрыть срочный запрос.', stats: ['Warehouse route', 'Lead time clear', 'Shortlist fit'] }
+        ],
+        inventoryTag: 'Catalog coverage', inventoryTitle: 'Что Уже Поднято В Рабочем Каталоге',
+        workflowTag: 'Deal workflow', workflowTitle: 'Как Поставщик Входит В Сделку', workflowCopy: 'Четыре шага от каталога до закрытого RFQ внутри платформы.',
+        workflow: [
+          { title: '1. Catalog loaded by operator', copy: 'Платформа загружает прайсы, Excel и PDF за поставщика, чтобы не ждать ручного заполнения витрины.' },
+          { title: '2. Verification pack linked', copy: 'К SKU привязываются сертификаты, SDS/TDS и экспортные ограничения.' },
+          { title: '3. Qualified RFQ unlocked', copy: 'Поставщик видит только валидированный RFQ с количеством, регионом и сроком.' },
+          { title: '4. Deal room controlled', copy: 'Статусы, документы и shortlist идут внутри платформы, что уменьшает обход.' }
+        ],
+        trustTag: 'Trust stack', trustTitle: 'Коммерческий Профиль',
+        commercialTag: 'Commercial controls', commercialTitle: 'Доход И Контроль Сделки', commercialCopy: 'Как платформа монетизирует supplier трафик без утечки.',
+        commercial: [
+          { title: 'Qualified RFQ access', copy: 'Платный unlock только для A/B RFQ после операторской валидации.' },
+          { title: 'Supplier subscription', copy: 'Расширенный кабинет: больше SKU, приоритет, аналитика спроса, bulk upload.' },
+          { title: 'Success fee trigger', copy: 'Триггер включается при PO issued или contract signed по сделке из платформы.' },
+          { title: 'Anti-circumvention', copy: 'Deal history, shortlist и документы логируются для фиксации атрибуции.' }
+        ],
+        onboardTag: 'Onboarding progress', onboardTitle: 'Готовность К Сделке',
+        ctaTag: 'Ready', ctaTitle: 'Перейти В RFQ', ctaCopy: 'Shortlist из каталога уже ждет. Можно открывать квалифицированный пакет.', ctaRfq: 'Открыть Qualified RFQ',
+        verified: 'Verified', pending: 'Pending review'
+      },
+      en: {
+        rfqCta: 'Open RFQ', catalogCta: 'Go To Catalog',
+        metrics: ['Normalized SKUs', 'Active regions', 'Median response', 'Analog links'],
+        langTag: 'Interface', langTitle: 'Language', langCopy: 'One profile, no duplicated logic.', langStatus: 'EN',
+        signalTag: 'Trust signals', signalTitle: 'Trust Signals',
+        signals: [
+          { tag: 'Coverage', value: '84%', copy: 'SKU depth and trust pack are ready for buyer-side review.' },
+          { tag: 'Docs linked', value: '64', copy: 'TDS, SDS, COA, and export documents are linked to SKUs.' },
+          { tag: 'Unlock fit', value: 'A/B', copy: 'Fits qualified RFQ workflow instead of raw lead traffic.' },
+          { tag: 'Deal discipline', value: '91%', copy: 'Quote and shortlist history stays inside the platform.' }
+        ],
+        offerTag: 'Offer lanes', offerTitle: 'Trade Offer Lanes', offerCopy: 'What the supplier can actually quote without manual package assembly.',
+        offerBadge: 'Storefront',
+        offers: [
+          { tag: 'Fast movers', value: '42 SKU', name: 'Core chemical lane', copy: 'The highest-volume lines with a visible stock route and 72h shipping discipline.', stats: ['Lubricity', 'Amines', 'Completion chem'], href: '144_nexus_catalog_workbench.html' },
+          { tag: 'Analogs', value: '18', name: 'Import substitution lane', copy: 'An analog lane where the supplier gains a higher chance to enter the shortlist.', stats: ['Alt sourcing', 'Brand match', 'RFQ upsell'], href: '144_nexus_catalog_workbench.html' },
+          { tag: 'Express', value: '72h', name: 'Fast delivery offer', copy: 'Lines with a short delivery horizon and transparent stock route.', stats: ['EU / MENA hubs', 'Stock visible', 'Emergency fit'], href: '144_nexus_catalog_workbench.html' },
+          { tag: 'Premium', value: 'A/B', name: 'Qualified RFQ lane', copy: 'Packages with the best lead quality — supplier receives a structured scope instead of a raw request.', stats: ['Unlock ready', 'Verified buyer', 'Structured scope'], href: '146_nexus_rfq_command.html' }
+        ],
+        badgeTag: 'Trade badges', badgeTitle: 'Compliance, Export And Delivery', badgeCopy: 'In industrial procurement the supplier must immediately show where it is safe on docs, export, and response speed.',
+        badgeBadge: 'Visible trust',
+        badges: [
+          { tag: 'Compliance', value: 'REACH', name: 'Documents ready', copy: 'The supplier clears the first buyer trust barrier quickly.', stats: ['COA linked', 'SDS/TDS', 'Review-ready'] },
+          { tag: 'Export', value: '3 corridors', name: 'Export routes', copy: 'Visible regions where the supplier actually operates.', stats: ['EU', 'Russia', 'MENA'] },
+          { tag: 'SLA', value: '6h', name: 'Response discipline', copy: 'Critical for qualified RFQ and hot buyer demand.', stats: ['Fast reply', 'Follow-up safe', 'Platform scored'] },
+          { tag: 'Delivery', value: '72h', name: 'Stock visibility', copy: 'The buyer sees immediately whether urgent demand can be closed.', stats: ['Warehouse route', 'Lead time clear', 'Shortlist fit'] }
+        ],
+        inventoryTag: 'Catalog coverage', inventoryTitle: 'What Is Already In The Working Catalog',
+        workflowTag: 'Deal workflow', workflowTitle: 'How The Supplier Enters The Deal Flow', workflowCopy: 'Four steps from catalog to a closed RFQ inside the platform.',
+        workflow: [
+          { title: '1. Catalog loaded by operator', copy: 'The platform uploads price lists, Excel sheets, and PDFs instead of waiting for self-serve setup.' },
+          { title: '2. Verification pack linked', copy: 'Certificates, SDS/TDS packs, and export limits are linked to the SKU base.' },
+          { title: '3. Qualified RFQ unlocked', copy: 'The supplier only sees validated RFQs with quantity, region, and delivery horizon.' },
+          { title: '4. Deal room controlled', copy: 'Statuses, documents, and shortlist history remain inside the platform to reduce circumvention.' }
+        ],
+        trustTag: 'Trust stack', trustTitle: 'Commercial Profile',
+        commercialTag: 'Commercial controls', commercialTitle: 'Revenue And Deal Controls', commercialCopy: 'How the platform monetizes supplier traffic without leak.',
+        commercial: [
+          { title: 'Qualified RFQ access', copy: 'Paid unlock only applies to A/B RFQs after operator validation.' },
+          { title: 'Supplier subscription', copy: 'Extended cabinet: more SKU capacity, priority placement, demand analytics, bulk upload.' },
+          { title: 'Success fee trigger', copy: 'Trigger starts on PO issued or contract signed for a platform-originated deal.' },
+          { title: 'Anti-circumvention', copy: 'Deal history, shortlist, and documents are logged to preserve attribution.' }
+        ],
+        onboardTag: 'Onboarding progress', onboardTitle: 'Deal Readiness',
+        ctaTag: 'Ready', ctaTitle: 'Open RFQ', ctaCopy: 'The shortlist from the catalog is already waiting. You can open the qualified package.', ctaRfq: 'Open Qualified RFQ',
+        verified: 'Verified', pending: 'Pending review'
+      }
+    };
+
+    /* ── STATE ── */
+    var ctx = {};
+    try { ctx = JSON.parse(localStorage.getItem(CONTEXT_KEY) || '{}') || {}; } catch(e) {}
+    var params = new URLSearchParams(window.location.search);
+    var lang = ctx.lang === 'en' ? 'en' : 'ru';
+    var supplierName = params.get('supplier') || ctx.supplierName || 'Nouryon';
+    if (!profiles[supplierName]) supplierName = 'Nouryon';
+
+    /* ── DOM REFS ── */
+    var $id = function(id) { return document.getElementById(id); };
+    var supplierStrip = $id('supplierStrip');
+    var heroCategory = $id('heroCategory');
+    var verificationBadge = $id('verificationBadge');
+    var supplierNameBig = $id('supplierNameBig');
+    var supplierTagline = $id('supplierTagline');
+    var rfqHeroCta = $id('rfqHeroCta');
+    var catalogHeroCta = $id('catalogHeroCta');
+    var rfqTopCta = $id('rfqTopCta');
+    var rfqSideCta = $id('rfqSideCta');
+    var metricStrip = $id('metricStrip');
+    var langTag = $id('langTag');
+    var langTitle = $id('langTitle');
+    var langCopy = $id('langCopy');
+    var langStatus = $id('langStatus');
+    var signalTag = $id('signalTag');
+    var signalTitle = $id('signalTitle');
+    var signalGrid = $id('signalGrid');
+    var offerTag = $id('offerTag');
+    var offerTitle = $id('offerTitle');
+    var offerCopy = $id('offerCopy');
+    var offerBadge = $id('offerBadge');
+    var offerGrid = $id('offerGrid');
+    var badgeTag = $id('badgeTag');
+    var badgeTitle = $id('badgeTitle');
+    var badgeCopy = $id('badgeCopy');
+    var badgeBadge = $id('badgeBadge');
+    var badgeGrid = $id('badgeGrid');
+    var inventoryTag = $id('inventoryTag');
+    var inventoryTitle = $id('inventoryTitle');
+    var inventoryList = $id('inventoryList');
+    var workflowTag = $id('workflowTag');
+    var workflowTitle = $id('workflowTitle');
+    var workflowCopy = $id('workflowCopy');
+    var workflowList = $id('workflowList');
+    var trustTag = $id('trustTag');
+    var trustTitle = $id('trustTitle');
+    var trustTable = $id('trustTable');
+    var commercialTag = $id('commercialTag');
+    var commercialTitle = $id('commercialTitle');
+    var commercialCopy = $id('commercialCopy');
+    var commercialList = $id('commercialList');
+    var onboardTag = $id('onboardTag');
+    var onboardTitle = $id('onboardTitle');
+    var onboardList = $id('onboardList');
+    var ctaTag = $id('ctaTag');
+    var ctaTitle = $id('ctaTitle');
+    var ctaCopy = $id('ctaCopy');
+
+    function persist() {
+      ctx.lang = lang; ctx.supplierName = supplierName;
+      localStorage.setItem(CONTEXT_KEY, JSON.stringify(ctx));
+    }
+
+    function supRfqHref() { return '146_nexus_rfq_command.html?supplier=' + encodeURIComponent(supplierName); }
+
+    function render() {
+      var c = dict[lang];
+      var p = profiles[supplierName];
+
+      /* supplier strip */
+      supplierStrip.innerHTML = Object.keys(profiles).map(function(name) {
+        return '<button class="sup-tab' + (name === supplierName ? ' active' : '') + '" data-supplier="' + name + '" type="button">' + name + '</button>';
+      }).join('');
+
+      /* hero */
+      heroCategory.textContent = p.category[lang];
+      verificationBadge.textContent = p.verification === 'verified' ? c.verified : c.pending;
+      verificationBadge.className = 'pill ' + p.verification;
+      supplierNameBig.textContent = supplierName;
+      supplierTagline.textContent = p.tagline[lang];
+      rfqHeroCta.textContent = c.rfqCta;
+      rfqHeroCta.href = supRfqHref();
+      catalogHeroCta.textContent = c.catalogCta;
+      rfqTopCta.href = supRfqHref();
+      rfqSideCta.href = supRfqHref();
+
+      /* metric strip */
+      var mkeys = ['skus','regions','response','analogs'];
+      metricStrip.innerHTML = mkeys.map(function(k,i) {
+        return '<article class="metric"><div class="metric-value">' + p.metrics[k] + '</div><div class="metric-label">' + c.metrics[i] + '</div></article>';
+      }).join('');
+
+      /* lang panel */
+      langTag.textContent = c.langTag;
+      langTitle.textContent = c.langTitle;
+      langCopy.textContent = c.langCopy;
+      langStatus.textContent = c.langStatus;
+      document.querySelectorAll('[data-lang]').forEach(function(b) {
+        b.classList.toggle('active', b.getAttribute('data-lang') === lang);
+      });
+
+      /* signals */
+      signalTag.textContent = c.signalTag;
+      signalTitle.textContent = c.signalTitle;
+      signalGrid.innerHTML = c.signals.map(function(s) {
+        return '<article class="signal-card"><div class="signal-tag">' + s.tag + '</div><div class="signal-value">' + s.value + '</div><div class="signal-copy">' + s.copy + '</div></article>';
+      }).join('');
+
+      /* offer lanes */
+      offerTag.textContent = c.offerTag;
+      offerTitle.textContent = c.offerTitle;
+      offerCopy.textContent = c.offerCopy;
+      offerBadge.textContent = c.offerBadge;
+      offerGrid.innerHTML = c.offers.map(function(o) {
+        return '<article class="offer-card"><div class="offer-top"><div class="row-tag">' + o.tag + '</div><div class="offer-value">' + o.value + '</div></div><div class="offer-name">' + o.name + '</div><div class="offer-copy">' + o.copy + '</div><div class="offer-stats">' + o.stats.map(function(s){ return '<span class="offer-stat">'+s+'</span>'; }).join('') + '</div><div class="offer-actions"><a class="row-button primary" href="' + o.href + '">Open Lane</a></div></article>';
+      }).join('');
+
+      /* badges */
+      badgeTag.textContent = c.badgeTag;
+      badgeTitle.textContent = c.badgeTitle;
+      badgeCopy.textContent = c.badgeCopy;
+      badgeBadge.textContent = c.badgeBadge;
+      badgeGrid.innerHTML = c.badges.map(function(b) {
+        return '<article class="badge-card"><div class="badge-top"><div class="row-tag">' + b.tag + '</div><div class="badge-value">' + b.value + '</div></div><div class="badge-name">' + b.name + '</div><div class="badge-copy">' + b.copy + '</div><div class="badge-stats">' + b.stats.map(function(s){ return '<span class="offer-stat">'+s+'</span>'; }).join('') + '</div></article>';
+      }).join('');
+
+      /* inventory */
+      inventoryTag.textContent = c.inventoryTag;
+      inventoryTitle.textContent = c.inventoryTitle;
+      inventoryList.innerHTML = p.inventory.map(function(item) {
+        return '<article class="inventory-row"><div><div class="inv-title">' + item[lang] + '</div></div><div style="display:flex;gap:8px;flex-wrap:wrap;"><span class="offer-stat">' + item.tag + '</span><span class="offer-stat">' + item.avail + '</span></div></article>';
+      }).join('');
+
+      /* workflow */
+      workflowTag.textContent = c.workflowTag;
+      workflowTitle.textContent = c.workflowTitle;
+      workflowCopy.textContent = c.workflowCopy;
+      workflowList.innerHTML = c.workflow.map(function(step) {
+        var num = step.title.match(/^\d+/);
+        return '<article class="step-row"><div class="step-num">' + (num ? num[0] : '·') + '</div><div><div class="step-title">' + step.title.replace(/^\d+\.\s?/, '') + '</div><div class="step-copy">' + step.copy + '</div></div></article>';
+      }).join('');
+
+      /* trust */
+      trustTag.textContent = c.trustTag;
+      trustTitle.textContent = c.trustTitle;
+      trustTable.innerHTML = p.trust.map(function(row) {
+        return '<div class="trust-row"><div class="trust-key">' + (lang === 'ru' ? row.keyRu : row.keyEn) + '</div><div class="trust-val">' + (lang === 'ru' ? row.valRu : row.valEn) + '</div></div>';
+      }).join('');
+
+      /* commercial */
+      commercialTag.textContent = c.commercialTag;
+      commercialTitle.textContent = c.commercialTitle;
+      commercialCopy.textContent = c.commercialCopy;
+      commercialList.innerHTML = c.commercial.map(function(item) {
+        return '<div class="commercial-item"><div class="commercial-title">' + item.title + '</div><div class="commercial-copy">' + item.copy + '</div></div>';
+      }).join('');
+
+      /* onboarding */
+      onboardTag.textContent = c.onboardTag;
+      onboardTitle.textContent = c.onboardTitle;
+      onboardList.innerHTML = p.onboarding.map(function(step) {
+        return '<div class="sku-row"><div><div class="sku-title">' + step[lang] + '</div><div class="bar-row"><div class="bar-track"><div class="bar-fill" style="width:' + step.fill + '%"></div></div><div class="bar-label">' + step.fill + '%</div></div></div></div>';
+      }).join('');
+
+      /* cta */
+      ctaTag.textContent = c.ctaTag;
+      ctaTitle.textContent = c.ctaTitle;
+      ctaCopy.textContent = c.ctaCopy;
+      rfqSideCta.textContent = c.ctaRfq;
+
+      persist();
+    }
+
+    /* ── EVENTS ── */
+    document.addEventListener('click', function(e) {
+      var sup = e.target.getAttribute('data-supplier');
+      if (sup && profiles[sup]) { supplierName = sup; render(); return; }
+      var l = e.target.getAttribute('data-lang');
+      if (l) { lang = l; render(); }
+    });
+
+    render();
+  }());
+  </script>
+</body>
+</html>
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>145 · Nexus Supplier Trust Desk</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Condensed:wght@500;600;700&display=swap");
+
+    :root {
+      --bg: #f3f6f8;
+      --panel: rgba(255, 255, 255, 0.94);
+      --panel-strong: #ffffff;
+      --surface-soft: #f7fafc;
+      --line: rgba(18, 48, 71, 0.12);
+      --text: #17324a;
+      --muted: #617487;
+      --gold: #ba7a1f;
+      --mint: #0e7490;
+      --cyan: #2f6fa3;
+      --success: #1f7a4f;
+      --warning: #b7791f;
+      --shadow: 0 20px 48px rgba(28, 51, 84, 0.1);
+    }
+
+    * { box-sizing: border-box; }
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+      font-family: "IBM Plex Sans", sans-serif;
+      background:
+        radial-gradient(980px 440px at 18% -8%, rgba(14, 116, 144, 0.08), transparent 70%),
+        radial-gradient(860px 420px at 100% 0%, rgba(186, 122, 31, 0.12), transparent 68%),
+        linear-gradient(180deg, #f7f9fb 0%, #f1f4f7 48%, #e9eef3 100%);
+      color: var(--text);
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        linear-gradient(to right, rgba(23, 50, 74, 0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(23, 50, 74, 0.04) 1px, transparent 1px);
+      background-size: 56px 56px;
+      pointer-events: none;
+      opacity: 0.5;
+    }
+
+    .page {
+      position: relative;
+      z-index: 1;
+      width: min(1380px, calc(100% - 36px));
+      margin: 0 auto;
+      padding: 28px 0 42px;
+    }
+
+    .topbar,
+    .hero,
+    .panel,
+    .metric,
+    .inventory-card,
+    .trust-card,
+    .lane,
+    .note {
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(8px);
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 20px;
+      margin-bottom: 18px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-size: 13px;
+    }
+
+    .brand-mark {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #f4b25f 0%, #db8a20 100%);
+      box-shadow: 0 0 0 6px rgba(219, 138, 32, 0.12);
+    }
+
+    .top-actions,
+    .toggle-row,
+    .hero-actions,
+    .lane-grid,
+    .inventory-grid,
+    .trust-grid,
+    .metric-grid {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .hero,
+    .workspace {
+      display: grid;
+      gap: 18px;
+    }
+
+    .hero {
+      grid-template-columns: minmax(0, 1.42fr) minmax(320px, 0.88fr);
+      padding: 28px;
+      margin-bottom: 18px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      right: -80px;
+      bottom: -120px;
+      width: 280px;
+      height: 280px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(47, 111, 163, 0.14), transparent 70%);
+    }
+
+    .hero-side,
+    .panel {
+      display: grid;
+      gap: 16px;
+      align-content: start;
+    }
+
+    .panel,
+    .inventory-card,
+    .trust-card,
+    .lane,
+    .note,
+    .metric {
+      padding: 18px;
+      background: var(--panel-strong);
+    }
+
+    .workspace {
+      grid-template-columns: minmax(0, 1.45fr) minmax(300px, 0.85fr);
+    }
+
+    .inventory-grid,
+    .trust-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .link-button,
+    .toggle,
+    .cta {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 0 18px;
+      border-radius: 999px;
+      text-decoration: none;
+      border: 1px solid rgba(18, 48, 71, 0.12);
+      background: rgba(255, 255, 255, 0.9);
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    .cta,
+    .link-button.primary {
+      color: #ffffff;
+      background: linear-gradient(135deg, #d38b28 0%, #b56f16 100%);
+      border-color: rgba(181, 111, 22, 0.45);
+    }
+
+    .toggle.active {
+      background: rgba(14, 116, 144, 0.1);
+      border-color: rgba(14, 116, 144, 0.32);
+      color: var(--mint);
+    }
+
+    .eyebrow,
+    .status-pill,
+    .section-label,
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      padding: 0 12px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow {
+      background: rgba(14, 116, 144, 0.1);
+      color: var(--mint);
+    }
+
+    .status-pill.verified {
+      background: rgba(31, 122, 79, 0.1);
+      color: var(--success);
+    }
+
+    .status-pill.pending {
+      background: rgba(183, 121, 31, 0.12);
+      color: var(--warning);
+    }
+
+    .section-label,
+    .tag {
+      background: rgba(23, 50, 74, 0.06);
+      color: var(--muted);
+    }
+
+    h1,
+    h2,
+    h3,
+    h4 {
+      margin: 0;
+      font-family: "IBM Plex Sans Condensed", sans-serif;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin-top: 18px;
+      font-size: clamp(38px, 5vw, 68px);
+      line-height: 0.95;
+      max-width: 760px;
+    }
+
+    .hero-copy,
+    .body-copy,
+    .metric-label,
+    .note-copy,
+    li,
+    .lane-copy {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.68;
+    }
+
+    .hero-copy {
+      margin-top: 16px;
+      max-width: 740px;
+    }
+
+    .metric-value {
+      font-family: "IBM Plex Sans Condensed", sans-serif;
+      font-size: 30px;
+      line-height: 1;
+      color: var(--gold);
+    }
+
+    .detail-list,
+    .lane-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .signal-grid,
+    .info-row,
+    .onboard-list,
+    .readiness-grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .signal-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      margin-bottom: 18px;
+    }
+
+    .signal-card,
+    .info-panel,
+    .readiness-card,
+    .onboard-step {
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(8px);
+    }
+
+    .signal-card,
+    .readiness-card,
+    .onboard-step {
+      padding: 18px;
+    }
+
+    .signal-card {
+      display: grid;
+      gap: 8px;
+    }
+
+    .signal-tag,
+    .panel-tag {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .signal-value {
+      font-family: "IBM Plex Sans Condensed", sans-serif;
+      font-size: 38px;
+      line-height: 1;
+      color: var(--mint);
+    }
+
+    .signal-copy,
+    .panel-copy,
+    .onboard-copy,
+    .readiness-copy {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .signal-bar,
+    .onboard-bar,
+    .readiness-bar {
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(23, 50, 74, 0.08);
+      overflow: hidden;
+      margin-top: 4px;
+    }
+
+    .signal-bar span,
+    .onboard-bar span,
+    .readiness-bar span {
+      display: block;
+      height: 100%;
+      width: var(--fill, 50%);
+      border-radius: inherit;
+      background: linear-gradient(90deg, #3da5b8 0%, #1e7387 52%, #d38b28 100%);
+    }
+
+    .info-row {
+      grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.92fr);
+      margin-bottom: 18px;
+    }
+
+    .info-panel {
+      padding: 24px;
+    }
+
+    .info-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .panel-title {
+      margin-top: 10px;
+      font-size: clamp(20px, 2.4vw, 28px);
+      line-height: 1;
+    }
+
+    .panel-badge {
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: rgba(186, 122, 31, 0.12);
+      color: var(--gold);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .onboard-step {
+      display: grid;
+      gap: 8px;
+      background: var(--surface-soft);
+    }
+
+    .onboard-meta,
+    .readiness-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 10px;
+    }
+
+    .onboard-title,
+    .readiness-title {
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .onboard-value,
+    .readiness-value {
+      font-family: "IBM Plex Sans Condensed", sans-serif;
+      font-size: 22px;
+      line-height: 1;
+      color: var(--gold);
+    }
+
+    .readiness-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .readiness-card {
+      display: grid;
+      gap: 8px;
+      background: var(--surface-soft);
+    }
+
+    .trade-row,
+    .offer-grid,
+    .badge-grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .trade-row {
+      grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.92fr);
+      margin-bottom: 18px;
+    }
+
+    .offer-grid,
+    .badge-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .offer-panel,
+    .badge-panel,
+    .offer-card,
+    .badge-card {
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(8px);
+    }
+
+    .offer-panel,
+    .badge-panel,
+    .offer-card,
+    .badge-card {
+      padding: 22px;
+    }
+
+    .offer-card,
+    .badge-card {
+      background: var(--surface-soft);
+      padding: 18px;
+    }
+
+    .offer-top,
+    .badge-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .offer-mark,
+    .badge-mark {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      padding: 0 10px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      background: rgba(47, 111, 163, 0.1);
+      color: var(--cyan);
+    }
+
+    .offer-value,
+    .badge-value {
+      font-family: "IBM Plex Sans Condensed", sans-serif;
+      font-size: 28px;
+      line-height: 1;
+      color: var(--gold);
+    }
+
+    .offer-name,
+    .badge-name {
+      margin-top: 10px;
+      font-family: "IBM Plex Sans Condensed", sans-serif;
+      font-size: 22px;
+      line-height: 1;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text);
+    }
+
+    .offer-copy,
+    .badge-copy,
+    .offer-stat,
+    .badge-stat {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .offer-meta,
+    .badge-meta {
+      display: grid;
+      gap: 6px;
+      margin-top: 12px;
+    }
+
+    .offer-link {
+      display: inline-flex;
+      align-items: center;
+      margin-top: 10px;
+      color: var(--mint);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-decoration: none;
+    }
+
+    .detail-item,
+    .lane-step {
+      padding: 14px;
+      border-radius: 18px;
+      border: 1px solid rgba(18, 48, 71, 0.1);
+      background: var(--surface-soft);
+    }
+
+    .detail-title,
+    .lane-title {
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    ul {
+      margin: 12px 0 0;
+      padding-left: 18px;
+    }
+
+    .note {
+      background: linear-gradient(180deg, rgba(14, 116, 144, 0.08), rgba(14, 116, 144, 0.03));
+      border-color: rgba(14, 116, 144, 0.18);
+    }
+
+    .note-title {
+      font-size: 11px;
+      color: var(--mint);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-weight: 800;
+    }
+
+    @media (max-width: 1120px) {
+      .hero,
+      .workspace,
+      .info-row,
+      .trade-row,
+      .inventory-grid,
+      .trust-grid,
+      .metric-grid,
+      .signal-grid,
+      .readiness-grid,
+      .offer-grid,
+      .badge-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .page {
+        width: min(100% - 20px, 1380px);
+        padding-top: 18px;
+      }
+
+      .topbar,
+      .hero,
+      .panel,
+      .metric,
+      .inventory-card,
+      .trust-card,
+      .lane,
+      .note {
+        border-radius: 22px;
+      }
+    }
+  </style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+  <main class="page">
+    <section class="topbar" aria-label="Верхняя навигация Supplier Trust">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span>Nexus Supplier Trust Desk</span>
+      </div>
+      <div class="top-actions">
+        <a class="link-button" href="../index.html">Nexus</a>
+        <a class="link-button" href="144_nexus_catalog_workbench.html">Catalog</a>
+        <a class="link-button primary" href="146_nexus_rfq_command.html">RFQ Command</a>
+      </div>
+    </section>
+
+    <section class="hero">
+      <article>
+        <span class="eyebrow" id="heroEyebrow">Supplier Trust Desk</span>
+        <h1 id="heroTitle">Поставщик Как Объект Доверия И Реальной Поставки</h1>
+        <p class="hero-copy" id="heroCopy">Здесь не витрина, а рабочий профиль поставщика: кто загрузил каталог, какие позиции реально нормализованы, где лежат документы, как быстро поставщик отвечает и можно ли вести с ним квалифицированный RFQ без ручного хаоса.</p>
+        <div class="metric-grid">
+          <div class="metric">
+            <div class="metric-value" id="metricSkus">126</div>
+            <div class="metric-label" id="metricSkusLabel">Нормализованных SKU</div>
+          </div>
+          <div class="metric">
+            <div class="metric-value" id="metricRegions">4</div>
+            <div class="metric-label" id="metricRegionsLabel">Активных регионов</div>
+          </div>
+          <div class="metric">
+            <div class="metric-value" id="metricResponse">6h</div>
+            <div class="metric-label" id="metricResponseLabel">Медиана ответа</div>
+          </div>
+          <div class="metric">
+            <div class="metric-value" id="metricAnalogs">18</div>
+            <div class="metric-label" id="metricAnalogsLabel">Аналоговых связок</div>
+          </div>
+        </div>
+      </article>
+
+      <aside class="hero-side">
+        <section class="panel">
+          <div class="section-label" id="langLabel">Language</div>
+          <h2 id="langTitle">Интерфейс</h2>
+          <div class="toggle-row" id="langToggleRow">
+            <button class="toggle active" type="button" data-lang="ru">RU</button>
+            <button class="toggle" type="button" data-lang="en">EN</button>
+          </div>
+          <p class="body-copy" id="langCopy">Supplier desk переключает язык интерфейса, но trust data, загрузка каталога и onboarding логика остаются едиными.</p>
+        </section>
+        <section class="panel">
+          <div class="section-label" id="statusLabel">Verification</div>
+          <h2 id="supplierName">Nouryon</h2>
+          <div class="hero-actions">
+            <span class="status-pill verified" id="verificationBadge">Verified supplier</span>
+            <span class="tag" id="supplierCategoryTag">Drilling Chemicals</span>
+          </div>
+          <p class="body-copy" id="supplierTagline">Специализированный поставщик химии с curated catalog, выгрузкой паспортов и рабочим ответом по qualified RFQ.</p>
+          <a class="cta" id="rfqCta" href="146_nexus_rfq_command.html">Перейти к Qualified RFQ</a>
+        </section>
+      </aside>
+    </section>
+
+    <section class="signal-grid" id="signalGrid" aria-label="Supplier pulse"></section>
+
+    <section class="info-row">
+      <article class="info-panel" aria-label="Concierge onboarding rail">
+        <div class="info-head">
+          <div>
+            <div class="panel-tag" id="onboardTag">Concierge Onboarding</div>
+            <h2 class="panel-title" id="onboardTitle">Как Поставщик Становится Готовым К Сделке</h2>
+            <p class="panel-copy" id="onboardCopy">Не self-service витрина, а управляемая загрузка каталога, документов и правил доступа.</p>
+          </div>
+          <div class="panel-badge" id="onboardBadge">4 шага</div>
+        </div>
+        <div class="onboard-list" id="onboardList"></div>
+      </article>
+
+      <article class="info-panel" aria-label="Commercial readiness">
+        <div class="info-head">
+          <div>
+            <div class="panel-tag" id="readinessTag">Commercial Readiness</div>
+            <h2 class="panel-title" id="readinessTitle">Что Уже Можно Монетизировать</h2>
+            <p class="panel-copy" id="readinessCopy">RFQ unlock, supplier plan и anti-circumvention становятся видимыми прямо в профиле.</p>
+          </div>
+          <div class="panel-badge" id="readinessBadge">Hybrid B2B</div>
+        </div>
+        <div class="readiness-grid" id="readinessGrid"></div>
+      </article>
+    </section>
+
+    <section class="trade-row">
+      <article class="offer-panel" aria-label="Supplier offer lanes">
+        <div class="info-head">
+          <div>
+            <div class="panel-tag" id="offerTag">Offer Lanes</div>
+            <h2 class="panel-title" id="offerTitle">Как Поставщик Выглядит Как Торговая Витрина</h2>
+            <p class="panel-copy" id="offerCopy">Не только trust-данные, но и понятные товарные линии: что продается, где сильные позиции и какие пакеты реально можно быстро quote.</p>
+          </div>
+          <div class="panel-badge" id="offerBadge">Storefront</div>
+        </div>
+        <div class="offer-grid" id="offerGrid"></div>
+      </article>
+
+      <article class="badge-panel" aria-label="Compliance and export badges">
+        <div class="info-head">
+          <div>
+            <div class="panel-tag" id="badgeTag">Trade Badges</div>
+            <h2 class="panel-title" id="badgeTitle">Compliance, Export И Delivery Visibility</h2>
+            <p class="panel-copy" id="badgeCopy">В industrial procurement supplier должен сразу показывать, где он safe по документам, экспортным коридорам и срокам реакции.</p>
+          </div>
+          <div class="panel-badge" id="badgeBadge">Visible trust</div>
+        </div>
+        <div class="badge-grid" id="badgeGrid"></div>
+      </article>
+    </section>
+
+    <section class="workspace">
+      <article class="panel">
+        <div class="section-label" id="inventoryLabel">Curated Inventory</div>
+        <h2 id="inventoryTitle">Что Уже Поднято В Рабочем Каталоге</h2>
+        <div class="inventory-grid" id="inventoryGrid"></div>
+        <div class="note">
+          <div class="note-title" id="onboardingNoteTitle">Concierge onboarding</div>
+          <div class="note-copy" id="onboardingNoteCopy">Поставщик не обязан сам собирать витрину. Платформа или оператор загружает Excel, прайсы, PDF, нормализует позиции и связывает сертификаты с SKU.</div>
+        </div>
+      </article>
+
+      <aside class="panel">
+        <div class="section-label" id="trustLabel">Trust Stack</div>
+        <h2 id="trustTitle">Почему С Ним Можно Идти В Сделку</h2>
+        <div class="trust-grid" id="trustGrid"></div>
+      </aside>
+    </section>
+
+    <section class="workspace" style="margin-top: 18px;">
+      <article class="panel">
+        <div class="section-label" id="workflowLabel">Workflow</div>
+        <h2 id="workflowTitle">Как Поставщик Входит В Сделку</h2>
+        <div class="lane-grid" id="workflowGrid"></div>
+      </article>
+
+      <aside class="panel">
+        <div class="section-label" id="commercialLabel">Commercial Controls</div>
+        <h2 id="commercialTitle">Коммерческие Ограничители И Доход</h2>
+        <div class="detail-list" id="commercialList"></div>
+      </aside>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      var CONTEXT_STORAGE_KEY = 'nexus-marketplace-context';
+      var profiles = {
+        'MI-SWACO': {
+          verification: 'verified',
+          metrics: { skus: '184', regions: '5', response: '4h', analogs: '26' },
+          category: { ru: 'Буровые растворы', en: 'Drilling Fluids' },
+          tagline: {
+            ru: 'Каталог по WBM/OBM уже загружен через операторский onboarding и привязан к рабочим сценариям бурения.',
+            en: 'The WBM/OBM catalog is already onboarded by the platform team and mapped to real drilling use cases.'
+          },
+          inventory: [
+            { ru: '72 SKU в water-based системах', en: '72 SKUs in water-based systems' },
+            { ru: '26 аналогов по shale inhibition и lubricity', en: '26 analog links across shale inhibition and lubricity' },
+            { ru: 'Паспорта и HSE PDF привязаны к 81 позиции', en: 'Safety and HSE PDFs linked to 81 lines' },
+            { ru: 'Складовые хабы: Houston, Jubail, Muscat', en: 'Warehouse hubs: Houston, Jubail, Muscat' }
+          ],
+          trust: [
+            { labelRu: 'Сертификаты', labelEn: 'Certifications', valueRu: 'ISO, regional compliance pack', valueEn: 'ISO, regional compliance pack' },
+            { labelRu: 'Экспорт', labelEn: 'Export', valueRu: 'MENA, US, Caspian ready', valueEn: 'MENA, US, Caspian ready' },
+            { labelRu: 'Ответ на RFQ', labelEn: 'RFQ response', valueRu: 'до 4 часов по qualified RFQ', valueEn: 'within 4 hours on qualified RFQ' },
+            { labelRu: 'Условия', labelEn: 'Commercial terms', valueRu: 'Incoterms EXW, FCA, DAP', valueEn: 'Incoterms EXW, FCA, DAP' }
+          ]
+        },
+        Nouryon: {
+          verification: 'verified',
+          metrics: { skus: '126', regions: '4', response: '6h', analogs: '18' },
+          category: { ru: 'Химреагенты', en: 'Drilling Chemicals' },
+          tagline: {
+            ru: 'Специализированный поставщик химии с curated catalog, выгрузкой паспортов и рабочим ответом по qualified RFQ.',
+            en: 'A specialty chemicals supplier with curated inventory, linked documentation, and working response on qualified RFQs.'
+          },
+          inventory: [
+            { ru: '126 нормализованных SKU по lubricity, amines и completion chemistry', en: '126 normalized SKUs across lubricity, amines, and completion chemistry' },
+            { ru: '18 аналоговых связок для импортозамещения и alternate sourcing', en: '18 analog mappings for import substitution and alternate sourcing' },
+            { ru: 'Сертификаты, TDS и SDS связаны с 64 SKU', en: 'Certificates, TDS, and SDS linked to 64 SKUs' },
+            { ru: 'Отгрузка из EU и MENA с прогнозом lead time', en: 'Dispatch from EU and MENA hubs with forecast lead time' }
+          ],
+          trust: [
+            { labelRu: 'Сертификаты', labelEn: 'Certifications', valueRu: 'REACH, SDS, COA pack', valueEn: 'REACH, SDS, COA pack' },
+            { labelRu: 'Экспорт', labelEn: 'Export', valueRu: 'EU, Russia, MENA corridors', valueEn: 'EU, Russia, MENA corridors' },
+            { labelRu: 'Ответ на RFQ', labelEn: 'RFQ response', valueRu: 'до 6 часов на рабочие запросы', valueEn: 'within 6 hours on qualified requests' },
+            { labelRu: 'Условия', labelEn: 'Commercial terms', valueRu: 'FCA Rotterdam, CPT Dubai', valueEn: 'FCA Rotterdam, CPT Dubai' }
+          ]
+        },
+        TETRA: {
+          verification: 'verified',
+          metrics: { skus: '84', regions: '3', response: '8h', analogs: '11' },
+          category: { ru: 'Заканчивание', en: 'Completion Fluids' },
+          tagline: {
+            ru: 'Completion brines и fluid services с понятным blend-on-demand workflow.',
+            en: 'Completion brines and fluid services with a clear blend-on-demand workflow.'
+          },
+          inventory: [
+            { ru: '84 SKU по CaBr2, CaCl2 и specialty brines', en: '84 SKUs across CaBr2, CaCl2, and specialty brines' },
+            { ru: '11 аналоговых связок под разные плотности', en: '11 analog mappings across density windows' },
+            { ru: 'Паспорта качества и density envelopes загружены', en: 'Quality packs and density envelopes uploaded' },
+            { ru: 'Подготовка смеси по графику мобилизации', en: 'Blend scheduling aligned with mobilization plan' }
+          ],
+          trust: [
+            { labelRu: 'Сертификаты', labelEn: 'Certifications', valueRu: 'Fluid QA, density certificates', valueEn: 'Fluid QA, density certificates' },
+            { labelRu: 'Экспорт', labelEn: 'Export', valueRu: 'North Sea, GCC, US Gulf', valueEn: 'North Sea, GCC, US Gulf' },
+            { labelRu: 'Ответ на RFQ', labelEn: 'RFQ response', valueRu: 'до 8 часов', valueEn: 'within 8 hours' },
+            { labelRu: 'Условия', labelEn: 'Commercial terms', valueRu: 'Blend slot reservation required', valueEn: 'Blend slot reservation required' }
+          ]
+        },
+        'NOV Brandt': {
+          verification: 'verified',
+          metrics: { skus: '58', regions: '4', response: '10h', analogs: '9' },
+          category: { ru: 'Солид-контроль', en: 'Solids Control' },
+          tagline: {
+            ru: 'Рабочий пакет по shaker screens и solid control расходникам для rig operations.',
+            en: 'An operating package for shaker screens and solids control consumables in rig operations.'
+          },
+          inventory: [
+            { ru: '58 SKU по screen panels и расходникам', en: '58 SKUs across screen panels and consumables' },
+            { ru: 'API mesh mapping и alternate equivalents', en: 'API mesh mapping and alternate equivalents' },
+            { ru: 'PDF и rig fit notes на ключевые позиции', en: 'PDFs and rig fit notes attached to critical lines' },
+            { ru: 'Поставка из US, LATAM и Caspian hubs', en: 'Supply from US, LATAM, and Caspian hubs' }
+          ],
+          trust: [
+            { labelRu: 'Сертификаты', labelEn: 'Certifications', valueRu: 'OEM panel specs', valueEn: 'OEM panel specs' },
+            { labelRu: 'Экспорт', labelEn: 'Export', valueRu: 'US, LATAM, Caspian', valueEn: 'US, LATAM, Caspian' },
+            { labelRu: 'Ответ на RFQ', labelEn: 'RFQ response', valueRu: 'до 10 часов', valueEn: 'within 10 hours' },
+            { labelRu: 'Условия', labelEn: 'Commercial terms', valueRu: 'MOQ by rig package', valueEn: 'MOQ by rig package' }
+          ]
+        },
+        Halliburton: {
+          verification: 'pending',
+          metrics: { skus: '92', regions: '5', response: '12h', analogs: '14' },
+          category: { ru: 'Химреагенты', en: 'Drilling Chemicals' },
+          tagline: {
+            ru: 'Профиль в работе: каталог уже поднят, но verification pack и условия anti-circumvention еще подтверждаются.',
+            en: 'Profile in progress: the catalog is onboarded, but verification and anti-circumvention pack are still under confirmation.'
+          },
+          inventory: [
+            { ru: '92 SKU загружены из operator onboarding', en: '92 SKUs uploaded through operator onboarding' },
+            { ru: '14 аналоговых связок под cement spacer и displacement', en: '14 analog mappings for cement spacer and displacement' },
+            { ru: 'Часть документов в режиме pending review', en: 'Part of the document set remains under pending review' },
+            { ru: 'Global supply with controlled batch confirmation', en: 'Global supply with controlled batch confirmation' }
+          ],
+          trust: [
+            { labelRu: 'Сертификаты', labelEn: 'Certifications', valueRu: 'Under platform verification', valueEn: 'Under platform verification' },
+            { labelRu: 'Экспорт', labelEn: 'Export', valueRu: 'Global', valueEn: 'Global' },
+            { labelRu: 'Ответ на RFQ', labelEn: 'RFQ response', valueRu: 'до 12 часов', valueEn: 'within 12 hours' },
+            { labelRu: 'Условия', labelEn: 'Commercial terms', valueRu: 'Batch confirmation before unlock', valueEn: 'Batch confirmation before unlock' }
+          ]
+        },
+        'Baker Hughes': {
+          verification: 'verified',
+          metrics: { skus: '101', regions: '4', response: '7h', analogs: '16' },
+          category: { ru: 'Заканчивание', en: 'Completion Fluids' },
+          tagline: {
+            ru: 'Рабочий профиль completion chemistry с offshore-ready pack и supplier-led quote discipline.',
+            en: 'A working completion chemistry profile with offshore-ready documentation and supplier-led quote discipline.'
+          },
+          inventory: [
+            { ru: '101 SKU по drill-in и completion chemistry', en: '101 SKUs across drill-in and completion chemistry' },
+            { ru: '16 аналоговых связок по reservoir cleanup', en: '16 analog links across reservoir cleanup use cases' },
+            { ru: 'Сертификаты и QA pack на offshore supply', en: 'Certificates and QA packs for offshore supply' },
+            { ru: 'Доставка через Dubai и regional hubs', en: 'Delivery via Dubai and regional hubs' }
+          ],
+          trust: [
+            { labelRu: 'Сертификаты', labelEn: 'Certifications', valueRu: 'QA, completion compliance pack', valueEn: 'QA, completion compliance pack' },
+            { labelRu: 'Экспорт', labelEn: 'Export', valueRu: 'Global offshore', valueEn: 'Global offshore' },
+            { labelRu: 'Ответ на RFQ', labelEn: 'RFQ response', valueRu: 'до 7 часов', valueEn: 'within 7 hours' },
+            { labelRu: 'Условия', labelEn: 'Commercial terms', valueRu: 'Regional stock and lead time commitment', valueEn: 'Regional stock and lead time commitment' }
+          ]
+        }
+      };
+
+      var dictionary = {
+        ru: {
+          heroEyebrow: 'Supplier Trust Desk',
+          heroTitle: 'Поставщик Как Объект Доверия И Реальной Поставки',
+          heroCopy: 'Здесь не витрина, а рабочий профиль поставщика: кто загрузил каталог, какие позиции реально нормализованы, где лежат документы, как быстро поставщик отвечает и можно ли вести с ним квалифицированный RFQ без ручного хаоса.',
+          langLabel: 'Language',
+          langTitle: 'Интерфейс',
+          langCopy: 'Supplier desk переключает язык интерфейса, но trust data, загрузка каталога и onboarding логика остаются едиными.',
+          verificationLabel: 'Verification',
+          verified: 'Verified supplier',
+          pending: 'Pending review',
+          rfqCta: 'Перейти к Qualified RFQ',
+          metricSkusLabel: 'Нормализованных SKU',
+          metricRegionsLabel: 'Активных регионов',
+          metricResponseLabel: 'Медиана ответа',
+          metricAnalogsLabel: 'Аналоговых связок',
+          inventoryLabel: 'Curated Inventory',
+          inventoryTitle: 'Что Уже Поднято В Рабочем Каталоге',
+          onboardingNoteTitle: 'Concierge onboarding',
+          onboardingNoteCopy: 'Поставщик не обязан сам собирать витрину. Платформа или оператор загружает Excel, прайсы, PDF, нормализует позиции и связывает сертификаты с SKU.',
+          trustLabel: 'Trust Stack',
+          trustTitle: 'Почему С Ним Можно Идти В Сделку',
+          workflowLabel: 'Workflow',
+          workflowTitle: 'Как Поставщик Входит В Сделку',
+          commercialLabel: 'Commercial Controls',
+          commercialTitle: 'Коммерческие Ограничители И Доход',
+          onboardTag: 'Concierge Onboarding',
+          onboardTitle: 'Как Поставщик Становится Готовым К Сделке',
+          onboardCopy: 'Не self-service витрина, а управляемая загрузка каталога, документов и правил доступа.',
+          onboardBadge: '4 шага',
+          readinessTag: 'Commercial Readiness',
+          readinessTitle: 'Что Уже Можно Монетизировать',
+          readinessCopy: 'RFQ unlock, supplier plan и anti-circumvention становятся видимыми прямо в профиле.',
+          readinessBadge: 'Hybrid B2B',
+          offerTag: 'Offer Lanes',
+          offerTitle: 'Как Поставщик Выглядит Как Торговая Витрина',
+          offerCopy: 'Не только trust-данные, но и понятные товарные линии: что продается, где сильные позиции и какие пакеты реально можно быстро quote.',
+          offerBadge: 'Storefront',
+          badgeTag: 'Trade Badges',
+          badgeTitle: 'Compliance, Export И Delivery Visibility',
+          badgeCopy: 'В industrial procurement supplier должен сразу показывать, где он safe по документам, экспортным коридорам и срокам реакции.',
+          badgeBadge: 'Visible trust',
+          signals: [
+            { tag: 'Coverage', value: '84%', copy: 'SKU и trust pack уже готовы к показу buyer-side команде.', fill: '84%' },
+            { tag: 'Docs linked', value: '64', copy: 'TDS, SDS, COA и экспортные документы уже связаны с SKU.', fill: '68%' },
+            { tag: 'Unlock fit', value: 'A/B', copy: 'Поставщик подходит для qualified RFQ, а не для сырого лида.', fill: '76%' },
+            { tag: 'Deal discipline', value: '91%', copy: 'История quote, shortlist и статусов удерживается внутри платформы.', fill: '91%' }
+          ],
+          onboardingRail: [
+            { title: '1. Upload by operator', value: '100%', copy: 'Excel, price lists и PDF грузятся без ожидания self-service кабинета.', fill: '100%' },
+            { title: '2. SKU normalization', value: '82%', copy: 'Названия, аналоги и технические поля сводятся в единый каталог.', fill: '82%' },
+            { title: '3. Verification pack', value: '74%', copy: 'Сертификаты, SDS/TDS и условия поставки привязываются к линиям.', fill: '74%' },
+            { title: '4. RFQ unlock ready', value: '68%', copy: 'Supplier profile становится доступным для A/B qualified RFQ.', fill: '68%' }
+          ],
+          readinessCards: [
+            { title: 'Qualified RFQ access', value: '$180', copy: 'Фикс за unlock после операторской валидации запроса.', fill: '62%' },
+            { title: 'Supplier Pro plan', value: '$390', copy: 'Bulk upload, analytics, verified badge и priority placement.', fill: '71%' },
+            { title: 'Success fee trace', value: '12m', copy: 'Окно атрибуции после platform-originated RFQ.', fill: '86%' },
+            { title: 'Exclusive shortlist', value: '3', copy: 'Премиальный режим доступа к ограниченному числу suppliers.', fill: '54%' }
+          ],
+          offers: [
+            { tag: 'Fast movers', value: '42 SKU', name: 'Core chemical lane', copy: 'Самые ходовые позиции, которые supplier может quote без долгой ручной сборки.', stats: ['Lubricity', 'Amines', 'Completion chemistry'], href: '144_nexus_catalog_workbench.html' },
+            { tag: 'Analogs', value: '18', name: 'Import substitution lane', copy: 'Линия аналогов, где supplier получает повышенный шанс попасть в shortlist.', stats: ['Alternate sourcing', 'Brand match', 'RFQ upsell'], href: '144_nexus_catalog_workbench.html' },
+            { tag: 'Express', value: '72h', name: 'Fast delivery offer', copy: 'Позиции с кратким горизонтом поставки и прозрачным stock route.', stats: ['EU / MENA hubs', 'Stock visible', 'Emergency fit'], href: '144_nexus_catalog_workbench.html' },
+            { tag: 'Premium', value: 'A/B', name: 'Qualified RFQ lane', copy: 'Пакеты, которые supplier предпочтет видеть первыми из-за лучшего lead quality.', stats: ['Unlock ready', 'Verified buyer', 'Structured scope'], href: '146_nexus_rfq_command.html' }
+          ],
+          badges: [
+            { tag: 'Compliance', value: 'REACH', name: 'Документы готовы', copy: 'Supplier быстро проходит первый барьер buyer trust.', stats: ['COA linked', 'SDS/TDS', 'Review-ready'] },
+            { tag: 'Export', value: '3 corridors', name: 'Экспортные маршруты', copy: 'Видно, по каким регионам supplier реально работает.', stats: ['EU', 'Russia', 'MENA'] },
+            { tag: 'SLA', value: '6h', name: 'Response discipline', copy: 'Критично для qualified RFQ и hot buyer demand.', stats: ['Fast reply', 'Follow-up safe', 'Platform scored'] },
+            { tag: 'Delivery', value: '72h', name: 'Stock visibility', copy: 'Buyer сразу понимает, может ли supplier закрыть срочный запрос.', stats: ['Warehouse route', 'Lead time clear', 'Shortlist fit'] }
+          ],
+          workflow: [
+            { title: '1. Catalog loaded by operator', copy: 'Платформа загружает прайсы, Excel и PDF за поставщика, чтобы не ждать ручного заполнения витрины.' },
+            { title: '2. Verification pack linked', copy: 'К SKU привязываются сертификаты, SDS/TDS и экспортные ограничения.' },
+            { title: '3. Qualified RFQ unlocked', copy: 'Поставщик видит только валидированный RFQ с количеством, регионом и сроком.' },
+            { title: '4. Deal room controlled', copy: 'Статусы, документы и shortlist идут внутри платформы, что уменьшает обход.' }
+          ],
+          commercial: [
+            { title: 'Qualified RFQ access', copy: 'Платный unlock только для A/B RFQ после операторской валидации.' },
+            { title: 'Supplier subscription', copy: 'Расширенный кабинет: больше SKU, приоритет, аналитика спроса и bulk upload.' },
+            { title: 'Success fee trigger', copy: 'Триггер включается при PO issued или contract signed по сделке, начатой внутри платформы.' },
+            { title: 'Anti-circumvention', copy: 'Deal history, shortlist и документы логируются, чтобы фиксировать атрибуцию сделки.' }
+          ]
+        },
+        en: {
+          heroEyebrow: 'Supplier Trust Desk',
+          heroTitle: 'Supplier As A Trust And Delivery Object',
+          heroCopy: 'This is not a storefront. It is an operating supplier profile: who onboarded the catalog, which lines are normalized, where documents sit, how fast the supplier responds, and whether a qualified RFQ can move without manual chaos.',
+          langLabel: 'Language',
+          langTitle: 'Interface',
+          langCopy: 'The desk only changes interface language. Trust data, loaded catalog, and onboarding logic remain unified.',
+          verificationLabel: 'Verification',
+          verified: 'Verified supplier',
+          pending: 'Pending review',
+          rfqCta: 'Open Qualified RFQ',
+          metricSkusLabel: 'Normalized SKUs',
+          metricRegionsLabel: 'Active regions',
+          metricResponseLabel: 'Median response',
+          metricAnalogsLabel: 'Analog links',
+          inventoryLabel: 'Curated Inventory',
+          inventoryTitle: 'Catalog Coverage In The Working Desk',
+          onboardingNoteTitle: 'Concierge onboarding',
+          onboardingNoteCopy: 'Suppliers are not expected to build the storefront themselves. The platform team uploads Excel files, price lists, and PDFs, normalizes lines, and links documents to SKU records.',
+          trustLabel: 'Trust Stack',
+          trustTitle: 'Why This Supplier Can Enter A Deal',
+          workflowLabel: 'Workflow',
+          workflowTitle: 'How The Supplier Enters The Deal Flow',
+          commercialLabel: 'Commercial Controls',
+          commercialTitle: 'Revenue And Deal Controls',
+          onboardTag: 'Concierge Onboarding',
+          onboardTitle: 'How The Supplier Becomes Deal-Ready',
+          onboardCopy: 'Not a self-serve storefront but a managed upload of catalog lines, documents, and access rules.',
+          onboardBadge: '4 steps',
+          readinessTag: 'Commercial Readiness',
+          readinessTitle: 'What Is Already Monetizable',
+          readinessCopy: 'RFQ unlock, supplier plan, and anti-circumvention become visible directly in the profile.',
+          readinessBadge: 'Hybrid B2B',
+          offerTag: 'Offer Lanes',
+          offerTitle: 'How The Supplier Starts Looking Like A Trading Storefront',
+          offerCopy: 'Not only trust data but visible offer lanes: what is sold, where the supplier is strongest, and which bundles can be quoted fast.',
+          offerBadge: 'Storefront',
+          badgeTag: 'Trade Badges',
+          badgeTitle: 'Compliance, Export, And Delivery Visibility',
+          badgeCopy: 'In industrial procurement the supplier should immediately show where it is safe on documents, export corridors, and response speed.',
+          badgeBadge: 'Visible trust',
+          signals: [
+            { tag: 'Coverage', value: '84%', copy: 'SKU depth and trust pack are already ready for buyer-side review.', fill: '84%' },
+            { tag: 'Docs linked', value: '64', copy: 'TDS, SDS, COA, and export documents are already attached to lines.', fill: '68%' },
+            { tag: 'Unlock fit', value: 'A/B', copy: 'The supplier fits qualified RFQ workflow instead of raw lead traffic.', fill: '76%' },
+            { tag: 'Deal discipline', value: '91%', copy: 'Quote, shortlist, and status history stay inside the platform.', fill: '91%' }
+          ],
+          onboardingRail: [
+            { title: '1. Upload by operator', value: '100%', copy: 'Excel files, price lists, and PDFs are loaded without waiting for self-serve setup.', fill: '100%' },
+            { title: '2. SKU normalization', value: '82%', copy: 'Names, analogs, and technical fields are normalized into one catalog.', fill: '82%' },
+            { title: '3. Verification pack', value: '74%', copy: 'Certificates, SDS/TDS packs, and delivery terms are linked to lines.', fill: '74%' },
+            { title: '4. RFQ unlock ready', value: '68%', copy: 'The supplier profile becomes ready for A/B qualified RFQ access.', fill: '68%' }
+          ],
+          readinessCards: [
+            { title: 'Qualified RFQ access', value: '$180', copy: 'Fixed unlock fee after operator validation of the request.', fill: '62%' },
+            { title: 'Supplier Pro plan', value: '$390', copy: 'Bulk upload, analytics, verified badge, and priority placement.', fill: '71%' },
+            { title: 'Success fee trace', value: '12m', copy: 'Attribution window after a platform-originated RFQ.', fill: '86%' },
+            { title: 'Exclusive shortlist', value: '3', copy: 'Premium access mode limited to a narrow supplier set.', fill: '54%' }
+          ],
+          offers: [
+            { tag: 'Fast movers', value: '42 SKU', name: 'Core chemical lane', copy: 'The highest-volume lines that the supplier can quote without lengthy manual assembly.', stats: ['Lubricity', 'Amines', 'Completion chemistry'], href: '144_nexus_catalog_workbench.html' },
+            { tag: 'Analogs', value: '18', name: 'Import substitution lane', copy: 'An analog lane where the supplier has a higher chance to enter the shortlist.', stats: ['Alternate sourcing', 'Brand match', 'RFQ upsell'], href: '144_nexus_catalog_workbench.html' },
+            { tag: 'Express', value: '72h', name: 'Fast delivery offer', copy: 'Lines with short delivery horizon and transparent stock route.', stats: ['EU / MENA hubs', 'Stock visible', 'Emergency fit'], href: '144_nexus_catalog_workbench.html' },
+            { tag: 'Premium', value: 'A/B', name: 'Qualified RFQ lane', copy: 'Packages the supplier wants to see first because of higher lead quality.', stats: ['Unlock ready', 'Verified buyer', 'Structured scope'], href: '146_nexus_rfq_command.html' }
+          ],
+          badges: [
+            { tag: 'Compliance', value: 'REACH', name: 'Documents ready', copy: 'The supplier clears the first buyer trust barrier quickly.', stats: ['COA linked', 'SDS/TDS', 'Review-ready'] },
+            { tag: 'Export', value: '3 corridors', name: 'Export routes', copy: 'Visible regions where the supplier can actually operate.', stats: ['EU', 'Russia', 'MENA'] },
+            { tag: 'SLA', value: '6h', name: 'Response discipline', copy: 'Critical for qualified RFQ and hot buyer demand.', stats: ['Fast reply', 'Follow-up safe', 'Platform scored'] },
+            { tag: 'Delivery', value: '72h', name: 'Stock visibility', copy: 'The buyer can immediately see whether urgent demand can be closed.', stats: ['Warehouse route', 'Lead time clear', 'Shortlist fit'] }
+          ],
+          workflow: [
+            { title: '1. Catalog loaded by operator', copy: 'The platform uploads price lists, Excel sheets, and PDFs for the supplier instead of waiting for self-serve setup.' },
+            { title: '2. Verification pack linked', copy: 'Certificates, SDS/TDS packs, and export limits are linked to the SKU base.' },
+            { title: '3. Qualified RFQ unlocked', copy: 'The supplier only sees validated RFQs with quantity, region, and delivery horizon.' },
+            { title: '4. Deal room controlled', copy: 'Statuses, documents, and shortlist history remain inside the platform to reduce circumvention.' }
+          ],
+          commercial: [
+            { title: 'Qualified RFQ access', copy: 'Paid unlock only applies to A/B RFQs after operator validation.' },
+            { title: 'Supplier subscription', copy: 'Extended cabinet: more SKU capacity, priority placement, demand analytics, and bulk upload.' },
+            { title: 'Success fee trigger', copy: 'The trigger starts on PO issued or contract signed for a platform-originated deal.' },
+            { title: 'Anti-circumvention', copy: 'Deal history, shortlist, and documents are logged to preserve attribution.' }
+          ]
+        }
+      };
+
+      var params = new URLSearchParams(window.location.search);
+      var storedContext = {};
+      try {
+        storedContext = JSON.parse(localStorage.getItem(CONTEXT_STORAGE_KEY) || '{}') || {};
+      } catch (error) {
+        storedContext = {};
+      }
+
+      var activeSupplierName = params.get('supplier') || storedContext.supplierName || 'Nouryon';
+      var activeLang = storedContext.lang === 'en' ? 'en' : 'ru';
+      var profile = profiles[activeSupplierName] || profiles.Nouryon;
+
+      var supplierName = document.getElementById('supplierName');
+      var heroEyebrow = document.getElementById('heroEyebrow');
+      var heroTitle = document.getElementById('heroTitle');
+      var heroCopy = document.getElementById('heroCopy');
+      var langLabel = document.getElementById('langLabel');
+      var langTitle = document.getElementById('langTitle');
+      var langCopy = document.getElementById('langCopy');
+      var verificationBadge = document.getElementById('verificationBadge');
+      var supplierCategoryTag = document.getElementById('supplierCategoryTag');
+      var supplierTagline = document.getElementById('supplierTagline');
+      var rfqCta = document.getElementById('rfqCta');
+      var metricSkus = document.getElementById('metricSkus');
+      var metricRegions = document.getElementById('metricRegions');
+      var metricResponse = document.getElementById('metricResponse');
+      var metricAnalogs = document.getElementById('metricAnalogs');
+      var metricSkusLabel = document.getElementById('metricSkusLabel');
+      var metricRegionsLabel = document.getElementById('metricRegionsLabel');
+      var metricResponseLabel = document.getElementById('metricResponseLabel');
+      var metricAnalogsLabel = document.getElementById('metricAnalogsLabel');
+      var inventoryLabel = document.getElementById('inventoryLabel');
+      var inventoryTitle = document.getElementById('inventoryTitle');
+      var inventoryGrid = document.getElementById('inventoryGrid');
+      var onboardingNoteTitle = document.getElementById('onboardingNoteTitle');
+      var onboardingNoteCopy = document.getElementById('onboardingNoteCopy');
+      var trustLabel = document.getElementById('trustLabel');
+      var trustTitle = document.getElementById('trustTitle');
+      var trustGrid = document.getElementById('trustGrid');
+      var workflowLabel = document.getElementById('workflowLabel');
+      var workflowTitle = document.getElementById('workflowTitle');
+      var workflowGrid = document.getElementById('workflowGrid');
+      var commercialLabel = document.getElementById('commercialLabel');
+      var commercialTitle = document.getElementById('commercialTitle');
+      var commercialList = document.getElementById('commercialList');
+      var signalGrid = document.getElementById('signalGrid');
+      var onboardTag = document.getElementById('onboardTag');
+      var onboardTitle = document.getElementById('onboardTitle');
+      var onboardCopy = document.getElementById('onboardCopy');
+      var onboardBadge = document.getElementById('onboardBadge');
+      var onboardList = document.getElementById('onboardList');
+      var readinessTag = document.getElementById('readinessTag');
+      var readinessTitle = document.getElementById('readinessTitle');
+      var readinessCopy = document.getElementById('readinessCopy');
+      var readinessBadge = document.getElementById('readinessBadge');
+      var readinessGrid = document.getElementById('readinessGrid');
+      var offerTag = document.getElementById('offerTag');
+      var offerTitle = document.getElementById('offerTitle');
+      var offerCopy = document.getElementById('offerCopy');
+      var offerBadge = document.getElementById('offerBadge');
+      var offerGrid = document.getElementById('offerGrid');
+      var badgeTag = document.getElementById('badgeTag');
+      var badgeTitle = document.getElementById('badgeTitle');
+      var badgeCopy = document.getElementById('badgeCopy');
+      var badgeBadge = document.getElementById('badgeBadge');
+      var badgeGrid = document.getElementById('badgeGrid');
+
+      function render() {
+        var copy = dictionary[activeLang];
+        heroEyebrow.textContent = copy.heroEyebrow;
+        heroTitle.textContent = copy.heroTitle;
+        heroCopy.textContent = copy.heroCopy;
+        langLabel.textContent = copy.langLabel;
+        langTitle.textContent = copy.langTitle;
+        langCopy.textContent = copy.langCopy;
+        supplierName.textContent = activeSupplierName;
+        supplierCategoryTag.textContent = profile.category[activeLang];
+        supplierTagline.textContent = profile.tagline[activeLang];
+        verificationBadge.textContent = profile.verification === 'verified' ? copy.verified : copy.pending;
+        verificationBadge.className = 'status-pill ' + profile.verification;
+        rfqCta.textContent = copy.rfqCta;
+        rfqCta.href = '146_nexus_rfq_command.html?supplier=' + encodeURIComponent(activeSupplierName);
+        metricSkus.textContent = profile.metrics.skus;
+        metricRegions.textContent = profile.metrics.regions;
+        metricResponse.textContent = profile.metrics.response;
+        metricAnalogs.textContent = profile.metrics.analogs;
+        metricSkusLabel.textContent = copy.metricSkusLabel;
+        metricRegionsLabel.textContent = copy.metricRegionsLabel;
+        metricResponseLabel.textContent = copy.metricResponseLabel;
+        metricAnalogsLabel.textContent = copy.metricAnalogsLabel;
+        inventoryLabel.textContent = copy.inventoryLabel;
+        inventoryTitle.textContent = copy.inventoryTitle;
+        onboardingNoteTitle.textContent = copy.onboardingNoteTitle;
+        onboardingNoteCopy.textContent = copy.onboardingNoteCopy;
+        trustLabel.textContent = copy.trustLabel;
+        trustTitle.textContent = copy.trustTitle;
+        workflowLabel.textContent = copy.workflowLabel;
+        workflowTitle.textContent = copy.workflowTitle;
+        commercialLabel.textContent = copy.commercialLabel;
+        commercialTitle.textContent = copy.commercialTitle;
+        onboardTag.textContent = copy.onboardTag;
+        onboardTitle.textContent = copy.onboardTitle;
+        onboardCopy.textContent = copy.onboardCopy;
+        onboardBadge.textContent = copy.onboardBadge;
+        readinessTag.textContent = copy.readinessTag;
+        readinessTitle.textContent = copy.readinessTitle;
+        readinessCopy.textContent = copy.readinessCopy;
+        readinessBadge.textContent = copy.readinessBadge;
+        offerTag.textContent = copy.offerTag;
+        offerTitle.textContent = copy.offerTitle;
+        offerCopy.textContent = copy.offerCopy;
+        offerBadge.textContent = copy.offerBadge;
+        badgeTag.textContent = copy.badgeTag;
+        badgeTitle.textContent = copy.badgeTitle;
+        badgeCopy.textContent = copy.badgeCopy;
+        badgeBadge.textContent = copy.badgeBadge;
+
+        signalGrid.innerHTML = copy.signals.map(function (item) {
+          return '<article class="signal-card"><div class="signal-tag">' + item.tag + '</div><div class="signal-value">' + item.value + '</div><div class="signal-copy">' + item.copy + '</div><div class="signal-bar" style="--fill:' + item.fill + ';"><span></span></div></article>';
+        }).join('');
+
+        onboardList.innerHTML = copy.onboardingRail.map(function (item) {
+          return '<article class="onboard-step"><div class="onboard-meta"><div class="onboard-title">' + item.title + '</div><div class="onboard-value">' + item.value + '</div></div><div class="onboard-copy">' + item.copy + '</div><div class="onboard-bar" style="--fill:' + item.fill + ';"><span></span></div></article>';
+        }).join('');
+
+        readinessGrid.innerHTML = copy.readinessCards.map(function (item) {
+          return '<article class="readiness-card"><div class="readiness-meta"><div class="readiness-title">' + item.title + '</div><div class="readiness-value">' + item.value + '</div></div><div class="readiness-copy">' + item.copy + '</div><div class="readiness-bar" style="--fill:' + item.fill + ';"><span></span></div></article>';
+        }).join('');
+
+        offerGrid.innerHTML = copy.offers.map(function (item) {
+          return '<article class="offer-card"><div class="offer-top"><div class="offer-mark">' + item.tag + '</div><div class="offer-value">' + item.value + '</div></div><div class="offer-name">' + item.name + '</div><div class="offer-copy">' + item.copy + '</div><div class="offer-meta">' + item.stats.map(function (line) { return '<div class="offer-stat">' + line + '</div>'; }).join('') + '</div><a class="offer-link" href="' + item.href + '">Open Lane</a></article>';
+        }).join('');
+
+        badgeGrid.innerHTML = copy.badges.map(function (item) {
+          return '<article class="badge-card"><div class="badge-top"><div class="badge-mark">' + item.tag + '</div><div class="badge-value">' + item.value + '</div></div><div class="badge-name">' + item.name + '</div><div class="badge-copy">' + item.copy + '</div><div class="badge-meta">' + item.stats.map(function (line) { return '<div class="badge-stat">' + line + '</div>'; }).join('') + '</div></article>';
+        }).join('');
+
+        inventoryGrid.innerHTML = profile.inventory.map(function (item) {
+          return '<article class="inventory-card"><div class="detail-title">' + item[activeLang] + '</div></article>';
+        }).join('');
+
+        trustGrid.innerHTML = profile.trust.map(function (item) {
+          return '<article class="trust-card"><div class="section-label">' + item['label' + (activeLang === 'ru' ? 'Ru' : 'En')] + '</div><div class="detail-title" style="margin-top:8px;">' + item['value' + (activeLang === 'ru' ? 'Ru' : 'En')] + '</div></article>';
+        }).join('');
+
+        workflowGrid.innerHTML = copy.workflow.map(function (item) {
+          return '<div class="lane-step"><div class="lane-title">' + item.title + '</div><div class="lane-copy">' + item.copy + '</div></div>';
+        }).join('');
+
+        commercialList.innerHTML = copy.commercial.map(function (item) {
+          return '<div class="detail-item"><div class="detail-title">' + item.title + '</div><div class="lane-copy">' + item.copy + '</div></div>';
+        }).join('');
+
+        document.querySelectorAll('[data-lang]').forEach(function (button) {
+          button.classList.toggle('active', button.getAttribute('data-lang') === activeLang);
+        });
+
+        storedContext.lang = activeLang;
+        storedContext.supplierName = activeSupplierName;
+        localStorage.setItem(CONTEXT_STORAGE_KEY, JSON.stringify(storedContext));
+      }
+
+      document.getElementById('langToggleRow').addEventListener('click', function (event) {
+        var button = event.target.closest('[data-lang]');
+        if (!button) {
+          return;
+        }
+        activeLang = button.getAttribute('data-lang');
+        render();
+      });
+
+      rfqCta.addEventListener('click', function () {
+        storedContext.supplierName = activeSupplierName;
+        localStorage.setItem(CONTEXT_STORAGE_KEY, JSON.stringify(storedContext));
+      });
+
+      render();
+    }());
+  </script>
+  <script src="assets/js/global-auth-widget.js"></script>
+</body>
+</html>

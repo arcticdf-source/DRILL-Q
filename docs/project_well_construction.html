@@ -1,0 +1,304 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Раздел 3 · Конструкция скважин</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap");
+    :root { --bg-0:#071018; --bg-1:#102030; --bg-2:#1b3041; --panel:rgba(11,20,31,.84); --line:rgba(227,238,255,.14); --line-soft:rgba(227,238,255,.08); --text:#edf5ff; --muted:#a8bdd2; --cyan:#22d7b4; --amber:#f8bd5f; --shadow:0 20px 48px rgba(0,0,0,.42); }
+    *{box-sizing:border-box} html,body{margin:0;min-height:100%;font-family:"Manrope",sans-serif;color:var(--text);background:radial-gradient(900px 460px at 0% -10%,rgba(34,215,180,.18),transparent),radial-gradient(760px 420px at 100% 0%,rgba(248,189,95,.16),transparent),linear-gradient(145deg,var(--bg-0),var(--bg-1) 46%,var(--bg-2))}
+    .wrap{width:min(1220px,92vw);margin:0 auto;padding:24px 0 64px}.top{display:flex;justify-content:space-between;align-items:center;gap:10px;border:1px solid var(--line-soft);border-radius:14px;padding:12px 14px;background:rgba(8,15,24,.66);position:sticky;top:12px;z-index:20}
+    .brand{display:flex;align-items:center;gap:10px;font-family:"Oswald",sans-serif;text-transform:uppercase;letter-spacing:.05em;font-size:20px}.dot{width:12px;height:12px;border-radius:999px;background:radial-gradient(circle at 35% 35%,#d6fff7,var(--cyan))}
+    .nav{display:flex;flex-wrap:wrap;gap:8px}.nav a{text-decoration:none;font-size:12px;text-transform:uppercase;letter-spacing:.06em;font-weight:800;border-radius:10px;padding:8px 12px;color:#082922;background:linear-gradient(130deg,#a0f9eb,#22d7b4);border:1px solid rgba(34,215,180,.75)}
+    .hero,.panel{margin-top:18px;border:1px solid var(--line);border-radius:20px;background:var(--panel);box-shadow:var(--shadow);padding:22px}.hero h1{margin:0 0 10px;font-family:"Oswald",sans-serif;font-size:clamp(28px,4vw,44px)}.hero p{margin:0;color:#c7d7ec;line-height:1.65}
+    h2{margin:0 0 12px;font-size:22px}
+    .list{display:grid;gap:10px}
+    .item{border:1px solid var(--line-soft);border-radius:12px;padding:12px;background:rgba(255,255,255,.03);color:#d1def0;line-height:1.55;font-size:14px}
+    .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+    .card{border:1px solid var(--line-soft);border-radius:16px;padding:16px;background:rgba(255,255,255,.03)}
+    .card h3{margin:0 0 8px;font-size:18px}
+    .card p{margin:0;color:#d5e2f2;line-height:1.6;font-size:14px}
+    .table-wrap{overflow:auto}
+    .table{width:100%;border-collapse:collapse;font-size:14px}
+    .table th,.table td{border:1px solid var(--line-soft);padding:10px;text-align:left;vertical-align:top}
+    .table th{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:#bfd3e8;background:rgba(255,255,255,.04)}
+    .table td{color:#d5e2f2;line-height:1.45}
+    .schematic-grid{display:grid;grid-template-columns:minmax(520px,1.1fr) minmax(280px,.9fr);gap:16px;align-items:start}.schematic-shell{border:1px solid var(--line-soft);border-radius:18px;padding:16px;background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02))}.schematic-shell svg{width:100%;height:auto;display:block}.legend-list{display:grid;gap:10px}.legend-card{border:1px solid var(--line-soft);border-radius:14px;padding:12px;background:rgba(255,255,255,.03)}.legend-head{display:flex;align-items:center;gap:10px;margin-bottom:6px}.legend-swatch{width:14px;height:14px;border-radius:999px;flex:none}.legend-card strong{font-size:14px}.legend-card p{margin:0;color:#d5e2f2;line-height:1.5;font-size:13px}.legend-meta{margin-top:6px;color:#a8bdd2;font-size:12px;line-height:1.45}.caption{margin-top:10px;color:#a8bdd2;font-size:12px;line-height:1.55}
+    .note{margin-top:14px;border:1px solid rgba(248,189,95,.24);border-radius:12px;background:rgba(248,189,95,.08);padding:12px;color:#f4deba;line-height:1.55;font-size:14px}.footer{margin-top:14px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-size:12px;text-align:center}
+    @media (max-width:980px){.grid,.schematic-grid{grid-template-columns:1fr}}
+    @media (max-width:860px){.top{position:static;flex-direction:column;align-items:flex-start}}
+  </style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+  <main class="wrap">
+    <header class="top">
+      <div class="brand"><span class="dot"></span><span>Nexus Oilfield AI</span></div>
+      <nav class="nav" id="nav"></nav>
+    </header>
+
+    <section class="hero">
+      <h1 id="title">Раздел 3. Конструкция скважин</h1>
+      <p id="desc">Базовый каркас для колонн, диаметров, интервалов цементирования и инженерной логики крепления ствола.</p>
+    </section>
+
+    <section class="panel">
+      <h2>Исходные данные по конструкции</h2>
+      <div class="list" id="constructionIntro"></div>
+    </section>
+
+    <section class="panel">
+      <h2>Элементы конструкции</h2>
+      <div class="grid" id="constructionCards"></div>
+    </section>
+
+    <section class="panel">
+      <h2>Графическая схема конструкции</h2>
+      <div class="schematic-grid">
+        <div class="schematic-shell">
+          <div id="constructionSchematic"></div>
+          <div class="caption">Схема построена по проектным диаметрам долот и обсадных колонн. Масштаб по глубине условно-линейный, чтобы визуально считывалась последовательность спуска и перекрытия интервалов.</div>
+        </div>
+        <div class="legend-list" id="constructionLegend"></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Таблица 3.1 · Конструкция скважины</h2>
+      <div class="table-wrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>№</th>
+              <th>Название колонны</th>
+              <th>Интервал установки</th>
+              <th>Номинальный диаметр долота</th>
+              <th>Наружный диаметр</th>
+              <th>Тип соединения</th>
+              <th>Марка стали</th>
+              <th>Толщина стенки</th>
+              <th>Вес</th>
+              <th>Подъём цемента</th>
+            </tr>
+          </thead>
+          <tbody id="constructionTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Обоснование глубины спуска</h2>
+      <div class="grid" id="justificationCards"></div>
+      <div class="note" id="note"></div>
+    </section>
+
+    <p class="footer">Dynamic project section · Well construction</p>
+  </main>
+  <script>
+    function getProjectNameFromUrl() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('name') || 'Проект';
+    }
+
+    function getWellFromUrl() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('well') || '9301';
+    }
+
+    function buildProjectLink(page, name, well) {
+      const params = new URLSearchParams();
+      params.set('name', name);
+      if (well) {
+        params.set('well', well);
+      }
+      return `${page}?${params.toString()}`;
+    }
+
+    const projectName = getProjectNameFromUrl();
+    const wellName = getWellFromUrl();
+    document.title = `${projectName} · Скважина ${wellName} · Раздел 3`;
+    document.getElementById('title').textContent = `${projectName} · Скважина ${wellName} · Раздел 3. Конструкция скважин`;
+    document.getElementById('desc').textContent = `Ручное наполнение раздела конструкции по проекту "${projectName}" для скважины ${wellName} по предоставленному фрагменту технического задания.`;
+
+    document.getElementById('nav').innerHTML = `
+      <a href="${buildProjectLink('project_well_dashboard.html', projectName, wellName)}">К скважине ${wellName}</a>
+      <a href="${buildProjectLink('project_well_dashboard.html', projectName, '9301')}">К дашборду проекта</a>
+      <a href="${buildProjectLink('project_geology.html', projectName)}">Геология</a>
+      <a href="${buildProjectLink('project_well_profile.html', projectName, wellName)}">Раздел 4</a>
+    `;
+
+    const introItems = [
+      'При разработке конструкции скважины учтены следующие горно-геологические особенности разреза: многолетнемерзлые породы залегают до глубины 350 м.',
+      'Газовые пласты залегают в интервале 3607-3655 м по вертикали.',
+      'Проектный горизонт: Ач4.',
+      'Тип скважины: наклонно-направленная с горизонтальным окончанием.',
+      'Глубина проектной скважины: пилотный ствол 3658,1 м по вертикали и 4650,2 м по стволу.',
+      'Глубина горизонтального ствола: 3644,7 м по вертикали и 6129,2 м по стволу.',
+      'Цель бурения: добыча газа и газового конденсата.',
+      'По совмещенному графику давлений выбираются зоны совместимости условий бурения с учетом конкретных горно-геологических условий месторождения.'
+    ];
+
+    const constructionCards = [
+      {
+        title: 'Кондуктор 339,72 мм',
+        text: 'Спускается на глубину 450 м по вертикали и 450 м по стволу, цементируется до устья. Цель спуска: перекрытие неустойчивых четвертичных отложений и ММП, сокращение длины открытого ствола и снижение риска осложнений.'
+      },
+      {
+        title: 'Промежуточная колонна 244,48 мм',
+        text: 'Спускается на глубину 1500 м по вертикали и 1689 м по стволу, цементируется до устья. Перекрывает неустойчивые породы березовской и кузнецовской свиты и водонасыщенный пласт ПК1.'
+      },
+      {
+        title: 'Эксплуатационная колонна 177,8 мм',
+        text: 'Спускается на глубину 3549,6 м по вертикали и 4391 м по стволу, цементируется до устья. Предназначена для перекрытия зоны Рпл=Ргст и минимальных градиентов начала поглощения 0,017-0,0157 МПа/м.'
+      },
+      {
+        title: 'Хвостовик 114,3 мм',
+        text: 'Спускается в интервале 3534-3644,7 м по вертикали и 4356-6129,2 м по стволу, подвешивается в эксплуатационной колонне с перекрытием на 35 м. Хвостовик не цементируется и оснащается муфтами ГРП.'
+      }
+    ];
+
+    const tableRows = [
+      ['1', 'Кондуктор', '0-450 м по вертикали (450 м по стволу)', '406,0 (400,0) мм', '339,72 мм', 'Премиальное, газогерметичное', 'R95', '9,65 мм', '365,12', '450 м (450 м по стволу)'],
+      ['2', 'Промежуточная колонна', '0-1500 м по вертикали (1689 м по стволу)', '311,15 мм', '244,48 мм', 'Премиальное, газогерметичное', 'R95', '8,94 мм', '269,88', '1500 м (1689 м по стволу)'],
+      ['3', 'Эксплуатационная колонна', '0-3549,6 м по вертикали (4391 м по стволу)', '222,3 мм', '177,80 мм', 'Премиальное, газогерметичное, спец. шаблон 155,6 мм', 'Q125', '10,36 мм', '200,03', '3549,6 м (4391 м по стволу)'],
+      ['4', 'Хвостовик', '3534-3644,7 м по вертикали (4356-6129,2 м по стволу)', '155,6 мм', '114,30 мм', 'Премиальное, газогерметичное', 'Q125', '8,56 мм', '127,00', 'Не цементируется']
+    ];
+
+    const justifications = [
+      {
+        title: 'Обоснование кондуктора',
+        text: 'Глубина спуска принята 450 м по вертикали. Максимальное давление у башмака при водопроявлении и замещении бурового раствора пластовым флюидом: 3,92 МПа. Давление гидроразрыва у башмака: 8,37 МПа. Запас прочности: η = 2,13, то есть 113%.',
+      },
+      {
+        title: 'Обоснование промежуточной колонны',
+        text: 'Глубина спуска принята 1500 м по вертикали и 1689 м по стволу. Максимальное давление у башмака при водопроявлении: 17,57 МПа. Давление гидроразрыва у башмака: 27,9 МПа. Запас прочности: η = 1,59, то есть 59%.',
+      },
+      {
+        title: 'Обоснование эксплуатационной колонны',
+        text: 'Глубина спуска принята 3549,6 м по вертикали и 4391 м по стволу. Максимальное давление у башмака при газопроявлении и замещении бурового раствора газом: 56,32 МПа. Давление гидроразрыва: 66,02 МПа. Запас прочности: η = 1,17, то есть 17%.',
+      },
+      {
+        title: 'Примечания по конструкции',
+        text: 'При замене типа обсадных труб и резьбовых соединений, в том числе на импортные, требуется перерасчет колонн на равнопрочность. Все обсадные трубы и НКТ требуется использовать в хладостойком исполнении согласно ГОСТ 15150-69.',
+      }
+    ];
+
+    const schematicSections = [
+      {
+        title: 'Кондуктор', color: '#f8bd5f', holeDiameter: 406.0, casingDiameter: 339.72,
+        from: 0, to: 450, label: '406.0 мм ствол · 339.72 мм кондуктор · 450 м',
+        detail: 'Цементирование до устья, перекрытие ММП и верхнего неустойчивого разреза.'
+      },
+      {
+        title: 'Промежуточная колонна', color: '#65d9bf', holeDiameter: 311.15, casingDiameter: 244.48,
+        from: 0, to: 1689, label: '311.15 мм ствол · 244.48 мм колонна · 1,689 м по стволу',
+        detail: 'Цементирование до устья, отсечение водонасыщенного ПК1 и неустойчивых пород.'
+      },
+      {
+        title: 'Эксплуатационная колонна', color: '#8db4ff', holeDiameter: 222.3, casingDiameter: 177.8,
+        from: 0, to: 4391, label: '222.3 мм ствол · 177.8 мм эксплуатационная · 4,391 м по стволу',
+        detail: 'Цементирование до устья, перекрытие зоны минимальных градиентов начала поглощения.'
+      },
+      {
+        title: 'Хвостовик', color: '#c6a6ff', holeDiameter: 155.6, casingDiameter: 114.3,
+        from: 4356, to: 6129.2, label: '155.6 мм ствол · 114.3 мм хвостовик · 6,129.2 м по стволу',
+        detail: 'Подвеска в эксплуатационной колонне с перекрытием 35 м, без цементирования.'
+      }
+    ];
+
+    function createConstructionSchematic() {
+      const width = 780;
+      const height = 1260;
+      const centerX = 288;
+      const topY = 118;
+      const baseY = 1160;
+      const maxDepth = 6129.2;
+      const maxOuterDiameter = 430;
+      const scaleDepth = (depth) => topY + (depth / maxDepth) * (baseY - topY);
+      const scaleHalfWidth = (diameter) => (diameter / maxOuterDiameter) * 132;
+
+      const tower = `
+        <g opacity="0.96">
+          <rect x="228" y="26" width="120" height="24" rx="3" fill="rgba(255,255,255,0.92)" stroke="rgba(7,16,24,0.55)" />
+          <path d="M250 50 L326 50 L350 118 L226 118 Z" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.88)" stroke-width="2" />
+          <path d="M264 50 L312 118 M312 50 L264 118 M240 84 L336 84" stroke="rgba(255,255,255,0.68)" stroke-width="2" />
+          <rect x="214" y="118" width="148" height="22" rx="4" fill="rgba(255,255,255,0.92)" stroke="rgba(7,16,24,0.55)" />
+          <rect x="126" y="140" width="324" height="56" rx="4" fill="rgba(255,255,255,0.90)" stroke="rgba(7,16,24,0.55)" />
+        </g>`;
+
+      const borehole = `
+        <defs>
+          <pattern id="soilDots" width="10" height="10" patternUnits="userSpaceOnUse">
+            <circle cx="2" cy="2" r="1" fill="rgba(255,255,255,0.18)" />
+            <circle cx="7" cy="6" r="1" fill="rgba(255,255,255,0.12)" />
+          </pattern>
+        </defs>
+        <rect x="196" y="196" width="184" height="944" fill="url(#soilDots)" opacity="0.8" />
+      `;
+
+      const depthMarks = [0, 450, 1689, 4391, 6129.2].map((depth) => {
+        const y = scaleDepth(depth);
+        return `
+          <line x1="82" y1="${y}" x2="126" y2="${y}" stroke="rgba(255,255,255,0.5)" stroke-dasharray="4 4" />
+          <text x="74" y="${y + 4}" text-anchor="end" font-size="18" fill="#d9e8f8" font-family="Manrope">${depth === 0 ? '0' : depth.toFixed(depth % 1 ? 1 : 0)}</text>`;
+      }).join('');
+
+      const strings = schematicSections.map((section) => {
+        const y1 = scaleDepth(section.from);
+        const y2 = scaleDepth(section.to);
+        const holeHalf = scaleHalfWidth(section.holeDiameter);
+        const casingHalf = scaleHalfWidth(section.casingDiameter);
+        const cementOuter = Math.min(holeHalf + 9, 144);
+        const shoeY = y2 - 2;
+        const labelY = Math.min(y2 - 10, baseY - 10);
+        return `
+          <g>
+            <rect x="${centerX - cementOuter}" y="${Math.max(y1, 196)}" width="${cementOuter * 2}" height="${y2 - Math.max(y1, 196)}" fill="${section.color}" opacity="0.10" />
+            <rect x="${centerX - holeHalf}" y="${Math.max(y1, 196)}" width="${holeHalf * 2}" height="${y2 - Math.max(y1, 196)}" fill="rgba(10,18,29,0.84)" opacity="0.34" />
+            <rect x="${centerX - casingHalf}" y="${y1}" width="${casingHalf * 2}" height="${y2 - y1}" fill="none" stroke="${section.color}" stroke-width="8" />
+            <line x1="${centerX - casingHalf + 10}" y1="${y1}" x2="${centerX - casingHalf + 10}" y2="${y2}" stroke="${section.color}" stroke-width="3" opacity="0.75" />
+            <line x1="${centerX + casingHalf - 10}" y1="${y1}" x2="${centerX + casingHalf - 10}" y2="${y2}" stroke="${section.color}" stroke-width="3" opacity="0.75" />
+            <path d="M ${centerX - casingHalf} ${shoeY} L ${centerX - casingHalf - 18} ${shoeY + 18} L ${centerX - casingHalf} ${shoeY + 18} Z" fill="${section.color}" opacity="0.95" />
+            <path d="M ${centerX + casingHalf} ${shoeY} L ${centerX + casingHalf + 18} ${shoeY + 18} L ${centerX + casingHalf} ${shoeY + 18} Z" fill="${section.color}" opacity="0.95" />
+            <line x1="${centerX + cementOuter + 10}" y1="${labelY}" x2="520" y2="${labelY}" stroke="${section.color}" stroke-width="2" />
+            <text x="530" y="${labelY - 4}" font-size="16" fill="#ecf5ff" font-family="Manrope" font-weight="700">${section.label}</text>
+          </g>`;
+      }).join('');
+
+      const tailGuideY = scaleDepth(4356);
+      const tailEndY = scaleDepth(6129.2);
+      const axis = `<line x1="${centerX}" y1="196" x2="${centerX}" y2="${baseY}" stroke="rgba(255,255,255,0.18)" stroke-dasharray="8 8" />`;
+      const bottomGuide = `<line x1="${centerX - 28}" y1="${tailGuideY}" x2="${centerX - 28}" y2="${tailEndY}" stroke="rgba(198,166,255,0.55)" stroke-width="3" stroke-dasharray="8 10" />`;
+
+      return `
+        <svg viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Схема конструкции скважины">
+          <rect x="0" y="0" width="${width}" height="${height}" rx="18" fill="rgba(255,255,255,0.015)" />
+          ${tower}
+          ${borehole}
+          ${axis}
+          ${depthMarks}
+          ${strings}
+          ${bottomGuide}
+          <text x="84" y="182" font-size="14" fill="#a8bdd2" font-family="Manrope" text-anchor="end">Глубина, м</text>
+          <text x="530" y="1120" font-size="15" fill="#cfdff1" font-family="Manrope">Хвостовик подвешен в эксплуатационной колонне, перекрытие 35 м</text>
+        </svg>`;
+    }
+
+    document.getElementById('constructionIntro').innerHTML = introItems.map((item) => `<div class="item">${item}</div>`).join('');
+    document.getElementById('constructionCards').innerHTML = constructionCards.map((card) => `<article class="card"><h3>${card.title}</h3><p>${card.text}</p></article>`).join('');
+    document.getElementById('constructionSchematic').innerHTML = createConstructionSchematic();
+    document.getElementById('constructionLegend').innerHTML = schematicSections.map((item) => `
+      <article class="legend-card">
+        <div class="legend-head"><span class="legend-swatch" style="background:${item.color}"></span><strong>${item.title}</strong></div>
+        <p>${item.detail}</p>
+        <div class="legend-meta">${item.label}</div>
+      </article>
+    `).join('');
+    document.getElementById('constructionTableBody').innerHTML = tableRows.map((row) => `<tr>${row.map((cell) => `<td>${cell}</td>`).join('')}</tr>`).join('');
+    document.getElementById('justificationCards').innerHTML = justifications.map((card) => `<article class="card"><h3>${card.title}</h3><p>${card.text}</p></article>`).join('');
+    document.getElementById('note').textContent = `Шаблонная таблица "Каркас конструкции" удалена. На страницу вручную перенесены данные из предоставленного вами фрагмента ТЗ: раздел 3, рисунок 3.1 и таблица 3.1.`;
+  </script>
+  <script src="assets/js/global-auth-widget.js"></script>
+</body>
+</html>

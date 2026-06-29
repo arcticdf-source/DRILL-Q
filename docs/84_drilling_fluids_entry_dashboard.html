@@ -1,0 +1,386 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>84 · Drilling Fluids Entry Dashboard</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap");
+
+    :root {
+      --bg-0: #07101a;
+      --bg-1: #112135;
+      --bg-2: #1a3550;
+      --panel: rgba(9, 16, 28, 0.84);
+      --panel-soft: rgba(255, 255, 255, 0.04);
+      --line: rgba(226, 237, 255, 0.14);
+      --line-soft: rgba(226, 237, 255, 0.08);
+      --text: #edf5ff;
+      --muted: #9ab0c9;
+      --cyan: #20d9b4;
+      --amber: #ffbf66;
+      --blue: #8db4ff;
+      --danger: #ff8a8a;
+      --shadow: 0 24px 56px rgba(0, 0, 0, 0.4);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      font-family: "Manrope", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(900px 420px at 0% -10%, rgba(32, 217, 180, 0.16), transparent),
+        radial-gradient(760px 340px at 100% 0%, rgba(255, 191, 102, 0.15), transparent),
+        linear-gradient(145deg, var(--bg-0), var(--bg-1) 48%, var(--bg-2));
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(to right, rgba(255,255,255,.022) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,.022) 1px, transparent 1px);
+      background-size: 40px 40px;
+      mask-image: radial-gradient(circle at 50% 18%, rgba(0,0,0,.92), transparent 72%);
+    }
+
+    .wrap {
+      position: relative;
+      z-index: 1;
+      width: min(1380px, 94vw);
+      margin: 0 auto;
+      padding: 24px 0 56px;
+    }
+
+    .topbar, .hero, .section {
+      border: 1px solid var(--line-soft);
+      box-shadow: var(--shadow);
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 12px 16px;
+      border-radius: 16px;
+      background: rgba(7, 12, 20, 0.62);
+      backdrop-filter: blur(10px);
+      position: sticky;
+      top: 12px;
+      z-index: 20;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: "Oswald", sans-serif;
+      font-size: 20px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 35% 35%, #d9fff8, var(--cyan));
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn, .btn-ghost {
+      text-decoration: none;
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+
+    .btn {
+      color: #05241f;
+      background: linear-gradient(135deg, #9efcef, var(--cyan));
+      border: 1px solid rgba(32, 217, 180, 0.82);
+    }
+
+    .btn-ghost {
+      color: var(--muted);
+      border: 1px solid var(--line-soft);
+      background: rgba(255,255,255,.03);
+    }
+
+    .hero {
+      margin-top: 18px;
+      border-radius: 28px;
+      padding: clamp(22px, 3vw, 36px);
+      background:
+        radial-gradient(420px 220px at 4% 0%, rgba(32,217,180,.14), transparent),
+        radial-gradient(480px 240px at 100% 0%, rgba(141,180,255,.12), transparent),
+        linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015)),
+        var(--panel);
+    }
+
+    .eyebrow, .tag, .chip {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      border: 1px solid var(--line-soft);
+      background: rgba(255,255,255,.04);
+      color: #d5e7f8;
+    }
+
+    .eyebrow, .tag {
+      padding: 6px 10px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .09em;
+    }
+
+    .chip {
+      padding: 6px 10px;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    h1 {
+      margin: 14px 0 10px;
+      font-family: "Oswald", sans-serif;
+      font-size: clamp(38px, 5vw, 62px);
+      line-height: .97;
+    }
+
+    h1 span { color: var(--cyan); }
+
+    .lead {
+      margin: 0;
+      max-width: 900px;
+      color: #cad9eb;
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    .section {
+      margin-top: 18px;
+      border-radius: 24px;
+      background: var(--panel);
+      padding: 20px;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 12px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    .section-head h2 { margin: 0; font-size: 28px; }
+
+    .module-grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .module-grid { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+
+    .card {
+      border: 1px solid var(--line-soft);
+      border-radius: 20px;
+      background: var(--panel-soft);
+      padding: 18px;
+    }
+
+    .card {
+      min-height: 310px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      text-decoration: none;
+      color: inherit;
+      transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(255,255,255,.24);
+      box-shadow: 0 20px 44px rgba(0,0,0,.28);
+    }
+
+    .card.ws { background: linear-gradient(180deg, rgba(32,217,180,.12), rgba(255,255,255,.02)); }
+    .card.products { background: linear-gradient(180deg, rgba(110,229,150,.12), rgba(255,255,255,.02)); }
+    .card.dfg { background: linear-gradient(180deg, rgba(141,180,255,.12), rgba(255,255,255,.02)); }
+    .card.lcm { background: linear-gradient(180deg, rgba(255,191,102,.12), rgba(255,255,255,.02)); }
+    .card.mudgpt { background: linear-gradient(180deg, rgba(255,138,138,.12), rgba(255,255,255,.02)); }
+
+    .card-index {
+      font: 700 12px/1 "Oswald", sans-serif;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: #d5e5f6;
+    }
+
+    .card h3 {
+      margin: 14px 0 10px;
+      font-size: 28px;
+      line-height: 1.05;
+    }
+
+    .card p {
+      margin: 0;
+      color: #d3dfef;
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    .chip-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
+
+    .cta-row {
+      margin-top: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+    }
+
+    .arrow {
+      width: 42px;
+      height: 42px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--line-soft);
+      background: rgba(255,255,255,.04);
+      font-size: 18px;
+    }
+
+    .summary-card strong {
+      display: block;
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+
+    .footer {
+      margin-top: 16px;
+      font-size: 12px;
+      color: #8ea2bc;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    @media (max-width: 1080px) {
+      .module-grid, .summary-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 900px) {
+      .topbar { position: static; }
+    }
+  </style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+  <main class="wrap">
+    <header class="topbar">
+      <div class="brand"><span class="dot" aria-hidden="true"></span><span>Nexus Oilfield AI · Drilling Fluids</span></div>
+      <div class="actions">
+        <a class="btn-ghost" href="83_drilling_entry_dashboard.html">Назад к входу</a>
+        <a class="btn-ghost" href="42_drilling_fluids_dashboard.html">Старый fluids dashboard</a>
+      </div>
+    </header>
+
+    <section class="hero">
+      <span class="eyebrow">Mud route · four-module dashboard</span>
+      <h1>Буровые <span>растворы</span></h1>
+      <p class="lead">Отдельная входная точка в fluid-layer. Здесь собраны четыре маршрута: химреагенты и материалы, MudGPT - Fast Hydraulics, оперативный расчёт кольматанта и графический модуль MudGPT - Drilling Fluids Graphics.</p>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>Четыре mud-модуля</h2>
+        <span class="tag">Operational routing</span>
+      </div>
+      <div class="module-grid">
+        <a class="card products" href="87_mudgpt_chemicals_materials.html">
+          <div>
+            <div class="card-index">Module 02</div>
+            <h3>Химреагенты и материалы</h3>
+            <p>Отдельный модуль каталога продуктов MudGPT. Пока это аккуратная стартовая витрина по материалам, из которой можно заходить в отдельные продуктовые страницы и дальше собирать сильную базу по реагентам.</p>
+            <div class="chip-row">
+              <span class="chip">Products</span>
+              <span class="chip">Materials</span>
+              <span class="chip">MudGPT</span>
+            </div>
+          </div>
+          <div class="cta-row"><span>Открыть модуль</span><span class="arrow">+</span></div>
+        </a>
+
+        <a class="card dfg" href="41_dfg_drilling_fluids_hydraulics_lab.html">
+          <div>
+            <div class="card-index">Module 03</div>
+            <h3>MudGPT - Fast Hydraulics</h3>
+            <p>MudGPT - Fast Hydraulics для инженерных расчетов: rheology, hydraulics, nozzle performance, optimization grid и sweep graphics. Подходит для инженерной проработки и pressure/flow анализа.</p>
+            <div class="chip-row">
+              <span class="chip">Hydraulics</span>
+              <span class="chip">Rheology</span>
+              <span class="chip">Optimization</span>
+            </div>
+          </div>
+          <div class="cta-row"><span>Открыть MudGPT - Fast Hydraulics</span><span class="arrow">+</span></div>
+        </a>
+
+        <a class="card lcm" href="85_lcm_calculator.html">
+          <div>
+            <div class="card-index">Module 04</div>
+            <h3>Расчет кольматанта</h3>
+            <p>Отдельный оперативный калькулятор для расчета кольматационной пачки: объем, целевая концентрация, разбиение по фракциям, запас на потери и быстрый handoff на mixing crew.</p>
+            <div class="chip-row">
+              <span class="chip">LCM pill</span>
+              <span class="chip">Fractions</span>
+              <span class="chip">Mix sheet</span>
+            </div>
+          </div>
+          <div class="cta-row"><span>Открыть расчет</span><span class="arrow">+</span></div>
+        </a>
+
+        <a class="card mudgpt" href="86_mudgpt_drilling_fluids_graphics.html">
+          <div>
+            <div class="card-index">Module 05</div>
+            <h3>MudGPT - Drilling Fluids Graphics</h3>
+            <p>Новый модуль MudGPT - Drilling Fluids Graphics. Пока это отдельная пустая страница-заготовка под новую программу, которую будем собирать с нуля в следующем шаге.</p>
+            <div class="chip-row">
+              <span class="chip">MudGPT - Drilling Fluids Graphics</span>
+              <span class="chip">Graphics</span>
+              <span class="chip">New Program</span>
+            </div>
+          </div>
+          <div class="cta-row"><span>Открыть MudGPT - Drilling Fluids Graphics</span><span class="arrow">+</span></div>
+        </a>
+      </div>
+    </section>
+
+    <p class="footer">Drilling fluids entry dashboard · Doc 84</p>
+  </main>
+  <script src="assets/js/global-auth-widget.js"></script>
+</body>
+</html>

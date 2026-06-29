@@ -1,0 +1,1368 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DRILL-Q — AI-платформа для бурения скважин</title>
+  <style>
+    :root {
+      --white:   #FFFFFF;
+      --bg:      #F5F5F7;
+      --bg2:     #FBFBFD;
+      --text:    #1D1D1F;
+      --text2:   #6E6E73;
+      --text3:   #AEAEB2;
+      --blue:    #2563EB;
+      --blue-l:  #EFF6FF;
+      --blue-m:  #BFDBFE;
+      --orange:  #F97316;
+      --orange-l:#FFF7ED;
+      --green:   #16A34A;
+      --green-l: #F0FDF4;
+      --red:     #DC2626;
+      --border:  rgba(0,0,0,0.08);
+      --sh-sm:   0 1px 4px rgba(0,0,0,0.06);
+      --sh:      0 4px 20px rgba(0,0,0,0.08);
+      --sh-lg:   0 24px 64px rgba(0,0,0,0.10), 0 4px 16px rgba(0,0,0,0.05);
+      --r:       16px;
+      --r-sm:    10px;
+    }
+
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--white);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border-bottom: 1px solid var(--border);
+      height: 56px;
+      display: flex; align-items: center;
+      padding: 0 48px;
+      justify-content: space-between;
+    }
+    .nav-logo { display:flex; align-items:center; gap:10px; text-decoration:none; }
+    .nav-mark {
+      width:30px; height:30px; border-radius:8px;
+      background:var(--blue);
+      display:flex; align-items:center; justify-content:center;
+      font-size:12px; font-weight:700; color:#fff; letter-spacing:-.5px;
+    }
+    .nav-name { font-size:17px; font-weight:700; color:var(--text); letter-spacing:-.5px; }
+    .nav-name span { color:var(--blue); }
+    .nav-links { display:flex; align-items:center; list-style:none; }
+    .nav-links a {
+      color:var(--text2); text-decoration:none; font-size:14px;
+      padding:6px 14px; border-radius:8px; transition:all .15s;
+    }
+    .nav-links a:hover { color:var(--text); background:rgba(0,0,0,0.04); }
+    .nav-right { display:flex; align-items:center; gap:10px; }
+    .btn-ghost {
+      padding:7px 16px; border-radius:20px; border:none;
+      background:transparent; color:var(--text);
+      font-size:14px; font-weight:500; cursor:pointer;
+      text-decoration:none; transition:all .15s;
+    }
+    .btn-ghost:hover { background:rgba(0,0,0,0.05); }
+    .user-chip { display:flex; align-items:center; gap:8px; padding:5px 12px 5px 5px; border-radius:20px; border:1px solid rgba(0,0,0,0.1); background:rgba(255,255,255,.6); text-decoration:none; color:var(--text); font-size:13px; font-weight:500; transition:all .15s; }
+    .user-chip:hover { background:#fff; border-color:rgba(37,99,235,.3); }
+    .user-chip-av { width:26px; height:26px; border-radius:50%; background:var(--blue); color:#fff; font-size:10px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .user-chip-name { white-space:nowrap; }
+    .btn-nav {
+      padding:7px 18px; border-radius:20px; border:none;
+      background:var(--blue); color:#fff;
+      font-size:14px; font-weight:500; cursor:pointer;
+      text-decoration:none; transition:all .2s;
+    }
+    .btn-nav:hover { background:#1D4ED8; box-shadow:0 4px 12px rgba(37,99,235,.3); }
+
+    /* ── HERO ── */
+    .hero {
+      padding: 88px 48px 0;
+      text-align: center;
+      background: var(--white);
+      overflow: hidden;
+    }
+    .hero-badge {
+      display:inline-flex; align-items:center; gap:7px;
+      padding:5px 14px; border-radius:20px;
+      background:var(--blue-l); border:1px solid var(--blue-m);
+      color:var(--blue); font-size:13px; font-weight:500;
+      margin-bottom:28px;
+    }
+    .hero-badge-dot {
+      width:7px; height:7px; border-radius:50%;
+      background:var(--green);
+    }
+    .hero h1 {
+      font-size: clamp(44px, 6.5vw, 80px);
+      font-weight: 700;
+      letter-spacing: -2.5px;
+      line-height: 1.03;
+      color: var(--text);
+      max-width: 780px;
+      margin: 0 auto 22px;
+    }
+    .hero h1 em { font-style:normal; color:var(--blue); }
+    .hero-sub {
+      font-size: clamp(16px, 1.8vw, 20px);
+      color: var(--text2);
+      max-width: 520px;
+      margin: 0 auto 40px;
+      line-height: 1.5;
+      font-weight: 400;
+    }
+    .hero-actions {
+      display:flex; gap:12px;
+      justify-content:center; margin-bottom:64px;
+    }
+    .btn-hero {
+      padding:14px 28px; border-radius:980px; border:none;
+      font-size:16px; font-weight:500; cursor:pointer;
+      text-decoration:none; transition:all .2s; display:inline-block;
+    }
+    .btn-hero-p {
+      background:var(--blue); color:#fff;
+    }
+    .btn-hero-p:hover { background:#1D4ED8; transform:scale(1.02); box-shadow:0 8px 24px rgba(37,99,235,.3); }
+    .btn-hero-s {
+      background:rgba(0,0,0,0.06); color:var(--text);
+    }
+    .btn-hero-s:hover { background:rgba(0,0,0,0.09); }
+
+    /* ── PRODUCT MOCKUP ── */
+    .mockup-wrap {
+      max-width: 1120px;
+      margin: 0 auto;
+      border-radius: 20px 20px 0 0;
+      overflow: hidden;
+      border: 1px solid rgba(0,0,0,0.1);
+      box-shadow: var(--sh-lg);
+    }
+    .mockup-bar {
+      background: #F0F0F3;
+      border-bottom: 1px solid var(--border);
+      padding: 11px 16px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .m-dots { display:flex; gap:6px; }
+    .m-dot { width:12px; height:12px; border-radius:50%; }
+    .m-url {
+      flex:1; background:rgba(255,255,255,.7);
+      border-radius:6px; padding:4px 12px;
+      font-size:12px; color:var(--text3);
+      text-align:center; max-width:320px; margin:0 auto;
+      border: 1px solid var(--border);
+    }
+
+    .dash {
+      display: grid;
+      grid-template-columns: 210px 1fr 272px;
+      min-height: 440px;
+      font-size: 13px;
+    }
+
+    /* sidebar */
+    .dash-sb {
+      background: #181828;
+      padding: 16px 10px;
+      display: flex; flex-direction: column; gap: 2px;
+    }
+    .sb-logo {
+      display:flex; align-items:center; gap:9px;
+      padding:8px; margin-bottom:14px;
+    }
+    .sb-mark {
+      width:24px; height:24px; background:var(--blue);
+      border-radius:6px; display:flex; align-items:center;
+      justify-content:center; font-size:10px; font-weight:700; color:#fff;
+    }
+    .sb-name { font-size:13px; font-weight:600; color:rgba(255,255,255,.9); letter-spacing:-.3px; }
+    .sb-section {
+      font-size:10px; color:rgba(255,255,255,.28);
+      letter-spacing:.08em; text-transform:uppercase;
+      padding:10px 8px 4px; font-weight:500;
+    }
+    .sb-item {
+      display:flex; align-items:center; gap:8px;
+      padding:7px 8px; border-radius:8px;
+      color:rgba(255,255,255,.48); font-size:13px; cursor:pointer;
+    }
+    .sb-item.on { background:rgba(37,99,235,.22); color:#93C5FD; }
+    .sb-item:not(.on):hover { background:rgba(255,255,255,.05); color:rgba(255,255,255,.8); }
+    .sb-icon { width:16px; text-align:center; font-size:14px; flex-shrink:0; }
+    .sb-badge {
+      margin-left:auto; background:#DC2626; color:#fff;
+      font-size:10px; padding:1px 6px; border-radius:10px; font-weight:600;
+    }
+
+    /* main area */
+    .dash-main {
+      background: #F6F7F9;
+      padding: 16px;
+      overflow: hidden;
+    }
+    .dm-header {
+      display:flex; justify-content:space-between;
+      align-items:flex-start; margin-bottom:12px;
+    }
+    .dm-title { font-size:14px; font-weight:600; color:#1D1D1F; letter-spacing:-.3px; }
+    .dm-sub { font-size:11px; color:#6E6E73; margin-top:2px; }
+    .live-pill {
+      display:flex; align-items:center; gap:5px;
+      font-size:11px; color:var(--green); font-weight:500;
+    }
+    .live-dot {
+      width:7px; height:7px; background:var(--green);
+      border-radius:50%; animation:pulse 2s infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1}50%{opacity:.35} }
+
+    .metrics-row {
+      display:grid; grid-template-columns:repeat(4,1fr);
+      gap:8px; margin-bottom:10px;
+    }
+    .metric-box {
+      background:#fff; border-radius:var(--r-sm);
+      padding:10px 12px;
+      border:1px solid rgba(0,0,0,0.06);
+    }
+    .metric-lbl { font-size:10px; color:#6E6E73; text-transform:uppercase; letter-spacing:.05em; margin-bottom:4px; }
+    .metric-val { font-size:20px; font-weight:700; letter-spacing:-.5px; line-height:1; }
+    .metric-hint { font-size:10px; color:#6E6E73; margin-top:3px; }
+
+    .prog-card {
+      background:#fff; border-radius:var(--r-sm);
+      padding:10px 12px; border:1px solid rgba(0,0,0,0.06);
+      margin-bottom:8px;
+    }
+    .prog-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:7px; }
+    .prog-label { font-size:11px; font-weight:500; }
+    .prog-pct { font-size:11px; color:#6E6E73; }
+    .prog-track { height:6px; background:#F0F0F3; border-radius:3px; overflow:hidden; }
+    .prog-fill { height:100%; border-radius:3px; background:linear-gradient(90deg,#2563EB,#60A5FA); }
+
+    .alerts-box {
+      background:#fff; border-radius:var(--r-sm);
+      border:1px solid rgba(0,0,0,0.06); overflow:hidden;
+    }
+    .alert-row {
+      display:flex; align-items:flex-start; gap:8px;
+      padding:8px 12px; border-bottom:1px solid rgba(0,0,0,0.05);
+      font-size:11px; color:#1D1D1F; line-height:1.45;
+    }
+    .alert-row:last-child { border-bottom:none; }
+    .alert-dot { width:6px; height:6px; border-radius:50%; margin-top:4px; flex-shrink:0; }
+
+    /* right panel */
+    .dash-rp {
+      background:#fff;
+      border-left:1px solid var(--border);
+      padding:16px;
+      display:flex; flex-direction:column; gap:11px;
+    }
+    .rp-title {
+      font-size:12px; font-weight:600; color:#1D1D1F;
+      display:flex; align-items:center; gap:6px;
+    }
+    .rp-ai-tag {
+      background:var(--blue-l); color:var(--blue);
+      font-size:10px; padding:2px 6px; border-radius:4px; font-weight:500;
+    }
+    .rp-rec {
+      background:var(--blue-l); border:1px solid var(--blue-m);
+      border-radius:var(--r-sm); padding:10px 12px;
+    }
+    .rp-rec-head { font-size:11px; font-weight:600; color:var(--blue); margin-bottom:6px; }
+    .rp-rec-item {
+      font-size:11px; color:#1D1D1F; line-height:1.5;
+      display:flex; gap:5px; margin-top:3px;
+    }
+    .rp-rec-item::before { content:"→"; color:var(--blue); flex-shrink:0; }
+    .rp-conf {
+      background:var(--green-l); border:1px solid #BBF7D0;
+      border-radius:var(--r-sm); padding:8px 12px;
+      display:flex; align-items:center; justify-content:space-between;
+    }
+    .rp-conf-lbl { font-size:10px; color:var(--green); font-weight:500; }
+    .rp-conf-val { font-size:20px; font-weight:700; color:var(--green); }
+    .rp-warn {
+      background:var(--orange-l); border:1px solid #FED7AA;
+      border-radius:var(--r-sm); padding:9px 12px;
+    }
+    .rp-warn-head { font-size:10px; font-weight:600; color:#EA580C; margin-bottom:3px; }
+    .rp-warn-text { font-size:11px; color:#7C2D12; line-height:1.45; }
+    .rp-npt {
+      font-size:11px; color:#6E6E73;
+      text-align:center; padding-top:4px;
+    }
+    .rp-npt strong { color:var(--green); }
+
+    /* ── SECTIONS ── */
+    .sec { padding: 88px 48px; }
+    .sec-lbl { font-size:13px; font-weight:500; color:var(--blue); margin-bottom:12px; }
+    .sec-h2 {
+      font-size: clamp(28px, 4vw, 50px);
+      font-weight:700; letter-spacing:-1.5px; line-height:1.1;
+      color:var(--text); margin-bottom:16px;
+    }
+    .sec-h2 em { font-style:normal; color:var(--blue); }
+    .sec-sub {
+      font-size:17px; color:var(--text2);
+      max-width:540px; line-height:1.5; margin-bottom:52px;
+    }
+    .inner { max-width:1100px; margin:0 auto; }
+
+    /* HOW IT WORKS */
+    .how-grid {
+      display:grid; grid-template-columns:repeat(3,1fr); gap:20px;
+    }
+    .how-card {
+      background:#fff; border-radius:var(--r);
+      padding:32px; border:1px solid var(--border);
+      box-shadow:var(--sh-sm);
+    }
+    .how-num {
+      width:40px; height:40px; border-radius:12px;
+      background:var(--blue); color:#fff;
+      font-size:16px; font-weight:700;
+      display:flex; align-items:center; justify-content:center;
+      margin-bottom:20px;
+    }
+    .how-card h3 { font-size:18px; font-weight:600; letter-spacing:-.3px; margin-bottom:10px; }
+    .how-card p { font-size:14px; color:var(--text2); line-height:1.65; }
+    .how-formats { display:flex; flex-wrap:wrap; gap:6px; margin-top:14px; }
+    .fmt {
+      padding:3px 9px; border-radius:6px;
+      background:var(--bg); border:1px solid var(--border);
+      font-size:11px; color:var(--text2);
+      font-family:"SF Mono","JetBrains Mono",monospace;
+    }
+
+    /* FEATURES */
+    .feat-grid {
+      display:grid; grid-template-columns:repeat(3,1fr); gap:20px;
+    }
+    .feat-card {
+      padding:28px; border-radius:var(--r);
+      border:1px solid var(--border); background:#fff;
+      box-shadow:var(--sh-sm); transition:all .2s;
+    }
+    .feat-card:hover { box-shadow:var(--sh); transform:translateY(-2px); }
+    .feat-ico {
+      width:44px; height:44px; border-radius:12px;
+      display:flex; align-items:center; justify-content:center;
+      font-size:20px; margin-bottom:16px;
+    }
+    .ico-b { background:var(--blue-l); }
+    .ico-o { background:var(--orange-l); }
+    .ico-g { background:var(--green-l); }
+    .feat-card h3 { font-size:16px; font-weight:600; letter-spacing:-.2px; margin-bottom:8px; }
+    .feat-card p { font-size:13px; color:var(--text2); line-height:1.65; }
+
+    /* STATS */
+    .stats-band {
+      background:var(--text); padding:64px 48px; text-align:center;
+    }
+    .stats-grid {
+      display:grid; grid-template-columns:repeat(4,1fr);
+      gap:0; max-width:900px; margin:0 auto;
+    }
+    .stat-col {
+      padding:0 32px;
+      border-right:1px solid rgba(255,255,255,.12);
+    }
+    .stat-col:last-child { border-right:none; }
+    .stat-num {
+      font-size:52px; font-weight:700;
+      letter-spacing:-2px; line-height:1; margin-bottom:8px; color:#fff;
+    }
+    .stat-num em { font-style:normal; color:#93C5FD; }
+    .stat-lbl { font-size:14px; color:rgba(255,255,255,.5); }
+
+    /* FIELDS */
+    .fields-grid {
+      display:grid; grid-template-columns:repeat(4,1fr); gap:16px;
+    }
+    .field-card {
+      background:#fff; border-radius:var(--r-sm);
+      padding:20px; border:1px solid var(--border);
+      box-shadow:var(--sh-sm); transition:all .2s; cursor:pointer;
+      text-decoration:none; color:var(--text); display:block;
+    }
+    .field-card:hover { box-shadow:var(--sh); border-color:var(--blue-m); }
+    .field-code {
+      width:36px; height:36px; border-radius:10px;
+      background:var(--blue-l); color:var(--blue);
+      font-size:12px; font-weight:700;
+      display:flex; align-items:center; justify-content:center;
+      margin-bottom:12px;
+    }
+    .field-name { font-size:14px; font-weight:600; letter-spacing:-.2px; margin-bottom:3px; }
+    .field-region { font-size:12px; color:var(--text2); }
+    .field-chips { display:flex; flex-wrap:wrap; gap:4px; margin-top:10px; }
+    .field-chip {
+      padding:2px 7px; border-radius:4px;
+      background:var(--bg); border:1px solid var(--border);
+      font-size:10px; color:var(--text3);
+    }
+
+    /* CTA */
+    .cta-sec { background:#fff; padding:88px 48px; }
+    .cta-box {
+      background:var(--text); border-radius:24px;
+      padding:80px 48px; max-width:800px; margin:0 auto;
+      text-align:center; position:relative; overflow:hidden;
+    }
+    .cta-box::before {
+      content:""; position:absolute; inset:0;
+      background:radial-gradient(ellipse 70% 90% at 50% 0%, rgba(37,99,235,.28), transparent);
+    }
+    .cta-box h2 {
+      font-size:clamp(28px,4vw,46px); font-weight:700;
+      color:#fff; letter-spacing:-1.5px; line-height:1.1;
+      margin-bottom:16px; position:relative;
+    }
+    .cta-box p {
+      font-size:17px; color:rgba(255,255,255,.58);
+      max-width:460px; margin:0 auto 36px;
+      line-height:1.5; position:relative;
+    }
+    .cta-actions {
+      display:flex; gap:12px; justify-content:center; position:relative;
+    }
+    .btn-cw {
+      padding:14px 28px; border-radius:980px; border:none;
+      background:#fff; color:var(--text);
+      font-size:16px; font-weight:600; cursor:pointer;
+      text-decoration:none; transition:all .2s; display:inline-block;
+    }
+    .btn-cw:hover { transform:scale(1.02); box-shadow:0 8px 24px rgba(0,0,0,.2); }
+    .btn-co {
+      padding:14px 28px; border-radius:980px;
+      border:1px solid rgba(255,255,255,.28);
+      background:transparent; color:#fff;
+      font-size:16px; font-weight:500; cursor:pointer;
+      text-decoration:none; transition:all .2s; display:inline-block;
+    }
+    .btn-co:hover { border-color:rgba(255,255,255,.6); background:rgba(255,255,255,.05); }
+
+    /* FOOTER */
+    footer {
+      background:var(--bg); padding:48px;
+      border-top:1px solid var(--border);
+    }
+    .foot-grid {
+      display:grid; grid-template-columns:2fr 1fr 1fr 1fr;
+      gap:48px; max-width:1100px; margin:0 auto 40px;
+    }
+    .foot-desc { font-size:13px; color:var(--text2); line-height:1.65; max-width:240px; margin-top:12px; }
+    .foot-col h4 {
+      font-size:11px; font-weight:600; color:var(--text2);
+      text-transform:uppercase; letter-spacing:.08em; margin-bottom:16px;
+    }
+    .foot-col ul { list-style:none; display:flex; flex-direction:column; gap:10px; }
+    .foot-col ul li a { font-size:14px; color:var(--text2); text-decoration:none; transition:color .15s; }
+    .foot-col ul li a:hover { color:var(--text); }
+    .foot-bottom {
+      display:flex; justify-content:space-between; align-items:center;
+      padding-top:24px; border-top:1px solid var(--border);
+      font-size:12px; color:var(--text3);
+      max-width:1100px; margin:0 auto;
+    }
+    .foot-links { display:flex; gap:20px; }
+    .foot-links a { color:var(--text3); text-decoration:none; transition:color .15s; }
+    .foot-links a:hover { color:var(--text2); }
+
+    /* ── TOOLS SECTION ── */
+    .tools-grid-home {
+      display:grid; grid-template-columns:repeat(3,1fr); gap:20px;
+    }
+    .tool-card-home {
+      background:#fff; border:1.5px solid var(--border); border-radius:var(--r);
+      padding:28px; text-decoration:none; color:inherit;
+      display:flex; flex-direction:column; gap:14px;
+      transition:all .2s; box-shadow:var(--sh-sm);
+    }
+    .tool-card-home:hover { border-color:var(--blue); box-shadow:var(--sh),0 0 0 3px rgba(37,99,235,.08); transform:translateY(-3px); }
+    .tool-card-home.soon { opacity:.55; pointer-events:none; }
+    .tool-icon-home { width:48px; height:48px; border-radius:14px; background:var(--blue-l); display:flex; align-items:center; justify-content:center; font-size:20px; }
+    .tool-badge-home { display:inline-flex; align-items:center; font-size:11px; font-weight:600; border-radius:99px; padding:3px 10px; }
+    .tool-badge-home.ready { color:#16A34A; background:#F0FDF4; border:1px solid #BBF7D0; }
+    .tool-badge-home.demo  { color:#2563EB; background:var(--blue-l); border:1px solid var(--blue-m); }
+    .tool-badge-home.new   { color:#00c070; background:rgba(0,192,112,.1); border:1px solid rgba(0,192,112,.25); }
+    .tool-badge-home.soon  { color:var(--text3); background:var(--bg); border:1px solid var(--border); }
+    .tool-card-home h3 { font-size:18px; font-weight:700; letter-spacing:-.3px; }
+    .tool-card-home .tool-sub-home { font-size:12px; color:var(--blue); font-weight:600; letter-spacing:.02em; }
+    .tool-card-home p { color:var(--text2); font-size:13px; line-height:1.6; flex:1; }
+    .tool-chips-home { display:flex; flex-wrap:wrap; gap:5px; }
+    .chip-home { font-size:11px; color:var(--text2); background:var(--bg); border:1px solid var(--border); border-radius:99px; padding:2px 9px; }
+    .tool-cta-home { display:flex; align-items:center; justify-content:space-between; padding-top:14px; border-top:1px solid var(--border); font-size:13px; font-weight:600; color:var(--blue); }
+    .tool-cta-home .arrow { font-size:16px; color:var(--text3); transition:color .2s,transform .2s; }
+    .tool-card-home:hover .arrow { color:var(--blue); transform:translateX(3px); }
+
+    @media(max-width:960px){
+      nav { padding:0 24px; }
+      .nav-links { display:none; }
+      .hero { padding:60px 24px 0; }
+      .sec { padding:60px 24px; }
+      .how-grid, .feat-grid, .fields-grid, .tools-grid-home { grid-template-columns:1fr; }
+      .stats-grid { grid-template-columns:repeat(2,1fr); }
+      .foot-grid { grid-template-columns:1fr; gap:32px; }
+      .dash { grid-template-columns:1fr; }
+      .dash-sb, .dash-rp { display:none; }
+      .cta-box { padding:48px 24px; }
+    }
+
+    /* ── REGISTRATION MODAL ── */
+    .reg-overlay {
+      display: none; position: fixed; inset: 0; z-index: 1000;
+      background: rgba(0,0,0,.48);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      align-items: center; justify-content: center;
+      padding: 20px;
+    }
+    .reg-overlay.open { display: flex; }
+    .reg-modal {
+      background: #fff; border-radius: 22px;
+      width: 100%; max-width: 500px;
+      max-height: 92vh; overflow-y: auto;
+      padding: 44px 40px 36px;
+      position: relative;
+      animation: modal-in .26s cubic-bezier(.32,1,.56,1);
+      box-shadow: 0 40px 100px rgba(0,0,0,.18), 0 4px 20px rgba(0,0,0,.08);
+    }
+    @keyframes modal-in {
+      from { opacity:0; transform:scale(.94) translateY(16px); }
+      to   { opacity:1; transform:scale(1) translateY(0); }
+    }
+    .reg-close {
+      position: absolute; top: 16px; right: 16px;
+      width: 32px; height: 32px; border-radius: 99px;
+      border: none; background: #F5F5F7; color: #6E6E73;
+      font-size: 18px; line-height: 1; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all .15s;
+    }
+    .reg-close:hover { background: #EBEBED; color: #1D1D1F; }
+    .reg-header { margin-bottom: 28px; }
+    .reg-brand { display:flex; align-items:center; gap:9px; margin-bottom:20px; }
+    .reg-brand-mark {
+      width:30px; height:30px; border-radius:8px; background:var(--blue);
+      color:#fff; font-size:11px; font-weight:700; letter-spacing:-.5px;
+      display:flex; align-items:center; justify-content:center;
+    }
+    .reg-brand-name { font-size:15px; font-weight:700; letter-spacing:-.4px; }
+    .reg-brand-name span { color:var(--blue); }
+    .reg-header h2 { font-size:26px; font-weight:700; letter-spacing:-.6px; margin-bottom:7px; }
+    .reg-header p { font-size:14px; color:#6E6E73; line-height:1.5; }
+    .form-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .form-group { margin-bottom:16px; }
+    .form-group label { display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px; }
+    .req { color:var(--blue); }
+    .form-group input {
+      width:100%; height:46px; padding:0 14px;
+      border:1.5px solid rgba(0,0,0,.1); border-radius:10px;
+      font-size:14px; color:#1D1D1F; background:#fff;
+      outline:none; transition:border-color .15s, box-shadow .15s;
+      font-family:inherit;
+    }
+    .form-group input::placeholder { color:#AEAEB2; }
+    .form-group input:focus { border-color:var(--blue); box-shadow:0 0 0 3px rgba(37,99,235,.1); }
+    .form-group input.inp-error { border-color:var(--red); box-shadow:0 0 0 3px rgba(220,38,38,.08); }
+    .form-group input.inp-ok { border-color:var(--green); }
+    .email-hint { font-size:12px; margin-top:5px; min-height:16px; }
+    .email-hint.err { color:var(--red); }
+    .email-hint.ok  { color:var(--green); }
+    .form-agree { margin:4px 0 22px; }
+    .agree-lbl { display:flex; align-items:flex-start; gap:10px; font-size:13px; color:#6E6E73; cursor:pointer; line-height:1.5; }
+    .agree-lbl input[type="checkbox"] { width:16px; height:16px; margin-top:2px; flex-shrink:0; accent-color:var(--blue); cursor:pointer; }
+    .agree-lbl a { color:var(--blue); text-decoration:none; }
+    .reg-submit-btn {
+      width:100%; padding:15px; border-radius:12px; border:none;
+      background:var(--blue); color:#fff; font-size:15px; font-weight:600;
+      cursor:pointer; transition:all .2s; font-family:inherit;
+    }
+    .reg-submit-btn:hover { background:#1D4ED8; transform:translateY(-1px); box-shadow:0 6px 16px rgba(37,99,235,.3); }
+    .reg-submit-btn:disabled { background:#AEAEB2; cursor:not-allowed; transform:none; box-shadow:none; }
+    .reg-footer-note { text-align:center; font-size:13px; color:#AEAEB2; margin-top:14px; }
+    .reg-footer-note a { color:var(--blue); text-decoration:none; }
+    /* success */
+    .reg-success { text-align:center; padding:8px 0; }
+    .reg-success-icon {
+      width:68px; height:68px; border-radius:99px;
+      background:#F0FDF4; color:var(--green); font-size:30px;
+      display:flex; align-items:center; justify-content:center;
+      margin:0 auto 22px; font-weight:700;
+    }
+    .reg-success h2 { font-size:24px; font-weight:700; letter-spacing:-.5px; margin-bottom:10px; }
+    .reg-success p { font-size:14px; color:#6E6E73; line-height:1.6; }
+    .reg-success .demo-link {
+      display:block; margin-top:22px; padding:14px;
+      background:var(--blue); color:#fff; border-radius:12px;
+      text-decoration:none; font-size:14px; font-weight:600; transition:background .15s;
+    }
+    .reg-success .demo-link:hover { background:#1D4ED8; }
+    .reg-success .close-link {
+      display:block; margin-top:10px; padding:12px;
+      border:1.5px solid var(--border); border-radius:12px;
+      font-size:14px; color:#6E6E73; cursor:pointer; background:transparent; width:100%;
+      font-family:inherit; transition:all .15s;
+    }
+    .reg-success .close-link:hover { background:#F5F5F7; }
+    @media(max-width:520px){
+      .reg-modal { padding:32px 24px 28px; }
+      .form-row { grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav>
+  <a class="nav-logo" href="#">
+    <div class="nav-mark">DQ</div>
+    <div class="nav-name">DRILL<span>-Q</span></div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#how">Как работает</a></li>
+    <li><a href="#features">Возможности</a></li>
+    <li><a href="#fields">Месторождения</a></li>
+    <li><a href="tools-home.html">Инструменты</a></li>
+  </ul>
+  <div class="nav-right">
+    <a class="btn-ghost" href="#" onclick="openLogin();return false;">Войти</a>
+    <a class="btn-nav" href="#" onclick="openReg();return false;" style="white-space:nowrap">Зарегистрироваться за 3 минуты</a>
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="hero-badge">
+    <span class="hero-badge-dot"></span>
+    AI-платформа для нефтегазового бурения
+  </div>
+  <h1>AI бурит.<br>Вы <em>контролируете.</em></h1>
+  <p class="hero-sub">Загружаете данные по месторождению — AI строит программу бурения, предсказывает осложнения и ведёт скважину за вас.</p>
+  <div class="hero-actions">
+    <a class="btn-hero btn-hero-p" href="#" onclick="openReg();return false;">Зарегистрироваться за 3 минуты →</a>
+    <a class="btn-hero btn-hero-s" href="#how">Как это работает</a>
+  </div>
+
+  <div class="mockup-wrap">
+    <div class="mockup-bar">
+      <div class="m-dots">
+        <div class="m-dot" style="background:#FF5F57"></div>
+        <div class="m-dot" style="background:#FEBC2E"></div>
+        <div class="m-dot" style="background:#28C840"></div>
+      </div>
+      <div class="m-url">drill-q.ai / app / проект / тамбейское</div>
+    </div>
+    <div class="dash">
+
+      <!-- sidebar -->
+      <div class="dash-sb">
+        <div class="sb-logo">
+          <div class="sb-mark">DQ</div>
+          <div class="sb-name">DRILL-Q</div>
+        </div>
+        <div class="sb-section">Проект</div>
+        <div class="sb-item on"><span class="sb-icon">⬛</span>Командный центр</div>
+        <div class="sb-item"><span class="sb-icon">📋</span>Программа бурения</div>
+        <div class="sb-item"><span class="sb-icon">⚠️</span>Алерты<span class="sb-badge">2</span></div>
+        <div class="sb-item"><span class="sb-icon">📊</span>Аналитика НПВ</div>
+        <div class="sb-item"><span class="sb-icon">📄</span>Суточный рапорт</div>
+        <div class="sb-section" style="margin-top:10px">База знаний</div>
+        <div class="sb-item"><span class="sb-icon">🗂</span>Литология</div>
+        <div class="sb-item"><span class="sb-icon">🧪</span>Буровые р-ры</div>
+        <div class="sb-section" style="margin-top:10px">Команда</div>
+        <div class="sb-item"><span class="sb-icon">👤</span>Иванов — супервайзер</div>
+        <div class="sb-item"><span class="sb-icon">👤</span>Петров — инж. по р-рам</div>
+      </div>
+
+      <!-- main -->
+      <div class="dash-main">
+        <div class="dm-header">
+          <div>
+            <div class="dm-title">Тамбейское · Скв. 12Г · День 14</div>
+            <div class="dm-sub">Марресалинская свита · 843–1 036 м · Долото 215,9 мм</div>
+          </div>
+          <div class="live-pill"><div class="live-dot"></div>В работе</div>
+        </div>
+        <div class="metrics-row">
+          <div class="metric-box">
+            <div class="metric-lbl">Глубина</div>
+            <div class="metric-val" style="color:#2563EB">847 м</div>
+            <div class="metric-hint">цель 1 572 м</div>
+          </div>
+          <div class="metric-box">
+            <div class="metric-lbl">Плотность БР</div>
+            <div class="metric-val" style="color:#1D1D1F">1.38</div>
+            <div class="metric-hint">г/см³ · норма</div>
+          </div>
+          <div class="metric-box">
+            <div class="metric-lbl">МСП</div>
+            <div class="metric-val" style="color:#16A34A">11.4</div>
+            <div class="metric-hint">м/ч · цель 10–14</div>
+          </div>
+          <div class="metric-box">
+            <div class="metric-lbl">Момент</div>
+            <div class="metric-val" style="color:#EA580C">↑19%</div>
+            <div class="metric-hint">отклонение!</div>
+          </div>
+        </div>
+        <div class="prog-card">
+          <div class="prog-row">
+            <span class="prog-label">Прогресс скважины</span>
+            <span class="prog-pct">54% · осталось 725 м</span>
+          </div>
+          <div class="prog-track">
+            <div class="prog-fill" style="width:54%"></div>
+          </div>
+        </div>
+        <div class="alerts-box">
+          <div class="alert-row">
+            <div class="alert-dot" style="background:#EA580C"></div>
+            <div><strong>Момент ↑19%</strong> — риск прихвата 61% · рекомендована проработка до 3 600 м, LUBRIMIX-K 4%</div>
+          </div>
+          <div class="alert-row">
+            <div class="alert-dot" style="background:#F59E0B"></div>
+            <div><strong>Через 121 м</strong> — газовое окно ПК1 · поднять плотность БР до 1.42 г/см³ заблаговременно</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- right panel -->
+      <div class="dash-rp">
+        <div class="rp-title">AI-рекомендации <span class="rp-ai-tag">Claude AI</span></div>
+        <div class="rp-rec">
+          <div class="rp-rec-head">Действия прямо сейчас</div>
+          <div class="rp-rec-item">Проработка до 3 600 м, скорость 2 м/мин</div>
+          <div class="rp-rec-item">LUBRIMIX-K 4% об. — немедленно</div>
+          <div class="rp-rec-item">Снизить подачу до 18 л/с</div>
+        </div>
+        <div class="rp-conf">
+          <div class="rp-conf-lbl">Уверенность AI</div>
+          <div class="rp-conf-val">91%</div>
+        </div>
+        <div class="rp-warn">
+          <div class="rp-warn-head">⚠ Следующий интервал · 968–1 127 м</div>
+          <div class="rp-warn-text">Газовое окно ПК1 · давление 9.6 МПа<br>Поднять БР до 1.42, дегазатор 100%</div>
+        </div>
+        <div class="rp-npt">НПВ сэкономлено сегодня: <strong>8.5 ч</strong></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── HOW IT WORKS ── -->
+<section class="sec" id="how" style="background:var(--bg)">
+  <div class="inner">
+    <div class="sec-lbl">Как это работает</div>
+    <h2 class="sec-h2">Три шага до<br><em>умной скважины</em></h2>
+    <div class="how-grid">
+      <div class="how-card">
+        <div class="how-num">1</div>
+        <h3>Загружаете данные</h3>
+        <p>Документы по месторождению и пробуренным скважинам в любом формате. AI сам извлекает литологию, программы растворов, историю НПВ и параметры интервалов.</p>
+        <div class="how-formats">
+          <span class="fmt">PDF</span>
+          <span class="fmt">DOCX</span>
+          <span class="fmt">XLSX</span>
+          <span class="fmt">LAS</span>
+          <span class="fmt">RAR / ZIP</span>
+        </div>
+      </div>
+      <div class="how-card">
+        <div class="how-num">2</div>
+        <h3>AI строит программу</h3>
+        <p>На основе вашего геологического разреза и офсетных скважин из базы AI формирует полную программу бурения с картой рисков по каждому интервалу и рекомендациями по растворам.</p>
+      </div>
+      <div class="how-card">
+        <div class="how-num">3</div>
+        <h3>Бурите с AI-поддержкой</h3>
+        <p>Инженер вводит текущие параметры. AI сравнивает с программой, предсказывает осложнения до того, как они случились, и даёт конкретные алерты с действиями.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FEATURES ── -->
+<section class="sec" id="features" style="background:#fff">
+  <div class="inner">
+    <div class="sec-lbl">Возможности платформы</div>
+    <h2 class="sec-h2">Всё что нужно<br><em>для умного бурения</em></h2>
+    <div class="feat-grid">
+      <div class="feat-card">
+        <div class="feat-ico ico-b">🎯</div>
+        <h3>Предиктивные алерты</h3>
+        <p>AI предупреждает об осложнениях за 50–200 м до опасного интервала. Поглощения, прихваты, газовые окна, обвалы — с вероятностью и конкретным действием.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-ico ico-b">📐</div>
+        <h3>Программа бурения</h3>
+        <p>Полная программа по секциям: тип и параметры раствора, химреагенты с нормами расхода, конструкция скважины — сгенерирована AI на основе аналогов.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-ico ico-g">📉</div>
+        <h3>Снижение НПВ</h3>
+        <p>Каждый алерт содержит расчёт: часы НПВ которых вы избегаете vs стоимость рекомендованного решения. Средняя экономия по базе — 47% НПВ.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-ico ico-b">🗂</div>
+        <h3>База 56 месторождений</h3>
+        <p>Реальные данные по геологии, буровым растворам и конструкциям скважин по Тамбейскому, Уренгойскому, Верхнечонскому и другим — уже внутри.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-ico ico-o">👥</div>
+        <h3>Командная работа</h3>
+        <p>Буровой инженер, инженер по растворам, супервайзер — у каждого своя роль и доступ. Один проект, единое пространство, вся история решений.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-ico ico-g">📄</div>
+        <h3>Суточный рапорт</h3>
+        <p>AI автоматически заполняет суточный рапорт на основе введённых параметров. Инженеру остаётся только проверить и отправить.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── STATS ── -->
+<div class="stats-band">
+  <div class="stats-grid">
+    <div class="stat-col">
+      <div class="stat-num">56<em>+</em></div>
+      <div class="stat-lbl">месторождений в базе</div>
+    </div>
+    <div class="stat-col">
+      <div class="stat-num">47<em>%</em></div>
+      <div class="stat-lbl">среднее снижение НПВ</div>
+    </div>
+    <div class="stat-col">
+      <div class="stat-num">91<em>%</em></div>
+      <div class="stat-lbl">точность AI-алертов</div>
+    </div>
+    <div class="stat-col">
+      <div class="stat-num">24<em>/7</em></div>
+      <div class="stat-lbl">AI на страже скважины</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── FIELDS ── -->
+<section class="sec" id="fields" style="background:var(--bg)">
+  <div class="inner">
+    <div class="sec-lbl">База знаний</div>
+    <h2 class="sec-h2">Ваши месторождения<br><em>уже внутри</em></h2>
+    <p class="sec-sub">Реальные данные по геологии, буровым растворам, конструкциям скважин и рискам — готовы к работе без загрузки.</p>
+    <div class="fields-grid">
+      <a class="field-card" href="docs/103_tambeyskoe_project_dashboard.html">
+        <div class="field-code">Т</div>
+        <div class="field-name">Тамбейское</div>
+        <div class="field-region">Ямал · до 1 800 м TD</div>
+        <div class="field-chips">
+          <span class="field-chip">Литология</span>
+          <span class="field-chip">БР-программа</span>
+          <span class="field-chip">ММП</span>
+          <span class="field-chip">Газ</span>
+        </div>
+      </a>
+      <a class="field-card" href="docs/project_well_dashboard.html">
+        <div class="field-code">У</div>
+        <div class="field-name">Уренгойское</div>
+        <div class="field-region">ЯНАО · до 3 200 м TD</div>
+        <div class="field-chips">
+          <span class="field-chip">Конструкция</span>
+          <span class="field-chip">Гидравлика</span>
+          <span class="field-chip">АВПД</span>
+        </div>
+      </a>
+      <a class="field-card" href="docs/57_vchng_project_dashboard.html">
+        <div class="field-code">В</div>
+        <div class="field-name">Верхнечонское НГКМ</div>
+        <div class="field-region">Иркутская обл.</div>
+        <div class="field-chips">
+          <span class="field-chip">Карбонаты</span>
+          <span class="field-chip">БР-программа</span>
+        </div>
+      </a>
+      <a class="field-card" href="docs/119_severo_yarudeyskoe_project_dashboard.html">
+        <div class="field-code" style="background:#FFF7ED;color:#EA580C">СЯ</div>
+        <div class="field-name">Северо-Ярудейское</div>
+        <div class="field-region">НАО · им. Подшибякина</div>
+        <div class="field-chips">
+          <span class="field-chip">Геология</span>
+          <span class="field-chip">Траектории</span>
+        </div>
+      </a>
+    </div>
+    <div style="text-align:center;margin-top:28px">
+      <a href="docs/56_fields_projects_dashboard.html"
+         style="font-size:15px;color:var(--blue);text-decoration:none;font-weight:500">
+        Смотреть все 56 месторождений →
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ── TOOLS ── -->
+<section class="sec" id="tools" style="background:#fff">
+  <div class="inner">
+    <div class="sec-lbl">Инженерные инструменты</div>
+    <h2 class="sec-h2">Инструменты<br><em>для бурения</em></h2>
+    <p class="sec-sub">Прикладные программы для буровых операций — расчёты, рапорты, гидравлика и управление данными прямо в браузере.</p>
+    <div class="tools-grid-home">
+
+      <a class="tool-card-home" href="docs/drilling_cockpit.html">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between">
+          <div class="tool-icon-home">🧠</div>
+          <span class="tool-badge-home" style="background:rgba(168,85,247,.15);color:#A855F7;border:1px solid rgba(168,85,247,.3);font-size:10px;font-weight:700;padding:3px 8px;border-radius:99px">AI</span>
+        </div>
+        <div>
+          <div class="tool-sub-home">DRILL-Q AI · Кокпит</div>
+          <h3>AI Drilling Cockpit</h3>
+        </div>
+        <p>Загрузите PDF, DOCX и XLSX — AI извлечёт параметры и откроет кокпит с предиктивными алертами: прихват, ГНВП, износ долота, АВПД в реальном времени.</p>
+        <div class="tool-chips-home">
+          <span class="chip-home">AI Extraction</span>
+          <span class="chip-home">Predictive Alerts</span>
+          <span class="chip-home">Stuck Pipe</span>
+          <span class="chip-home">Kick Detection</span>
+        </div>
+        <div class="tool-cta-home"><span>Открыть кокпит</span><span class="arrow">→</span></div>
+      </a>
+
+      <a class="tool-card-home" href="docs/drilling_hub.html">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between">
+          <div class="tool-icon-home">🔩</div>
+          <span class="tool-badge-home new">NEW</span>
+        </div>
+        <div>
+          <div class="tool-sub-home">DRILL-Q · Единая платформа</div>
+          <h3>Кокпит бурения</h3>
+        </div>
+        <p>Полный цикл управления скважиной: загрузка исторических данных, AI-анализ рисков по пластам, симуляция бурения в реальном времени, ввод параметров вручную, суточный рапорт DMR — всё в одном месте.</p>
+        <div class="tool-chips-home">
+          <span class="chip-home">AI Insights</span>
+          <span class="chip-home">Live Drilling</span>
+          <span class="chip-home">DMR Form</span>
+          <span class="chip-home">Risk Map</span>
+        </div>
+        <div class="tool-cta-home"><span>Открыть платформу</span><span class="arrow">→</span></div>
+      </a>
+
+      <a class="tool-card-home" href="docs/vankor_ai_demo.html">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between">
+          <div class="tool-icon-home">🤖</div>
+          <span class="tool-badge-home demo">Demo</span>
+        </div>
+        <div>
+          <div class="tool-sub-home">DRILL-Q AI · Предиктив</div>
+          <h3>AI-мониторинг бурения</h3>
+        </div>
+        <p>Интерактивное демо на данных Ванкорского месторождения: AI обнаруживает прихват инструмента за 3 дня до события, анализируя тренды ДНС и РОП. Горизонтальная скважина, реальные пласты.</p>
+        <div class="tool-chips-home">
+          <span class="chip-home">Vankor</span>
+          <span class="chip-home">NPT Prediction</span>
+          <span class="chip-home">Horizontal Well</span>
+          <span class="chip-home">$480K Saved</span>
+        </div>
+        <div class="tool-cta-home"><span>Открыть демо</span><span class="arrow">→</span></div>
+      </a>
+
+      <a class="tool-card-home" href="docs/mudgpt_dmr_new_well.html">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between">
+          <div class="tool-icon-home">📋</div>
+          <span class="tool-badge-home ready">Готов</span>
+        </div>
+        <div>
+          <div class="tool-sub-home">MudGPT-DMR</div>
+          <h3>Daily Mud Report</h3>
+        </div>
+        <p>Полный цикл суточного рапорта по буровому раствору: данные скважины, конструкция, траектория, свойства раствора, гидравлика, объёмы, стоимость и генерация отчёта.</p>
+        <div class="tool-chips-home">
+          <span class="chip-home">Well Data</span>
+          <span class="chip-home">Mud Properties</span>
+          <span class="chip-home">Hydraulics</span>
+          <span class="chip-home">Report Gen</span>
+        </div>
+        <div class="tool-cta-home"><span>Открыть инструмент</span><span class="arrow">→</span></div>
+      </a>
+
+      <div class="tool-card-home soon">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between">
+          <div class="tool-icon-home">⚙️</div>
+          <span class="tool-badge-home soon">Скоро</span>
+        </div>
+        <div>
+          <div class="tool-sub-home">MudGPT-HYD</div>
+          <h3>Fast Hydraulics</h3>
+        </div>
+        <p>Расчёт реологии, гидравлик, потерь давления, ECD и производительности насадок в режиме реального времени.</p>
+        <div class="tool-chips-home">
+          <span class="chip-home">ECD</span>
+          <span class="chip-home">Rheology</span>
+          <span class="chip-home">Nozzles</span>
+        </div>
+        <div class="tool-cta-home"><span>В разработке</span><span class="arrow">→</span></div>
+      </div>
+
+      <div class="tool-card-home soon">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between">
+          <div class="tool-icon-home">🧪</div>
+          <span class="tool-badge-home soon">Скоро</span>
+        </div>
+        <div>
+          <div class="tool-sub-home">MudGPT-CHEM</div>
+          <h3>Химреагенты и материалы</h3>
+        </div>
+        <p>Каталог продуктов, расчёт концентраций, матрица реагентов по интервалам и программа химобработки.</p>
+        <div class="tool-chips-home">
+          <span class="chip-home">Chemicals</span>
+          <span class="chip-home">Materials</span>
+          <span class="chip-home">Program</span>
+        </div>
+        <div class="tool-cta-home"><span>В разработке</span><span class="arrow">→</span></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA ── -->
+<section class="cta-sec">
+  <div class="cta-box">
+    <h2>Начните бурить<br>умнее сегодня</h2>
+    <p>Загрузите данные по первому месторождению — AI построит программу бурения за минуты.</p>
+    <div class="cta-actions">
+      <a class="btn-cw" href="#" onclick="openReg();return false;">Зарегистрироваться за 3 минуты →</a>
+      <a class="btn-co" href="#how">Как это работает</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="foot-grid">
+    <div>
+      <a class="nav-logo" href="#" style="text-decoration:none">
+        <div class="nav-mark">DQ</div>
+        <div class="nav-name">DRILL<span>-Q</span></div>
+      </a>
+      <p class="foot-desc">AI-платформа для планирования и оперативного сопровождения бурения нефтегазовых скважин.</p>
+    </div>
+    <div class="foot-col">
+      <h4>Платформа</h4>
+      <ul>
+        <li><a href="#">Командный центр</a></li>
+        <li><a href="#">Программа бурения</a></li>
+        <li><a href="#">AI-алерты</a></li>
+        <li><a href="#">Аналитика НПВ</a></li>
+      </ul>
+    </div>
+    <div class="foot-col">
+      <h4>Инструменты</h4>
+      <ul>
+        <li><a href="tools-home.html">Все инструменты</a></li>
+        <li><a href="docs/36_hydraulics_calculator_interactive.html">Гидравлика</a></li>
+        <li><a href="docs/39_wellsite_daily_report_studio.html">Суточный рапорт</a></li>
+        <li><a href="docs/120_drilling_calculations_menu.html">Расчёты</a></li>
+      </ul>
+    </div>
+    <div class="foot-col">
+      <h4>Компания</h4>
+      <ul>
+        <li><a href="#">О платформе</a></li>
+        <li><a href="docs/56_fields_projects_dashboard.html">База месторождений</a></li>
+        <li><a href="mailto:arcticdf@gmail.com">Связаться</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot-bottom">
+    <span>© 2026 DRILL-Q. Все права защищены.</span>
+    <div class="foot-links">
+      <a href="#">Конфиденциальность</a>
+      <a href="#">Условия использования</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ── REGISTRATION MODAL ── -->
+<div class="reg-overlay" id="regOverlay" onclick="if(event.target===this)closeReg()">
+  <div class="reg-modal">
+    <button class="reg-close" onclick="closeReg()" aria-label="Закрыть">✕</button>
+
+    <!-- LOGIN VIEW -->
+    <div id="loginView" style="display:none">
+      <div class="reg-header">
+        <div class="reg-brand">
+          <div class="reg-brand-mark">DQ</div>
+          <div class="reg-brand-name">DRILL<span>-Q</span></div>
+        </div>
+        <h2>Войти в кабинет</h2>
+        <p>Введите e-mail, который вы использовали при регистрации.</p>
+      </div>
+      <form onsubmit="submitLogin(event)" novalidate style="display:flex;flex-direction:column;gap:16px">
+        <div class="form-group">
+          <label for="loginEmail">E-mail <span class="req">*</span></label>
+          <input type="email" id="loginEmail" placeholder="ivan@rosneft.ru" autocomplete="email">
+          <div class="email-hint" id="loginHint"></div>
+        </div>
+        <button type="submit" class="reg-submit-btn">Войти →</button>
+      </form>
+      <p class="reg-footer-note" style="text-align:center;margin-top:16px">
+        Нет аккаунта? <a href="#" onclick="showRegView();return false;">Зарегистрироваться →</a>
+      </p>
+    </div>
+
+    <!-- FORM -->
+    <div id="regFormWrap">
+      <div class="reg-header">
+        <div class="reg-brand">
+          <div class="reg-brand-mark">DQ</div>
+          <div class="reg-brand-name">DRILL<span>-Q</span></div>
+        </div>
+        <h2>Создайте аккаунт</h2>
+        <p>Займёт около 3 минут. Все данные защищены и используются только для доступа к платформе.</p>
+      </div>
+
+      <form id="regForm" onsubmit="submitReg(event)" novalidate>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="regFirstName">Имя</label>
+            <input type="text" id="regFirstName" placeholder="Иван" required autocomplete="given-name">
+          </div>
+          <div class="form-group">
+            <label for="regLastName">Фамилия</label>
+            <input type="text" id="regLastName" placeholder="Иванов" required autocomplete="family-name">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="regCompany">Компания</label>
+          <input type="text" id="regCompany" placeholder="Роснефть, Газпромнефть, Лукойл…" required autocomplete="organization">
+        </div>
+
+        <div class="form-group">
+          <label for="regEmail">E-mail (рабочий) <span class="req">*</span></label>
+          <input type="email" id="regEmail"
+            placeholder="ivan@rosneft.ru"
+            required autocomplete="work email"
+            oninput="validateEmailLive()"
+            onblur="validateEmailLive(true)">
+          <div class="email-hint" id="emailHint"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="regPhone">Телефон <span class="req">*</span></label>
+          <input type="tel" id="regPhone" placeholder="+7 (___) ___-__-__" required autocomplete="tel">
+        </div>
+
+        <div class="form-agree">
+          <label class="agree-lbl">
+            <input type="checkbox" id="regAgree" required>
+            <span>Я принимаю <a href="#" onclick="return false">условия использования</a> и <a href="#" onclick="return false">политику конфиденциальности</a> DRILL-Q</span>
+          </label>
+        </div>
+
+        <button type="submit" class="reg-submit-btn" id="regSubmitBtn">
+          Зарегистрироваться →
+        </button>
+        <p class="reg-footer-note">Уже есть аккаунт? <a href="#" onclick="showLoginView();return false;">Войти</a></p>
+      </form>
+    </div>
+
+    <!-- SUCCESS -->
+    <div id="regSuccess" class="reg-success" style="display:none">
+      <div class="reg-success-icon">✓</div>
+      <h2>Добро пожаловать!</h2>
+      <p>Аккаунт создан. Войдите в личный кабинет<br>или изучите демо с данными по 56 месторождениям.</p>
+      <a class="demo-link" href="cabinet.html" style="margin-bottom:10px">Перейти в личный кабинет →</a>
+      <a class="demo-link" href="docs/56_fields_projects_dashboard.html" style="background:rgba(37,99,235,.1);color:#2563EB;">Посмотреть демо-месторождения →</a>
+      <button class="close-link" onclick="closeReg()">Закрыть</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ── Auth helpers ── */
+const DQ_USER_KEY = 'dq_user';
+
+function getUser() {
+  try { return JSON.parse(localStorage.getItem(DQ_USER_KEY)); } catch { return null; }
+}
+function saveUser(u) { localStorage.setItem(DQ_USER_KEY, JSON.stringify(u)); }
+
+/* ── Nav: show user or register button ── */
+function initAuthNav() {
+  const user = getUser();
+  const navRight = document.querySelector('.nav-right');
+  if (!navRight) return;
+  if (user) {
+    const initials = ((user.firstName||'?')[0] + (user.lastName||'?')[0]).toUpperCase();
+    navRight.innerHTML = `
+      <a class="user-chip" href="cabinet.html">
+        <span class="user-chip-av">${initials}</span>
+        <span class="user-chip-name">${user.firstName} ${user.lastName}</span>
+      </a>
+      <a class="btn-nav" href="cabinet.html">Личный кабинет →</a>`;
+  }
+  // если не залогинен — nav уже содержит кнопки «Войти» и «Зарегистрироваться»
+}
+
+/* ── Registration Modal ── */
+const FREE_DOMAINS = [
+  'gmail.com','gmail.ru','yahoo.com','yahoo.ru','mail.ru','yandex.ru','yandex.com',
+  'hotmail.com','hotmail.ru','outlook.com','outlook.ru','icloud.com','bk.ru',
+  'list.ru','inbox.ru','rambler.ru','proton.me','protonmail.com','live.com',
+  'me.com','msn.com','gmx.com','aol.com','mail.com','web.de','i.ua','ukr.net'
+];
+
+/* ── Modal view helpers ── */
+function _showView(id) {
+  ['loginView','regFormWrap','regSuccess'].forEach(v => {
+    const el = document.getElementById(v);
+    if (el) el.style.display = (v === id ? '' : 'none');
+  });
+}
+function showLoginView() { _showView('loginView'); setTimeout(() => document.getElementById('loginEmail').focus(), 100); }
+function showRegView()   { _showView('regFormWrap'); setTimeout(() => document.getElementById('regFirstName').focus(), 100); }
+
+function openLogin() {
+  const user = getUser();
+  if (user) { window.location.href = 'cabinet.html'; return; }
+  document.getElementById('regOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  showLoginView();
+}
+
+function openReg() {
+  if (getUser()) { window.location.href = 'cabinet.html'; return; }
+  document.getElementById('regOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  showRegView();
+}
+function closeReg() {
+  document.getElementById('regOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function submitLogin(e) {
+  e.preventDefault();
+  const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+  const hint  = document.getElementById('loginHint');
+  const user  = getUser();
+  if (!email) { hint.textContent = 'Введите e-mail'; hint.className = 'email-hint err'; return; }
+  if (user && user.email && user.email.toLowerCase() === email) {
+    window.location.href = 'cabinet.html';
+    return;
+  }
+  hint.innerHTML = 'Аккаунт не найден. <a href="#" onclick="showRegView();return false;" style="color:var(--blue)">Зарегистрируйтесь →</a>';
+  hint.className = 'email-hint err';
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeReg(); });
+
+function isCorporateEmail(email) {
+  const at = email.lastIndexOf('@');
+  if (at < 1) return false;
+  const domain = email.slice(at + 1).toLowerCase();
+  return !FREE_DOMAINS.includes(domain) && domain.includes('.');
+}
+
+function validateEmailLive(blur) {
+  const input = document.getElementById('regEmail');
+  const hint  = document.getElementById('emailHint');
+  const val   = input.value.trim();
+  if (!val) {
+    input.classList.remove('inp-error','inp-ok');
+    hint.textContent = ''; hint.className = 'email-hint';
+    return false;
+  }
+  const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  if (!emailRe.test(val)) {
+    if (blur) {
+      input.classList.add('inp-error'); input.classList.remove('inp-ok');
+      hint.textContent = 'Введите корректный e-mail'; hint.className = 'email-hint err';
+    }
+    return false;
+  }
+  if (!isCorporateEmail(val)) {
+    input.classList.add('inp-error'); input.classList.remove('inp-ok');
+    hint.innerHTML = '⚠ Используйте корпоративный e-mail — не gmail, mail.ru и подобные';
+    hint.className = 'email-hint err';
+    return false;
+  }
+  input.classList.remove('inp-error'); input.classList.add('inp-ok');
+  hint.textContent = '✓ Корпоративный e-mail принят'; hint.className = 'email-hint ok';
+  return true;
+}
+
+function submitReg(e) {
+  e.preventDefault();
+  const first   = document.getElementById('regFirstName').value.trim();
+  const last    = document.getElementById('regLastName').value.trim();
+  const company = document.getElementById('regCompany').value.trim();
+  const phone   = document.getElementById('regPhone').value.trim();
+  const agree   = document.getElementById('regAgree').checked;
+
+  // Required text fields
+  let hasError = false;
+  [['regFirstName', first], ['regLastName', last], ['regCompany', company]].forEach(([id, val]) => {
+    if (!val) { document.getElementById(id).classList.add('inp-error'); hasError = true; }
+  });
+
+  // Phone required
+  if (!phone) {
+    document.getElementById('regPhone').classList.add('inp-error'); hasError = true;
+  } else {
+    document.getElementById('regPhone').classList.remove('inp-error');
+  }
+
+  if (hasError) return;
+
+  // Email
+  if (!validateEmailLive(true)) {
+    document.getElementById('regEmail').focus();
+    return;
+  }
+
+  // Agree
+  const agreeErrId = 'agreeErr';
+  if (!agree) {
+    if (!document.getElementById(agreeErrId))
+      document.getElementById('regAgree').closest('.form-agree')
+        .insertAdjacentHTML('beforeend',
+          `<p id="${agreeErrId}" style="color:var(--red);font-size:12px;margin-top:4px">Необходимо принять условия</p>`);
+    return;
+  }
+
+  // Save user & go to cabinet
+  const user = { firstName: first, lastName: last, company, email: document.getElementById('regEmail').value.trim(), phone, registeredAt: Date.now() };
+  saveUser(user);
+  window.location.href = 'cabinet.html';
+}
+
+// Clear error on input
+['regFirstName','regLastName','regCompany','regPhone'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('input', function() { if (this.value.trim()) this.classList.remove('inp-error'); });
+});
+
+// Init on load
+initAuthNav();
+</script>
+</body>
+</html>

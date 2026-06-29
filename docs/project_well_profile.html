@@ -1,0 +1,326 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Раздел 4 · Профиль ствола скважины</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap");
+    :root{--bg0:#070d15;--bg1:#111f33;--bg2:#1d3247;--panel:rgba(10,20,33,.85);--line:rgba(226,237,255,.16);--soft:rgba(226,237,255,.1);--text:#ecf4ff;--muted:#a8bdd2;--cyan:#20d9b4;--amber:#ffbf66;--violet:#c6a6ff;--shadow:0 24px 56px rgba(0,0,0,.42)}
+    *{box-sizing:border-box} html,body{margin:0;min-height:100%;font-family:"Manrope",sans-serif;color:var(--text);background:radial-gradient(900px 460px at 0% -10%,rgba(32,217,180,.2),transparent),radial-gradient(820px 460px at 100% 0%,rgba(255,191,102,.2),transparent),linear-gradient(145deg,var(--bg0),var(--bg1) 46%,var(--bg2))}
+    .wrap{width:min(1240px,92vw);margin:0 auto;padding:24px 0 64px}.top{display:flex;justify-content:space-between;align-items:center;gap:10px;border:1px solid var(--soft);border-radius:14px;padding:12px 14px;background:rgba(8,15,24,.66);position:sticky;top:12px;z-index:20}
+    .brand{display:flex;align-items:center;gap:10px;font-family:"Oswald",sans-serif;text-transform:uppercase;letter-spacing:.05em;font-size:20px}.dot{width:12px;height:12px;border-radius:999px;background:radial-gradient(circle at 35% 35%,#d6fff7,var(--cyan))}
+    .nav{display:flex;flex-wrap:wrap;gap:8px}.nav a{text-decoration:none;font-size:12px;text-transform:uppercase;letter-spacing:.06em;font-weight:800;border-radius:10px;padding:8px 12px;color:#082922;background:linear-gradient(130deg,#a0f9eb,#22d7b4);border:1px solid rgba(34,215,180,.75)}
+    .hero,.panel{margin-top:18px;border:1px solid var(--line);border-radius:22px;background:var(--panel);box-shadow:var(--shadow);padding:22px}.hero h1{margin:0 0 10px;font-family:"Oswald",sans-serif;font-size:clamp(28px,4vw,44px)}.hero p{margin:0;color:#c7d7ec;line-height:1.65}
+    .hero-grid{margin-top:16px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.hero-stat{border:1px solid var(--soft);border-radius:14px;padding:10px 12px;background:rgba(255,255,255,.03)}.hero-stat strong{display:block;font-size:19px}.hero-stat span{display:block;margin-top:3px;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.08em}
+    .list{display:grid;gap:10px}.item{border:1px solid var(--soft);border-radius:12px;background:rgba(255,255,255,.03);padding:12px;color:#d5e2f2;line-height:1.6;font-size:14px}
+    .chart-wrap{border:1px solid var(--soft);border-radius:16px;background:rgba(255,255,255,.02);padding:14px}.chart-title{margin:0 0 10px;font-size:16px}.chart-shell{width:100%;overflow:auto}.chart-shell svg{width:100%;height:auto;display:block}.chart-caption{margin-top:10px;color:var(--muted);font-size:12px;line-height:1.5}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .table-wrap{overflow:auto}.table{width:100%;border-collapse:collapse;font-size:13px}.table th,.table td{border:1px solid var(--soft);padding:8px 10px;text-align:left;vertical-align:top}.table th{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#bfd3e8;background:rgba(255,255,255,.04)}.table td{color:#d5e2f2;line-height:1.45}
+    .note{margin-top:14px;border:1px solid rgba(198,166,255,.25);border-radius:12px;background:rgba(198,166,255,.08);padding:12px;color:#e2d8ff;line-height:1.55;font-size:14px}
+    h2{margin:0 0 12px;font-size:22px}.footer{margin-top:14px;color:var(--muted);font-size:12px;text-align:center;text-transform:uppercase;letter-spacing:.08em}
+    @media (max-width:1100px){.grid,.hero-grid{grid-template-columns:1fr}}
+    @media (max-width:900px){.top{position:static;flex-direction:column;align-items:flex-start}.stage{grid-template-columns:1fr}}
+  </style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+  <main class="wrap">
+    <header class="top">
+      <div class="brand"><span class="dot"></span><span>Nexus Oilfield AI</span></div>
+      <nav class="nav" id="nav"></nav>
+    </header>
+
+    <section class="hero">
+      <h1 id="title">Раздел 4. Профиль ствола скважины</h1>
+      <p id="desc">Траектория, зенитный угол, участки набора, полка и целевой интервал по проекту.</p>
+      <div class="hero-grid">
+        <div class="hero-stat"><strong>4650,2 м</strong><span>пилотный ствол по MD</span></div>
+        <div class="hero-stat"><strong>6129,2 м</strong><span>горизонтальный ствол по MD</span></div>
+        <div class="hero-stat"><strong>89,156°</strong><span>максимальный зенит</span></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Основные параметры профиля</h2>
+      <div class="list" id="profileSummary"></div>
+    </section>
+
+    <section class="panel">
+      <h2>Проектные профили</h2>
+      <div class="grid">
+        <div class="chart-wrap">
+          <h3 class="chart-title">Рисунок 4.1 · Вертикальная проекция</h3>
+          <div class="chart-shell" id="verticalChart"></div>
+          <div class="chart-caption">Профиль построен по табличным данным 4.2: по оси X отложено смещение, по оси Y - глубина по вертикали.</div>
+        </div>
+        <div class="chart-wrap">
+          <h3 class="chart-title">Рисунок 4.2 · Горизонтальная проекция</h3>
+          <div class="chart-shell" id="horizontalChart"></div>
+          <div class="chart-caption">Проекция построена по табличным данным 4.3 с пересчетом смещения и азимута в условные координаты север/восток.</div>
+        </div>
+      </div>
+      <div class="note" id="note"></div>
+    </section>
+
+    <section class="panel">
+      <h2>Таблица 4.2 · Параметры проектного профиля пилотного ствола</h2>
+      <div class="table-wrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Глубина по стволу</th>
+              <th>Зенит</th>
+              <th>Азимут</th>
+              <th>Глубина по вертикали</th>
+              <th>А.О.</th>
+              <th>Отход</th>
+              <th>Азимут смещения</th>
+              <th>Простр. интенсивность</th>
+              <th>Комментарий</th>
+            </tr>
+          </thead>
+          <tbody id="pilotTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Таблица 4.3 · Параметры проектного профиля горизонтального ствола</h2>
+      <div class="table-wrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Глубина по стволу</th>
+              <th>Зенит</th>
+              <th>Азимут</th>
+              <th>Глубина по вертикали</th>
+              <th>А.О.</th>
+              <th>Отход</th>
+              <th>Азимут смещения</th>
+              <th>Простр. интенсивность</th>
+              <th>Комментарий</th>
+            </tr>
+          </thead>
+          <tbody id="horizontalTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <p class="footer">Dynamic project section · Well profile</p>
+  </main>
+  <script>
+    function getProjectNameFromUrl() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('name') || 'Проект';
+    }
+
+    function getWellFromUrl() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('well') || '9301';
+    }
+
+    function buildProjectLink(page, name, well) {
+      const params = new URLSearchParams();
+      params.set('name', name);
+      if (well) {
+        params.set('well', well);
+      }
+      return `${page}?${params.toString()}`;
+    }
+
+    const projectName = getProjectNameFromUrl();
+    const wellName = getWellFromUrl();
+    document.title = `${projectName} · Скважина ${wellName} · Раздел 4`;
+    document.getElementById('title').textContent = `${projectName} · Скважина ${wellName} · Раздел 4. Профиль ствола скважины`;
+    document.getElementById('desc').textContent = `Ручное наполнение раздела профиля скважины по проекту "${projectName}" для скважины ${wellName} на основе таблиц 4.2, 4.3 и графиков 4.1, 4.2 из предоставленного фрагмента ТЗ.`;
+
+    document.getElementById('nav').innerHTML = `
+      <a href="${buildProjectLink('project_well_dashboard.html', projectName, wellName)}">К скважине ${wellName}</a>
+      <a href="${buildProjectLink('project_well_dashboard.html', projectName, '9301')}">К дашборду проекта</a>
+      <a href="${buildProjectLink('project_geology.html', projectName)}">Геология</a>
+      <a href="${buildProjectLink('project_well_construction.html', projectName, wellName)}">Раздел 3</a>
+    `;
+
+    const pilotProfile = [
+      { md: 0, zenith: 0, azimuth: 0, tvd: 0, ao: -55, departure: 0, depAzimuth: 0, intensity: 0, comment: '' },
+      { md: 450, zenith: 0, azimuth: 0, tvd: 450, ao: 395, departure: 0, depAzimuth: 0, intensity: 0, comment: 'Кондуктор 339,72 мм' },
+      { md: 470, zenith: 0, azimuth: 0, tvd: 470, ao: 415, departure: 0, depAzimuth: 0, intensity: 0, comment: '' },
+      { md: 941.07, zenith: 37.685, azimuth: 204.733, tvd: 907.83, ao: 852.83, departure: 141.12, depAzimuth: 204.73, intensity: 0.8, comment: '' },
+      { md: 1689.34, zenith: 37.685, azimuth: 204.733, tvd: 1500, ao: 1445, departure: 573.17, depAzimuth: 204.73, intensity: 0, comment: 'Промежуточная 244,48 мм' },
+      { md: 3820.65, zenith: 37.685, azimuth: 204.733, tvd: 3186.67, ao: 3131.67, departure: 1803.79, depAzimuth: 204.73, intensity: 0, comment: '' },
+      { md: 4391.0, zenith: 64.599, azimuth: 244.04, tvd: 3549.6, ao: 3494.6, departure: 2227.75, depAzimuth: 208.97, intensity: 0.7, comment: 'Эксплуатационная 177,8 мм' },
+      { md: 4414.48, zenith: 64.599, azimuth: 244.04, tvd: 3559.6, ao: 3504.6, departure: 2319.97, depAzimuth: 209.26, intensity: 0, comment: '' },
+      { md: 4424.48, zenith: 65.308, azimuth: 244.818, tvd: 3563.83, ao: 3508.83, departure: 2327.63, depAzimuth: 209.39, intensity: 1, comment: '' },
+      { md: 4434.48, zenith: 65.312, azimuth: 245.919, tvd: 3568.01, ao: 3513.01, departure: 2335.24, depAzimuth: 209.52, intensity: 1, comment: '' },
+      { md: 4650.2, zenith: 65.312, azimuth: 245.919, tvd: 3658.1, ao: 3603.1, departure: 2498.23, depAzimuth: 212.19, intensity: 0, comment: 'Пилотный ствол' }
+    ];
+
+    const horizontalProfile = [
+      { md: 0, zenith: 0, azimuth: 0, tvd: 0, ao: -55, departure: 0, depAzimuth: 0, intensity: 0, comment: '' },
+      { md: 450, zenith: 0, azimuth: 0, tvd: 450, ao: 395, departure: 0, depAzimuth: 0, intensity: 0, comment: 'Кондуктор 339,72 мм' },
+      { md: 470, zenith: 0, azimuth: 0, tvd: 470, ao: 415, departure: 0, depAzimuth: 0, intensity: 0, comment: '' },
+      { md: 941.07, zenith: 37.685, azimuth: 204.733, tvd: 907.83, ao: 852.83, departure: 141.12, depAzimuth: 204.73, intensity: 0.8, comment: '' },
+      { md: 1689.34, zenith: 37.685, azimuth: 204.733, tvd: 1500, ao: 1445, departure: 573.17, depAzimuth: 204.73, intensity: 0, comment: 'Промежуточная 244,48 мм' },
+      { md: 3820.65, zenith: 37.685, azimuth: 204.733, tvd: 3186.67, ao: 3131.67, departure: 1803.79, depAzimuth: 204.73, intensity: 0, comment: '' },
+      { md: 4391.0, zenith: 64.599, azimuth: 244.04, tvd: 3549.6, ao: 3494.6, departure: 2227.75, depAzimuth: 208.97, intensity: 0.7, comment: 'Эксплуатационная 177,8 мм' },
+      { md: 4414.48, zenith: 64.599, azimuth: 244.04, tvd: 3559.6, ao: 3504.6, departure: 2247.52, depAzimuth: 209.26, intensity: 0, comment: 'Срезка на цели ГС' },
+      { md: 4626.22, zenith: 87.89, azimuth: 244.04, tvd: 3609.6, ao: 3554.6, departure: 2439.29, depAzimuth: 211.94, intensity: 1.1, comment: '' },
+      { md: 4645.01, zenith: 86.387, azimuth: 244.022, tvd: 3610.54, ao: 3555.54, departure: 2456.91, depAzimuth: 212.17, intensity: 0.8, comment: '' },
+      { md: 4882.43, zenith: 86.387, azimuth: 244.022, tvd: 3625.5, ao: 3570.5, departure: 2679.42, depAzimuth: 214.81, intensity: 0, comment: '' },
+      { md: 4917.05, zenith: 89.156, azimuth: 244.048, tvd: 3626.85, ao: 3571.85, departure: 2711.89, depAzimuth: 215.16, intensity: 0.8, comment: '' },
+      { md: 6129.2, zenith: 89.156, azimuth: 244.048, tvd: 3644.7, ao: 3589.7, departure: 3849.77, depAzimuth: 223.91, intensity: 0, comment: 'Хвостовик 114,3 мм' }
+    ];
+
+    const summaryItems = [
+      'Скважина наклонно-направленная с горизонтальным окончанием.',
+      'Пилотный ствол: 3658,1 м по вертикали и 4650,2 м по стволу.',
+      'Горизонтальный ствол: 3644,7 м по вертикали и 6129,2 м по стволу.',
+      'Точки закрепления профиля совпадают с глубинами спуска кондуктора, промежуточной и эксплуатационной колонн, а также хвостовика.',
+      'Максимальный зенит в горизонтальном участке достигает 89,156°.',
+      'Графики ниже построены вручную по табличным точкам из ТЗ и дают наглядную проекцию профиля.'
+    ];
+
+    function formatNumber(value) {
+      const rounded = Math.abs(value - Math.round(value)) < 0.001 ? String(Math.round(value)) : value.toFixed(2);
+      return rounded.replace('.', ',');
+    }
+
+    function renderTable(targetId, rows) {
+      document.getElementById(targetId).innerHTML = rows.map((row) => `
+        <tr>
+          <td>${formatNumber(row.md)}</td>
+          <td>${formatNumber(row.zenith)}</td>
+          <td>${formatNumber(row.azimuth)}</td>
+          <td>${formatNumber(row.tvd)}</td>
+          <td>${formatNumber(row.ao)}</td>
+          <td>${formatNumber(row.departure)}</td>
+          <td>${formatNumber(row.depAzimuth)}</td>
+          <td>${formatNumber(row.intensity)}</td>
+          <td>${row.comment || '-'}</td>
+        </tr>
+      `).join('');
+    }
+
+    function createSvg(width, height, inner) {
+      return `<svg viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">${inner}</svg>`;
+    }
+
+    function renderVerticalProfile(targetId, rows) {
+      const width = 960;
+      const height = 560;
+      const margin = { top: 24, right: 24, bottom: 56, left: 80 };
+      const maxX = Math.max(...rows.map((row) => row.departure));
+      const maxY = Math.max(...rows.map((row) => row.tvd));
+      const plotWidth = width - margin.left - margin.right;
+      const plotHeight = height - margin.top - margin.bottom;
+      const scaleX = (value) => margin.left + (value / maxX) * plotWidth;
+      const scaleY = (value) => margin.top + (value / maxY) * plotHeight;
+
+      const verticalGrid = Array.from({ length: 9 }, (_, index) => {
+        const x = margin.left + (plotWidth / 8) * index;
+        const value = (maxX / 8) * index;
+        return `<line x1="${x}" y1="${margin.top}" x2="${x}" y2="${height - margin.bottom}" stroke="rgba(0,0,0,0.07)" />
+          <text x="${x}" y="${height - margin.bottom + 22}" font-size="11" fill="#374151" text-anchor="middle">${formatNumber(value)}</text>`;
+      }).join('');
+
+      const horizontalGrid = Array.from({ length: 9 }, (_, index) => {
+        const y = margin.top + (plotHeight / 8) * index;
+        const value = (maxY / 8) * index;
+        return `<line x1="${margin.left}" y1="${y}" x2="${width - margin.right}" y2="${y}" stroke="rgba(0,0,0,0.07)" />
+          <text x="${margin.left - 12}" y="${y + 4}" font-size="11" fill="#374151" text-anchor="end">${formatNumber(value)}</text>`;
+      }).join('');
+
+      const path = rows.map((row, index) => `${index === 0 ? 'M' : 'L'} ${scaleX(row.departure)} ${scaleY(row.tvd)}`).join(' ');
+      const points = rows.map((row) => {
+        const cx = scaleX(row.departure);
+        const cy = scaleY(row.tvd);
+        const label = row.comment ? `<text x="${cx + 8}" y="${cy - 8}" font-size="11" fill="#1D4ED8">${row.comment}</text>` : '';
+        return `<circle cx="${cx}" cy="${cy}" r="4" fill="#20d9b4" stroke="#071018" stroke-width="2" />${label}`;
+      }).join('');
+
+      const svg = createSvg(width, height, `
+        <rect x="0" y="0" width="${width}" height="${height}" rx="18" fill="rgba(255,255,255,0.01)" />
+        ${verticalGrid}
+        ${horizontalGrid}
+        <line x1="${margin.left}" y1="${margin.top}" x2="${margin.left}" y2="${height - margin.bottom}" stroke="rgba(0,0,0,0.2)" stroke-width="1.5" />
+        <line x1="${margin.left}" y1="${height - margin.bottom}" x2="${width - margin.right}" y2="${height - margin.bottom}" stroke="rgba(0,0,0,0.2)" stroke-width="1.5" />
+        <path d="${path}" fill="none" stroke="#ffbf66" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+        ${points}
+        <text x="${width / 2}" y="${height - 12}" font-size="12" fill="#374151" text-anchor="middle">Смещение от устья, м</text>
+        <text x="18" y="${height / 2}" font-size="12" fill="#374151" text-anchor="middle" transform="rotate(-90 18 ${height / 2})">Глубина по вертикали, м</text>
+      `);
+
+      document.getElementById(targetId).innerHTML = svg;
+    }
+
+    function renderHorizontalProfile(targetId, rows) {
+      const width = 960;
+      const height = 560;
+      const margin = { top: 24, right: 24, bottom: 56, left: 72 };
+      const points = rows.map((row) => {
+        const rad = (row.depAzimuth * Math.PI) / 180;
+        return {
+          ...row,
+          east: row.departure * Math.sin(rad),
+          north: row.departure * Math.cos(rad)
+        };
+      });
+
+      const minX = Math.min(...points.map((point) => point.east));
+      const maxX = Math.max(...points.map((point) => point.east));
+      const minY = Math.min(...points.map((point) => point.north));
+      const maxY = Math.max(...points.map((point) => point.north));
+      const plotWidth = width - margin.left - margin.right;
+      const plotHeight = height - margin.top - margin.bottom;
+      const scaleX = (value) => margin.left + ((value - minX) / (maxX - minX || 1)) * plotWidth;
+      const scaleY = (value) => margin.top + ((maxY - value) / (maxY - minY || 1)) * plotHeight;
+
+      const verticalGrid = Array.from({ length: 9 }, (_, index) => {
+        const x = margin.left + (plotWidth / 8) * index;
+        const value = minX + ((maxX - minX) / 8) * index;
+        return `<line x1="${x}" y1="${margin.top}" x2="${x}" y2="${height - margin.bottom}" stroke="rgba(0,0,0,0.07)" />
+          <text x="${x}" y="${height - margin.bottom + 22}" font-size="11" fill="#374151" text-anchor="middle">${formatNumber(value)}</text>`;
+      }).join('');
+
+      const horizontalGrid = Array.from({ length: 9 }, (_, index) => {
+        const y = margin.top + (plotHeight / 8) * index;
+        const value = maxY - ((maxY - minY) / 8) * index;
+        return `<line x1="${margin.left}" y1="${y}" x2="${width - margin.right}" y2="${y}" stroke="rgba(0,0,0,0.07)" />
+          <text x="${margin.left - 12}" y="${y + 4}" font-size="11" fill="#374151" text-anchor="end">${formatNumber(value)}</text>`;
+      }).join('');
+
+      const path = points.map((point, index) => `${index === 0 ? 'M' : 'L'} ${scaleX(point.east)} ${scaleY(point.north)}`).join(' ');
+      const circles = points.map((point) => {
+        const cx = scaleX(point.east);
+        const cy = scaleY(point.north);
+        const label = point.comment ? `<text x="${cx + 8}" y="${cy - 8}" font-size="11" fill="#1D4ED8">${point.comment}</text>` : '';
+        return `<circle cx="${cx}" cy="${cy}" r="4" fill="#2563EB" stroke="#ffffff" stroke-width="2" />${label}`;
+      }).join('');
+
+      const svg = createSvg(width, height, `
+        <rect x="0" y="0" width="${width}" height="${height}" rx="18" fill="rgba(255,255,255,0.01)" />
+        ${verticalGrid}
+        ${horizontalGrid}
+        <line x1="${margin.left}" y1="${margin.top}" x2="${margin.left}" y2="${height - margin.bottom}" stroke="rgba(0,0,0,0.2)" stroke-width="1.5" />
+        <line x1="${margin.left}" y1="${height - margin.bottom}" x2="${width - margin.right}" y2="${height - margin.bottom}" stroke="rgba(0,0,0,0.2)" stroke-width="1.5" />
+        <path d="${path}" fill="none" stroke="#20d9b4" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+        ${circles}
+        <text x="${width / 2}" y="${height - 12}" font-size="12" fill="#374151" text-anchor="middle">Смещение на восток, м</text>
+        <text x="18" y="${height / 2}" font-size="12" fill="#374151" text-anchor="middle" transform="rotate(-90 18 ${height / 2})">Смещение на север, м</text>
+      `);
+
+      document.getElementById(targetId).innerHTML = svg;
+    }
+
+    document.getElementById('profileSummary').innerHTML = summaryItems.map((item) => `<div class="item">${item}</div>`).join('');
+    renderTable('pilotTableBody', pilotProfile);
+    renderTable('horizontalTableBody', horizontalProfile);
+    renderVerticalProfile('verticalChart', pilotProfile);
+    renderHorizontalProfile('horizontalChart', horizontalProfile);
+
+    document.getElementById('note').textContent = `Шаблонный блок траектории удален. На страницу вручную перенесены точки из таблиц 4.2 и 4.3, а профили 4.1 и 4.2 построены заново как SVG-графики по этим данным для скважины ${wellName}.`;
+  </script>
+  <script src="assets/js/global-auth-widget.js"></script>
+</body>
+</html>

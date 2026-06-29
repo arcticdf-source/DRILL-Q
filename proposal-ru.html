@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DRILL-Q · AI Генератор Техпредложений · Powered by Cloto</title>
+<link rel="stylesheet" href="drill-q.css">
+<style>
+  /* Proposal layout */
+  .proposal-hero { padding:60px var(--s8) 40px; max-width:900px; }
+  .proposal-hero h1 { font-size:clamp(26px,4vw,40px); font-weight:700; color:var(--t-01); letter-spacing:-0.04em; line-height:1.2; margin:var(--s3) 0; }
+  .proposal-hero p { font-size:14px; color:var(--t-03); line-height:1.7; max-width:680px; }
+  .proposal-body { display:grid; grid-template-columns:1fr 1fr; gap:var(--s6); padding:0 var(--s8) var(--s10); max-width:1400px; }
+  @media(max-width:900px){ .proposal-body { grid-template-columns:1fr; } }
+
+  /* Form */
+  .form-card { background:var(--bg-02); border:1px solid var(--b-01); border-radius:var(--r3); overflow:hidden; }
+  .form-card-header { padding:var(--s5) var(--s6); border-bottom:1px solid var(--b-01); }
+  .form-card-header h3 { font-size:15px; font-weight:600; color:var(--t-01); margin-bottom:4px; }
+  .form-card-header p { font-size:12px; color:var(--t-04); }
+  .form-body { padding:var(--s5) var(--s6); display:flex; flex-direction:column; gap:var(--s4); }
+  .form-group { display:flex; flex-direction:column; gap:6px; }
+  .form-group label { font-size:11px; font-weight:600; color:var(--t-03); letter-spacing:0.05em; text-transform:uppercase; font-family:var(--mono); }
+  .form-group input, .form-group select, .form-group textarea {
+    background:var(--bg-03); border:1px solid var(--b-02); border-radius:var(--r2);
+    color:var(--t-01); font-size:13px; padding:9px 12px; font-family:inherit; outline:none;
+    transition:border-color 0.15s;
+  }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color:var(--blue); }
+  .form-group textarea { resize:vertical; min-height:80px; line-height:1.5; }
+  .form-group select option { background:var(--bg-03); }
+  .form-row { display:grid; grid-template-columns:1fr 1fr; gap:var(--s4); }
+
+  /* Generate button */
+  .generate-btn {
+    background:var(--blue); color:#fff; border:none; border-radius:var(--r2);
+    padding:12px 20px; font-size:13px; font-weight:600; cursor:pointer;
+    letter-spacing:0.01em; transition:opacity 0.15s; margin-top:var(--s2);
+  }
+  .generate-btn:hover { opacity:0.85; }
+
+  /* Output panel */
+  .output-panel { background:var(--bg-02); border:1px solid var(--b-01); border-radius:var(--r3); overflow:hidden; min-height:500px; }
+  .output-empty { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:60px var(--s6); text-align:center; min-height:400px; }
+  .output-empty .icon { font-size:40px; margin-bottom:var(--s4); }
+  .output-empty h3 { font-size:16px; font-weight:600; color:var(--t-01); margin-bottom:var(--s3); }
+  .output-empty p { font-size:13px; color:var(--t-03); line-height:1.6; max-width:340px; }
+  .output-section { padding:var(--s5) var(--s6); border-bottom:1px solid var(--b-01); }
+  .output-section:last-child { border-bottom:none; }
+  .output-section-header { display:flex; align-items:center; gap:10px; margin-bottom:var(--s4); }
+  .output-section-header h4 { font-size:13px; font-weight:600; color:var(--t-01); flex:1; }
+  .output-section-body { font-size:13px; color:var(--t-02); }
+
+  /* Badges */
+  .badge { display:inline-flex; align-items:center; padding:2px 8px; border-radius:999px; font-size:10px; font-weight:600; font-family:var(--mono); letter-spacing:0.05em; }
+  .tag-cyan  { background:var(--blue-subtle); color:var(--blue); border:1px solid var(--blue-border); }
+  .tag-orange{ background:var(--cloto-subtle); color:var(--cloto); border:1px solid var(--cloto-border); }
+  .tag-green { background:var(--green-subtle); color:var(--green); border:1px solid var(--green-border); }
+  .tag-yellow{ background:var(--amber-subtle); color:var(--amber); border:1px solid var(--amber-border); }
+
+  /* Diagnosis grid */
+  .diagnosis-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:var(--s3); margin-bottom:var(--s4); }
+  .diag-item { background:var(--bg-03); border:1px solid var(--b-01); border-radius:var(--r2); padding:10px 12px; }
+  .diag-label { font-size:9px; font-weight:600; color:var(--t-04); letter-spacing:0.1em; text-transform:uppercase; font-family:var(--mono); margin-bottom:4px; }
+  .diag-val { font-size:13px; font-weight:600; color:var(--t-01); }
+
+  /* Product recommendations */
+  .prod-rec-list { display:flex; flex-direction:column; gap:var(--s3); }
+  .prod-rec-item { display:flex; gap:12px; padding:var(--s4); background:var(--bg-03); border:1px solid var(--b-01); border-radius:var(--r2); }
+  .rec-num { width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:#fff; flex-shrink:0; margin-top:2px; }
+  .rec-content { flex:1; min-width:0; }
+  .rec-product { font-size:13px; font-weight:700; color:var(--t-01); font-family:var(--mono); margin-bottom:2px; }
+  .rec-chemical { font-size:11px; color:var(--t-04); font-family:var(--mono); margin-bottom:6px; }
+  .rec-dosage { font-size:12px; color:var(--t-03); margin-bottom:4px; }
+  .rec-dosage span { color:var(--blue); font-weight:600; }
+  .rec-why { font-size:11.5px; color:var(--t-03); line-height:1.5; }
+
+  /* ROI */
+  .roi-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:var(--s3); }
+  .roi-box { padding:var(--s4); border-radius:var(--r2); text-align:center; }
+  .roi-num { font-size:22px; font-weight:800; letter-spacing:-0.03em; margin-bottom:4px; }
+  .roi-label { font-size:11px; color:var(--t-04); font-family:var(--mono); }
+
+  /* Export */
+  .export-row { display:flex; gap:var(--s3); flex-wrap:wrap; margin-top:var(--s4); }
+  .export-btn { padding:10px 18px; border-radius:var(--r2); font-size:12px; font-weight:600; cursor:pointer; transition:opacity 0.15s; }
+  .export-btn:hover { opacity:0.8; }
+
+  .hidden { display:none !important; }
+
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+</style>
+</head>
+<body>
+
+<div class="ticker-bar">
+  <div class="ticker-track">
+    <span class="ticker-item"><span class="lbl">AI ENGINE</span><span class="t-up">АКТИВЕН — Генератор техпредложений запущен</span></span>
+    <span class="ticker-item sep">·</span>
+    <span class="ticker-item"><span class="lbl">КЛОТО</span><span class="t-blue">65+ продуктов · РВО · РУО · Борьба с поглощениями</span></span>
+    <span class="ticker-item sep">·</span>
+    <span class="ticker-item"><span class="lbl">ОПТИТРОЛ®</span><span class="t-blue">до 220°C</span></span>
+    <span class="ticker-item sep">·</span>
+    <span class="ticker-item"><span class="lbl">ХАЙТЕМП®200</span><span class="t-blue">до 200°C</span></span>
+    <span class="ticker-item sep">·</span>
+    <span class="ticker-item"><span class="lbl">КЛОТОНЕКС®</span><span class="t-blue">РУО фильтрат до 200°C</span></span>
+    <span class="ticker-item sep">·</span>
+    <span class="ticker-item"><span class="lbl">ЭКСТРАМУЛ® СУПРИМ</span><span class="t-blue">204°C HPHT</span></span>
+    <span class="ticker-item sep">·</span>
+    <span class="ticker-item"><span class="lbl">AI ENGINE</span><span class="t-up">АКТИВЕН — Генератор техпредложений запущен</span></span>
+    <span class="ticker-item sep">·</span>
+    <span class="ticker-item"><span class="lbl">КЛОТО</span><span class="t-blue">с 1991 · Архангельск</span></span>
+  </div>
+</div>
+
+<nav>
+  <a class="nav-logo" href="index-ru.html">
+    <div class="dq-mark">DQ</div>
+    <div class="dq-wordmark">
+      <div class="dq-name">DRILL-Q</div>
+      <div class="dq-powered">powered by <span>cloto</span></div>
+    </div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index-ru.html">Платформа</a></li>
+    <li><a href="catalog-ru.html">Химия</a></li>
+    <li><a href="proposal-ru.html" class="active">Тендеры</a></li>
+    <li><a href="tools-ru.html">Инструменты</a></li>
+  </ul>
+  <div class="nav-right">
+    <a class="lang-link" href="proposal-en.html">EN</a>
+    <a class="btn-primary" href="mailto:arcticdf@gmail.com">Связаться с экспертом</a>
+  </div>
+</nav>
+
+<div class="proposal-hero">
+  <div class="section-label">AI Генератор технических предложений</div>
+  <h1>Опишите скважину. <span style="color:var(--blue)">Получите решение.</span></h1>
+  <p>Введите параметры скважины и операционную задачу. AI анализирует условия, подбирает продукты КЛОТО, рассчитывает дозировки и генерирует готовое к отправке техпредложение с расчётом экономии НПВ — менее чем за 30 секунд.</p>
+</div>
+
+<div class="proposal-body">
+
+  <!-- ФОРМА -->
+  <div class="form-card">
+    <div class="form-card-header">
+      <h3>Параметры скважины</h3>
+      <p>Заполните данные для точного AI-анализа</p>
+    </div>
+    <div class="form-body">
+      <div class="form-group">
+        <label>Название / Номер скважины</label>
+        <input type="text" id="wellName" placeholder="например: ТЕН-218, К-142, Скв. №7">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Страна / Месторождение</label>
+          <select id="basin">
+            <option value="">Выберите...</option>
+            <option>Казахстан — Тенгиз</option>
+            <option>Казахстан — Каспий</option>
+            <option>Россия — Западная Сибирь</option>
+            <option>Россия — Восточная Сибирь</option>
+            <option>Россия — Каспий</option>
+            <option>Россия — Архангельская обл.</option>
+            <option>Туркменистан</option>
+            <option>Узбекистан</option>
+            <option>Азербайджан</option>
+            <option>Другой СНГ</option>
+            <option>Ближний Восток</option>
+            <option>Другое</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Тип раствора</label>
+          <select id="mudType">
+            <option value="">Выберите...</option>
+            <option value="wbm">РВО — Водная основа</option>
+            <option value="obm">РУО — Углеводородная основа</option>
+            <option value="sbm">СБР — Синтетическая основа</option>
+            <option value="unknown">Не определён</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Забойная глубина (м)</label>
+          <input type="number" id="depth" placeholder="например: 4500">
+        </div>
+        <div class="form-group">
+          <label>ПЗТ (°C)</label>
+          <input type="number" id="bht" placeholder="например: 155">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Плотность раствора (г/см³)</label>
+          <input type="number" step="0.01" id="mw" placeholder="например: 1.60">
+        </div>
+        <div class="form-group">
+          <label>Количество скважин</label>
+          <input type="number" id="wells" placeholder="например: 3" min="1">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Основная проблема</label>
+        <select id="problem">
+          <option value="">Выберите задачу...</option>
+          <option value="shale">Нестабильность сланцев / обвалы ствола</option>
+          <option value="loss">Поглощение бурового раствора</option>
+          <option value="filtration_wbm">Высокий фильтрат РВО / АВПД</option>
+          <option value="filtration_obm">Высокий АВПД-фильтрат РУО</option>
+          <option value="torque">Крутящий момент и сопротивление / прихват</option>
+          <option value="rheology">Нарушение реологии / СНС</option>
+          <option value="emulsion">Разрушение эмульсии РУО</option>
+          <option value="hpht">Проектирование системы АВПД</option>
+          <option value="new_well">Новая скважина — полное проектирование</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Тип горных пород</label>
+        <select id="formation">
+          <option value="">Выберите...</option>
+          <option value="shale">Сланец (реактивный)</option>
+          <option value="carbonate">Карбонат / известняк</option>
+          <option value="sandstone">Песчаник</option>
+          <option value="mixed">Смешанный / переслаивающийся</option>
+          <option value="salt">Соль / эвапориты</option>
+          <option value="unknown">Неизвестно</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Дополнительный контекст (необязательно)</label>
+        <textarea id="context" placeholder="например: текущие продукты, конкретные интервалы глубин, опыт по офсетным скважинам, технические требования клиента..."></textarea>
+      </div>
+      <button class="generate-btn" onclick="generateProposal()">🤖 Создать AI техпредложение →</button>
+    </div>
+  </div>
+
+  <!-- ПАНЕЛЬ ВЫВОДА -->
+  <div class="output-panel" id="outputPanel">
+
+    <div class="output-empty" id="emptyState">
+      <div class="icon">🤖</div>
+      <h3>Готов к анализу</h3>
+      <p>Заполните параметры скважины слева и нажмите <strong>«Создать AI техпредложение»</strong> — получите подбор продуктов КЛОТО с таблицами дозировок и расчётом экономии НПВ.</p>
+    </div>
+
+    <div class="output-empty hidden" id="loadingState">
+      <div class="icon" style="animation:pulse 1s infinite">⚙️</div>
+      <h3 style="color:var(--blue)">AI анализирует данные скважины...</h3>
+      <p>Сопоставление данных по породам · Подбор продуктов КЛОТО · Расчёт дозировок · Оценка экономии НПВ</p>
+    </div>
+
+    <div id="results" class="hidden">
+
+      <div class="output-section">
+        <div class="output-section-header">
+          <span style="font-size:18px">🔬</span>
+          <h4>Диагноз по скважине</h4>
+          <span class="badge tag-cyan">AI Анализ</span>
+        </div>
+        <div class="output-section-body">
+          <div class="diagnosis-grid" id="diagGrid"></div>
+          <div id="diagText" style="margin-top:16px;font-size:13px;color:var(--t-02);line-height:1.7;padding:14px;background:var(--bg-03);border-radius:var(--r2);border:1px solid var(--b-01);"></div>
+        </div>
+      </div>
+
+      <div class="output-section">
+        <div class="output-section-header">
+          <span style="font-size:18px">🧪</span>
+          <h4>Рекомендации продуктов КЛОТО</h4>
+          <span class="badge tag-orange">Подобрано по полевым данным</span>
+        </div>
+        <div class="output-section-body">
+          <div class="prod-rec-list" id="recList"></div>
+        </div>
+      </div>
+
+      <div class="output-section">
+        <div class="output-section-header">
+          <span style="font-size:18px">💰</span>
+          <h4>Анализ экономии НПВ и ROI</h4>
+          <span class="badge tag-green">Количественный расчёт</span>
+        </div>
+        <div class="output-section-body">
+          <div class="roi-grid" id="roiGrid"></div>
+          <div id="roiText" style="margin-top:16px;font-size:12px;color:var(--t-04);line-height:1.7;padding:12px;background:var(--bg-03);border-radius:var(--r2);border:1px solid var(--b-01);"></div>
+        </div>
+      </div>
+
+      <div class="output-section">
+        <div class="output-section-header">
+          <span style="font-size:18px">📄</span>
+          <h4>Экспорт технического предложения</h4>
+          <span class="badge tag-yellow">Готово</span>
+        </div>
+        <div class="export-row">
+          <button class="export-btn" style="background:var(--blue);color:#fff;font-weight:700;" onclick="alert('PDF готов к экспорту — свяжитесь с arcticdf@gmail.com для получения полного оформленного техпредложения.')">📄 Экспорт PDF</button>
+          <button class="export-btn" style="background:transparent;border:1px solid var(--b-02);color:var(--t-03);" onclick="alert('Word-файл готов к экспорту — свяжитесь с arcticdf@gmail.com для получения документа.')">📝 Экспорт Word</button>
+          <button class="export-btn" style="background:transparent;border:1px solid var(--cloto-border);color:var(--cloto);" onclick="window.location.href='mailto:arcticdf@gmail.com?subject=Запрос технического предложения'">✉️ Отправить эксперту</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-grid">
+    <div>
+      <a class="nav-logo" href="index-ru.html" style="margin-bottom:var(--s4);display:inline-flex;">
+        <div class="dq-mark">DQ</div>
+        <div class="dq-wordmark">
+          <div class="dq-name">DRILL-Q</div>
+          <div class="dq-powered">powered by <span>cloto</span></div>
+        </div>
+      </a>
+      <p class="footer-brand-desc">AI-подбор продуктов для буровых растворов — подкреплён 33-летним опытом производства нефтепромысловой химии Клото.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Платформа</h4>
+      <ul>
+        <li><a href="index-ru.html">DRILL-Q</a></li>
+        <li><a href="catalog-ru.html">Химия</a></li>
+        <li><a href="tools-ru.html">Инструменты</a></li>
+        <li><a href="proposal-en.html">EN</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Ключевые продукты</h4>
+      <ul>
+        <li><a href="catalog-ru.html">БЛЭКТРОЛ® · ОПТИТРОЛ®</a></li>
+        <li><a href="catalog-ru.html">ХАЙТЕМП®200 · КЛОТОНЕКС®</a></li>
+        <li><a href="catalog-ru.html">ЭКСТРАМУЛ® СУПРИМ</a></li>
+        <li><a href="catalog-ru.html">СУПЕРСЛАЙДЕР® ПЛАТИНУМ</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Клото</h4>
+      <ul>
+        <li><a href="docs/93_mudgpt_stock_arkhangelsk.html">Склад Архангельск</a></li>
+        <li><a href="docs/87_mudgpt_chemicals_materials.html">MudGPT</a></li>
+        <li><a href="mailto:arcticdf@gmail.com">arcticdf@gmail.com</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 ООО «КЛОТО» · DRILL-Q AI Proposal · Архангельск</span>
+    <div class="footer-links">
+      <a href="proposal-en.html">EN</a>
+      <a href="index-ru.html">Платформа</a>
+      <a href="catalog-ru.html">Химия</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+const CLOTO_PRODUCTS = {
+  shale: {
+    wbm: [
+      { name:'БЛЭКТРОЛ®', chemical:'Жидкая дисперсия асфальта и полигликолей', dosage:'8–12 кг/м³', why:'Двойное действие: запечатывает микротрещины И подавляет набухание глин. Основной стабилизатор сланцев в РВО.', color:'var(--blue)' },
+      { name:'ДЖИ-ДРИЛЛ®', chemical:'Полигликоль с облачной точкой', dosage:'20–28 кг/м³', why:'Механизм облачной точки: выделяется при ПЗТ и покрывает глинистые пластины — точное ингибирование в забойных условиях.', color:'var(--cloto)' },
+      { name:'SHALE-X® Liquid', chemical:'Метилсилоксановый гидрофобизатор', dosage:'2–3 кг/м³', why:'Гидрофобизирует поверхность глин. Повышает термостабильность полимеров на 20–30°C. Синергия с БЛЭКТРОЛ®.', color:'var(--green)' }
+    ],
+    obm: [
+      { name:'КЛОТОНЕКС®', chemical:'Модифицированный органофильный лигнит', dosage:'10–15 кг/м³', why:'Контроль фильтрации РУО снижает передачу давления в поры, что является движущей силой нестабильности сланцев.', color:'var(--blue)' },
+      { name:'СТАБИЛАЙТ® РУО', chemical:'Гильсонит / асфальтит, порошок', dosage:'15–25 кг/м³', why:'Широкое распределение частиц асфальтита перекрывает поры любого размера, предотвращая проникновение фильтрата в сланцы.', color:'var(--cloto)' }
+    ]
+  },
+  filtration_wbm: {
+    wbm: [
+      { name:'ХИТЕМП®200', chemical:'Синтетический сополимер АА/АМПС', dosage:'8–15 кг/м³', why:'Основной высокотемпературный агент контроля фильтрации. Стабилен до 200°C, устойчив к рассолам, не ферментирует.', color:'var(--blue)' },
+      { name:'ОПТИТРОЛ®', chemical:'Модифицированный таловый пек', dosage:'5–10 кг/м³', why:'Наивысшая температура в портфеле РВО — 220°C. Запечатывает и перекрывает, снижает фильтрат в экстремальных условиях АВПД.', color:'var(--cloto)' },
+      { name:'ТЕРРАПАН®', chemical:'Сополимер полиакрилата натрия', dosage:'1–2 кг/м³', why:'Агент с низкой дозировкой. Формирует тонкую плотную корку. В рассольных системах выше 7% КCl/NaCl используйте ХИТЕМП®200.', color:'var(--green)' }
+    ]
+  },
+  filtration_obm: {
+    obm: [
+      { name:'КЛОТОНЕКС®', chemical:'Модифицированный органофильный лигнит', dosage:'10–20 кг/м³', why:'Основной продукт фильтрации РУО. Рейтинг 200°C. Совместим со всеми системами: дизельное, минеральное масло, СБР.', color:'var(--blue)' },
+      { name:'СТАБИЛАЙТ® РУО', chemical:'Гильсонит порошок', dosage:'15–30 кг/м³', why:'Асфальтит перекрывает поры и трещины — синергия с КЛОТОНЕКС® для экстремального АВПД.', color:'var(--cloto)' },
+      { name:'ЛИКВИТРОЛ®', chemical:'Жидкий полимерный понизитель фильтрации', dosage:'14–22 кг/м³', why:'Прямое добавление без предобработки. Минимальное влияние на реологию. Одновременно повышает электростабильность.', color:'var(--green)' }
+    ]
+  },
+  torque: {
+    wbm: [
+      { name:'СУПЕРСЛАЙДЕР® ПЛАТИНУМ', chemical:'Премиальный эфирный лубрикант', dosage:'1.5–3% по объёму', why:'Максимальное снижение крутящего момента для ГНС и горизонтальных скважин. Не загрязняет пласт, без пенообразования.', color:'var(--blue)' },
+      { name:'СУПЕРСЛАЙДЕР® ГОЛД', chemical:'Эфирный лубрикант', dosage:'1–2.5% по объёму', why:'Стандартный эфирный лубрикант для наклонных скважин. Снижает трение металл-металл и металл-порода.', color:'var(--cloto)' }
+    ],
+    obm: [
+      { name:'ВЕЛЛТРИТ®', chemical:'Органический ПАВ на основе смоляных кислот', dosage:'5–15 кг/м³', why:'Переводит твёрдую фазу в гидрофобное состояние, снижая налипание и трение. Минимизирует засорение сеток вибросит.', color:'var(--blue)' }
+    ]
+  },
+  rheology: {
+    wbm: [
+      { name:'ДЕФЛОНАТ®', chemical:'Хромлигносульфонат', dosage:'5–15 кг/м³', why:'Классический дефлокулянт для управления СНС и пластической вязкостью РВО. До 176°C. pH 9–11.', color:'var(--blue)' },
+      { name:'ХИТЕМП®200', chemical:'Синтетический сополимер АА/АМПС', dosage:'5–10 кг/м³', why:'Обеспечивает полезный вклад в вязкость и суспендирование — снижает потребность в отдельном загустителе.', color:'var(--cloto)' }
+    ]
+  },
+  emulsion: {
+    obm: [
+      { name:'ЭКСТРАМУЛ® СУПРЕМ', chemical:'Полиамид ТОФА (2-в-1)', dosage:'14–28 кг/м³', why:'2-в-1: восстанавливает эмульсию И смачивает твёрдую фазу одним продуктом. Рейтинг 204°C. 100% биологическая основа.', color:'var(--blue)' },
+      { name:'ЭКСТРАМУЛ®S', chemical:'Полиаминированные жирные кислоты', dosage:'7–14 кг/м³', why:'Вторичный эмульгатор — восстанавливает электростабильность, предотвращает выделение водной фазы.', color:'var(--cloto)' },
+      { name:'ВЕЛЛТРИТ®', chemical:'Органический ПАВ на основе смоляных кислот', dosage:'6–12 кг/м³', why:'Переводит всю твёрдую фазу в гидрофобное состояние — критически важно при восстановлении эмульсии после водного загрязнения.', color:'var(--green)' }
+    ]
+  },
+  hpht: {
+    wbm: [
+      { name:'ОПТИТРОЛ®', chemical:'Модифицированный таловый пек', dosage:'8–15 кг/м³', why:'Рейтинг 220°C — наивысшая температура в портфеле РВО КЛОТО. Работает в растворах плотностью до 2.2 г/см³.', color:'var(--blue)' },
+      { name:'ХИТЕМП®200', chemical:'Синтетический сополимер АА/АМПС', dosage:'10–18 кг/м³', why:'Синтетический полимер 200°C — фильтрация и суспендирование в скважинах с экстремальными температурами.', color:'var(--cloto)' },
+      { name:'БЛЭКТРОЛ®', chemical:'Жидкая дисперсия асфальта и полигликолей', dosage:'10–15 кг/м³', why:'Запечатывает микротрещины и поры в условиях АВПД. Существенно снижает АВПД-фильтрацию.', color:'var(--green)' }
+    ],
+    obm: [
+      { name:'ЭКСТРАМУЛ® СУПРЕМ', chemical:'Полиамид ТОФА', dosage:'20–28 кг/м³', why:'Эмульгатор 204°C — поддерживает электростабильность в экстремальных условиях АВПД РУО.', color:'var(--blue)' },
+      { name:'КЛОТОНЕКС®', chemical:'Органофильный лигнит', dosage:'15–25 кг/м³', why:'Фильтрация РУО при 200°C — термостабильный органофильный лигнит для скважин АВПД.', color:'var(--cloto)' },
+      { name:'СТАБИЛАЙТ® РУО', chemical:'Гильсонит порошок', dosage:'20–40 кг/м³', why:'Заглушение пор при АВПД — частицы асфальтита устойчивы к термическому разложению на глубине.', color:'var(--green)' }
+    ]
+  },
+  new_well: {
+    wbm: [
+      { name:'БЛЭКТРОЛ®', chemical:'Жидкая дисперсия асфальта и полигликолей', dosage:'8–12 кг/м³', why:'Базовое ингибирование сланцев и контроль фильтрации при проектировании системы РВО.', color:'var(--blue)' },
+      { name:'ХИТЕМП®200', chemical:'Синтетический сополимер АА/АМПС', dosage:'8–15 кг/м³', why:'Высокотемпературный контроль фильтрации — необходим для скважин выше 120°C.', color:'var(--cloto)' },
+      { name:'СУПЕРСЛАЙДЕР® ГОЛД', chemical:'Эфирный лубрикант', dosage:'1–2% по объёму', why:'Базовый пакет смазки для любой наклонной траектории.', color:'var(--green)' }
+    ],
+    obm: [
+      { name:'ЭКСТРАМУЛ® СУПРЕМ', chemical:'Полиамид ТОФА', dosage:'14–22 кг/м³', why:'Первичный/вторичный эмульгатор в одном продукте — упрощает создание системы РУО.', color:'var(--blue)' },
+      { name:'КЛОТОНЕКС®', chemical:'Органофильный лигнит', dosage:'10–15 кг/м³', why:'Базовый контроль фильтрации РУО во всём диапазоне температур.', color:'var(--cloto)' },
+      { name:'ВЕЛЛТРИТ®', chemical:'Органический ПАВ на основе смоляных кислот', dosage:'6–10 кг/м³', why:'Смачиватель — обеспечивает гидрофобность всей твёрдой фазы с первой прокачки.', color:'var(--green)' }
+    ]
+  }
+};
+
+function generateProposal() {
+  const wellName = document.getElementById('wellName').value || 'Скважина';
+  const depth = document.getElementById('depth').value || '4000';
+  const bht = document.getElementById('bht').value || '140';
+  const mw = document.getElementById('mw').value || '1.55';
+  const mudType = document.getElementById('mudType').value || 'wbm';
+  const problem = document.getElementById('problem').value;
+  const formation = document.getElementById('formation').value;
+  const wells = parseInt(document.getElementById('wells').value) || 1;
+
+  if (!problem) { alert('Выберите основную операционную задачу.'); return; }
+
+  document.getElementById('emptyState').classList.add('hidden');
+  document.getElementById('results').classList.add('hidden');
+  document.getElementById('loadingState').classList.remove('hidden');
+
+  setTimeout(() => {
+    document.getElementById('loadingState').classList.add('hidden');
+    document.getElementById('results').classList.remove('hidden');
+    buildDiagnosis(wellName, depth, bht, mw, mudType, problem, formation);
+    buildRecommendations(problem, mudType);
+    buildROI(depth, bht, wells, problem);
+  }, 2200);
+}
+
+function buildDiagnosis(wellName, depth, bht, mw, mudType, problem, formation) {
+  const isHPHT = bht > 150;
+  const mud = mudType === 'wbm' ? 'РВО — Водная основа' : mudType === 'obm' ? 'РУО — Углеводородная основа' : 'СБР — Синтетическая основа';
+  const riskColour = isHPHT ? 'var(--red)' : bht > 120 ? 'var(--amber)' : 'var(--green)';
+  const riskLabel = isHPHT ? 'ВЫСОКИЙ — АВПД' : bht > 120 ? 'ПОВЫШЕННЫЙ' : 'УМЕРЕННЫЙ';
+
+  document.getElementById('diagGrid').innerHTML = `
+    <div class="diag-item"><div class="diag-label">Скважина</div><div class="diag-val" style="color:var(--blue)">${wellName}</div></div>
+    <div class="diag-item"><div class="diag-label">Забойная глубина</div><div class="diag-val">${depth} м</div></div>
+    <div class="diag-item"><div class="diag-label">ПЗТ</div><div class="diag-val" style="color:${riskColour}">${bht}°C</div></div>
+    <div class="diag-item"><div class="diag-label">Тип раствора</div><div class="diag-val">${mud}</div></div>
+    <div class="diag-item"><div class="diag-label">Плотность</div><div class="diag-val">${mw} г/см³</div></div>
+    <div class="diag-item">
+      <div class="diag-label">Термический риск</div>
+      <div class="diag-val" style="color:${riskColour}">${riskLabel}</div>
+    </div>
+  `;
+
+  const diagMessages = {
+    shale: `AI-диагноз: Нестабильность сланцев на глубине ${depth}м при ПЗТ ${bht}°C. ${isHPHT ? 'Условия АВПД существенно ускоряют гидратацию глин и деградацию полимеров — термостабильность ингибирующего пакета критична. ' : ''}${formation === 'shale' ? 'Подтверждена реактивная сланцевая порода — приоритет ингибирующей концентрации над контролем фильтрации. ' : ''}Рекомендован двойной механизм ингибирования (асфальтное закупоривание пор + полигликолевое покрытие глин) для устранения механической и химической нестабильности.`,
+    filtration_wbm: `AI-диагноз: Повышенный фильтрат РВО на ${depth}м / ${bht}°C. ${isHPHT ? 'При температурах выше 150°C стандартные системы на крахмале и КМЦ не работают — только термостабильные синтетические сополимеры (АА/АМПС) и производные талового пека сохраняют эффективность. ' : ''}Высокий АВПД-фильтрат указывает на разрушение фильтрационной корки. Рекомендован термостойкий пакет с ОПТИТРОЛ® — наивысший температурный рейтинг 220°C.`,
+    filtration_obm: `AI-диагноз: Нарушение АВПД-фильтрации РУО на ${depth}м / ${bht}°C. ${isHPHT ? 'При температуре 150°C+ однопродуктовое лигнитовое лечение недостаточно — необходима двойная система асфальтит/лигнит для экстремального АВПД. ' : ''}Органофильная лигнитовая база (КЛОТОНЕКС®) с асфальтитовым перекрытием (СТАБИЛАЙТ® РУО) обеспечивает комплементарное распределение частиц для полного закупоривания пор.`,
+    torque: `AI-диагноз: Ограничение по крутящему моменту и сопротивлению на ${depth}м, система ${mw} г/см³. ${parseFloat(mw) > 1.8 ? 'Высокая плотность раствора увеличивает гидростатическое давление на корку, повышая трение стенок. ' : ''}Эфирная смазка (серия СУПЕРСЛАЙДЕР®) снижает коэффициент трения в зоне контакта обсадной колонны/КНБК и стенок скважины. Рекомендован пробный пакет 2% объёма.`,
+    rheology: `AI-диагноз: Управление реологией при ${bht}°C / ${depth}м. ${isHPHT ? 'Высокие температуры вызывают быстрое нарастание СНС и повышение пластической вязкости в РВО. Хромлигносульфонатный дефлокулянт (ДЕФЛОНАТ®) — проверенное решение до 176°C. ' : ''}Комбинированный подход дефлокулянт + загуститель (ХИТЕМП®200) обеспечивает стабильный и предсказуемый реологический профиль.`,
+    emulsion: `AI-диагноз: Разрушение эмульсии РУО на ${depth}м / ${bht}°C. Причины: термическая деградация эмульгатора, водное загрязнение или инверсия смачиваемости твёрдой фазы. ${isHPHT ? 'При АВПД используйте ЭКСТРАМУЛ® СУПРЕМ (рейтинг 204°C) — стандартные эмульгаторы разрушаются выше 180°C. ' : ''}Двухфазное восстановление: реэмульгирование ЭКСТРАМУЛ® СУПРЕМ + ЭКСТРАМУЛ®S, затем восстановление гидрофобности твёрдой фазы ВЕЛЛТРИТ®.`,
+    hpht: `AI-диагноз: Проектирование системы АВПД для ${depth}м / ${bht}°C. ${bht > 180 ? 'Ультра-АВПД диапазон — только ОПТИТРОЛ® (220°C РВО) и ЭКСТРАМУЛ® СУПРЕМ (204°C РУО) гарантированно отвечают термическим требованиям. ' : ''}${mudType === 'wbm' ? 'Подход РВО: пакет фильтрации ОПТИТРОЛ® + ХИТЕМП®200, укрепление ствола БЛЭКТРОЛ®, повышение термостабильности полимеров SHALE-X® Liquid.' : 'Подход РУО: первичный/смачиватель ЭКСТРАМУЛ® СУПРЕМ, двойная система фильтрации КЛОТОНЕКС® + СТАБИЛАЙТ® РУО.'}`,
+    new_well: `AI-диагноз: Полное проектирование системы для ${wellName} — ЗТ ${depth}м / ПЗТ ${bht}°C / плотность ${mw} г/см³. ${isHPHT ? 'Классификация АВПД: обязательно применение термостойких продуктов для фильтрации и ингибирования. ' : ''}${mudType === 'wbm' ? 'Программа РВО: ингибирование БЛЭКТРОЛ®, фильтрация ХИТЕМП®200, базовая смазка СУПЕРСЛАЙДЕР® ГОЛД. Переход на ОПТИТРОЛ® при ПЗТ >180°C.' : 'Программа РУО: эмульгатор/смачиватель ЭКСТРАМУЛ® СУПРЕМ, базовая фильтрация КЛОТОНЕКС®, управление смачиваемостью ВЕЛЛТРИТ®, антиседиментационный пакет АДВАНТА®.'}`
+  };
+  document.getElementById('diagText').innerHTML = `<strong>AI Диагноз:</strong> ${diagMessages[problem] || 'Анализ завершён. Смотрите рекомендации продуктов ниже.'}`;
+}
+
+function buildRecommendations(problem, mudType) {
+  const mud = (mudType === 'wbm' || mudType === 'sbm') ? 'wbm' : 'obm';
+  const products = CLOTO_PRODUCTS[problem];
+  if (!products) return;
+  const list = products[mud] || products['wbm'] || [];
+
+  document.getElementById('recList').innerHTML = list.map((p, i) => `
+    <div class="prod-rec-item">
+      <div class="rec-num" style="background:${p.color}">${i+1}</div>
+      <div class="rec-content">
+        <div class="rec-product">${p.name}</div>
+        <div class="rec-chemical">${p.chemical}</div>
+        <div class="rec-dosage">Рекомендуемая дозировка: <span>${p.dosage}</span></div>
+        <div class="rec-why">↳ ${p.why}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function buildROI(depth, bht, wells, problem) {
+  const d = parseInt(depth) || 4000;
+  const base = d > 4000 ? 48000 : d > 3000 ? 38000 : 28000;
+  const bhtMult = bht > 150 ? 1.4 : bht > 120 ? 1.2 : 1.0;
+  const chemCost = Math.round((base * 0.35 * bhtMult) / 1000) * 1000;
+  const nptSaved = Math.round((base * 2.8 * bhtMult) / 1000) * 1000;
+  const totalChemCost = chemCost * wells;
+  const totalNptSaved = nptSaved * wells;
+  const roi = (nptSaved / chemCost).toFixed(1);
+
+  document.getElementById('roiGrid').innerHTML = `
+    <div class="roi-box" style="background:rgba(0,212,255,.06);border:1px solid rgba(0,212,255,.2)">
+      <div class="roi-num" style="color:var(--blue)">$${(chemCost/1000).toFixed(0)}K</div>
+      <div class="roi-label">Стоимость химии / скважина</div>
+    </div>
+    <div class="roi-box" style="background:rgba(0,255,136,.06);border:1px solid rgba(0,255,136,.2)">
+      <div class="roi-num" style="color:var(--green)">$${(nptSaved/1000).toFixed(0)}K</div>
+      <div class="roi-label">Сохранено НПВ / скважина</div>
+    </div>
+    <div class="roi-box" style="background:rgba(255,107,43,.06);border:1px solid rgba(255,107,43,.2)">
+      <div class="roi-num" style="color:var(--cloto)">${roi}×</div>
+      <div class="roi-label">Возврат инвестиций</div>
+    </div>
+  `;
+
+  document.getElementById('roiText').innerHTML = `
+    <strong>Итого по программе (${wells} скважин${wells > 1 ? '' : 'а'}):</strong>
+    Инвестиции в химию: <strong style="color:var(--blue)">$${(totalChemCost/1000).toFixed(0)}K</strong> ·
+    Прогноз экономии НПВ: <strong style="color:var(--green)">$${(totalNptSaved/1000).toFixed(0)}K</strong> ·
+    Чистый эффект: <strong style="color:var(--cloto)">$${((totalNptSaved - totalChemCost)/1000).toFixed(0)}K</strong><br>
+    <span style="color:var(--t-04);font-size:11px;">Оценка НПВ основана на средней стоимости суток бурения для выбранного региона и глубины. Фактическая экономия зависит от конкретных операционных условий. Свяжитесь с нашей технической командой для детального анализа по скважине.</span>
+  `;
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,991 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>50 · Рассчитать проект (тендер)</title>
+  <!-- Optional seed written by tender_autobuild.py — regenerated each run -->
+  <script src="data/tender_seed.js" onerror="void 0"></script>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap");
+
+    :root {
+      --bg-0: #071018;
+      --bg-1: #102030;
+      --bg-2: #1b3041;
+      --panel: rgba(11, 20, 31, 0.82);
+      --panel-strong: rgba(16, 30, 44, 0.92);
+      --line: rgba(227, 238, 255, 0.14);
+      --line-soft: rgba(227, 238, 255, 0.08);
+      --text: #edf5ff;
+      --muted: #9ab0c7;
+      --cyan: #22d7b4;
+      --amber: #f8bd5f;
+      --danger: #ff7c68;
+      --shadow: 0 22px 52px rgba(0, 0, 0, 0.4);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      font-family: "Manrope", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(900px 460px at 0% -10%, rgba(34, 215, 180, 0.18), rgba(34, 215, 180, 0)),
+        radial-gradient(760px 420px at 100% 0%, rgba(248, 189, 95, 0.16), rgba(248, 189, 95, 0)),
+        linear-gradient(145deg, var(--bg-0), var(--bg-1) 46%, var(--bg-2));
+    }
+
+    .wrap {
+      width: min(1320px, 92vw);
+      margin: 0 auto;
+      padding: 24px 0 72px;
+    }
+
+    .top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border: 1px solid var(--line-soft);
+      border-radius: 14px;
+      background: rgba(8, 15, 24, 0.66);
+      backdrop-filter: blur(8px);
+      padding: 12px 14px;
+      position: sticky;
+      top: 12px;
+      z-index: 20;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: "Oswald", sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-size: 20px;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 35% 35%, #d6fff7, var(--cyan));
+    }
+
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .nav-link {
+      text-decoration: none;
+      color: #082922;
+      background: linear-gradient(130deg, #a0f9eb, #22d7b4);
+      border: 1px solid rgba(34, 215, 180, 0.75);
+      border-radius: 10px;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-weight: 800;
+      padding: 8px 12px;
+    }
+
+    .hero {
+      margin-top: 18px;
+      border: 1px solid var(--line);
+      border-radius: 26px;
+      background:
+        linear-gradient(150deg, rgba(34, 215, 180, 0.12), rgba(12, 22, 34, 0.92) 38%, rgba(248, 189, 95, 0.12));
+      box-shadow: var(--shadow);
+      padding: clamp(22px, 3vw, 34px);
+    }
+
+    .hero-label {
+      display: inline-block;
+      margin-bottom: 8px;
+      font-family: "Oswald", sans-serif;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--cyan);
+      font-weight: 600;
+    }
+
+    .hero h1 {
+      margin: 0 0 12px;
+      font-family: "Oswald", sans-serif;
+      font-size: clamp(30px, 5vw, 50px);
+      letter-spacing: -0.02em;
+    }
+
+    .hero p {
+      margin: 0;
+      max-width: 960px;
+      line-height: 1.65;
+      color: #c7d7ec;
+      font-size: 15px;
+    }
+
+    .chips {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
+
+    .chip {
+      border: 1px solid var(--line-soft);
+      border-radius: 999px;
+      padding: 5px 10px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #d7e5f8;
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .section-nav {
+      margin-top: 16px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .section-btn {
+      display: block;
+      text-decoration: none;
+      color: var(--text);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.03);
+      transition: transform 220ms ease, border-color 220ms ease, background 220ms ease;
+    }
+
+    .section-btn:hover {
+      transform: translateY(-3px);
+      border-color: var(--cyan);
+      background: rgba(34, 215, 180, 0.12);
+    }
+
+    .section-btn strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 14px;
+      color: var(--text);
+    }
+
+    .section-btn span {
+      display: block;
+      font-size: 12px;
+      color: #bfd0e5;
+      line-height: 1.45;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 22px;
+      margin-top: 28px;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      padding: 22px;
+    }
+
+    .panel h2,
+    .panel h3 {
+      margin: 0 0 14px;
+      font-size: 22px;
+      letter-spacing: -0.01em;
+    }
+
+    .panel p,
+    .panel li {
+      color: #c5d4e8;
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    .stack {
+      display: grid;
+      gap: 22px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .field {
+      display: grid;
+      gap: 8px;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text);
+      padding: 12px 14px;
+      font: inherit;
+      outline: none;
+    }
+
+    textarea {
+      min-height: 108px;
+      resize: vertical;
+    }
+
+    .checks {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .check {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      border: 1px solid var(--line-soft);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.025);
+      padding: 12px;
+    }
+
+    .check input {
+      width: 18px;
+      height: 18px;
+      margin-top: 2px;
+      accent-color: var(--cyan);
+    }
+
+    .check strong {
+      display: block;
+      font-size: 14px;
+      color: var(--text);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 12px;
+      padding: 12px 16px;
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .primary {
+      color: #06231f;
+      background: linear-gradient(130deg, #9af7e7, #22d7b4);
+    }
+
+    .secondary {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--line);
+    }
+
+    .result {
+      display: grid;
+      gap: 16px;
+    }
+
+    .stat-list,
+    .flow,
+    .deliverables,
+    .gaps {
+      display: grid;
+      gap: 10px;
+    }
+
+    .stat,
+    .flow-item,
+    .deliverable,
+    .gap {
+      border: 1px solid var(--line-soft);
+      border-radius: 14px;
+      padding: 14px;
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .stat strong,
+    .flow-item strong,
+    .deliverable strong,
+    .gap strong {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 6px;
+      color: var(--text);
+    }
+
+    .score {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      width: fit-content;
+    }
+
+    .score.high {
+      color: #09261f;
+      background: rgba(34, 215, 180, 0.92);
+    }
+
+    .score.mid {
+      color: #382100;
+      background: rgba(248, 189, 95, 0.92);
+    }
+
+    .score.low {
+      color: #310b06;
+      background: rgba(255, 124, 104, 0.94);
+    }
+
+    .callout {
+      border-left: 4px solid var(--amber);
+      padding: 14px 16px;
+      border-radius: 0 14px 14px 0;
+      background: rgba(248, 189, 95, 0.08);
+      color: #f5dfbd;
+    }
+
+    .mini-links {
+      display: grid;
+      gap: 10px;
+    }
+
+    .mini-link {
+      display: block;
+      text-decoration: none;
+      color: var(--text);
+      border: 1px solid var(--line-soft);
+      border-radius: 14px;
+      padding: 14px;
+      background: rgba(255, 255, 255, 0.025);
+    }
+
+    .mini-link strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 14px;
+    }
+
+    .footer {
+      margin-top: 18px;
+      font-size: 12px;
+      color: #8ea3bb;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    @media (max-width: 1080px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 760px) {
+      .form-grid,
+      .checks,
+      .section-nav {
+        grid-template-columns: 1fr;
+      }
+
+      .top {
+        position: static;
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+  </style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+  <main class="wrap">
+    <header class="top">
+      <div class="brand"><span class="dot" aria-hidden="true"></span><span>Nexus Oilfield AI</span></div>
+      <div class="nav-links">
+        <a class="nav-link" href="55_tender_project_intake.html">Шаг 0 · Загрузка</a>
+        <a class="nav-link" href="42_drilling_fluids_dashboard.html">Назад в буровые растворы</a>
+        <a class="nav-link" href="49_knowledge_center.html">База знаний</a>
+        <a class="nav-link" href="48_ai_engineer_console.html">AI-инженер</a>
+      </div>
+    </header>
+
+    <section class="hero">
+      <span class="hero-label">Тендерная проработка</span>
+      <h1>Рассчитать проект по буровым растворам</h1>
+      <p>Страница собирает стартовый каркас тендерного проекта: исходные ограничения, геолого-технологические риски, состав инженерных deliverables и рекомендуемый маршрут по модулям. Следующим этапом сюда можно подключить автоматический разбор файлов из папки и построение программы по буровым растворам прямо из техдокументов.</p>
+      <div class="chips">
+        <span class="chip">Tender Intake</span>
+        <span class="chip">Scope Builder</span>
+        <span class="chip">Deliverables</span>
+        <span class="chip">Fluid Program</span>
+      </div>
+      <div class="section-nav">
+        <a class="section-btn" href="51_tender_general_data.html"><strong>Раздел 1 · Общие данные</strong><span>Релевантные проектные требования из Приложения В1.</span></a>
+        <a class="section-btn" href="52_tender_lithology_stratigraphy.html"><strong>Раздел 2 · Литология и стратиграфия</strong><span>Интервалы, осложнения и геолого-технические риски из Приложения 1.</span></a>
+        <a class="section-btn" href="53_tender_well_constructions.html"><strong>Раздел 3 · Конструкция скважин</strong><span>Типовые конструкции, колонны и глубины из Приложения 14.</span></a>
+        <a class="section-btn" href="54_tender_drilling_fluid_intervals.html" style="border-color:rgba(255,191,102,.4);background:rgba(255,191,102,.06)"><strong>Раздел 4 · Интервалы бурового раствора</strong><span>Химреагенты, параметры и объёмы по интервалам из Приложений 4.1 и 4.2. Калькулятор стоимости.</span></a>
+      </div>
+    </section>
+
+    <section class="grid">
+      <div class="stack">
+        <article class="panel">
+          <h2>Входные данные проекта</h2>
+          <div class="form-grid">
+            <div class="field">
+              <label for="projectName">Проект / тендер</label>
+              <input id="projectName" type="text" placeholder="Например: Освоение кустов 2026" />
+            </div>
+            <div class="field">
+              <label for="region">Регион / месторождение</label>
+              <input id="region" type="text" placeholder="Например: ЯНАО, сеноман + ачимов" />
+            </div>
+            <div class="field">
+              <label for="wellType">Тип скважин</label>
+              <select id="wellType">
+                <option value="vertical">Вертикальные</option>
+                <option value="deviated">Наклонно-направленные</option>
+                <option value="horizontal">Горизонтальные</option>
+                <option value="multilateral">Многозабойные</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="wellCount">Количество скважин</label>
+              <input id="wellCount" type="number" min="1" step="1" value="1" />
+            </div>
+            <div class="field">
+              <label for="depth">Макс. глубина, м</label>
+              <input id="depth" type="number" min="0" step="10" placeholder="4500" />
+            </div>
+            <div class="field">
+              <label for="temperature">Макс. температура, °C</label>
+              <input id="temperature" type="number" min="0" step="1" placeholder="120" />
+            </div>
+            <div class="field">
+              <label for="mudFamily">Предпочтительная база</label>
+              <select id="mudFamily">
+                <option value="auto">Автоподбор</option>
+                <option value="WBM">WBM</option>
+                <option value="HPWBM">HPWBM</option>
+                <option value="Synthetic">Synthetic</option>
+                <option value="NAF">NAF</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="budget">Бюджетное ограничение</label>
+              <select id="budget">
+                <option value="tight">Жесткое</option>
+                <option value="balanced">Сбалансированное</option>
+                <option value="premium">Приоритет надежности</option>
+              </select>
+            </div>
+            <div class="field full">
+              <label for="hazards">Ключевые риски и особенности</label>
+              <textarea id="hazards" placeholder="Соли, гипсы, ангидриты, H2S, CO2, угли, реактивные глины, потери, узкое окно давлений, экологические ограничения, сезонная логистика..."></textarea>
+            </div>
+            <div class="field full">
+              <label for="docsLoaded">Какие документы уже загружены в папку</label>
+              <textarea id="docsLoaded" placeholder="ГТН, геология, offset wells, тендерное ТЗ, KPI, HSE, план строительства, спецификация оборудования..."></textarea>
+            </div>
+          </div>
+        </article>
+
+        <article class="panel">
+          <h2>Что должно войти в тендерный проект</h2>
+          <div class="checks">
+            <label class="check"><input id="needSelection" type="checkbox" checked /><span><strong>Подбор систем по интервалам</strong>Обоснование семейства раствора и логика переходов по секциям.</span></label>
+            <label class="check"><input id="needRecipe" type="checkbox" checked /><span><strong>Базовая рецептура и окна свойств</strong>Плотность, реология, фильтрация, ингибирование, solids control.</span></label>
+            <label class="check"><input id="needHydraulics" type="checkbox" checked /><span><strong>Гидравлика и ECD</strong>Проверка окна давлений, скоростей, cleaning и режимов промывки.</span></label>
+            <label class="check"><input id="needLosses" type="checkbox" checked /><span><strong>Профилактика осложнений</strong>Потери, прихваты, instability, sag, contamination.</span></label>
+            <label class="check"><input id="needLogistics" type="checkbox" checked /><span><strong>Логистика и склад</strong>Потребность по материалам, сезонность, запас прочности по supply chain.</span></label>
+            <label class="check"><input id="needKpi" type="checkbox" checked /><span><strong>KPI и сервисная модель</strong>Контрольные KPI, объем сервиса, отчетность и частота обновления программы.</span></label>
+          </div>
+          <div class="actions">
+            <button class="primary" id="buildBtn" type="button">Сформировать каркас проекта</button>
+            <button class="secondary" id="resetBtn" type="button">Очистить</button>
+            <button class="secondary" id="exportBtn" type="button">Экспорт JSON</button>
+          </div>
+        </article>
+      </div>
+
+      <div class="stack">
+        <article class="panel result">
+          <h2>Каркас тендерного проекта</h2>
+          <div id="readiness" class="score mid">Средняя полнота исходных данных</div>
+          <div class="stat-list" id="statList"></div>
+          <div class="flow" id="flowList"></div>
+          <div class="deliverables" id="deliverablesList"></div>
+          <div class="gaps" id="gapsList"></div>
+        </article>
+
+        <article class="panel">
+          <h3>Как это будет работать дальше</h3>
+          <div class="callout">Следующий этап: связать эту страницу с загруженными документами из папки знаний, чтобы система сама извлекала интервалы, риски, KPI, ограничения и собирала проект бурового раствора без ручного переноса данных.</div>
+          <div class="mini-links">
+            <a class="mini-link" href="49_knowledge_center.html"><strong>1. Обновить базу знаний</strong><span>Загрузить ТЗ, ГТН, геологию и refresh индекса.</span></a>
+            <a class="mini-link" href="47_drilling_fluid_system_selection.html"><strong>2. Подобрать систему по интервалам</strong><span>Определить WBM / HPWBM / Synthetic / NAF по секциям и рискам.</span></a>
+            <a class="mini-link" href="46_drilling_fluids_system_designer.html"><strong>3. Построить программу раствора</strong><span>Собрать свойства, превентивные меры, QC и проектную логику.</span></a>
+            <a class="mini-link" href="48_ai_engineer_console.html"><strong>4. Проверить через AI-инженер</strong><span>Сверить проект с базой знаний, аналогами и нормативными ограничениями.</span></a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <p class="footer">Тендерная проработка буровых растворов · Doc 50</p>
+  </main>
+
+  <script>
+    const STORAGE_KEY = "nexus-drilling-fluids-tender-project-v1";
+    const INTAKE_KEY = "nexus-tender-intake-v1";
+
+    const fields = {
+      projectName: document.getElementById("projectName"),
+      region: document.getElementById("region"),
+      wellType: document.getElementById("wellType"),
+      wellCount: document.getElementById("wellCount"),
+      depth: document.getElementById("depth"),
+      temperature: document.getElementById("temperature"),
+      mudFamily: document.getElementById("mudFamily"),
+      budget: document.getElementById("budget"),
+      hazards: document.getElementById("hazards"),
+      docsLoaded: document.getElementById("docsLoaded"),
+      needSelection: document.getElementById("needSelection"),
+      needRecipe: document.getElementById("needRecipe"),
+      needHydraulics: document.getElementById("needHydraulics"),
+      needLosses: document.getElementById("needLosses"),
+      needLogistics: document.getElementById("needLogistics"),
+      needKpi: document.getElementById("needKpi")
+    };
+
+    const readiness = document.getElementById("readiness");
+    const statList = document.getElementById("statList");
+    const flowList = document.getElementById("flowList");
+    const deliverablesList = document.getElementById("deliverablesList");
+    const gapsList = document.getElementById("gapsList");
+
+    function getState() {
+      return {
+        projectName: fields.projectName.value.trim(),
+        region: fields.region.value.trim(),
+        wellType: fields.wellType.value,
+        wellCount: Number(fields.wellCount.value || 0),
+        depth: Number(fields.depth.value || 0),
+        temperature: Number(fields.temperature.value || 0),
+        mudFamily: fields.mudFamily.value,
+        budget: fields.budget.value,
+        hazards: fields.hazards.value.trim(),
+        docsLoaded: fields.docsLoaded.value.trim(),
+        needs: {
+          selection: fields.needSelection.checked,
+          recipe: fields.needRecipe.checked,
+          hydraulics: fields.needHydraulics.checked,
+          losses: fields.needLosses.checked,
+          logistics: fields.needLogistics.checked,
+          kpi: fields.needKpi.checked
+        }
+      };
+    }
+
+    function setState(state) {
+      if (!state) {
+        return;
+      }
+      fields.projectName.value = state.projectName || "";
+      fields.region.value = state.region || "";
+      fields.wellType.value = state.wellType || "vertical";
+      fields.wellCount.value = state.wellCount || 1;
+      fields.depth.value = state.depth || "";
+      fields.temperature.value = state.temperature || "";
+      fields.mudFamily.value = state.mudFamily || "auto";
+      fields.budget.value = state.budget || "tight";
+      fields.hazards.value = state.hazards || "";
+      fields.docsLoaded.value = state.docsLoaded || "";
+      const needs = state.needs || {};
+      fields.needSelection.checked = needs.selection !== false;
+      fields.needRecipe.checked = needs.recipe !== false;
+      fields.needHydraulics.checked = needs.hydraulics !== false;
+      fields.needLosses.checked = needs.losses !== false;
+      fields.needLogistics.checked = needs.logistics !== false;
+      fields.needKpi.checked = needs.kpi !== false;
+    }
+
+    function applyIntakeBootstrap() {
+      const raw = localStorage.getItem(INTAKE_KEY);
+      const fileSeed = (typeof window !== "undefined" && window.NEXUS_TENDER_SEED) || null;
+      if (!raw && !fileSeed) return;
+
+      try {
+        const intake = raw ? JSON.parse(raw) : null;
+        const files = Array.isArray(intake?.files) ? intake.files : [];
+        const names = files.map((file) => file.name).filter(Boolean);
+        const docsLines = names.length
+          ? [
+              "Загружено через intake: " + names.length + " файл(ов)",
+              ...names.map((name) => "- " + name)
+            ]
+          : [];
+
+        if (intake?.projectName) {
+          fields.projectName.value = intake.projectName;
+        }
+
+        if (docsLines.length) {
+          fields.docsLoaded.value = docsLines.join("\n");
+        }
+
+        // If no localStorage intake but have file seed — populate from it
+        if (!intake && fileSeed) {
+          if (fileSeed.projectName) fields.projectName.value = fileSeed.projectName;
+          if (fileSeed.region) fields.region.value = fileSeed.region;
+          if (fileSeed.maxDepth > 0) fields.depth.value = String(fileSeed.maxDepth);
+          fields.docsLoaded.value = "Данные из autobuild seed · тендер " + (fileSeed.tenderId || "") +
+            "\nОбновите seed командой run_tender_autobuild.cmd";
+          localStorage.removeItem(INTAKE_KEY);
+          return;
+        }
+
+        const analysis = intake?.analysis || null;
+        if (analysis) {
+          const tags = Array.isArray(analysis.tags) ? analysis.tags : [];
+          const keyDocs = analysis.keyDocuments || {};
+
+          const autoLines = [
+            "",
+            "Автоанализ intake:",
+            "- теги: " + (tags.length ? tags.join(", ") : "не выявлены"),
+            "- максимальная глубина (оценка): " + (analysis.maxDepth || "не определена")
+          ];
+
+          if (keyDocs.appendixV1) autoLines.push("- В1: " + keyDocs.appendixV1);
+          if (keyDocs.appendix1) autoLines.push("- Прил.1: " + keyDocs.appendix1);
+          if (keyDocs.appendix14) autoLines.push("- Прил.14: " + keyDocs.appendix14);
+          if (keyDocs.appendix41) autoLines.push("- Прил.4.1: " + keyDocs.appendix41);
+          if (keyDocs.appendix42) autoLines.push("- Прил.4.2: " + keyDocs.appendix42);
+
+          fields.docsLoaded.value = (fields.docsLoaded.value ? fields.docsLoaded.value + "\n" : "") + autoLines.join("\n");
+
+          if (!fields.hazards.value.trim() && tags.length) {
+            fields.hazards.value = tags.join("; ");
+          }
+
+          if (!fields.depth.value && Number(analysis.maxDepth) > 0) {
+            fields.depth.value = String(Number(analysis.maxDepth));
+          }
+
+          const signals = analysis.signals || {};
+          if (!fields.region.value.trim() && signals.region) {
+            fields.region.value = signals.region;
+          }
+          // If file seed has richer region/depth, prefer it
+          if (!fields.region.value.trim() && fileSeed && fileSeed.region) {
+            fields.region.value = fileSeed.region;
+          }
+          if (!fields.depth.value && fileSeed && fileSeed.maxDepth > 0) {
+            fields.depth.value = String(fileSeed.maxDepth);
+          }
+          if (signals.wellType && ["vertical", "deviated", "horizontal", "multilateral"].includes(signals.wellType)) {
+            fields.wellType.value = signals.wellType;
+          }
+          if (!fields.projectName.value.trim() && signals.projectHint) {
+            fields.projectName.value = signals.projectHint;
+          }
+        }
+
+        if (!fields.hazards.value.trim()) {
+          const source = names.join(" ").toLowerCase();
+          const inferred = [];
+          if (/гтн|drill|бурен/.test(source)) inferred.push("требуется извлечение режима бурения из ГТН");
+          if (/геолог|lith|strat/.test(source)) inferred.push("геологические риски по интервалам");
+          if (/hse|безопас/.test(source)) inferred.push("учесть HSE-ограничения");
+          if (/тендер|тз|spec/.test(source)) inferred.push("параметры сервиса из ТЗ/тендера");
+          if (/архив|zip|rar|7z/.test(source)) inferred.push("распаковка архива перед парсингом");
+          fields.hazards.value = inferred.length ? inferred.join("; ") : "автоанализ после разбора загруженных документов";
+        }
+
+        if (!fields.region.value.trim() && /вчнг|верхнечон/i.test((intake.projectName || "") + " " + names.join(" "))) {
+        if (!fields.region.value.trim() && /вчнг|верхнечон/i.test(((intake?.projectName) || "") + " " + names.join(" "))) {
+          fields.region.value = "Верхнечонское месторождение";
+        }
+
+        localStorage.removeItem(INTAKE_KEY);
+      } catch (error) {
+        console.warn("Failed to apply intake bootstrap", error);
+      }
+    }
+
+    function scoreReadiness(state) {
+      let score = 0;
+      if (state.projectName) score += 1;
+      if (state.region) score += 1;
+      if (state.wellCount > 0) score += 1;
+      if (state.depth > 0) score += 1;
+      if (state.temperature > 0) score += 1;
+      if (state.hazards.length > 20) score += 2;
+      if (state.docsLoaded.length > 20) score += 2;
+      return score;
+    }
+
+    function readinessLabel(score) {
+      if (score >= 7) {
+        return { cls: "high", text: "Высокая полнота исходных данных" };
+      }
+      if (score >= 4) {
+        return { cls: "mid", text: "Средняя полнота исходных данных" };
+      }
+      return { cls: "low", text: "Низкая полнота исходных данных" };
+    }
+
+    function detectTags(text) {
+      const source = (text || "").toLowerCase();
+      const tags = [];
+      if (/сол|salt/.test(source)) tags.push("Соли");
+      if (/гипс|gypsum/.test(source)) tags.push("Гипсы");
+      if (/ангидрит|anhydrite/.test(source)) tags.push("Ангидриты");
+      if (/h2s|сероводород/.test(source)) tags.push("H2S");
+      if (/co2|углекисл/.test(source)) tags.push("CO2");
+      if (/угол|coal/.test(source)) tags.push("Угли");
+      if (/глин|shale|аргиллит/.test(source)) tags.push("Реактивные глины");
+      if (/поглощ|loss/.test(source)) tags.push("Потери");
+      if (/узк.*окн|narrow/.test(source)) tags.push("Узкое окно давлений");
+      return tags;
+    }
+
+    function recommendBase(state, tags) {
+      if (state.mudFamily !== "auto") {
+        return state.mudFamily;
+      }
+      const highInhibition = tags.some((tag) => ["Соли", "Гипсы", "Ангидриты", "Реактивные глины"].includes(tag));
+      const sour = tags.some((tag) => ["H2S", "CO2"].includes(tag));
+      const deepHot = state.depth >= 4000 || state.temperature >= 120;
+      if (deepHot && sour) return "Synthetic / NAF";
+      if (highInhibition && deepHot) return "HPWBM / Synthetic";
+      if (highInhibition) return "HPWBM";
+      return "WBM";
+    }
+
+    function buildFlow(state, tags) {
+      const flow = [];
+      flow.push("Забрать и проиндексировать тендерное ТЗ, ГТН, offset wells, геологию, KPI и экологические ограничения.");
+      if (state.needs.selection) {
+        flow.push("Сформировать матрицу интервалов и выбрать семейство раствора по секциям с учетом рисков: " + (tags.join(", ") || "явные риски пока не указаны") + ".");
+      }
+      if (state.needs.recipe) {
+        flow.push("Построить базовый проект свойств раствора: плотность, ингибирование, фильтрация, solids control и допустимые окна корректировки.");
+      }
+      if (state.needs.hydraulics) {
+        flow.push("Проверить гидравлику, cleaning, ECD и чувствительность к изменению расхода/реологии.");
+      }
+      if (state.needs.losses) {
+        flow.push("Добавить профилактику осложнений: потери, instability, прихваты, contamination и резервные сценарии.");
+      }
+      if (state.needs.logistics) {
+        flow.push("Оценить supply chain, буфер по материалам, сезонные риски и мобилизацию сервиса.");
+      }
+      if (state.needs.kpi) {
+        flow.push("Собрать KPI сервиса, контрольные точки по суточным отчетам и формат сопровождения проекта.");
+      }
+      return flow;
+    }
+
+    function buildDeliverables(state, tags, recommendation) {
+      const items = [];
+      items.push({
+        title: "Тендерная концепция по буровым растворам",
+        body: "Проектный контур для " + (state.projectName || "тендера") + ": регион " + (state.region || "не указан") + ", рекомендуемая база: " + recommendation + "."
+      });
+      if (state.needs.selection) {
+        items.push({
+          title: "Матрица систем по интервалам",
+          body: "Выбор семейства раствора по секциям с аргументацией по геологии, HSE и ограничениям стоимости."
+        });
+      }
+      if (state.needs.recipe) {
+        items.push({
+          title: "Окна свойств и базовые рецептуры",
+          body: "Плотность, PV/YP/gel, HPHT/API filtration, ингибирующий пакет и допустимые корректировки без брендов."
+        });
+      }
+      if (state.needsHydraulics || state.needs?.hydraulics) {
+        items.push({
+          title: "Гидравлический пакет",
+          body: "Режимы насосов, очистка ствола, ECD, давление циркуляции и чувствительность к реологии."
+        });
+      }
+      if (tags.length) {
+        items.push({
+          title: "Специальные инженерные разделы",
+          body: "Отдельные меры под риски: " + tags.join(", ") + "."
+        });
+      }
+      if (state.needs.logistics) {
+        items.push({
+          title: "Материальный и логистический план",
+          body: "Потребность по базовым химиям, резерв по supply chain, график завоза и минимальный склад."
+        });
+      }
+      if (state.needs.kpi) {
+        items.push({
+          title: "KPI, контроль и отчетность",
+          body: "Метрики сервиса, периодичность updates программы, контроль качества и управление отклонениями."
+        });
+      }
+      return items;
+    }
+
+    function buildGaps(state, tags) {
+      const gaps = [];
+      if (!state.docsLoaded || state.docsLoaded.length < 12) {
+        gaps.push("Не перечислены конкретные документы в папке: нужен список ТЗ, ГТН, геологии, offset wells и HSE-ограничений.");
+      }
+      if (!state.depth) {
+        gaps.push("Не указана проектная глубина: без нее нельзя полноценно оценить температурный режим, давление и целевую гидравлику.");
+      }
+      if (!state.temperature) {
+        gaps.push("Не задана температура: требуется для выбора стабильности полимерной/эмульсионной системы и для HPHT-фильтрации.");
+      }
+      if (!tags.length) {
+        gaps.push("Риски по породам и осложнениям не детализированы: желательно явно отметить соли, гипсы, ангидриты, кислые газы, угли, потери.");
+      }
+      if (!state.needs.logistics) {
+        gaps.push("Логистика исключена из охвата: для тендера это может занизить фактический объем сервиса и стоимость проекта.");
+      }
+      return gaps;
+    }
+
+    function render() {
+      const state = getState();
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      const readinessScore = scoreReadiness(state);
+      const readinessState = readinessLabel(readinessScore);
+      const tags = detectTags([state.hazards, state.docsLoaded].join(" "));
+      const recommendation = recommendBase(state, tags);
+      const flow = buildFlow(state, tags);
+      const deliverables = buildDeliverables(state, tags, recommendation);
+      const gaps = buildGaps(state, tags);
+
+      readiness.className = "score " + readinessState.cls;
+      readiness.textContent = readinessState.text;
+
+      statList.innerHTML = [
+        ["Рекомендуемая база", recommendation],
+        ["Количество скважин", state.wellCount > 0 ? String(state.wellCount) : "Не указано"],
+        ["Тип проекта", state.wellType],
+        ["Ключевые теги риска", tags.length ? tags.join(", ") : "Не выделены"],
+        ["Бюджетный режим", state.budget]
+      ].map(([title, value]) => '<div class="stat"><strong>' + title + '</strong><span>' + value + '</span></div>').join("");
+
+      flowList.innerHTML = flow.map((item, index) => '<div class="flow-item"><strong>Шаг ' + (index + 1) + '</strong><span>' + item + '</span></div>').join("");
+      deliverablesList.innerHTML = deliverables.map((item) => '<div class="deliverable"><strong>' + item.title + '</strong><span>' + item.body + '</span></div>').join("");
+      gapsList.innerHTML = gaps.length
+        ? gaps.map((item) => '<div class="gap"><strong>Что еще нужно</strong><span>' + item + '</span></div>').join("")
+        : '<div class="gap"><strong>Комплект на старте достаточен</strong><span>Можно переходить к детализации интервалов, расчету свойств и формированию полноценной проектной программы.</span></div>';
+    }
+
+    document.getElementById("buildBtn").addEventListener("click", render);
+    document.getElementById("resetBtn").addEventListener("click", () => {
+      localStorage.removeItem(STORAGE_KEY);
+      setState({
+        wellType: "vertical",
+        wellCount: 1,
+        mudFamily: "auto",
+        budget: "tight",
+        needs: {
+          selection: true,
+          recipe: true,
+          hydraulics: true,
+          losses: true,
+          logistics: true,
+          kpi: true
+        }
+      });
+      render();
+    });
+
+    document.getElementById("exportBtn").addEventListener("click", () => {
+      const state = getState();
+      const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "drilling_fluids_tender_project.json";
+      link.click();
+      URL.revokeObjectURL(link.href);
+    });
+
+    Object.values(fields).forEach((element) => {
+      element.addEventListener("input", render);
+      element.addEventListener("change", render);
+    });
+
+    try {
+      const hasIntake = !!localStorage.getItem(INTAKE_KEY);
+      const saved = hasIntake ? null : localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        setState(JSON.parse(saved));
+      } else {
+        setState({
+          wellType: "vertical",
+          wellCount: 1,
+          mudFamily: "auto",
+          budget: "tight",
+          needs: {
+            selection: true,
+            recipe: true,
+            hydraulics: true,
+            losses: true,
+            logistics: true,
+            kpi: true
+          }
+        });
+      }
+
+      applyIntakeBootstrap();
+    } catch (error) {
+      console.warn("Failed to restore saved tender project state", error);
+    }
+
+    render();
+  </script>
+  <script src="assets/js/global-auth-widget.js"></script>
+</body>
+</html>

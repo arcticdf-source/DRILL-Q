@@ -1,0 +1,272 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Раздел 12 · ННБ / КНБК · Южно-Русское</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap");
+    :root{--bg0:#07101a;--bg1:#0f2033;--bg2:#19354f;--panel:rgba(8,18,31,.88);--line:rgba(226,237,255,.16);--soft:rgba(226,237,255,.1);--text:#edf5ff;--muted:#a7bdd2;--cyan:#20d9b4;--amber:#ffbf66;--blue:#8db4ff;--violet:#c6a6ff;--green:#94d84e;--red:#ff8e8a;--shadow:0 28px 60px rgba(0,0,0,.42);--phase1:#5cc8ff;--phase2:#ffd166;--phase3:#61e294;--phase4:#c29bff}
+    *{box-sizing:border-box} html,body{margin:0;min-height:100%;font-family:"Manrope",sans-serif;color:var(--text);background:radial-gradient(920px 500px at 0% -12%,rgba(32,217,180,.18),transparent),radial-gradient(900px 540px at 100% 0%,rgba(255,191,102,.16),transparent),linear-gradient(145deg,var(--bg0),var(--bg1) 48%,var(--bg2))}
+    .wrap{width:min(1380px,94vw);margin:0 auto;padding:24px 0 64px}.top{display:flex;justify-content:space-between;align-items:center;gap:10px;border:1px solid var(--soft);border-radius:14px;padding:12px 14px;background:rgba(8,15,24,.66);position:sticky;top:12px;z-index:20}
+    .brand{display:flex;align-items:center;gap:10px;font-family:"Oswald",sans-serif;text-transform:uppercase;letter-spacing:.05em;font-size:20px}.dot{width:12px;height:12px;border-radius:999px;background:radial-gradient(circle at 35% 35%,#d6fff7,var(--cyan))}
+    .nav{display:flex;flex-wrap:wrap;gap:8px}.nav a{text-decoration:none;font-size:12px;text-transform:uppercase;letter-spacing:.06em;font-weight:800;border-radius:10px;padding:8px 12px;color:#082922;background:linear-gradient(130deg,#a0f9eb,#22d7b4);border:1px solid rgba(34,215,180,.75)}
+    .hero,.panel{margin-top:18px;border:1px solid var(--line);border-radius:24px;background:var(--panel);box-shadow:var(--shadow);padding:24px}.hero h1{margin:0 0 10px;font-family:"Oswald",sans-serif;font-size:clamp(30px,4vw,48px)}.hero p{margin:0;color:#c7d8ec;line-height:1.68;max-width:1040px}
+    .hero-grid,.cards-4,.cards-3,.stats-grid{display:grid;gap:12px}.hero-grid{margin-top:18px;grid-template-columns:repeat(4,minmax(0,1fr))}.hero-stat,.card,.interval-card,.service-card,.table-card,.schematic,.mini{border:1px solid var(--soft);border-radius:18px;background:rgba(255,255,255,.03);padding:14px}.hero-stat strong{display:block;font-size:22px}.hero-stat span{display:block;margin-top:5px;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.08em}
+    .legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}.legend-chip{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--soft);border-radius:999px;padding:5px 11px;font-size:12px;color:#d6e5f7;background:rgba(255,255,255,.03)}.legend-dot{width:12px;height:12px;border-radius:999px}
+    .section-head{display:flex;justify-content:space-between;align-items:flex-end;gap:10px;margin-bottom:14px}.section-head h2{margin:0;font-size:23px}.section-head span{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.08em}
+    .cards-4{grid-template-columns:repeat(4,minmax(0,1fr))}.cards-3{grid-template-columns:repeat(3,minmax(0,1fr))}.stats-grid{grid-template-columns:1.1fr .9fr;align-items:start}.card h3,.interval-card h3,.service-card h3,.table-card h3,.schematic h3,.mini h3{margin:0 0 10px;font-size:16px}.card p,.service-card p,.mini p{margin:0;color:#ccdcf0;font-size:13px;line-height:1.6}
+    .interval-card{position:relative;overflow:hidden}.interval-card::before{content:"";position:absolute;inset:0 auto 0 0;width:6px;background:var(--phase)}.interval-card .tag,.pill{display:inline-flex;align-items:center;border-radius:999px;padding:4px 8px;border:1px solid var(--soft);background:rgba(255,255,255,.04);font-size:11px;color:#d8e7f8}.interval-card .tag{margin-bottom:8px}.interval-card ul,.service-card ul{margin:10px 0 0;padding-left:18px;color:#d3e0f0;font-size:13px;line-height:1.6}
+    .service-card{min-height:100%}.service-card .k{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
+    .schematic svg{width:100%;height:auto;display:block}.schematic-note{margin-top:10px;color:#ccdcf0;font-size:13px;line-height:1.6}
+    .mini-list{display:grid;gap:8px}.mini-item{border:1px solid var(--soft);border-radius:12px;padding:10px;background:rgba(255,255,255,.025)}.mini-item strong{display:block;font-size:13px;margin-bottom:4px}.mini-item span{display:block;color:#ccdcf0;font-size:12px;line-height:1.5}
+    .table-wrap{overflow:auto} table{width:100%;border-collapse:collapse;font-size:13px} th,td{border:1px solid var(--soft);padding:9px 10px;text-align:left;vertical-align:top} th{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#bfd3e8;background:rgba(255,255,255,.04)} td{color:#d5e2f2;line-height:1.45}
+    .note{margin-top:12px;border:1px solid rgba(198,166,255,.24);border-radius:14px;background:rgba(198,166,255,.08);padding:12px;color:#e2d8ff;font-size:13px;line-height:1.55}.footer{margin-top:14px;color:var(--muted);font-size:12px;text-align:center;text-transform:uppercase;letter-spacing:.08em}
+    @media (max-width:1200px){.hero-grid,.cards-4,.cards-3,.stats-grid{grid-template-columns:1fr}} @media (max-width:900px){.top{position:static;flex-direction:column;align-items:flex-start}.section-head{flex-direction:column;align-items:flex-start}}
+  </style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+  <main class="wrap">
+    <header class="top">
+      <div class="brand"><span class="dot"></span><span>Nexus Oilfield AI</span></div>
+      <nav class="nav" id="nav"></nav>
+    </header>
+
+    <section class="hero">
+      <h1 id="title">Раздел 12. ННБ / КНБК</h1>
+      <p id="desc">Модуль по наклонно-направленному бурению и компоновкам низа бурильной колонны для эксплуатационных скважин Южно-Русского НГКМ. Здесь сведены интервалы долот, базовые КНБК, требования к ННБ-сервису и технические характеристики ВЗД, РУС, ясса и телесистемы.</p>
+      <div class="hero-grid">
+        <div class="hero-stat"><strong>4 интервала</strong><span>матрица долот и норм проходки</span></div>
+        <div class="hero-stat"><strong>220,7 мм</strong><span>основной PDC под РУС</span></div>
+        <div class="hero-stat"><strong>RSS + MWD/LWD</strong><span>работа в реальном времени</span></div>
+        <div class="hero-stat"><strong>1900 м</strong><span>верхняя глубина применения КНБК</span></div>
+      </div>
+      <div class="legend">
+        <span class="legend-chip"><span class="legend-dot" style="background:var(--phase1)"></span>393,7 мм · направление</span>
+        <span class="legend-chip"><span class="legend-dot" style="background:var(--phase2)"></span>295,3 мм · секция 245 мм</span>
+        <span class="legend-chip"><span class="legend-dot" style="background:var(--phase3)"></span>220,7 мм · секция 168 мм</span>
+        <span class="legend-chip"><span class="legend-dot" style="background:var(--phase4)"></span>142 мм · нормализация / фрезерование</span>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="section-head"><h2>Интервалы долот и нормы проходки</h2><span>таблица 7</span></div>
+      <div class="cards-4">
+        <article class="interval-card" style="--phase:var(--phase1)">
+          <div class="tag">0-150 м</div>
+          <h3>393,7 мм · Шарошечное долото</h3>
+          <p>Стартовая КНБК для направления под 324 мм.</p>
+          <ul><li>Мех. скорость: 25 м/ч</li><li>Норма проходки: 150 м</li><li>Кол-во долот: 2 шт</li></ul>
+        </article>
+        <article class="interval-card" style="--phase:var(--phase2)">
+          <div class="tag">150-622,6 м</div>
+          <h3>295,3 мм · PDC</h3>
+          <p>Основной проход под кондуктор 245 мм с ВЗД / телесистемой.</p>
+          <ul><li>Мех. скорость: 30 м/ч</li><li>Норма проходки: 472 м</li><li>Кол-во долот: 2 шт</li></ul>
+        </article>
+        <article class="interval-card" style="--phase:var(--phase3)">
+          <div class="tag">622,6-1900 м</div>
+          <h3>220,7 мм · PDC</h3>
+          <p>Базовый долотный размер для эксплуатационной колонны 168 мм и РУС.</p>
+          <ul><li>Мех. скорость: 20 м/ч</li><li>Норма проходки: 1278 м</li><li>Кол-во долот: 2 шт</li></ul>
+        </article>
+        <article class="interval-card" style="--phase:var(--phase4)">
+          <div class="tag">800-1900 м</div>
+          <h3>142 мм · Лопастное с твердосплавом</h3>
+          <p>Инструмент для нормализации и фрезерования, тип Барракуда.</p>
+          <ul><li>Мех. скорость: 30 м/ч</li><li>Норма проходки: 1100 м</li><li>Кол-во долот: 2 шт</li></ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="section-head"><h2>Сервис ННБ</h2><span>общие требования</span></div>
+      <div class="cards-3">
+        <article class="service-card">
+          <div class="k">Организация сервиса</div>
+          <h3>Безаварийность и резервирование</h3>
+          <p>Подрядчик должен обеспечить качественный сервис ННБ в соответствии с проектно-сметной документацией и иметь резервный комплект оборудования на буровой для непрерывности процесса.</p>
+          <ul><li>Инженерно-технологическое сопровождение по всему циклу работ</li><li>Аттестация персонала по профильным требованиям</li><li>Адаптация оборудования к фоторайдеру и погодным условиям</li></ul>
+        </article>
+        <article class="service-card">
+          <div class="k">Комплект оборудования</div>
+          <h3>Полный контур ННБ и телеметрии</h3>
+          <p>Наземный комплект должен включать станции, телесистемы, приборы ГИС, гидравлический забойный двигатель, РУС, ясс, осциллятор и связанное оборудование.</p>
+          <ul><li>Совместимость с раствором на углеводородной основе</li><li>Соответствие требованиям ОТ, ПБ и ООС</li><li>Сертификация оборудования и учет наработки</li></ul>
+        </article>
+        <article class="service-card">
+          <div class="k">Данные и отчетность</div>
+          <h3>Реальное время + память прибора</h3>
+          <p>На объекте должен быть комплект телеметрии с передачей информации в реальном времени и записью в память прибора, а также выдачей материалов в PDF и цифровом виде.</p>
+          <ul><li>MWD, LWD, RSS, PWD, PDM, JAR</li><li>Полевой материал по телеметрии и каротажу в графическом и цифровом виде</li><li>Интерпретация ФЕС в процессе бурения и итоговый отчет</li></ul>
+        </article>
+      </div>
+      <div class="note">Ключевой акцент сервиса: бесперебойная работа на инвертной системе, наличие резервного комплекта и непрерывная телеметрическая поддержка в реальном времени по всему интервалу ННБ.</div>
+    </section>
+
+    <section class="panel">
+      <div class="section-head"><h2>Архитектура КНБК по секциям</h2><span>сборка и логика инструмента</span></div>
+      <div class="stats-grid">
+        <div class="schematic">
+          <h3>Схема базовых КНБК</h3>
+          <svg viewBox="0 0 760 420" role="img" aria-label="Схема КНБК по секциям">
+            <defs>
+              <linearGradient id="tubeBlue" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#77cfff"/><stop offset="100%" stop-color="#4ea6ff"/></linearGradient>
+              <linearGradient id="tubeAmber" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#ffd77a"/><stop offset="100%" stop-color="#ffb84f"/></linearGradient>
+              <linearGradient id="tubeGreen" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#88efaf"/><stop offset="100%" stop-color="#47ce79"/></linearGradient>
+              <linearGradient id="tubeViolet" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#d5b8ff"/><stop offset="100%" stop-color="#a678ff"/></linearGradient>
+            </defs>
+            <rect x="0" y="0" width="760" height="420" rx="24" fill="rgba(255,255,255,.02)" stroke="rgba(226,237,255,.08)"/>
+            <text x="26" y="34" fill="#f0f6ff" font-size="16" font-weight="800">1. Направление 324 мм</text>
+            <rect x="28" y="54" width="110" height="18" rx="9" fill="url(#tubeBlue)"/><rect x="138" y="54" width="86" height="18" rx="9" fill="#8fbaff"/><rect x="224" y="54" width="60" height="18" rx="9" fill="#a7c7ff"/><rect x="284" y="54" width="136" height="18" rx="9" fill="#5cc8ff"/>
+            <text x="28" y="90" fill="#bfd3e8" font-size="12">Шарошечное 393,7 · УБТ 229 · калибратор · ТБТ / БТ 127</text>
+
+            <text x="26" y="138" fill="#f0f6ff" font-size="16" font-weight="800">2. Секция 245 мм · базовый ВЗД-комплект</text>
+            <rect x="28" y="158" width="96" height="18" rx="9" fill="url(#tubeAmber)"/><rect x="124" y="158" width="122" height="18" rx="9" fill="#ffd166"/><rect x="246" y="158" width="108" height="18" rx="9" fill="#ffcd57"/><rect x="354" y="158" width="84" height="18" rx="9" fill="#ffb84f"/><rect x="438" y="158" width="160" height="18" rx="9" fill="#ffcb69"/>
+            <text x="28" y="194" fill="#bfd3e8" font-size="12">PDC 295,3 · ВЗД DPL-240 · МWD 1200 · УБТС / УБТ 203 · БТ 127</text>
+
+            <text x="26" y="242" fill="#f0f6ff" font-size="16" font-weight="800">3. Секция 168 мм · РУС-комплект</text>
+            <rect x="28" y="262" width="82" height="18" rx="9" fill="url(#tubeGreen)"/><rect x="110" y="262" width="128" height="18" rx="9" fill="#61e294"/><rect x="238" y="262" width="92" height="18" rx="9" fill="#6fe89e"/><rect x="330" y="262" width="126" height="18" rx="9" fill="#47ce79"/><rect x="456" y="262" width="154" height="18" rx="9" fill="#72e39a"/>
+            <text x="28" y="298" fill="#bfd3e8" font-size="12">PDC 220,7 · RSS PowerDrive 675 · MWD/LWD · ясс · БТ 127 / УБТ</text>
+
+            <text x="26" y="346" fill="#f0f6ff" font-size="16" font-weight="800">4. Нормализация / фрезерование</text>
+            <rect x="28" y="366" width="90" height="18" rx="9" fill="url(#tubeViolet)"/><rect x="118" y="366" width="146" height="18" rx="9" fill="#c29bff"/><rect x="264" y="366" width="110" height="18" rx="9" fill="#b78cff"/><rect x="374" y="366" width="180" height="18" rx="9" fill="#a678ff"/>
+            <text x="28" y="402" fill="#bfd3e8" font-size="12">Фрезер 1Ф3-221 / 142 мм · забойный двигатель Д1-127 · обратный клапан · НКТ 89</text>
+          </svg>
+          <p class="schematic-note">Схема не заменяет спецификацию, но быстро показывает логику сборки: стартовое шарошечное бурение, затем ВЗД-комплект под 295,3 мм, далее РУС-пакет под 220,7 мм и отдельный фрезерующий блок для нормализации.</p>
+        </div>
+        <div class="mini">
+          <h3>Ключевые акценты по компоновкам</h3>
+          <div class="mini-list">
+            <div class="mini-item"><strong>КНБК №1</strong><span>Направление 324 мм: шарошечное долото 393,7 мм, УБТ 229, калибратор, турбоблок / трубы УБТ и ТБТ 127.</span></div>
+            <div class="mini-item"><strong>КНБК №3</strong><span>Секция под 245 мм: PDC 295,3, ВЗД DPL-240, телесистема MWD 1200, УБТС и толстостенные БТ.</span></div>
+            <div class="mini-item"><strong>КНБК №5</strong><span>Секция под 168 мм: PDC 220,7, PowerDrive 675, антенна РУС, ясс, телеметрический и предохранительные переводники.</span></div>
+            <div class="mini-item"><strong>Нормализация</strong><span>Фрезер Ф3-142, забойный двигатель Д1-127, клапан обратный, НКТ 89 с большим запасом по длине.</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="section-head"><h2>Требуемые технические характеристики</h2><span>ВЗД, РУС, ясс</span></div>
+      <div class="cards-3">
+        <div class="table-card">
+          <h3>Винтовой забойный двигатель</h3>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Параметр</th><th>295,3 мм</th><th>220 мм</th><th>142 мм</th></tr></thead>
+              <tbody>
+                <tr><td>Диаметр, мм</td><td>240</td><td>178</td><td>120(127)</td></tr>
+                <tr><td>Расход, л/с</td><td>40-70</td><td>25-40</td><td>8-16</td></tr>
+                <tr><td>Частота вращения, об/мин</td><td>150-200</td><td>90-180</td><td>90-120</td></tr>
+                <tr><td>Крутящий момент, кНм</td><td>&gt;20</td><td>&gt;15</td><td>&gt;8</td></tr>
+                <tr><td>Макс. длина, м</td><td>9-12</td><td>9-12</td><td>9-12</td></tr>
+                <tr><td>Часы циркуляции</td><td>200</td><td>200</td><td>200</td></tr>
+                <tr><td>Интегрированный стабилизатор</td><td>Да</td><td>Да</td><td>-</td></tr>
+                <tr><td>Макс. температура, °C</td><td>40</td><td>50</td><td>50</td></tr>
+                <tr><td>Маслостойкость</td><td>Не требуется</td><td>Требуется</td><td>Требуется</td></tr>
+                <tr><td>Допустимая осевая нагрузка, т</td><td>18</td><td>15</td><td>12</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="table-card">
+          <h3>РУС / RSS</h3>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Параметр</th><th>220 мм секция</th></tr></thead>
+              <tbody>
+                <tr><td>Диаметр, мм</td><td>178</td></tr>
+                <tr><td>Принцип действия</td><td>Отталкивание / отклонение</td></tr>
+                <tr><td>Интенсивность набора, град/10 м</td><td>2</td></tr>
+                <tr><td>Макс. рабочая температура, °C</td><td>50</td></tr>
+                <tr><td>Расход промывочной жидкости</td><td>25-40 л/с</td></tr>
+                <tr><td>Рабочая скорость вращения</td><td>200-300 об/мин</td></tr>
+                <tr><td>Допустимый передаваемый момент</td><td>25 кН*м</td></tr>
+                <tr><td>Макс. растягивающая нагрузка</td><td>100 т</td></tr>
+                <tr><td>Макс. осевая нагрузка</td><td>15 т</td></tr>
+                <tr><td>Доп. характеристика</td><td>Работа в реальном времени</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="table-card">
+          <h3>Ясс</h3>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Параметр</th><th>220 мм секция</th></tr></thead>
+              <tbody>
+                <tr><td>Диаметр наруж./канала</td><td>178 / не требуется</td></tr>
+                <tr><td>Принцип действия</td><td>Гидромеханический</td></tr>
+                <tr><td>Передаваемый момент</td><td>45 кН*м</td></tr>
+                <tr><td>Минимальное число ударов</td><td>400</td></tr>
+                <tr><td>Макс. растягивающая нагрузка</td><td>100 т</td></tr>
+                <tr><td>Расход промывочной жидкости</td><td>25-40 л/с</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="section-head"><h2>Матрица КНБК по условным номерам</h2><span>по техническому приложению</span></div>
+      <div class="table-card">
+        <h3>Основные сборки</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>КНБК</th>
+                <th>Назначение</th>
+                <th>Ключевые элементы</th>
+                <th>Наружный диаметр</th>
+                <th>Длина</th>
+                <th>Вес</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>1</td><td>Бурение под направление 324 мм</td><td>Долото Ш 393,7, труба УБТ-229, калибратор КС-393,7, трубы УБТ-203, ВБТ-165, ТБТ 127</td><td>393,7 / 229 / 203 / 165 / 127 мм</td><td>до 140,7 м</td><td>суммарно около 334,5 кН</td></tr>
+              <tr><td>2</td><td>Бурение под кондуктор 245 мм</td><td>Долото III 295,3, УБТ-203, ЛБТ 127х9 S-135</td><td>295,3 / 203 / 127 мм</td><td>до 140,7 м</td><td>около 64,9 кН</td></tr>
+              <tr><td>3</td><td>Базовый ВЗД-комплект 295,3 мм</td><td>PDC 295,3, ВЗД DPL-240, MWD 1200, УБТС-203, УБТ-203, УБТС-165, Ясс-172, ТБТ и БТ 127</td><td>295,3 / 240 / 203 / 165 / 172 / 127 мм</td><td>около 518 м по спецификации</td><td>около 138 кН</td></tr>
+              <tr><td>4</td><td>Нормализация и фрезерование</td><td>Фрезер 1Ф3-221, клапан обратный КОБ-178х3-147, труба УБТС-165, ЛБТ 127</td><td>221 / 178 / 165 / 127 мм</td><td>около 603,9 м</td><td>около 188,5 кН</td></tr>
+              <tr><td>5</td><td>Бурение под эксплуатационную колонну 168 мм</td><td>PDC 220,7, PowerDrive 675, антенна РУС, предохранительные переводники, телеметрия resistive + Gamma, немагнитная труба, УБТ, ясс, ТБТ, БТ 127</td><td>220,7 / 170,9 / 166 / 127 / 165 мм</td><td>до 184,56 м</td><td>около 369,8 кН</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <p class="footer">Южно-Русское · Раздел 12 · ННБ / КНБК</p>
+  </main>
+  <script>
+    function getParam(name, fallback) {
+      const params = new URLSearchParams(window.location.search);
+      return params.get(name) || fallback;
+    }
+
+    function buildProjectLink(page, projectName, wellName) {
+      const params = new URLSearchParams();
+      params.set("name", projectName);
+      if (wellName) {
+        params.set("well", wellName);
+      }
+      return `${page}?${params.toString()}`;
+    }
+
+    const projectName = getParam("name", "Южно-Русское месторождение");
+    const wellName = getParam("well", "5101");
+
+    document.title = `${projectName} · Раздел 12 · ННБ / КНБК`;
+    document.getElementById("title").textContent = `${projectName} · Скважина ${wellName} · Раздел 12. ННБ / КНБК`;
+    document.getElementById("desc").textContent = `Модуль ННБ / КНБК для скважины ${wellName}: интервалы долот, техтребования к ВЗД, РУС и яссу, а также базовые компоновки по приложению для Южно-Русского НГКМ.`;
+    document.getElementById("nav").innerHTML = `
+      <a href="${buildProjectLink("64_yuzhno_russkoe_project_dashboard.html", projectName, wellName)}">К дашборду</a>
+      <a href="${buildProjectLink("75_yuzhno_russkoe_depth_day.html", projectName, wellName)}">Раздел 6</a>
+      <a href="${buildProjectLink("70_yuzhno_russkoe_well_profile.html", projectName, wellName)}">Раздел 4</a>
+      <a href="${buildProjectLink("73_yuzhno_russkoe_cement_section.html", projectName, wellName)}">Раздел 7</a>
+    `;
+  </script>
+</body>
+</html>

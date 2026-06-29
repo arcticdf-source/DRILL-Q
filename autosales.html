@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CLOTO AutoSales — AI Sales Engine</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#060d18;--bg1:#0c1829;--bg2:#112238;--bg3:#162b45;
+  --card:rgba(12,24,41,0.9);
+  --cyan:#1fd4b0;--amber:#ffba44;--purple:#a78bfa;--rose:#f87171;
+  --ok:#34d399;--warn:#fbbf24;--bad:#f87171;
+  --text:#e8f4ff;--muted:#6b8fad;--sub:#4a6f8a;
+  --line:rgba(31,212,176,0.1);--line2:rgba(255,255,255,0.06);
+  --r:12px;--shadow:0 24px 64px rgba(0,0,0,.55);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%;font-family:'Manrope',sans-serif;color:var(--text);background:var(--bg);font-size:14px}
+body{background:radial-gradient(ellipse 1200px 600px at 10% -5%,rgba(31,212,176,.06),transparent),radial-gradient(ellipse 800px 500px at 90% 100%,rgba(167,139,250,.04),transparent),var(--bg)}
+
+/* TOPBAR */
+.topbar{display:flex;align-items:center;gap:12px;padding:10px 24px;background:rgba(6,13,24,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:100}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+.brand-icon{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--cyan),#0a7a63);display:flex;align-items:center;justify-content:center;font-size:18px}
+.brand-text{font-weight:900;font-size:15px;letter-spacing:-.3px;color:var(--text)}
+.brand-text span{color:var(--cyan)}
+.topbar-date{flex:1;text-align:center;font-size:12px;color:var(--muted)}
+.topbar-date strong{color:var(--amber)}
+.topbar-right{display:flex;gap:8px;align-items:center}
+.api-pill{display:flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:800;border:1px solid}
+.api-pill.demo{color:var(--amber);border-color:rgba(255,186,68,.3);background:rgba(255,186,68,.08)}
+.api-pill.live{color:var(--ok);border-color:rgba(52,211,153,.3);background:rgba(52,211,153,.08)}
+.api-pill .dot{width:6px;height:6px;border-radius:50%;background:currentColor;animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.icon-btn{width:34px;height:34px;background:var(--bg2);border:1px solid var(--line2);color:var(--muted);border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:.15s}
+.icon-btn:hover{color:var(--cyan);border-color:var(--line)}
+
+/* LAYOUT */
+.layout{display:grid;grid-template-columns:300px 1fr 280px;gap:14px;max-width:1380px;margin:0 auto;padding:16px;min-height:calc(100vh - 56px)}
+@media(max-width:1100px){.layout{grid-template-columns:260px 1fr}}
+@media(max-width:760px){.layout{grid-template-columns:1fr}}
+
+/* CARDS */
+.card{background:var(--card);border:1px solid var(--line2);border-radius:var(--r);overflow:hidden}
+.card-head{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--line2)}
+.card-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:var(--muted)}
+.card-body{padding:16px}
+
+/* LEFT: SCHEDULE */
+.schedule{display:flex;flex-direction:column;gap:0}
+.sch-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--line2);cursor:pointer;transition:.12s}
+.sch-item:hover{background:rgba(31,212,176,.04)}
+.sch-item.active{background:rgba(31,212,176,.08);border-left:3px solid var(--cyan)}
+.sch-day{font-size:10px;color:var(--sub);font-weight:700;min-width:36px}
+.sch-product{flex:1}
+.sch-name{font-size:13px;font-weight:700;color:var(--text)}
+.sch-angle{font-size:11px;color:var(--muted);margin-top:1px}
+.sch-status{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.sch-status.done{background:var(--ok)}
+.sch-status.today{background:var(--amber);box-shadow:0 0 6px var(--amber)}
+.sch-status.future{background:var(--bg3);border:1px solid var(--sub)}
+
+/* CENTER: GENERATOR */
+.gen-hero{padding:20px;border-bottom:1px solid var(--line2)}
+.gen-product-name{font-size:28px;font-weight:900;color:var(--text);margin-bottom:4px}
+.gen-product-cat{font-size:13px;color:var(--cyan);font-weight:600;margin-bottom:12px}
+.gen-product-desc{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:16px}
+.gen-tags{display:flex;gap:6px;flex-wrap:wrap}
+.gen-tag{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;background:rgba(31,212,176,.1);color:var(--cyan);border:1px solid rgba(31,212,176,.2)}
+
+.gen-controls{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px 20px;border-bottom:1px solid var(--line2)}
+.ctrl-group{display:flex;flex-direction:column;gap:4px}
+.ctrl-label{font-size:11px;color:var(--muted);font-weight:700}
+.ctrl-select{background:var(--bg2);border:1px solid var(--line2);color:var(--text);padding:8px 10px;border-radius:8px;font-family:inherit;font-size:13px;outline:none;cursor:pointer;transition:.15s}
+.ctrl-select:focus{border-color:var(--cyan)}
+
+.launch-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:calc(100% - 40px);margin:16px 20px;padding:16px;background:linear-gradient(135deg,var(--cyan),#0db896);color:#040d14;font-family:inherit;font-size:15px;font-weight:900;border:none;border-radius:10px;cursor:pointer;transition:.15s;letter-spacing:.3px}
+.launch-btn:hover{opacity:.9;transform:translateY(-1px)}
+.launch-btn:active{transform:none}
+.launch-btn:disabled{opacity:.4;cursor:default;transform:none}
+
+/* TABS */
+.tabs{display:flex;border-bottom:1px solid var(--line2)}
+.tab{padding:10px 18px;font-size:13px;font-weight:700;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:.15s}
+.tab.active{color:var(--cyan);border-bottom-color:var(--cyan)}
+.tab:hover:not(.active){color:var(--text)}
+
+.tab-panel{display:none;padding:20px}
+.tab-panel.active{display:block}
+
+/* CONTENT OUTPUT */
+.content-box{background:var(--bg2);border:1px solid var(--line2);border-radius:10px;padding:16px;font-size:13px;line-height:1.7;color:var(--text);white-space:pre-wrap;word-break:break-word;min-height:120px}
+.content-box.empty{color:var(--sub);font-style:italic}
+.copy-btn{display:flex;align-items:center;gap:6px;margin-top:10px;padding:8px 14px;background:rgba(31,212,176,.1);color:var(--cyan);border:1px solid rgba(31,212,176,.25);border-radius:8px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;transition:.15s}
+.copy-btn:hover{background:rgba(31,212,176,.2)}
+.copy-btn.copied{background:rgba(52,211,153,.15);color:var(--ok);border-color:rgba(52,211,153,.3)}
+
+.gen-loading{display:flex;align-items:center;gap:10px;padding:24px;color:var(--muted)}
+.spinner{width:20px;height:20px;border:2px solid var(--line);border-top-color:var(--cyan);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* SECTION TITLE */
+.section-title{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:10px}
+
+/* LANDING PREVIEW */
+.landing-preview{background:var(--bg1);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.lp-hero{padding:20px;background:linear-gradient(135deg,rgba(31,212,176,.08),rgba(167,139,250,.05));border-bottom:1px solid var(--line)}
+.lp-hero-tag{font-size:10px;font-weight:800;color:var(--cyan);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px}
+.lp-hero-title{font-size:18px;font-weight:900;margin-bottom:6px}
+.lp-hero-sub{font-size:12px;color:var(--muted);line-height:1.6}
+.lp-body{padding:16px}
+.lp-point{display:flex;gap:8px;margin-bottom:8px;font-size:12px;color:var(--muted)}
+.lp-point::before{content:"→";color:var(--cyan);flex-shrink:0;font-weight:700}
+.lp-cta{margin-top:14px;padding:10px 20px;background:var(--cyan);color:#040d14;border:none;border-radius:8px;font-family:inherit;font-size:13px;font-weight:800;cursor:pointer;width:100%}
+
+/* RIGHT: PIPELINE */
+.pipeline{display:flex;flex-direction:column;gap:0}
+.pipe-item{padding:12px 14px;border-bottom:1px solid var(--line2);cursor:pointer;transition:.12s}
+.pipe-item:hover{background:rgba(255,255,255,.02)}
+.pipe-company{font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px}
+.pipe-product{font-size:11px;color:var(--muted)}
+.pipe-status{display:inline-flex;align-items:center;gap:4px;margin-top:4px;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:800}
+.pipe-status.sent{background:rgba(107,143,173,.15);color:var(--muted)}
+.pipe-status.opened{background:rgba(255,186,68,.12);color:var(--amber)}
+.pipe-status.interested{background:rgba(167,139,250,.12);color:var(--purple)}
+.pipe-status.ordered{background:rgba(52,211,153,.12);color:var(--ok)}
+.pipe-empty{text-align:center;padding:24px 16px;color:var(--sub);font-size:12px}
+
+.add-lead-btn{width:calc(100% - 28px);margin:14px;padding:8px;background:rgba(31,212,176,.08);color:var(--cyan);border:1px dashed rgba(31,212,176,.3);border-radius:8px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;transition:.15s}
+.add-lead-btn:hover{background:rgba(31,212,176,.14)}
+
+/* METRICS ROW */
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:14px 20px;border-bottom:1px solid var(--line2)}
+.metric{text-align:center}
+.metric-val{font-size:22px;font-weight:900;color:var(--text)}
+.metric-val.cyan{color:var(--cyan)}
+.metric-val.amber{color:var(--amber)}
+.metric-val.ok{color:var(--ok)}
+.metric-label{font-size:10px;color:var(--sub);font-weight:700;text-transform:uppercase;margin-top:2px}
+
+/* MODAL */
+.overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.75);backdrop-filter:blur(4px);align-items:center;justify-content:center}
+.overlay.open{display:flex}
+.modal{background:var(--bg1);border:1px solid var(--line);border-radius:16px;width:min(480px,94vw);padding:24px}
+.modal-title{font-size:16px;font-weight:900;margin-bottom:4px}
+.modal-sub{font-size:12px;color:var(--muted);margin-bottom:20px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:11px;font-weight:700;color:var(--muted);margin-bottom:5px}
+.field input,.field select,.field textarea{width:100%;background:var(--bg2);border:1px solid var(--line2);color:var(--text);padding:10px 12px;border-radius:8px;font-family:inherit;font-size:13px;outline:none;transition:.15s}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--cyan)}
+.field textarea{resize:vertical;min-height:80px}
+.modal-hint{background:rgba(31,212,176,.06);border:1px solid rgba(31,212,176,.2);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:18px}
+.modal-hint a{color:var(--cyan)}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end}
+.btn-cancel{padding:9px 16px;border-radius:8px;font-family:inherit;font-size:13px;font-weight:700;background:transparent;border:1px solid var(--line2);color:var(--muted);cursor:pointer}
+.btn-primary{padding:9px 22px;border-radius:8px;font-family:inherit;font-size:13px;font-weight:800;background:var(--cyan);border:none;color:#040d14;cursor:pointer}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:5px}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <a class="brand" href="#">
+    <div class="brand-icon">⚡</div>
+    <div class="brand-text">CLOTO <span>AutoSales</span></div>
+  </a>
+  <div class="topbar-date" id="topDate"></div>
+  <div class="topbar-right">
+    <div class="api-pill demo" id="apiBadge"><span class="dot"></span><span id="apiLabel">DEMO</span></div>
+    <button class="icon-btn" onclick="openSettings()">⚙️</button>
+  </div>
+</header>
+
+<!-- LAYOUT -->
+<div class="layout">
+
+  <!-- LEFT: 30-DAY SCHEDULE -->
+  <div>
+    <div class="card">
+      <div class="card-head">
+        <span class="card-label">📅 30 дней · расписание</span>
+        <span style="font-size:11px;color:var(--cyan);font-weight:700" id="dayCounter"></span>
+      </div>
+      <div class="schedule" id="scheduleList"></div>
+    </div>
+  </div>
+
+  <!-- CENTER: GENERATOR -->
+  <div>
+    <div class="card">
+
+      <!-- METRICS -->
+      <div class="metrics">
+        <div class="metric"><div class="metric-val cyan" id="mLaunched">0</div><div class="metric-label">Запущено</div></div>
+        <div class="metric"><div class="metric-val" id="mSent">0</div><div class="metric-label">Отправлено</div></div>
+        <div class="metric"><div class="metric-val amber" id="mLeads">0</div><div class="metric-label">Лидов</div></div>
+        <div class="metric"><div class="metric-val ok" id="mOrders">0</div><div class="metric-label">Заказов</div></div>
+      </div>
+
+      <!-- PRODUCT HERO -->
+      <div class="gen-hero">
+        <div class="gen-product-name" id="genName">—</div>
+        <div class="gen-product-cat" id="genCat"></div>
+        <div class="gen-product-desc" id="genDesc"></div>
+        <div class="gen-tags" id="genTags"></div>
+      </div>
+
+      <!-- CONTROLS -->
+      <div class="gen-controls">
+        <div class="ctrl-group">
+          <div class="ctrl-label">Целевая компания</div>
+          <select class="ctrl-select" id="ctrlCompany">
+            <option value="rosneft">Роснефть</option>
+            <option value="lukoil">Лукойл</option>
+            <option value="gazprom">Газпром</option>
+            <option value="novatek">НОВАТЭК</option>
+            <option value="surgutneftegas">Сургутнефтегаз</option>
+            <option value="tatneft">Татнефть</option>
+            <option value="slavneft">Славнефть</option>
+            <option value="irkutsk">Иркутская НК</option>
+            <option value="custom">Другая компания...</option>
+          </select>
+        </div>
+        <div class="ctrl-group">
+          <div class="ctrl-label">Угол продажи</div>
+          <select class="ctrl-select" id="ctrlAngle">
+            <option value="economy">💰 Снижение затрат</option>
+            <option value="safety">🛡 Безопасность / HSE</option>
+            <option value="speed">⚡ Ускорение бурения</option>
+            <option value="import">🇷🇺 Импортозамещение</option>
+            <option value="tech">🔬 Технологическое превосходство</option>
+          </select>
+        </div>
+      </div>
+
+      <button class="launch-btn" id="launchBtn" onclick="generate()">
+        🚀 СГЕНЕРИРОВАТЬ МАТЕРИАЛЫ
+      </button>
+
+      <!-- TABS + OUTPUT -->
+      <div class="tabs">
+        <div class="tab active" onclick="switchTab('email')">📧 Email</div>
+        <div class="tab" onclick="switchTab('telegram')">✈️ Telegram</div>
+        <div class="tab" onclick="switchTab('landing')">🌐 Страница</div>
+        <div class="tab" onclick="switchTab('kp')">📄 КП</div>
+      </div>
+
+      <div class="tab-panel active" id="tab-email">
+        <div class="section-title">Письмо для холодного контакта</div>
+        <div class="content-box empty" id="out-email">Нажмите «Сгенерировать» — здесь появится готовое письмо</div>
+        <button class="copy-btn" id="copy-email" onclick="copyContent('email')" style="display:none">📋 Скопировать письмо</button>
+      </div>
+
+      <div class="tab-panel" id="tab-telegram">
+        <div class="section-title">Пост для Telegram-канала</div>
+        <div class="content-box empty" id="out-telegram">Нажмите «Сгенерировать» — здесь появится Telegram-пост</div>
+        <button class="copy-btn" id="copy-telegram" onclick="copyContent('telegram')" style="display:none">📋 Скопировать пост</button>
+      </div>
+
+      <div class="tab-panel" id="tab-landing">
+        <div class="section-title">Превью посадочной страницы</div>
+        <div id="out-landing"><div class="content-box empty">Нажмите «Сгенерировать» — здесь появится страница</div></div>
+        <button class="copy-btn" id="copy-landing" onclick="copyContent('landing')" style="display:none">📋 Скопировать HTML</button>
+      </div>
+
+      <div class="tab-panel" id="tab-kp">
+        <div class="section-title">Коммерческое предложение</div>
+        <div class="content-box empty" id="out-kp">Нажмите «Сгенерировать» — здесь появится КП</div>
+        <button class="copy-btn" id="copy-kp" onclick="copyContent('kp')" style="display:none">📋 Скопировать КП</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: PIPELINE -->
+  <div style="display:flex;flex-direction:column;gap:12px">
+    <div class="card" style="flex:1">
+      <div class="card-head">
+        <span class="card-label">🎯 Pipeline</span>
+        <span style="font-size:11px;color:var(--muted)" id="pipeTotal">0 лидов</span>
+      </div>
+      <div class="pipeline" id="pipelineList"></div>
+      <div class="pipe-empty" id="pipeEmpty">Нажмите «Сгенерировать» и<br>добавьте первый лид</div>
+      <button class="add-lead-btn" onclick="openAddLead()">+ Добавить лид вручную</button>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><span class="card-label">📊 Конверсия</span></div>
+      <div class="card-body" style="display:flex;flex-direction:column;gap:8px">
+        <div id="convStats" style="font-size:12px;color:var(--sub)">Нет данных</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SETTINGS MODAL -->
+<div class="overlay" id="settingsModal">
+  <div class="modal">
+    <div class="modal-title">⚙️ Настройки AutoSales</div>
+    <div class="modal-sub">Подключите AI для генерации уникального контента</div>
+    <div class="modal-hint">
+      Получите API-ключ бесплатно:<br>
+      → <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a> → API Keys → Create Key<br>
+      Без ключа — работает в Demo-режиме с шаблонами.
+    </div>
+    <div class="field">
+      <label>API-ключ Anthropic</label>
+      <input type="password" id="sApiKey" placeholder="sk-ant-api03-...">
+    </div>
+    <div class="field">
+      <label>Название вашей компании</label>
+      <input type="text" id="sCompanyName" placeholder="CLOTO" value="CLOTO">
+    </div>
+    <div class="field">
+      <label>Email для заявок</label>
+      <input type="text" id="sEmail" placeholder="sales@cloto.ru" value="sales@cloto.ru">
+    </div>
+    <div class="field">
+      <label>Телефон</label>
+      <input type="text" id="sPhone" placeholder="+7 (812) 000-00-00">
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeSettings()">Закрыть</button>
+      <button class="btn-primary" onclick="saveSettings()">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD LEAD MODAL -->
+<div class="overlay" id="addLeadModal">
+  <div class="modal">
+    <div class="modal-title">+ Новый лид</div>
+    <div class="modal-sub">Добавить компанию в pipeline</div>
+    <div class="field"><label>Компания</label><input type="text" id="lCompany" placeholder="Роснефть — Западная Сибирь"></div>
+    <div class="field"><label>Контакт (имя, должность)</label><input type="text" id="lContact" placeholder="Иванов И.И., Главный технолог"></div>
+    <div class="field"><label>Продукт</label><input type="text" id="lProduct" placeholder="ПОЛИТРОЛ®"></div>
+    <div class="field"><label>Статус</label>
+      <select id="lStatus">
+        <option value="sent">Отправлено</option>
+        <option value="opened">Открыл письмо</option>
+        <option value="interested">Интересуется</option>
+        <option value="ordered">Заказал</option>
+      </select>
+    </div>
+    <div class="field"><label>Заметка</label><textarea id="lNote" placeholder="Детали переговоров..."></textarea></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeAddLead()">Отмена</button>
+      <button class="btn-primary" onclick="saveLead()">Добавить</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════
+// КАТАЛОГ ПРОДУКТОВ CLOTO — 30 дней
+// ═══════════════════════════════════════════
+const PRODUCTS = [
+  {
+    id:'politrol_cost',
+    name:'ПОЛИТРОЛ®',
+    cat:'Разжижитель · Понизитель фильтрации',
+    desc:'Комплексный реагент для снижения вязкости и фильтрации буровых растворов на водной основе. Работает при АВПД, сложных реологических профилях, загрязнённых растворах.',
+    dosage:'0.5–3.0 кг/м³',
+    tags:['БРВО','Разжижение','Фильтрация','Термостойкость'],
+    angle:'economy',
+    benefit:'Снижение стоимости бурения на 8–15%'
+  },
+  {
+    id:'optitrol_stick',
+    name:'ОПТИТРОЛ®',
+    cat:'Понизитель фильтрации · Антиприхватный',
+    desc:'Специализированный полимерный понизитель фильтрации для предотвращения прихватов инструмента. Формирует тонкую низкопроницаемую фильтрационную корку.',
+    dosage:'1.0–4.0 кг/м³',
+    tags:['Прихват','ВФВТ','Корка','БРВО'],
+    angle:'safety',
+    benefit:'Снижение риска прихвата на 60–80%'
+  },
+  {
+    id:'blaktrol_shale',
+    name:'БЛЭКТРОЛ®',
+    cat:'Ингибитор набухания глин',
+    desc:'Высокоэффективный ингибитор глинистых пород нового поколения. Подавляет гидратацию монтмориллонита и каолинита, стабилизирует открытый ствол скважины.',
+    dosage:'2.0–8.0 кг/м³',
+    tags:['Глины','Набухание','Устойчивость ствола','АВПД'],
+    angle:'tech',
+    benefit:'Стабильность ствола до 48 часов без потерь'
+  },
+  {
+    id:'extramul_obd',
+    name:'ЭКСТРАМУЛ®',
+    cat:'Эмульгатор для растворов на УВ-основе',
+    desc:'Первичный эмульгатор для инвертных эмульсионных буровых растворов. Обеспечивает высокую электрическую стабильность при температурах до 200°C.',
+    dosage:'3.0–8.0 кг/м³',
+    tags:['РУО','Инвертная эмульсия','ES','Термостойкость'],
+    angle:'tech',
+    benefit:'ES >600V, стабильность до 200°C'
+  },
+  {
+    id:'pac_lv_filtration',
+    name:'ПАЦ НВ',
+    cat:'Понизитель фильтрации (полимер)',
+    desc:'Низковязкий полиакриламид для контроля фильтрации без нежелательного увеличения вязкости раствора. Эффективен в широком диапазоне минерализации.',
+    dosage:'0.5–2.0 кг/м³',
+    tags:['Фильтрация','Полимер','Экология','БРВО'],
+    angle:'economy',
+    benefit:'Снижение ВФВТ на 30–40% за один цикл'
+  },
+  {
+    id:'pac_hv_viscosity',
+    name:'ПАЦ ВВ',
+    cat:'Загуститель · Структурообразователь',
+    desc:'Высоковязкий полиакриламид для увеличения несущей способности раствора. Обеспечивает эффективный вынос шлама в горизонтальных и наклонных скважинах.',
+    dosage:'0.2–1.0 кг/м³',
+    tags:['Вынос шлама','Горизонтальное бурение','ДНС','Реология'],
+    angle:'speed',
+    benefit:'Вынос шлама +35%, ROP +10–20%'
+  },
+  {
+    id:'xanthan_horizontal',
+    name:'Ксантановая смола',
+    cat:'Биополимерный загуститель',
+    desc:'Биополимерный загуститель с уникальными псевдопластичными свойствами. Идеален для горизонтального бурения и скважин с большим отходом.',
+    dosage:'0.5–3.0 кг/м³',
+    tags:['Горизонталь','Шлам','Псевдопластик','Биополимер'],
+    angle:'speed',
+    benefit:'Критический вынос шлама при OD>60°'
+  },
+  {
+    id:'lcm_losses',
+    name:'КОЛЬМАТАНТ-М',
+    cat:'Кольматант мраморный (LCM)',
+    desc:'Мраморный кольматант микронного диапазона для ликвидации частичных и полных поглощений бурового раствора. Диапазон перекрываемых трещин: 5–400 мкм.',
+    dosage:'10–50 кг/м³',
+    tags:['Поглощения','LCM','NPT','Карбонат'],
+    angle:'economy',
+    benefit:'Сокращение потерь раствора до 80% за 2 часа'
+  },
+  {
+    id:'asphalt_stability',
+    name:'Асфальт окисленный',
+    cat:'Кольматант · Стабилизатор ствола',
+    desc:'Асфальтовый кольматант для уплотнения ствола скважины, снижения фильтрации и ликвидации поглощений в растворах на углеводородной основе.',
+    dosage:'5.0–20.0 кг/м³',
+    tags:['РУО','Кольматация','Устойчивость','Асфальт'],
+    angle:'safety',
+    benefit:'Уплотнение ствола, снижение NPT на 15–25%'
+  },
+  {
+    id:'politrol_import',
+    name:'ПОЛИТРОЛ®',
+    cat:'Импортозамещение · Российское производство',
+    desc:'Полный аналог зарубежных разжижителей (DRILL-THIN, SPERSENE) российского производства. Доступен со складов в Архангельске, Москве, Тюмени без ограничений.',
+    dosage:'0.5–3.0 кг/м³',
+    tags:['Импортозамещение','🇷🇺 РФ','Поставки','Склад'],
+    angle:'import',
+    benefit:'Полная замена импортных аналогов, -30% к цене'
+  },
+  {
+    id:'optitrol_hse',
+    name:'ОПТИТРОЛ®',
+    cat:'HSE · Экологическая безопасность',
+    desc:'Биоразлагаемый понизитель фильтрации, соответствующий требованиям HSE для работы в экологически чувствительных районах (ЯНАО, ХМАО, шельф).',
+    dosage:'1.0–4.0 кг/м³',
+    tags:['HSE','Экология','ЯНАО','Биоразлагаемость'],
+    angle:'safety',
+    benefit:'Соответствие HSE РФ без компромисса по эффективности'
+  },
+  {
+    id:'blaktrol_import',
+    name:'БЛЭКТРОЛ®',
+    cat:'Импортозамещение · Ингибитор',
+    desc:'Российский аналог KCl/PHPA систем для ингибирования глин. Не требует импортных компонентов, производится на заводе CLOTO в России.',
+    dosage:'2.0–8.0 кг/м³',
+    tags:['Импортозамещение','Глины','🇷🇺 РФ','ХМАО'],
+    angle:'import',
+    benefit:'Независимость от импорта, поставка за 3 дня'
+  },
+  {
+    id:'extramul_speed',
+    name:'ЭКСТРАМУЛ®',
+    cat:'Скорость бурения · РУО оптимизация',
+    desc:'Оптимизированный эмульгатор нового поколения снижает коэффициент трения инструмента в стволе, напрямую влияя на скорость механического бурения.',
+    dosage:'3.0–8.0 кг/м³',
+    tags:['ROP','Трение','РУО','КНБК'],
+    angle:'speed',
+    benefit:'ROP +15–25% за счёт снижения трения в РУО'
+  },
+  {
+    id:'pac_lv_import',
+    name:'ПАЦ НВ',
+    cat:'Импортозамещение · Полимерный контроль',
+    desc:'Российский полиакриламид производства CLOTO. Полный аналог Driscal-D и Flo-Trol, производится без импортного сырья, доступен в любых объёмах.',
+    dosage:'0.5–2.0 кг/м³',
+    tags:['Импортозамещение','Полимер','🇷🇺 РФ','Склад'],
+    angle:'import',
+    benefit:'Прямая замена Driscal-D / Flo-Trol, экономия 35%'
+  },
+  {
+    id:'pac_hv_rop',
+    name:'ПАЦ ВВ',
+    cat:'Оптимизация ROP · Горизонталь',
+    desc:'Высоковязкий ПАЦ для оптимизации реологии при высокоскоростном бурении горизонтальных секций. Поддерживает чистоту забоя при максимальном ROP.',
+    dosage:'0.2–1.0 кг/м³',
+    tags:['ROP','Горизонталь','Реология','Вынос'],
+    angle:'speed',
+    benefit:'Чистота забоя при ROP >25 м/час'
+  },
+  {
+    id:'xanthan_import',
+    name:'Ксантановая смола',
+    cat:'Импортозамещение · Биополимер',
+    desc:'Биополимер российского производства. Аналог Xanvis и Biozan без иностранных компонентов. Производится в России, поставляется со склада в Москве.',
+    dosage:'0.5–3.0 кг/м³',
+    tags:['Импортозамещение','Биополимер','🇷🇺 РФ','Xanvis'],
+    angle:'import',
+    benefit:'Замена Xanvis/Biozan, поставка 5–7 дней'
+  },
+  {
+    id:'lcm_cost',
+    name:'КОЛЬМАТАНТ-М',
+    cat:'Экономия · Борьба с поглощениями',
+    desc:'Стоимость одного часа NPT при полном поглощении — от 3 млн рублей. КОЛЬМАТАНТ-М ликвидирует поглощение за 2–4 часа, стоимость обработки в 50 раз меньше.',
+    dosage:'10–50 кг/м³',
+    tags:['NPT','ROI','Поглощения','Экономика'],
+    angle:'economy',
+    benefit:'ROI обработки >5000% (vs стоимость NPT)'
+  },
+  {
+    id:'asphalt_import',
+    name:'Асфальт окисленный',
+    cat:'Импортозамещение · Кольматант РУО',
+    desc:'Российский аналог Gilsonite и асфальтовых добавок для РУО. Производится из российского сырья, не зависит от импортных поставок.',
+    dosage:'5.0–20.0 кг/м³',
+    tags:['Импортозамещение','РУО','Gilsonite','🇷🇺 РФ'],
+    angle:'import',
+    benefit:'Замена Gilsonite, экономия 40% от цены импорта'
+  },
+  {
+    id:'politrol_tech',
+    name:'ПОЛИТРОЛ®',
+    cat:'Технология · Сложные растворы',
+    desc:'Синергетический эффект ПОЛИТРОЛ® + ОПТИТРОЛ® — единственная российская пара реагентов, доказавшая снижение вязкости И фильтрации одновременно в АВПД условиях.',
+    dosage:'1.0–2.5 кг/м³',
+    tags:['АВПД','Синергия','Технология','HTHP'],
+    angle:'tech',
+    benefit:'Единственная российская система для АВПД'
+  },
+  {
+    id:'optitrol_economy',
+    name:'ОПТИТРОЛ®',
+    cat:'Экономика · Контроль расхода',
+    desc:'Расход ОПТИТРОЛ® на 30–40% ниже аналогов при сопоставимом эффекте. Совместимость с хлоридом калия и большинством полимерных систем снижает общие затраты.',
+    dosage:'1.0–3.0 кг/м³',
+    tags:['Экономия','Расход','Совместимость','KCl'],
+    angle:'economy',
+    benefit:'Расход -35%, суммарные затраты на раствор -20%'
+  },
+  {
+    id:'blaktrol_tech',
+    name:'БЛЭКТРОЛ®',
+    cat:'Технология · Аргиллиты и сланцы',
+    desc:'Специальная формула для работы с высокоактивными аргиллитами Баженовской свиты и Тюменской серии. Испытан на месторождениях ХМАО и Томской области.',
+    dosage:'4.0–8.0 кг/м³',
+    tags:['Баженов','Аргиллиты','Тюмень','ХМАО'],
+    angle:'tech',
+    benefit:'Единственный протестированный реагент для Баженова'
+  },
+  {
+    id:'extramul_safety',
+    name:'ЭКСТРАМУЛ®',
+    cat:'Безопасность · Водоизоляция',
+    desc:'При аварийном попадании воды в РУО ЭКСТРАМУЛ® восстанавливает стабильность эмульсии без остановки бурения. Критичен при работе в зонах АВПЛ.',
+    dosage:'4.0–8.0 кг/м³',
+    tags:['АВПЛ','Вода','Аварийная обработка','HSE'],
+    angle:'safety',
+    benefit:'Восстановление ES за 1 цикл без остановки'
+  },
+  {
+    id:'pac_lv_tech',
+    name:'ПАЦ НВ',
+    cat:'Технология · Высокие температуры',
+    desc:'Термостойкий ПАЦ НВ CLOTO сохраняет эффективность при забойных температурах до 160°C. Сертифицирован для применения на глубоких горизонтах.',
+    dosage:'0.5–1.5 кг/м³',
+    tags:['HTHP','160°C','Термостойкость','Глубокое бурение'],
+    angle:'tech',
+    benefit:'Стабильность фильтрации при 160°C / 35 МПа'
+  },
+  {
+    id:'lcm_tech',
+    name:'КОЛЬМАТАНТ-М',
+    cat:'Технология · Точный PSD',
+    desc:'Фракционированный КОЛЬМАТАНТ-М с контролируемым распределением частиц (5–400 мкм) для точного перекрытия трещин по теории D90 без ущерба для реологии.',
+    dosage:'15–35 кг/м³',
+    tags:['PSD','D90','Трещины','Точная кольматация'],
+    angle:'tech',
+    benefit:'Перекрытие 95% каналов поглощения за 1 обработку'
+  },
+  {
+    id:'asphalt_speed',
+    name:'Асфальт окисленный',
+    cat:'Скорость бурения · Стабильность ствола',
+    desc:'Предупредительная обработка асфальтом при входе в нестабильные интервалы позволяет пройти их без остановок на КНБК и сэкономить 6–24 часа НВП.',
+    dosage:'8.0–15.0 кг/м³',
+    tags:['НВП','Ствол','Скорость','Превентивно'],
+    angle:'speed',
+    benefit:'Сокращение НВП на 6–24 часа на интервал'
+  },
+  {
+    id:'politrol_hse',
+    name:'ПОЛИТРОЛ®',
+    cat:'HSE · Экологичный разжижитель',
+    desc:'Не содержит хрома и феносульфоновых кислот. Соответствует экологическим требованиям для работы в ЯНАО, ХМАО, Арктической зоне. Сертификат ФГБУ ФГУ.',
+    dosage:'0.5–2.5 кг/м³',
+    tags:['Без хрома','Арктика','ЯНАО','Сертификат'],
+    angle:'safety',
+    benefit:'HSE-compliant, без токсичных компонентов'
+  },
+  {
+    id:'full_system',
+    name:'Комплексная система CLOTO',
+    cat:'Полный пакет · Оптимизация всего раствора',
+    desc:'Система ПОЛИТРОЛ® + ОПТИТРОЛ® + БЛЭКТРОЛ® — полный комплект для сложных скважин. Совместимость гарантирована, синергия доказана на 50+ скважинах РФ.',
+    dosage:'Индивидуально',
+    tags:['Комплекс','Синергия','Гарантия','50+ скважин'],
+    angle:'tech',
+    benefit:'Комплексное решение с гарантией результата'
+  },
+  {
+    id:'blaktrol_safety',
+    name:'БЛЭКТРОЛ®',
+    cat:'Безопасность · Предотвращение осложнений',
+    desc:'Применение БЛЭКТРОЛ® с первых метров нестабильного интервала предотвращает обрушения, кавернообразование и прихваты до их возникновения.',
+    dosage:'3.0–6.0 кг/м³',
+    tags:['Профилактика','Обрушения','Кавернообразование','Прихват'],
+    angle:'safety',
+    benefit:'Нулевые потери времени на нестабильных интервалах'
+  },
+  {
+    id:'xanthan_hse',
+    name:'Ксантановая смола',
+    cat:'HSE · Биополимер без токсичности',
+    desc:'Ксантан CLOTO — натуральный биополимер без токсичных компонентов. Полностью биоразлагаем, безопасен для водоохранных зон и арктических месторождений.',
+    dosage:'0.5–2.0 кг/м³',
+    tags:['Биополимер','HSE','Арктика','Водоохрана'],
+    angle:'safety',
+    benefit:'100% биоразлагаемость, сертификат для шельфа'
+  },
+  {
+    id:'politrol_final',
+    name:'ПОЛИТРОЛ® — Специальное предложение',
+    cat:'Конец месяца · Лучшая цена',
+    desc:'30-й день кампании — специальная цена на ПОЛИТРОЛ® для компаний, сделавших первый заказ в этом месяце. Персональные условия для каждого клиента.',
+    dosage:'0.5–3.0 кг/м³',
+    tags:['Спецпредложение','Скидка','Первый заказ','CTA'],
+    angle:'economy',
+    benefit:'Специальные условия на первую поставку'
+  }
+];
+
+// ═══════════════════════════════════════════
+// КОМПАНИИ-КЛИЕНТЫ
+// ═══════════════════════════════════════════
+const COMPANIES = {
+  rosneft:       { name:'Роснефть',        div:'Буровой департамент',   region:'ХМАО, ЯНАО, Сибирь' },
+  lukoil:        { name:'Лукойл',          div:'Лукойл-Инжиниринг',     region:'Пермь, Западная Сибирь' },
+  gazprom:       { name:'Газпром',         div:'Газпром Бурение',        region:'Надым, Ямал, Сахалин' },
+  novatek:       { name:'НОВАТЭК',         div:'НОВАТЭКбурение',        region:'Ямал, Арктика' },
+  surgutneftegas:{ name:'Сургутнефтегаз',  div:'УБР',                   region:'ХМАО-Югра' },
+  tatneft:       { name:'Татнефть',        div:'Татнефть-Бурение',      region:'Татарстан' },
+  slavneft:      { name:'Славнефть',       div:'Служба бурения',        region:'ХМАО, Красноярск' },
+  irkutsk:       { name:'Иркутская НК',    div:'ИркутскЭнерго-Бурение', region:'Иркутск, Саха' },
+  custom:        { name:'Ваша компания',   div:'Буровой отдел',         region:'—' }
+};
+
+// ═══════════════════════════════════════════
+// СОСТОЯНИЕ
+// ═══════════════════════════════════════════
+const S = {
+  dayIndex: 0,
+  today: new Date('2026-05-27'),
+  apiKey: localStorage.getItem('as_key') || '',
+  proxyUrl: localStorage.getItem('as_proxy') || 'http://localhost:5000',
+  companyName: localStorage.getItem('as_company') || 'CLOTO',
+  email: localStorage.getItem('as_email') || 'sales@cloto.ru',
+  phone: localStorage.getItem('as_phone') || '',
+  pipeline: JSON.parse(localStorage.getItem('as_pipeline') || '[]'),
+  generated: {},
+  generating: false
+};
+
+// ═══════════════════════════════════════════
+// ИНИЦИАЛИЗАЦИЯ
+// ═══════════════════════════════════════════
+function init() {
+  // Вычислить день кампании (0-29)
+  const start = new Date('2026-05-27');
+  const diff = Math.floor((S.today - start) / 86400000);
+  S.dayIndex = Math.max(0, Math.min(diff, 29));
+
+  renderDate();
+  renderSchedule();
+  selectDay(S.dayIndex);
+  renderPipeline();
+  updateApiStatus();
+  updateMetrics();
+}
+
+function renderDate() {
+  const d = S.today;
+  const days = ['воскресенье','понедельник','вторник','среда','четверг','пятница','суббота'];
+  const months = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+  document.getElementById('topDate').innerHTML =
+    `<strong>${days[d.getDay()]}</strong>, ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+  document.getElementById('dayCounter').textContent = `День ${S.dayIndex + 1} / 30`;
+}
+
+function renderSchedule() {
+  const list = document.getElementById('scheduleList');
+  const today = S.dayIndex;
+  list.innerHTML = PRODUCTS.map((p, i) => {
+    const isPast = i < today;
+    const isToday = i === today;
+    const date = new Date(S.today);
+    date.setDate(date.getDate() + (i - today));
+    const dd = date.getDate().toString().padStart(2,'0');
+    const mm = (date.getMonth()+1).toString().padStart(2,'0');
+    return `
+      <div class="sch-item ${isToday?'active':''}" onclick="selectDay(${i})">
+        <div class="sch-day">${dd}.${mm}</div>
+        <div class="sch-product">
+          <div class="sch-name">${p.name}</div>
+          <div class="sch-angle">${angleLabel(p.angle)}</div>
+        </div>
+        <div class="sch-status ${isPast?'done':isToday?'today':'future'}"></div>
+      </div>`;
+  }).join('');
+}
+
+function angleLabel(a) {
+  return {economy:'💰 Экономия',safety:'🛡 Безопасность',speed:'⚡ Скорость',import:'🇷🇺 Импортозамещение',tech:'🔬 Технология'}[a] || a;
+}
+
+function selectDay(i) {
+  S.dayIndex = i;
+  document.querySelectorAll('.sch-item').forEach((el,j) => el.classList.toggle('active', j===i));
+  const p = PRODUCTS[i];
+  document.getElementById('genName').textContent = p.name;
+  document.getElementById('genCat').textContent = p.cat;
+  document.getElementById('genDesc').textContent = p.desc;
+  document.getElementById('genTags').innerHTML = p.tags.map(t=>`<span class="gen-tag">${t}</span>`).join('');
+  // Очистить выходы
+  clearOutputs();
+}
+
+function clearOutputs() {
+  const empty = {email:'Нажмите «Сгенерировать» — здесь появится готовое письмо',telegram:'Нажмите «Сгенерировать» — здесь появится Telegram-пост',kp:'Нажмите «Сгенерировать» — здесь появится КП'};
+  ['email','telegram','kp'].forEach(k=>{
+    const el = document.getElementById('out-'+k);
+    el.textContent = empty[k];
+    el.className = 'content-box empty';
+    document.getElementById('copy-'+k).style.display = 'none';
+  });
+  document.getElementById('out-landing').innerHTML = '<div class="content-box empty">Нажмите «Сгенерировать» — здесь появится страница</div>';
+  document.getElementById('copy-landing').style.display = 'none';
+  S.generated = {};
+}
+
+// ═══════════════════════════════════════════
+// ГЕНЕРАЦИЯ КОНТЕНТА
+// ═══════════════════════════════════════════
+async function generate() {
+  if (S.generating) return;
+  const p = PRODUCTS[S.dayIndex];
+  const compKey = document.getElementById('ctrlCompany').value;
+  const angle = document.getElementById('ctrlAngle').value;
+  const co = COMPANIES[compKey] || COMPANIES.custom;
+
+  S.generating = true;
+  const btn = document.getElementById('launchBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner"></div> Генерирую...';
+
+  if (S.apiKey) {
+    await generateWithAI(p, co, angle);
+  } else {
+    await generateDemo(p, co, angle);
+  }
+
+  S.generating = false;
+  btn.disabled = false;
+  btn.innerHTML = '🚀 СГЕНЕРИРОВАТЬ МАТЕРИАЛЫ';
+
+  // Добавить в pipeline как "sent"
+  addToPipeline(co.name, p.name, 'sent');
+  updateMetrics();
+  updateConvStats();
+}
+
+async function generateDemo(p, co, angle) {
+  // Имитируем задержку AI
+  await delay(1200);
+
+  const angleTexts = {
+    economy:`сокращение затрат на бурение`,
+    safety:`повышение безопасности и соответствие HSE`,
+    speed:`увеличение скорости бурения и ROP`,
+    import:`замену импортных реагентов российским производством`,
+    tech:`технологическое превосходство в сложных условиях`
+  };
+  const at = angleTexts[angle] || 'оптимизацию процесса бурения';
+
+  // EMAIL
+  const email = `Тема: ${p.name} для ${co.name} — ${p.benefit}
+
+Уважаемый коллега,
+
+меня зовут [Имя], я представляю компанию ${S.companyName} — российского производителя химических реагентов для буровых растворов с 1991 года.
+
+Обращаюсь по вопросу ${at} для ${co.name}.
+
+Наш реагент **${p.name}** (${p.cat}) позволяет:
+→ ${p.benefit}
+→ Дозировка: ${p.dosage}
+→ Совместим с вашими текущими системами
+
+${p.name} уже применяется на месторождениях в ${co.region}. Готовы предоставить технический паспорт и выполнить тестовую поставку.
+
+Предлагаю 20 минут для короткого технического созвона — покажу конкретные кейсы с вашей геологией.
+
+С уважением,
+[Имя Фамилия]
+${S.companyName} | ${S.email}
+${S.phone}`;
+
+  // TELEGRAM
+  const tg = `⚡ **${p.name}** от CLOTO
+
+${p.cat}
+
+Для кого: буровые компании в ${co.region}
+
+✅ ${p.benefit}
+📦 Дозировка: ${p.dosage}
+🏭 Производство: Россия, склад — Архангельск / Москва / Тюмень
+
+${p.tags.map(t => `#${t.replace(/[^а-яa-z0-9]/gi,'')}`).join(' ')}
+
+📞 Запросить КП: ${S.email}`;
+
+  // КП
+  const kp = `КОММЕРЧЕСКОЕ ПРЕДЛОЖЕНИЕ
+
+От: ${S.companyName}
+Кому: ${co.name}, ${co.div}
+Дата: ${S.today.toLocaleDateString('ru-RU')}
+
+РЕАГЕНТ: ${p.name}
+Категория: ${p.cat}
+
+ОПИСАНИЕ:
+${p.desc}
+
+ТЕХНИЧЕСКИЕ ХАРАКТЕРИСТИКИ:
+• Дозировка: ${p.dosage}
+• Применение: ${p.tags.join(', ')}
+
+ЦЕННОСТНОЕ ПРЕДЛОЖЕНИЕ:
+${p.benefit}
+
+УСЛОВИЯ:
+• Минимальный заказ: 500 кг
+• Срок поставки: 5–10 рабочих дней
+• Доставка: со склада в ${co.region.split(',')[0] || 'Москва'}
+• Оплата: по договору (предоплата 50% / отсрочка для постоянных клиентов)
+
+ГАРАНТИЯ:
+${S.companyName} гарантирует соответствие реагента заявленным характеристикам.
+При несоответствии — полная замена партии или возврат средств.
+
+Для получения прайс-листа и технического паспорта:
+${S.email} | ${S.phone || 'по запросу'}`;
+
+  S.generated = { email, telegram: tg, kp };
+
+  renderOutput('email', email);
+  renderOutput('telegram', tg);
+  renderOutput('kp', kp);
+  renderLanding(p, co);
+
+  switchTab('email');
+}
+
+async function generateWithAI(p, co, angle) {
+  const anglePrompts = {
+    economy:'Акцент на снижение затрат: ROI, экономия бюджета, сокращение расхода',
+    safety:'Акцент на HSE и безопасность: соответствие требованиям, снижение рисков',
+    speed:'Акцент на скорость: ROP, сокращение времени бурения, NPT',
+    import:'Акцент на импортозамещение: российское производство, независимость от поставок',
+    tech:'Акцент на технологию: инновации, уникальные характеристики, сложные условия'
+  };
+
+  const prompt = `Сгенерируй три продажных материала на русском языке для реагента ${p.name} от компании ${S.companyName}.
+
+Продукт: ${p.name} (${p.cat})
+Описание: ${p.desc}
+Дозировка: ${p.dosage}
+Главный эффект: ${p.benefit}
+Целевая компания: ${co.name} (${co.div}), работают в регионе: ${co.region}
+Угол продажи: ${anglePrompts[angle]}
+
+Сгенерируй JSON с полями:
+{
+  "email": "полное письмо с темой, обращением и подписью",
+  "telegram": "пост для Telegram-канала с эмодзи и хэштегами",
+  "kp": "коммерческое предложение в текстовом формате"
+}
+
+Email: профессиональный, персонализированный под ${co.name}, с конкретными цифрами и CTA на созвон.
+Telegram: живой, с эмодзи, до 300 слов, с хэштегами.
+КП: структурированный, с техническими характеристиками, условиями и гарантиями.
+Только JSON, без пояснений.`;
+
+  try {
+    const resp = await fetch(`${S.proxyUrl}/api/chat`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        api_key: S.apiKey,
+        system: `Ты — AI-копирайтер для B2B продаж химических реагентов для нефтяной отрасли. Пишешь убедительные, конкретные материалы на русском языке. Всегда возвращаешь валидный JSON.`,
+        messages: [{role:'user', content: prompt}],
+        max_tokens: 2000
+      })
+    });
+
+    if (!resp.ok) throw new Error('API error');
+    const data = await resp.json();
+    const text = data.response || '';
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error('No JSON');
+    const result = JSON.parse(jsonMatch[0]);
+
+    S.generated = result;
+    renderOutput('email', result.email);
+    renderOutput('telegram', result.telegram);
+    renderOutput('kp', result.kp);
+    renderLanding(p, co);
+    switchTab('email');
+  } catch (e) {
+    console.error(e);
+    await generateDemo(p, co, angle);
+  }
+}
+
+function renderOutput(key, text) {
+  const el = document.getElementById('out-'+key);
+  el.textContent = text;
+  el.className = 'content-box';
+  document.getElementById('copy-'+key).style.display = 'flex';
+}
+
+function renderLanding(p, co) {
+  const points = [
+    p.benefit,
+    `Дозировка: ${p.dosage}`,
+    `Производство: Россия, ${S.companyName}`,
+    'Поставка: 5–10 дней, склады в 3 городах',
+    'Гарантия соответствия технических характеристик'
+  ];
+  document.getElementById('out-landing').innerHTML = `
+    <div class="landing-preview">
+      <div class="lp-hero">
+        <div class="lp-hero-tag">${S.companyName} · Реагенты для бурения</div>
+        <div class="lp-hero-title">${p.name}</div>
+        <div class="lp-hero-sub">${p.cat} · ${p.benefit}</div>
+      </div>
+      <div class="lp-body">
+        ${points.map(pt=>`<div class="lp-point">${pt}</div>`).join('')}
+        <button class="lp-cta" onclick="alert('Заявка отправлена в ${S.companyName}!')">Запросить КП и цену</button>
+      </div>
+    </div>`;
+  const htmlCode = `<!-- Вставьте этот блок на ваш сайт -->
+<section style="max-width:600px;margin:0 auto;font-family:sans-serif">
+  <h2>${p.name}</h2>
+  <p style="color:#666">${p.cat}</p>
+  <p>${p.desc}</p>
+  <ul>${points.map(pt=>`<li>${pt}</li>`).join('')}</ul>
+  <a href="mailto:${S.email}?subject=Запрос КП: ${p.name}" style="display:inline-block;padding:12px 24px;background:#1fd4b0;color:#000;text-decoration:none;border-radius:8px;font-weight:bold">Запросить КП</a>
+</section>`;
+  S.generated.landing = htmlCode;
+  document.getElementById('copy-landing').style.display = 'flex';
+}
+
+// ═══════════════════════════════════════════
+// PIPELINE
+// ═══════════════════════════════════════════
+function addToPipeline(company, product, status) {
+  const existing = S.pipeline.find(l => l.company === company && l.product === product);
+  if (!existing) {
+    S.pipeline.unshift({ id: Date.now(), company, product, status, contact:'—', note:'', date: new Date().toLocaleDateString('ru-RU') });
+    savePipeline();
+    renderPipeline();
+  }
+}
+
+function savePipeline() {
+  localStorage.setItem('as_pipeline', JSON.stringify(S.pipeline));
+}
+
+function renderPipeline() {
+  const list = document.getElementById('pipelineList');
+  const empty = document.getElementById('pipeEmpty');
+  const total = document.getElementById('pipeTotal');
+  total.textContent = `${S.pipeline.length} лид${S.pipeline.length===1?'':'ов'}`;
+  empty.style.display = S.pipeline.length ? 'none' : 'block';
+
+  const statusLabels = {sent:'📨 Отправлено',opened:'👁 Открыл',interested:'💡 Интерес',ordered:'✅ Заказал'};
+  list.innerHTML = S.pipeline.map(l => `
+    <div class="pipe-item" onclick="cyclePipeStatus(${l.id})">
+      <div class="pipe-company">${l.company}</div>
+      <div class="pipe-product">${l.product}</div>
+      <span class="pipe-status ${l.status}">${statusLabels[l.status]||l.status}</span>
+    </div>`).join('');
+}
+
+function cyclePipeStatus(id) {
+  const order = ['sent','opened','interested','ordered'];
+  const lead = S.pipeline.find(l => l.id === id);
+  if (!lead) return;
+  const next = order[(order.indexOf(lead.status) + 1) % order.length];
+  lead.status = next;
+  savePipeline();
+  renderPipeline();
+  updateMetrics();
+  updateConvStats();
+}
+
+function openAddLead() { document.getElementById('addLeadModal').classList.add('open'); }
+function closeAddLead() { document.getElementById('addLeadModal').classList.remove('open'); }
+function saveLead() {
+  const lead = {
+    id: Date.now(),
+    company: document.getElementById('lCompany').value || 'Без названия',
+    contact: document.getElementById('lContact').value,
+    product: document.getElementById('lProduct').value || PRODUCTS[S.dayIndex].name,
+    status: document.getElementById('lStatus').value,
+    note: document.getElementById('lNote').value,
+    date: new Date().toLocaleDateString('ru-RU')
+  };
+  S.pipeline.unshift(lead);
+  savePipeline();
+  renderPipeline();
+  updateMetrics();
+  updateConvStats();
+  closeAddLead();
+}
+
+function updateMetrics() {
+  document.getElementById('mLaunched').textContent = S.dayIndex + 1;
+  document.getElementById('mSent').textContent = S.pipeline.length;
+  document.getElementById('mLeads').textContent = S.pipeline.filter(l=>['interested','ordered'].includes(l.status)).length;
+  document.getElementById('mOrders').textContent = S.pipeline.filter(l=>l.status==='ordered').length;
+}
+
+function updateConvStats() {
+  const total = S.pipeline.length;
+  const interested = S.pipeline.filter(l=>['interested','ordered'].includes(l.status)).length;
+  const ordered = S.pipeline.filter(l=>l.status==='ordered').length;
+  const el = document.getElementById('convStats');
+  if (!total) { el.textContent = 'Нет данных'; return; }
+  el.innerHTML = `
+    <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="color:var(--muted)">Отправлено → Интерес</span><span style="color:var(--amber);font-weight:700">${total?Math.round(interested/total*100):0}%</span></div>
+    <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="color:var(--muted)">Интерес → Заказ</span><span style="color:var(--ok);font-weight:700">${interested?Math.round(ordered/interested*100):0}%</span></div>
+    <div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">Общая конверсия</span><span style="color:var(--cyan);font-weight:700">${total?Math.round(ordered/total*100):0}%</span></div>`;
+}
+
+// ═══════════════════════════════════════════
+// UI HELPERS
+// ═══════════════════════════════════════════
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach((t,i) => {
+    const names=['email','telegram','landing','kp'];
+    t.classList.toggle('active', names[i]===name);
+  });
+  document.querySelectorAll('.tab-panel').forEach(p => {
+    p.classList.toggle('active', p.id === 'tab-'+name);
+  });
+}
+
+function copyContent(key) {
+  const text = S.generated[key] || '';
+  if (!text) return;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('copy-'+key);
+    const orig = btn.innerHTML;
+    btn.classList.add('copied');
+    btn.innerHTML = '✅ Скопировано!';
+    setTimeout(()=>{ btn.classList.remove('copied'); btn.innerHTML = orig; }, 2000);
+  });
+}
+
+function openSettings() { document.getElementById('settingsModal').classList.add('open'); }
+function closeSettings() { document.getElementById('settingsModal').classList.remove('open'); }
+function saveSettings() {
+  S.apiKey = document.getElementById('sApiKey').value.trim();
+  S.companyName = document.getElementById('sCompanyName').value || 'CLOTO';
+  S.email = document.getElementById('sEmail').value || 'sales@cloto.ru';
+  S.phone = document.getElementById('sPhone').value;
+  localStorage.setItem('as_key', S.apiKey);
+  localStorage.setItem('as_proxy', S.proxyUrl);
+  localStorage.setItem('as_company', S.companyName);
+  localStorage.setItem('as_email', S.email);
+  localStorage.setItem('as_phone', S.phone);
+  updateApiStatus();
+  closeSettings();
+}
+
+function updateApiStatus() {
+  const badge = document.getElementById('apiBadge');
+  const label = document.getElementById('apiLabel');
+  if (S.apiKey) { badge.className='api-pill live'; label.textContent='AI LIVE'; }
+  else { badge.className='api-pill demo'; label.textContent='DEMO'; }
+}
+
+function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// ─── СТАРТ ───
+init();
+</script>
+</body>
+</html>

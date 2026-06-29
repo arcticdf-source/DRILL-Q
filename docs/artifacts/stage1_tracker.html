@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Трекер Этап 1 — Бурение | NEXUS OILFIELD AI</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap");
+    :root{--bg:#060a10;--bg1:#0d1522;--panel:rgba(10,16,28,.75);--text:#e8f0ff;--muted:#94a3bb;--cyan:#1ad8b5;--amber:#ffbc4c;--red:#ff7070;--green:#4cff9f;--line:rgba(220,235,255,.13);--lines:rgba(220,235,255,.07);--sh:0 18px 44px rgba(0,0,0,.42)}
+    *,*::before,*::after{box-sizing:border-box;margin:0}
+    html,body{min-height:100%;background:radial-gradient(620px 320px at 5% -8%,rgba(26,216,181,.18),transparent),radial-gradient(560px 280px at 98% 4%,rgba(255,188,76,.13),transparent),linear-gradient(148deg,var(--bg),var(--bg1) 55%,#101c32);color:var(--text);font-family:"Manrope",sans-serif}
+    body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;background:linear-gradient(to right,rgba(255,255,255,.02) 1px,transparent 1px),linear-gradient(to bottom,rgba(255,255,255,.02) 1px,transparent 1px);background-size:38px 38px;mask-image:radial-gradient(circle at 50% 20%,rgba(0,0,0,.85),transparent 66%)}
+    .wrap{position:relative;z-index:1;width:min(1100px,95vw);margin:0 auto;padding:26px 0 72px}
+    .topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:11px 16px;border-radius:12px;border:1px solid var(--lines);background:rgba(6,11,20,.55);backdrop-filter:blur(10px);position:sticky;top:14px;z-index:99}
+    .brand{display:flex;align-items:center;gap:9px;font-family:"Oswald",sans-serif;font-size:16px;letter-spacing:.06em;text-transform:uppercase}
+    .bdot{width:11px;height:11px;border-radius:999px;background:radial-gradient(circle at 30% 30%,#b2fff2,#1ad8b5);box-shadow:0 0 0 0 rgba(26,216,181,.7);animation:pulse 2.4s infinite}
+    .back{font-size:12px;color:var(--muted);text-decoration:none;letter-spacing:.04em;text-transform:uppercase;border:1px solid var(--lines);border-radius:999px;padding:5px 11px;transition:border-color 160ms,color 160ms}
+    .back:hover{border-color:var(--cyan);color:var(--cyan)}
+    /* HERO */
+    .hero{margin-top:22px;border-radius:22px;border:1px solid var(--line);padding:clamp(18px,3vw,34px);background:linear-gradient(140deg,rgba(26,216,181,.09),rgba(12,20,36,.9) 46%,rgba(255,188,76,.07)),var(--panel);box-shadow:var(--sh);position:relative;overflow:hidden;isolation:isolate}
+    .hero::before{content:"";position:absolute;width:300px;height:300px;right:-80px;bottom:-80px;border-radius:999px;background:radial-gradient(circle,rgba(26,216,181,.2),transparent 70%);filter:blur(18px);z-index:-1}
+    .badge{display:inline-flex;align-items:center;gap:7px;padding:5px 10px;border-radius:999px;border:1px solid var(--lines);background:rgba(255,255,255,.04);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#b8c9e0}
+    .bdot2{width:6px;height:6px;border-radius:999px;background:var(--cyan)}
+    .hero h1{margin-top:11px;font-family:"Oswald",sans-serif;font-size:clamp(28px,4vw,50px);line-height:1.02;text-transform:uppercase;letter-spacing:.01em}
+    .hero h1 span{color:var(--cyan)}
+    .hero-meta{margin-top:14px;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+    .meta-pill{border:1px solid var(--lines);border-radius:999px;padding:6px 12px;font-size:12px;color:#c5d4e8;letter-spacing:.04em}
+    /* PROGRESS BAR */
+    .progress-bar-wrap{margin-top:14px}
+    .pb-label{font-size:12px;color:var(--muted);margin-bottom:6px;display:flex;justify-content:space-between}
+    .pb-track{height:8px;border-radius:999px;background:rgba(255,255,255,.07);overflow:hidden}
+    .pb-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--cyan),#4cffce);transition:width .6s}
+    .sync-panel{margin-top:18px;border:1px solid var(--line);border-radius:18px;background:linear-gradient(140deg,rgba(26,216,181,.08),rgba(12,20,36,.92) 50%,rgba(255,188,76,.06));box-shadow:var(--sh);padding:16px}
+    .sync-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    .sync-title{font-family:"Oswald",sans-serif;font-size:20px;letter-spacing:.06em;text-transform:uppercase}
+    .sync-copy{margin-top:6px;color:#a8bbd3;font-size:13px;line-height:1.45;max-width:760px}
+    .sync-pill{display:inline-flex;align-items:center;gap:7px;border-radius:999px;padding:6px 10px;border:1px solid var(--lines);background:rgba(255,255,255,.05);font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:#dce8f8}
+    .sync-pill.ready{border-color:rgba(26,216,181,.35);background:rgba(26,216,181,.12);color:#9ae8d6}
+    .sync-pill.conditional{border-color:rgba(255,188,76,.35);background:rgba(255,188,76,.12);color:#ffe2a0}
+    .sync-pill.blocked{border-color:rgba(255,112,112,.35);background:rgba(255,112,112,.12);color:#ffb8b8}
+    .sync-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:14px}
+    .sync-card{border:1px solid var(--lines);border-radius:12px;background:rgba(255,255,255,.03);padding:12px}
+    .sync-card span{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+    .sync-card strong{display:block;margin-top:6px;font-size:22px}
+    .sync-list{margin-top:14px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+    .sync-box{border:1px solid var(--lines);border-radius:14px;background:rgba(255,255,255,.025);padding:12px}
+    .sync-box h3{font-size:14px}
+    .sync-box ul{margin:9px 0 0;padding-left:18px;display:grid;gap:6px;font-size:12px;line-height:1.4;color:#c4d2e4}
+    .sync-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+    /* WEEK TABS */
+    .week-nav{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+    .wnav{padding:7px 14px;border-radius:10px;border:1px solid var(--lines);font-size:13px;font-weight:600;cursor:pointer;transition:border-color 140ms,background 140ms;background:rgba(255,255,255,.03);user-select:none;color:var(--muted)}
+    .wnav.active{border-color:var(--cyan);background:rgba(26,216,181,.12);color:var(--cyan)}
+    /* KANBAN */
+    .kanban{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:16px}
+    .k-col{border:1px solid var(--lines);border-radius:16px;background:var(--panel);box-shadow:var(--sh);overflow:hidden}
+    .k-head{padding:11px 14px;font-family:"Oswald",sans-serif;font-size:14px;letter-spacing:.08em;text-transform:uppercase;border-bottom:1px solid var(--lines);display:flex;align-items:center;gap:8px}
+    .k-dot-todo{width:8px;height:8px;border-radius:999px;background:var(--muted);flex-shrink:0}
+    .k-dot-wip{width:8px;height:8px;border-radius:999px;background:var(--amber);flex-shrink:0;box-shadow:0 0 0 0 rgba(255,188,76,.7);animation:pulse-amber 2s infinite}
+    .k-dot-done{width:8px;height:8px;border-radius:999px;background:var(--cyan);flex-shrink:0}
+    .k-body{padding:10px;min-height:120px;display:flex;flex-direction:column;gap:8px}
+    /* TASK CARD */
+    .task{
+      border:1px solid var(--lines);border-radius:10px;padding:10px 11px;background:rgba(255,255,255,.025);
+      cursor:pointer;transition:border-color 140ms,background 140ms;user-select:none;position:relative;
+    }
+    .task:hover{border-color:rgba(26,216,181,.3);background:rgba(26,216,181,.05)}
+    .task.done{opacity:.65;text-decoration:line-through;color:var(--muted)}
+    .task.wip{border-color:rgba(255,188,76,.4);background:rgba(255,188,76,.06)}
+    .task-title{font-size:13px;font-weight:600;line-height:1.35}
+    .task-meta{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}
+    .tag{display:inline-block;padding:2px 7px;border-radius:6px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+    .tag-art{background:rgba(26,216,181,.12);color:#9ae8d6;border:1px solid rgba(26,216,181,.25)}
+    .tag-data{background:rgba(255,188,76,.12);color:#ffe2a0;border:1px solid rgba(255,188,76,.25)}
+    .tag-ml{background:rgba(148,100,255,.14);color:#d4b8ff;border:1px solid rgba(148,100,255,.28)}
+    .tag-infra{background:rgba(255,112,112,.12);color:#ffb3b3;border:1px solid rgba(255,112,112,.25)}
+    .task-owner{font-size:10px;color:var(--muted);margin-top:5px}
+    /* STATUS TOGGLE on right */
+    .task-cycle{position:absolute;top:8px;right:8px;width:18px;height:18px;border-radius:999px;border:1.5px solid var(--lines);display:flex;align-items:center;justify-content:center;font-size:9px;transition:background 140ms,border-color 140ms}
+    .task.wip .task-cycle{border-color:var(--amber);background:rgba(255,188,76,.2)}
+    .task.done .task-cycle{border-color:var(--cyan);background:rgba(26,216,181,.2);color:var(--cyan)}
+    /* WEEK OVERVIEW TABLE */
+    .section{margin-top:20px;border:1px solid var(--lines);border-radius:18px;background:var(--panel);box-shadow:var(--sh);padding:18px}
+    .stitle{font-family:"Oswald",sans-serif;font-size:20px;letter-spacing:.06em;text-transform:uppercase;padding-bottom:12px;border-bottom:1px solid var(--lines);margin-bottom:14px}
+    .table-wrap{overflow-x:auto;border-radius:12px;border:1px solid var(--lines)}
+    table{width:100%;border-collapse:collapse;min-width:760px}
+    thead tr{background:rgba(26,216,181,.08)}
+    th{padding:9px 11px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#9fd6c8;text-align:left;white-space:nowrap}
+    td{padding:9px 11px;font-size:12px;color:#c4d2e4;border-top:1px solid var(--lines);vertical-align:middle}
+    .gate-check{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px}
+    .gate-pass{background:rgba(26,216,181,.13);color:var(--cyan);border:1px solid rgba(26,216,181,.28)}
+    .gate-pend{background:rgba(255,188,76,.13);color:var(--amber);border:1px solid rgba(255,188,76,.28)}
+    .gate-none{background:rgba(148,163,187,.1);color:var(--muted);border:1px solid rgba(148,163,187,.2)}
+    /* FOOTER */
+    .btn-row{display:flex;gap:10px;margin-top:16px}
+    .btn{display:inline-flex;align-items:center;gap:7px;padding:10px 18px;border-radius:999px;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:.04em;text-transform:uppercase;border:1px solid rgba(26,216,181,.5);background:rgba(26,216,181,.12);color:var(--cyan);transition:background 160ms;font-family:"Manrope",sans-serif}
+    .btn:hover{background:rgba(26,216,181,.22)}
+    .footer{margin-top:20px;text-align:center;font-size:11px;color:#4e5f76;letter-spacing:.07em;text-transform:uppercase}
+    @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(26,216,181,.7)}70%{box-shadow:0 0 0 12px rgba(26,216,181,0)}100%{box-shadow:0 0 0 0 rgba(26,216,181,0)}}
+    @keyframes pulse-amber{0%{box-shadow:0 0 0 0 rgba(255,188,76,.7)}70%{box-shadow:0 0 0 8px rgba(255,188,76,0)}100%{box-shadow:0 0 0 0 rgba(255,188,76,0)}}
+    @media(max-width:780px){.kanban,.sync-grid,.sync-list{grid-template-columns:1fr}.topbar{position:static}}
+    @media print{.topbar,.btn-row,.week-nav{display:none}}
+  </style>
+</head>
+<body>
+<main class="wrap">
+  <header class="topbar">
+    <div class="brand"><span class="bdot"></span>Nexus Oilfield AI</div>
+    <a class="back" href="../19_drilling_stage_1_design.html">← Этап 1</a>
+  </header>
+
+  <section class="hero">
+    <div class="badge"><span class="bdot2"></span>Трекер прогресса</div>
+    <h1>Этап 01 <span>Tracker</span></h1>
+    <div class="hero-meta">
+      <span class="meta-pill">Бурение — 6 недель</span>
+      <span class="meta-pill">Обновлено: <span id="today"></span></span>
+      <span class="meta-pill" id="stats-pill">0 / 0 задач</span>
+    </div>
+    <div class="progress-bar-wrap">
+      <div class="pb-label"><span>Прогресс этапа</span><span id="pct">0%</span></div>
+      <div class="pb-track"><div class="pb-fill" id="pb-fill" style="width:0%"></div></div>
+    </div>
+  </section>
+
+  <section class="sync-panel">
+    <div class="sync-head">
+      <div>
+        <div class="sync-title">Stage 1 readiness sync</div>
+        <div class="sync-copy">Этот блок подтягивает оценку readiness из manager cockpit на странице Stage 1 и связывает ее с недельным трекером. Так менеджер видит не только задачи, но и реальный go/no-go статус по переходу в pilot.</div>
+      </div>
+      <div class="sync-pill blocked" id="sync-pill">No-Go</div>
+    </div>
+    <div class="sync-grid">
+      <div class="sync-card"><span>Readiness</span><strong id="sync-readiness">0%</strong></div>
+      <div class="sync-card"><span>Gate status</span><strong id="sync-gates">0 / 4</strong></div>
+      <div class="sync-card"><span>Artifacts</span><strong id="sync-artifacts">0 / 4</strong></div>
+      <div class="sync-card"><span>Current week</span><strong id="sync-week">Неделя 1</strong></div>
+    </div>
+    <div class="sync-list">
+      <div class="sync-box">
+        <h3>Главные блокеры</h3>
+        <ul id="sync-blockers"></ul>
+      </div>
+      <div class="sync-box">
+        <h3>Следующие действия</h3>
+        <ul id="sync-actions-list"></ul>
+      </div>
+    </div>
+    <div class="sync-actions">
+      <a class="btn" href="../19_drilling_stage_1_design.html">Открыть manager cockpit</a>
+      <a class="btn" href="pilot_launch_readiness_sheet.html">Открыть readiness sheet</a>
+    </div>
+  </section>
+
+  <!-- WEEK NAV -->
+  <div class="week-nav" id="week-nav">
+    <span class="wnav active" data-week="all">Все недели</span>
+    <span class="wnav" data-week="w1">Нед.1</span>
+    <span class="wnav" data-week="w2">Нед.2</span>
+    <span class="wnav" data-week="w3">Нед.3</span>
+    <span class="wnav" data-week="w4">Нед.4</span>
+    <span class="wnav" data-week="w5">Нед.5</span>
+    <span class="wnav" data-week="w6">Нед.6</span>
+  </div>
+
+  <!-- KANBAN BOARD -->
+  <div class="kanban" id="kanban">
+    <div class="k-col">
+      <div class="k-head"><span class="k-dot-todo"></span>Не начато</div>
+      <div class="k-body" id="col-todo"></div>
+    </div>
+    <div class="k-col">
+      <div class="k-head"><span class="k-dot-wip"></span>В работе</div>
+      <div class="k-body" id="col-wip"></div>
+    </div>
+    <div class="k-col">
+      <div class="k-head"><span class="k-dot-done"></span>Готово</div>
+      <div class="k-body" id="col-done"></div>
+    </div>
+  </div>
+
+  <!-- WEEK TABLE -->
+  <section class="section" style="margin-top:24px">
+    <div class="stitle">Гейты по неделям</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Неделя</th><th>Фокус</th><th>Ключевой выход</th><th>Гейт-критерий</th><th>Статус</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Нед. 1</td>
+            <td>Kickoff + данные</td>
+            <td>Data Contract подписан, исторические данные загружены</td>
+            <td>≥ 12 мес. WITS-данных в DWH</td>
+            <td><span class="gate-check gate-pend" data-gate="w1">● В процессе</span></td>
+          </tr>
+          <tr>
+            <td>Нед. 2</td>
+            <td>EDA + baseline</td>
+            <td>EDA-отчёт, baseline NPT/ROP согласован с заказчиком</td>
+            <td>Baseline одобрен подписью</td>
+            <td><span class="gate-check gate-none" data-gate="w2">○ Не начат</span></td>
+          </tr>
+          <tr>
+            <td>Нед. 3</td>
+            <td>Feature engineering</td>
+            <td>Feature set задокументирован, pipeline линтован</td>
+            <td>≥ 30 признаков, coverage &gt; 95%</td>
+            <td><span class="gate-check gate-none" data-gate="w3">○ Не начат</span></td>
+          </tr>
+          <tr>
+            <td>Нед. 4</td>
+            <td>Model v1 + валидация</td>
+            <td>NPT Predictor v1, AUC ≥ 0.78 на hold-out</td>
+            <td>AUC ≥ 0.78, Precision ≥ 0.70</td>
+            <td><span class="gate-check gate-none" data-gate="w4">○ Не начат</span></td>
+          </tr>
+          <tr>
+            <td>Нед. 5</td>
+            <td>Dashboard + алерты</td>
+            <td>Alert Catalog v1 задеплоен в shadow mode</td>
+            <td>0 critical bugs, 2 UAT ≥ 4/5</td>
+            <td><span class="gate-check gate-none" data-gate="w5">○ Не начат</span></td>
+          </tr>
+          <tr>
+            <td>Нед. 6</td>
+            <td>Stage Review</td>
+            <td>Stage 1 Report, Stage 2 Decision</td>
+            <td>KPI Charter выполнен ≥ 80%, go/no-go</td>
+            <td><span class="gate-check gate-none" data-gate="w6">○ Не начат</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <div class="btn-row">
+    <button class="btn" onclick="saveAll()">Сохранить прогресс</button>
+    <button class="btn" onclick="resetAll()" style="border-color:rgba(255,112,112,.5);color:#ff7070;background:rgba(255,112,112,.1)">Сброс</button>
+  </div>
+  <p class="footer">Nexus Oilfield AI — Stage 01 Tracker — Бурение</p>
+</main>
+<script>
+  const SUMMARY_KEY = "nexus_stage1_manager_summary_v1";
+  const TASKS = [
+    {id:"t1",week:"w1",status:"todo",title:"Kickoff-встреча с заказчиком",tag:"tag-infra",tagLabel:"Запуск",owner:"PO + Ops Lead"},
+    {id:"t2",week:"w1",status:"todo",title:"Подписать Data Contract",tag:"tag-data",tagLabel:"Данные",owner:"Data Engineer + Заказчик"},
+    {id:"t3",week:"w1",status:"todo",title:"Подключить WITS-поток",tag:"tag-data",tagLabel:"Данные",owner:"Data Engineer"},
+    {id:"t4",week:"w1",status:"todo",title:"Подписать KPI Charter",tag:"tag-art",tagLabel:"Артефакт",owner:"PO + Ops Lead"},
+    {id:"t5",week:"w2",status:"todo",title:"Загрузить исторические данные (≥12 мес.)",tag:"tag-data",tagLabel:"Данные",owner:"Data Engineer"},
+    {id:"t6",week:"w2",status:"todo",title:"EDA: распределения, пропуски, аномалии",tag:"tag-ml",tagLabel:"ML",owner:"ML Engineer"},
+    {id:"t7",week:"w2",status:"todo",title:"Согласовать baseline NPT и ROP с заказчиком",tag:"tag-art",tagLabel:"Артефакт",owner:"PO + Ops Lead"},
+    {id:"t8",week:"w3",status:"todo",title:"Feature engineering: ≥30 признаков",tag:"tag-ml",tagLabel:"ML",owner:"ML Engineer"},
+    {id:"t9",week:"w3",status:"todo",title:"Задокументировать Feature Set",tag:"tag-art",tagLabel:"Артефакт",owner:"ML Engineer"},
+    {id:"t10",week:"w3",status:"todo",title:"Настроить CI/CD пайплайна данных",tag:"tag-infra",tagLabel:"Инфра",owner:"Data Engineer"},
+    {id:"t11",week:"w4",status:"todo",title:"Обучить NPT Predictor v1",tag:"tag-ml",tagLabel:"ML",owner:"ML Engineer"},
+    {id:"t12",week:"w4",status:"todo",title:"Валидация: AUC ≥ 0.78 на hold-out",tag:"tag-ml",tagLabel:"ML",owner:"ML Engineer"},
+    {id:"t13",week:"w4",status:"todo",title:"Model Card v1 (прозрачность)",tag:"tag-art",tagLabel:"Артефакт",owner:"ML Engineer"},
+    {id:"t14",week:"w5",status:"todo",title:"Деплой MVP Dashboard (shadow mode)",tag:"tag-infra",tagLabel:"Инфра",owner:"ML Engineer + PO"},
+    {id:"t15",week:"w5",status:"todo",title:"Alert Catalog v1 — согласование с заказчиком",tag:"tag-art",tagLabel:"Артефакт",owner:"PO + Ops Lead"},
+    {id:"t16",week:"w5",status:"todo",title:"UAT сессия (≥2 инженера-заказчика)",tag:"tag-infra",tagLabel:"UAT",owner:"PO"},
+    {id:"t17",week:"w6",status:"todo",title:"Stage 1 итоговый отчёт",tag:"tag-art",tagLabel:"Артефакт",owner:"PO + CDAO"},
+    {id:"t18",week:"w6",status:"todo",title:"Go/No-Go на Stage 2 с заказчиком",tag:"tag-infra",tagLabel:"Решение",owner:"CDAO + Ops Lead"},
+  ];
+
+  let tasks = JSON.parse(localStorage.getItem("tracker_tasks") || "null") || TASKS.map(t=>({...t}));
+  let activeWeek = "all";
+
+  function readSummary() {
+    try {
+      return JSON.parse(localStorage.getItem(SUMMARY_KEY) || "null");
+    } catch (error) {
+      return null;
+    }
+  }
+
+  function renderSummary() {
+    const summary = readSummary();
+    const pill = document.getElementById("sync-pill");
+    if (!summary) {
+      document.getElementById("sync-readiness").textContent = "0%";
+      document.getElementById("sync-gates").textContent = "0 / 4";
+      document.getElementById("sync-artifacts").textContent = "0 / 4";
+      document.getElementById("sync-week").textContent = "Неделя 1";
+      document.getElementById("sync-blockers").innerHTML = "<li>Открой Stage 1 cockpit и зафиксируй текущий статус проекта.</li>";
+      document.getElementById("sync-actions-list").innerHTML = "<li>После заполнения cockpit readiness, tracker начнет показывать реальный go/no-go статус.</li>";
+      pill.textContent = "No Data Yet";
+      pill.className = "sync-pill blocked";
+      return;
+    }
+
+    document.getElementById("sync-readiness").textContent = summary.readinessScore + "%";
+    document.getElementById("sync-gates").textContent = summary.gateStatus + " / " + summary.gateTotal;
+    document.getElementById("sync-artifacts").textContent = summary.artifactStatus + " / " + summary.artifactTotal;
+    document.getElementById("sync-week").textContent = "Неделя " + summary.currentWeek;
+    document.getElementById("sync-blockers").innerHTML = (summary.blockers && summary.blockers.length ? summary.blockers : ["Критичных блокеров не видно."]).map(item => `<li>${item}</li>`).join("");
+    document.getElementById("sync-actions-list").innerHTML = (summary.actions && summary.actions.length ? summary.actions : ["Перейти к formal readiness review."]).map(item => `<li>${item}</li>`).join("");
+    pill.textContent = summary.pill || "No-Go";
+    pill.className = "sync-pill " + (summary.status || "blocked");
+  }
+
+  function render() {
+    const cols = {todo: document.getElementById("col-todo"), wip: document.getElementById("col-wip"), done: document.getElementById("col-done")};
+    Object.values(cols).forEach(c => c.innerHTML = "");
+
+    const visible = activeWeek === "all" ? tasks : tasks.filter(t => t.week === activeWeek);
+
+    visible.forEach(task => {
+      const div = document.createElement("div");
+      div.className = "task" + (task.status === "done" ? " done" : task.status === "wip" ? " wip" : "");
+      div.dataset.id = task.id;
+      div.innerHTML = `
+        <div class="task-cycle">${task.status==="done"?"✓":task.status==="wip"?"◉":""}</div>
+        <div class="task-title">${task.title}</div>
+        <div class="task-meta"><span class="tag ${task.tag}">${task.tagLabel}</span><span class="tag" style="background:rgba(255,255,255,.05);border:1px solid var(--lines);color:var(--muted)">${task.week.replace("w","Нед.")}</span></div>
+        <div class="task-owner">${task.owner}</div>
+      `;
+      div.addEventListener("click", () => cycleStatus(task.id));
+      cols[task.status === "wip" ? "wip" : task.status === "done" ? "done" : "todo"].appendChild(div);
+    });
+    updateProgress();
+    renderSummary();
+  }
+
+  function cycleStatus(id) {
+    const t = tasks.find(t => t.id === id);
+    t.status = t.status === "todo" ? "wip" : t.status === "wip" ? "done" : "todo";
+    render();
+  }
+
+  function updateProgress() {
+    const all = tasks.length;
+    const done = tasks.filter(t => t.status === "done").length;
+    const pct = all ? Math.round(done/all*100) : 0;
+    document.getElementById("pb-fill").style.width = pct + "%";
+    document.getElementById("pct").textContent = pct + "%";
+    document.getElementById("stats-pill").textContent = done + " / " + all + " задач";
+  }
+
+  document.getElementById("week-nav").addEventListener("click", e => {
+    const btn = e.target.closest(".wnav");
+    if (!btn) return;
+    document.querySelectorAll(".wnav").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    activeWeek = btn.dataset.week;
+    render();
+  });
+
+  function saveAll() {
+    localStorage.setItem("tracker_tasks", JSON.stringify(tasks));
+    const btn = event.target;
+    const orig = btn.textContent;
+    btn.textContent = "✓ Сохранено";
+    setTimeout(() => { btn.textContent = orig; }, 1800);
+  }
+
+  function resetAll() {
+    if (confirm("Сбросить весь прогресс?")) {
+      tasks = TASKS.map(t=>({...t}));
+      localStorage.removeItem("tracker_tasks");
+      render();
+    }
+  }
+
+  document.getElementById("today").textContent = new Date().toLocaleDateString("ru-RU");
+  window.addEventListener("storage", event => {
+    if (event.key === SUMMARY_KEY || event.key === "tracker_tasks") {
+      renderSummary();
+      render();
+    }
+  });
+  render();
+</script>
+  <script src="../assets/js/global-auth-widget.js"></script>
+</body>
+</html>

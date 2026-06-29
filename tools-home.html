@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DRILL-Q — Инструменты для бурения</title>
+  <style>
+    :root {
+      --white:#FFFFFF; --bg:#F5F5F7; --bg2:#FBFBFD;
+      --text:#1D1D1F; --text2:#6E6E73; --text3:#AEAEB2;
+      --blue:#2563EB; --blue-l:#EFF6FF; --blue-m:#BFDBFE;
+      --green:#16A34A; --red:#DC2626;
+      --border:rgba(0,0,0,0.08);
+      --sh-sm:0 1px 4px rgba(0,0,0,0.06); --sh:0 4px 20px rgba(0,0,0,0.08);
+      --r:16px; --r-sm:10px;
+    }
+    *,*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body {
+      background:var(--white); color:var(--text);
+      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",Arial,sans-serif;
+      font-size:16px; line-height:1.6; overflow-x:hidden; -webkit-font-smoothing:antialiased;
+    }
+
+    /* NAV */
+    nav {
+      position:sticky; top:0; z-index:100;
+      background:rgba(255,255,255,0.85);
+      backdrop-filter:saturate(180%) blur(20px); -webkit-backdrop-filter:saturate(180%) blur(20px);
+      border-bottom:1px solid var(--border);
+      height:56px; display:flex; align-items:center; padding:0 48px; justify-content:space-between;
+    }
+    .nav-logo { display:flex; align-items:center; gap:10px; text-decoration:none; }
+    .nav-mark { width:30px; height:30px; border-radius:8px; background:var(--blue); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; color:#fff; letter-spacing:-.5px; }
+    .nav-name { font-size:17px; font-weight:700; color:var(--text); letter-spacing:-.5px; }
+    .nav-name span { color:var(--blue); }
+    .nav-links { display:flex; align-items:center; list-style:none; }
+    .nav-links a { color:var(--text2); text-decoration:none; font-size:14px; padding:6px 14px; border-radius:8px; transition:all .15s; }
+    .nav-links a:hover { color:var(--text); background:rgba(0,0,0,0.04); }
+    .nav-links a.active { color:var(--blue); font-weight:600; }
+    .nav-right { display:flex; align-items:center; gap:10px; }
+    .btn-ghost { padding:7px 16px; border-radius:20px; border:none; background:transparent; color:var(--text); font-size:14px; font-weight:500; cursor:pointer; text-decoration:none; transition:all .15s; }
+    .btn-ghost:hover { background:rgba(0,0,0,0.05); }
+    .btn-nav { padding:7px 18px; border-radius:20px; border:none; background:var(--blue); color:#fff; font-size:14px; font-weight:500; cursor:pointer; text-decoration:none; transition:all .2s; }
+    .btn-nav:hover { background:#1D4ED8; box-shadow:0 4px 12px rgba(37,99,235,.3); }
+
+    /* HERO */
+    .tools-hero { padding:72px 48px 40px; text-align:center; background:var(--bg2); border-bottom:1px solid var(--border); }
+    .hero-lbl { font-size:13px; font-weight:500; color:var(--blue); margin-bottom:12px; }
+    .tools-hero h1 { font-size:clamp(32px,4.5vw,52px); font-weight:700; letter-spacing:-1.5px; line-height:1.08; margin-bottom:16px; }
+    .tools-hero h1 em { font-style:normal; color:var(--blue); }
+    .tools-hero p { font-size:17px; color:var(--text2); max-width:560px; margin:0 auto 28px; line-height:1.5; }
+    .hero-search { display:flex; align-items:center; gap:10px; background:#fff; border:1.5px solid var(--border); border-radius:30px; padding:12px 22px; max-width:480px; margin:0 auto; box-shadow:var(--sh-sm); transition:all .15s; }
+    .hero-search:focus-within { border-color:var(--blue); box-shadow:0 0 0 3px rgba(37,99,235,.1); }
+    .hero-search svg { color:var(--text3); flex-shrink:0; }
+    .hero-search input { background:transparent; border:none; outline:none; font-size:15px; color:var(--text); font-family:inherit; width:100%; }
+    .hero-search input::placeholder { color:var(--text3); }
+    .hero-meta { display:flex; align-items:center; justify-content:center; gap:14px; margin-top:20px; flex-wrap:wrap; font-size:13px; color:var(--text2); }
+    .hero-meta strong { color:var(--text); font-weight:700; }
+    .hero-meta .dot { color:var(--text3); }
+
+    /* LAYOUT */
+    .layout { display:grid; grid-template-columns:240px 1fr; gap:40px; max-width:1240px; margin:0 auto; padding:40px 48px 64px; align-items:start; }
+
+    /* SIDEBAR */
+    .cat-nav { position:sticky; top:76px; display:flex; flex-direction:column; gap:2px; }
+    .cat-nav-label { font-size:11px; font-weight:600; color:var(--text3); text-transform:uppercase; letter-spacing:.08em; margin-bottom:10px; padding:0 12px; }
+    .cat-nav-item { display:flex; align-items:center; gap:9px; padding:8px 12px; border-radius:9px; text-decoration:none; color:var(--text2); font-size:13.5px; transition:all .15s; }
+    .cat-nav-item:hover { background:rgba(0,0,0,0.04); color:var(--text); }
+    .cat-nav-item.active { background:var(--blue-l); color:var(--blue); font-weight:600; }
+    .cat-nav-ic { font-size:14px; flex-shrink:0; }
+    .cat-nav-name { flex:1; }
+    .cat-nav-count { font-size:11px; color:var(--text3); background:var(--bg); border:1px solid var(--border); border-radius:99px; padding:1px 8px; }
+    .cat-nav-item.active .cat-nav-count { background:#fff; color:var(--blue); border-color:var(--blue-m); }
+
+    /* MAIN */
+    .main { min-width:0; }
+    .cat { margin-bottom:48px; scroll-margin-top:76px; }
+    .cat-title { display:flex; align-items:center; gap:10px; font-size:20px; font-weight:700; letter-spacing:-.4px; margin-bottom:20px; }
+    .cat-title-ic { font-size:20px; }
+    .cat-title-count { font-size:12px; font-weight:600; color:var(--text2); background:var(--bg); border:1px solid var(--border); border-radius:99px; padding:2px 10px; }
+    .cat-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+
+    /* CARD (index.html style, compact) */
+    .tool-card-home {
+      background:#fff; border:1.5px solid var(--border); border-radius:var(--r);
+      padding:20px; text-decoration:none; color:inherit;
+      display:flex; flex-direction:column; gap:10px;
+      transition:all .2s; box-shadow:var(--sh-sm);
+    }
+    .tool-card-home:hover { border-color:var(--blue); box-shadow:var(--sh),0 0 0 3px rgba(37,99,235,.08); transform:translateY(-3px); }
+    .tool-card-top { display:flex; align-items:flex-start; justify-content:space-between; }
+    .tool-icon-home { width:42px; height:42px; border-radius:12px; background:var(--blue-l); display:flex; align-items:center; justify-content:center; font-size:19px; }
+    .tool-badge-home { display:inline-flex; align-items:center; font-size:11px; font-weight:600; border-radius:99px; padding:3px 10px; }
+    .tool-badge-home.ready { color:#16A34A; background:#F0FDF4; border:1px solid #BBF7D0; }
+    .tool-badge-home.demo { color:#2563EB; background:var(--blue-l); border:1px solid var(--blue-m); }
+    .tool-badge-home.ai { color:#A855F7; background:rgba(168,85,247,.1); border:1px solid rgba(168,85,247,.25); }
+    .tool-badge-home.new { color:#00c070; background:rgba(0,192,112,.1); border:1px solid rgba(0,192,112,.25); }
+    .tool-badge-home.soon { color:var(--text3); background:var(--bg); border:1px solid var(--border); }
+    .tool-card-home h3 { font-size:16px; font-weight:700; letter-spacing:-.3px; line-height:1.3; }
+    .tool-card-home p { color:var(--text2); font-size:13px; line-height:1.55; flex:1; }
+    .tool-cta-home { display:flex; align-items:center; justify-content:space-between; padding-top:12px; border-top:1px solid var(--border); font-size:13px; font-weight:600; color:var(--blue); }
+    .tool-cta-home .arrow { font-size:16px; color:var(--text3); transition:color .2s,transform .2s; }
+    .tool-card-home:hover .arrow { color:var(--blue); transform:translateX(3px); }
+
+    .no-results { display:none; text-align:center; padding:60px 20px; color:var(--text2); font-size:15px; }
+
+    /* FOOTER */
+    footer { background:var(--bg); padding:48px; border-top:1px solid var(--border); }
+    .foot-grid { display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:48px; max-width:1100px; margin:0 auto 40px; }
+    .foot-desc { font-size:13px; color:var(--text2); line-height:1.65; max-width:240px; margin-top:12px; }
+    .foot-col h4 { font-size:11px; font-weight:600; color:var(--text2); text-transform:uppercase; letter-spacing:.08em; margin-bottom:16px; }
+    .foot-col ul { list-style:none; display:flex; flex-direction:column; gap:10px; }
+    .foot-col ul li a { font-size:14px; color:var(--text2); text-decoration:none; transition:color .15s; }
+    .foot-col ul li a:hover { color:var(--text); }
+    .foot-bottom { display:flex; justify-content:space-between; align-items:center; padding-top:24px; border-top:1px solid var(--border); font-size:12px; color:var(--text3); max-width:1100px; margin:0 auto; }
+    .foot-links { display:flex; gap:20px; }
+    .foot-links a { color:var(--text3); text-decoration:none; transition:color .15s; }
+    .foot-links a:hover { color:var(--text2); }
+
+    @media(max-width:960px){
+      nav { padding:0 24px; }
+      .nav-links { display:none; }
+      .tools-hero { padding:48px 24px 32px; }
+      .layout { grid-template-columns:1fr; gap:24px; padding:32px 24px 48px; }
+      .cat-nav { position:static; flex-direction:row; flex-wrap:wrap; }
+      .cat-nav-label { width:100%; }
+      .cat-grid { grid-template-columns:1fr; }
+      .foot-grid { grid-template-columns:1fr; gap:32px; }
+    }
+    @media(max-width:1200px) and (min-width:961px){ .cat-grid { grid-template-columns:repeat(2,1fr); } }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="index.html">
+    <div class="nav-mark">DQ</div>
+    <div class="nav-name">DRILL<span>-Q</span></div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html#how">Как работает</a></li>
+    <li><a href="index.html#features">Возможности</a></li>
+    <li><a href="index.html#fields">Месторождения</a></li>
+    <li><a href="tools-home.html" class="active">Инструменты</a></li>
+  </ul>
+  <div class="nav-right">
+    <a class="btn-ghost" href="index.html">На главную</a>
+    <a class="btn-nav" href="index.html" style="white-space:nowrap">Зарегистрироваться за 3 минуты</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="tools-hero">
+  <div class="hero-lbl">Инженерная платформа</div>
+  <h1>Инструменты <em>для бурения</em></h1>
+  <p>Расчёты, AI-консоли, дашборды, базы знаний, тендерные модули, проекты скважин — всё в одном месте.</p>
+  <div class="hero-search">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input type="text" id="toolSearch" placeholder="Поиск по инструментам..." oninput="filterTools()">
+  </div>
+  <div class="hero-meta">
+    <span><strong>9</strong> категорий</span>
+    <span class="dot">·</span>
+    <span><strong id="toolCount">47</strong> инструментов</span>
+    <span class="dot">·</span>
+    <span><strong>196</strong> файлов в базе</span>
+  </div>
+</div>
+
+<!-- LAYOUT -->
+<div class="layout">
+  <aside class="cat-nav" id="catNav">
+    <div class="cat-nav-label">Категории</div>
+        <a class="cat-nav-item" href="#mudgpt"><span class="cat-nav-ic">🧪</span><span class="cat-nav-name">MudGPT — Химреагенты и Материалы</span><span class="cat-nav-count">7</span></a>
+        <a class="cat-nav-item" href="#calc"><span class="cat-nav-ic">🧮</span><span class="cat-nav-name">Инженерные Калькуляторы</span><span class="cat-nav-count">7</span></a>
+        <a class="cat-nav-item" href="#ai"><span class="cat-nav-ic">🤖</span><span class="cat-nav-name">AI Консоли &amp; Базы Знаний</span><span class="cat-nav-count">2</span></a>
+        <a class="cat-nav-item" href="#tender"><span class="cat-nav-ic">📋</span><span class="cat-nav-name">Тендерные Модули</span><span class="cat-nav-count">3</span></a>
+        <a class="cat-nav-item" href="#mud"><span class="cat-nav-ic">🛢️</span><span class="cat-nav-name">Буровые Растворы</span><span class="cat-nav-count">3</span></a>
+        <a class="cat-nav-item" href="#ops"><span class="cat-nav-ic">📊</span><span class="cat-nav-name">Операционные Дашборды</span><span class="cat-nav-count">8</span></a>
+        <a class="cat-nav-item" href="#well"><span class="cat-nav-ic">🛠️</span><span class="cat-nav-name">Проекты Скважин</span><span class="cat-nav-count">8</span></a>
+        <a class="cat-nav-item" href="#report"><span class="cat-nav-ic">📄</span><span class="cat-nav-name">Суточные Отчёты &amp; Программы</span><span class="cat-nav-count">3</span></a>
+        <a class="cat-nav-item" href="#strat"><span class="cat-nav-ic">🎯</span><span class="cat-nav-name">Стратегия &amp; Цифровые Инициативы</span><span class="cat-nav-count">6</span></a>
+  </aside>
+
+  <main class="main">
+    <div class="no-results" id="noResults">Ничего не найдено. Попробуйте другой запрос.</div>
+
+    <section class="cat" id="mudgpt" data-cat>
+      <h2 class="cat-title"><span class="cat-title-ic">🧪</span>MudGPT — Химреагенты и Материалы<span class="cat-title-count">7</span></h2>
+      <div class="cat-grid">
+        <a class="tool-card-home" href="docs/87_mudgpt_chemicals_materials.html" target="_blank" data-search=" база химреагентов поиск и характеристики всех химических реагентов для буровых растворов">
+          <div class="tool-card-top">
+            <div class="tool-icon-home">🧪</div>
+            <span class="tool-badge-home ai">MudGPT</span>
+          </div>
+          <h3>База химреагентов</h3>
+          <p>Поиск и характеристики всех химических реагентов для буровых растворов</p>
+          <div class="tool-cta-home"><span>Открыть</span><span class="arrow">→</span></div>
+        </a>
+        <a class="tool-card-home" href="docs/88_mudgpt_product_asphalt.html" target="_blank" data-search=" продукт: асфальт / гильсонит сульфонированный асфальт — свойства, применение, сравнение аналогов soltex">
+          <div class="tool-card-top">
+            <div class="tool-icon-home">🧪</div>
+            <span class="tool-badge-home ai">MudGPT</span>
+          </div>
+          <h3>Продукт: Асфальт / Гильсонит</h3>
+          <p>Сульфонированный асфальт — свойства, применение, сравнение аналогов SOLTEX</p>
+          <div class="tool-cta-home"><span>Открыть</span><span class="arrow">→</span></div>
+        </a>
+        <a class="tool-card-home" href="docs/89_mudgpt_product_pac.html" target="_blank" data-search=" продукт: pac / кмц полианионная целлюлоза — регулятор фильтрации, реология вбр">
+          <div class="tool-card-top">
+            <div class="tool-icon-home">🧪</div>
+            <span class="tool-badge-home ai">MudGPT</span>
+          </div>
+          <h3>Продукт: PAC / КМЦ</h3>
+          <p>Полианионная целлюлоза — регулятор фильтрации, реология ВБР</p>
+          <div class="tool-cta-home"><span>Открыть</span><span class="arrow">→</span></div>
+        </a>
+        <a class="tool-card-home" href="docs/90_mudgpt_product_xanthan.html" target="_blank" data-search=" продукт: ксантановая смола биополимерный структурообразователь — реология, очистка ствола">
+          <div class="tool-card-top">
+            <div class="tool-icon-home">🧪</div>
+            <span class="tool-badge-home ai">MudGPT</span>
+          </div>
+          <h3>Продукт: Ксантановая смола</h3>
+          <p>Биополимерный структурообразователь — реология, очистка ствола</p>
+          <div class="tool-cta-home"><span>Открыть</span><span class="arrow">→</span></div>
+        </a>
+        <a class="tool-card-home" href="docs/91_mudgpt_materials_admin.html" target="_blank" data-search=" администрирование базы управление и обновление базы данных химических реагентов mudgpt">
+          <div class="tool-card-top">
+            <div class="tool-icon-home">🧪</div>
+            <span class="tool-badge-home soon">Admin</span>
+          </div>
+          <h3>Администрирование базы</h3>
+          <p>Управление и обновление базы данных химических реагентов MudGPT</p>
+          <div class="tool-cta-home"><span>Открыть</span><span class="arrow">→</span></div>
+        </a>
+        <a class="tool-card-home" href="docs/94_mudgpt_products_catalog.html" target="_blank" data-search=" каталог продуктов mudgpt полный каталог химических реагентов — поиск, фильтрация, тдс">
+          <div class="tool-card-top">
+            <div class="tool-icon-home">🧪</div>
+            <span class="tool-badge-home demo">Каталог</span>
+          </div>
+          <h3>Каталог продуктов MudGPT</h3>
+          <p>Полный каталог химических реагентов — поиск, фильтрация, ТДС</p>
+          <div class="tool-cta-home"><span>Открыть</span><span class="arrow">→</span></div>
+        </a>
+        <a class="tool-card-home" href="docs/93_mudgpt_stock_arkhangelsk.html" target="_blank" data-search=" склад архангельск остатки и наличие химреагентов на складе в архангельске">
+          <div class="tool-card-top">
+            <div class="tool-icon-home">🧪</div>
+            <span class="tool-badge-home ready">Склад</span>
+          </div>
+          <h3>Склад Архангельск</h3>
+          <p>Остатки и наличие химреагентов на складе в Архангельске</p>
+          <div class="tool-cta-home"><span>Открыть</span><span class="arrow">→</span></div>
+        </a>
+      </div>
+    </section>
+
+    <section class="cat" id="calc" data-cat>
+      <h2 class="cat-title"><span class="cat-title-ic">🧮</span>Инженерные Калькуляторы<span class="cat-title-count">7</span></h2>
+      <div class="cat-grid">
+        <a class="tool-card-home" href="docs/41_dfg_drilling_fluids_hydraulics_lab.html" target="_blank" data-search=" гидравлика бр — dfg lab расчёт ecd, потери давления по интервалам, гидравлическая программа">
+          <div class="tool-card-top">
+            <div class="tool-icon-home">🧮</div>
+            <span class="tool-badge-home demo">Расчёт</span>
+          </div>
+          <h3>Гидравлика БР — DFG Lab</h3>
+          <p>Расчёт ECD, потери давления по интервалам, гидравлическая программа</p>
+          <div class="tool-cta-home"><span>Открыть</span><span class="arrow">→</span></div>
+        </a>
+        <a class="tool-card-home" href="docs/85_lcm_calculator.html" target="_blank" data-search=" lcm — расчёт psd подбор состава lcm по psd для перекрытия приствольных трещин">
+          <div class="tool-card-top">
+            <div class="tool-icon-home">🧮</div>
+            <span class="tool-badge-home demo">Расчёт</span>
+          </div>
+          <h3>LCM — Расчёт PSD</h3>
+          <p>Подбор состава LCM по PSD для перекрытия приствольных трещин</p>
+          <div class="tool-cta-home"><span>Открыть</span><span class="arrow">→</span></div>
+        </a>
+        <a class="tool-card-home" href="docs/43_cementing_calculator.html" target="_blank" data-search=" калькулятор цементирования объём тампонажного раствора, давления цементирования, озц">
+          <div class="tool-card-top">
+            <div class="tool-icon-home">🧮</div>
+            <span class="tool-badge-home demo">Расчёт</span>
+          </div>
+          <h3>Калькулятор цементирования</h3>
+          <p>Объём тампонажного раствора, давления цементирования, ОЗЦ</p>
+          <div class="tool-cta-home"><span>Открыть</span><span class="arrow">→</span></div>
+        </a>
+        <a class="tool-card-home" href="docs/44_cementing_recipe_builder.html" target="_blank" data-search=" дизайнер рецептур цемента подбор состава тампонажного раствора с добавками под условия скважины">
+          <div class="tool-card-top">
+            <div class="tool-icon-home">🧮</div>
+            <span class="tool-badge-home demo">Дизайн</span>
+          </div>
+          <h3>Дизайнер рецептур цемента</h3>
+          <p>Подбор состава тампонажного раствора с добавками под условия скважины</p>
+          <div class="tool-cta-home"><span>Открыть</span><span class="arrow">→</span></div>
+        </a>
+        <a class="tool-card-home" href="docs/29_roi_calculator_interactive.html" target="_blank" data-search=" roi калькулятор расчёт экономического эффекта, npt savings, окупаемость мероприятий">
+          <div class="tool-card-top">
+            <div class="tool-icon-home">🧮</div>
+            <span class="tool-badge-home demo">Экономика</span>
+          </div>
+          <h3>ROI Калькулятор</h3>
+          <p>Расчёт экономического эффекта, NPT savings, окупаемость мероприятий</p>
+          <div class="tool-cta-home"><span>Открыть</span><span class="arrow">→</span></div>
+        </a>
+        <a class="tool-card-home" href="docs/120_drilling_calculations_menu.html" target="_blank" data-search=" меню расчётов бурения полный набор инженерных расчётов — объём, плотность, твёрдые фазы">
+          <div class="tool-card-top">
+            <div class="tool-icon-home">🧮</div>
+            <span class="tool-badge-home demo">Расчёты</span>
+          </div>
+          <h3>Меню расчётов бурения</h3>
+          <p>Полный набор инженерных расчётов — объём, плотность, твёрдые фазы</p>
+          <div class="tool-cta-home"><span>Открыть</span><span class="arrow">→</span></div>
+        </a>
+        <a class="tool-card-home" href="docs/36_hydraulics_calculator_interactive.html" target="_blank" data-search=" гидравлика — интерактивный интерактивный калькулятор гидравлики — режимы течения, ecd, давления">
+          <div class="tool-card-top">
+            <div class="tool-icon-home">🧮</div>
+            <span class="tool-badge-home demo">Расчёт</span>
+          </div>
+          <h3>Гидравлика — интерактивный</h3>
+          <p>Интерактивный калькулятор гидравлики — режимы течения, ECD, давления</p>
+          <div class="tool-cta-home"><span>Открыть</span><span class="arrow">→</span></div>
+        </a>
+      </div>
+    </section>
+
+    <section class="cat" id="ai" data-cat>
+      <h2 class="cat-title"><span class="cat-title-ic">🤖</span>AI Консоли &amp; Базы Знаний<span class="cat-title-count">2</span></h2>
+      <div class="cat-grid">
+        <a class="tool-card-home" href="docs/80_ai_assistant_chat.html" target="_blank" data-search=" ai помощник (чат) умный чат по бурению, растворам, гидравлике и kpi. быстрые ответы без &quot;воды&quot;">
+          <div class="tool-card-top">
+            <div class="tool-icon-home">🤖</div>
+            <span class="tool-badge-home demo">AI Chat</span>
+          </div>
+          <h3>AI Помощник (чат)</h3>
+          <p>Умный чат по бурению, растворам, гидравлике и KPI. Быстрые ответы без &quot;воды&quot;</p>
+          <div class="tool-cta-home"><span>Открыть</span><span class="arrow">→</span></div>
+        </a>
+        <a class="tool-card-home" href="docs/35_hydraulics_knowledge_base.html" target="_blank" data-search=" база знаний: гидравлика интерактивный справочник — формулы, режимы течения, ecd, расчёты">
+          <div class="tool-card-top">
+            <div class="tool-icon-home">🤖</div>
+            <span class="tool-badge-home demo">Справочник</span>
+          </div>
+          <h3>База знаний: Гидравлика</h3>
+          <p>Интерактивный справочник — формулы, режимы течения, ECD, расчёты</p>
+          <div class="tool-cta-home"><span>Открыть</span><span class="arrow">→</span></div>
+        </a>
+      </div>
+    </section>
+
+    <section class="cat" id="tender" data-cat>
+      <h2 class="cat-title"><span class="cat-title-ic">📋</span>Тендерные Модули<span class="cat-title-count">3</span></h2>
+      <div class="cat-grid">
+        <a class="tool-card-home" href="docs/55_tender_project_intake.html" target="_blank" data-search=" приём тендера (intake) первичная обработка входящего тендера, классификация и приоритизация">
+          <div class="tool-card-top">
+            <div class="tool-icon-home">📋</div>
+            <span class="tool-badge-home demo">Intake</span>
+          </div>
+          <h3>Приём тендера (Intake)</h3>
+          <p>Первичная обработка входящего тендера, классификация и приоритизация</p>
+          <div class="tool-cta-home"><span>Открыть</span><span class="arrow">→</span></div>
+        </a>
+        <a class="tool-card-home" href="docs/50_drilling_fluids_tender_project.html" target="_blank" data-search=" тендерный проект бр полный модуль расчёта тендерного проекта по буровым растворам">
+          <div class="tool-card-top">
+            <div class="tool-icon-home">📋</div>
+            <span class="tool-badge-home demo">Тендер</span>
+          </div>
+          <h3>Тендерный проект БР</h3>
+          <p>Полный модуль расчёта тендерного проекта по буровым растворам</p>
+          <div class="tool-cta-home"><span>Открыть</span><span class="arrow">→</span></div>
+        </a>
+        <a class="tool-card-home" href="docs/50_drilling_npt_flow.html" target="_blank" data-search=" npt flow — дерево потерь анализ причин непроизводительного времени, flow-диаграмма нпв">
+          <div class="tool-card-top">
+            <div class="tool-icon-home">📋</div>
+            <span class="tool-badge-home demo">Анализ</span>
+          </div>
+          <h3>NPT Flow — Дерево потерь</h3>
+          <p>Анализ причин непроизводительного времени, flow-диаграмма НПВ</p>
+          <div class="tool-cta-home"><span>Открыть</span><span class="arrow">→</span></div>
+        </a>
+      </div>
+    </section>
+
+    <section class="cat" id="mud" data-cat>
+      <h2 class="cat-title"><span class="cat-title-ic">🛢️</span>Буровые Растворы<span class="cat-title-count">3</span></h2>
+      <div class="cat-grid">
+        <a class="tool-card-home" href="docs/42_drilling_fluids_dashboard.html" target="_blank" data-search=" дашборд буровых растворов параметры раствора в реальном времени — реология, фильтрация, плотность">
+          <div class="tool-card-top">
+            <div class="tool-icon-home">🛢️</div>
+            <span class="tool-badge-home demo">Мониторинг</span>
+          </div>
+          <h3>Дашборд буровых растворов</h3>
+          <p>Параметры раствора в реальном времени — реология, фильтрация, плотность</p>
+          <div class="tool-cta-home"><span>Открыть</span><span class="arrow">→</span></div>
+        </a>
+        <a class="tool-card-home" href="docs/46_drilling_fluids_system_designer.html" target="_blank" data-search=" дизайн системы раствора проектирование состава и программы бр под конкретные условия скважины">
+          <div class="tool-card-top">
+            <div class="tool-icon-home">🛢️</div>
+            <span class="tool-badge-home demo">Дизайн</span>
+          </div>
+          <h3>Дизайн системы раствора</h3>
+          <p>Проектирование состава и программы БР под конкретные условия скважины</p>
+          <div class="tool-cta-home"><span>Открыть</span><span class="arrow">→</span></div>
+        </a>
+        <a class="tool-card-home" href="docs/47_drilling_fluid_system_selection.html" target="_blank" data-search=" выбор типа системы раствора ai-рекомендация вбр/обр/синтетика по геологии, температуре, задачам">
+          <div class="tool-card-top">
+            <div class="tool-icon-home">🛢️</div>
+            <span class="tool-badge-home demo">AI Выбор</span>
+          </div>
+          <h3>Выбор типа системы раствора</h3>
+          <p>AI-рекомендация ВБР/ОБР/синтетика по геологии, температуре, задачам</p>
+          <div class="tool-cta-home"><span>Открыть</span><span class="arrow">→</span></div>
+        </a>
+      </div>
+    </section>
+
+    <section class="cat" id="ops" data-cat>
+      <h2 class="cat-title"><span class="cat-title-ic">📊</span>Операционные Дашборды<span class="cat-title-count">8</span></h2>
+      <div class="cat-grid">
+        <a class="tool-card-home" href="docs/81_drilling_daily_intelligence_fusion.html" target="_blank" data-search=" ежедневная разведка по бурению daily intelligence fusion — объединённая оперативная сводка по скважинам">
+          <div class="tool-card-top">
+            <div class="tool-icon-home">📊</div>
+            <span class="tool-badge-home demo">Дашборд</span>
+          </div>
+          <h3>Ежедневная разведка по бурению</h3>
+          <p>Daily Intelligence Fusion — объединённая оперативная сводка по скважинам</p>
+          <div class="tool-cta-home"><span>Открыть</span><span class="arrow">→</span></div>
+        </a>
+        <a class="tool-card-home" href="docs/78_drilling_lifecycle_cockpit.html" target="_blank" data-search=" drilling lifecycle cockpit управление жизненным циклом скважины от проектирования до сдачи">
+          <div class="tool-card-top">
+            <div class="tool-icon-home">📊</div>
+            <span class="tool-badge-home demo">Кокпит</span>
+          </div>
+          <h3>Drilling Lifecycle Cockpit</h3>
+          <p>Управление жизненным циклом скважины от проектирования до сдачи</p>
+          <div class="tool-cta-home"><span>Открыть</span><span class="arrow">→</span></div>
+        </a>
+        <a class="tool-card-home" href="docs/77_i3_losses_cockpit.html" target="_blank" data-search=" i3 losses cockpit мониторинг и анализ потерь давления, поглощений, осложнений">
+          <div class="tool-card-top">
+            <div class="tool-icon-home">📊</div>
+            <span class="tool-badge-home demo">Кокпит</span>
+          </div>
+          <h3>I3 Losses Cockpit</h3>
+          <p>Мониторинг и анализ потерь давления, поглощений, осложнений</p>
+          <div class="tool-cta-home"><span>Открыть</span><span class="arrow">→</span></div>
+        </a>
+        <a class="tool-card-home" href="docs/79_drilling_manager_brief.html" target="_blank" data-search=" брифинг менеджера бурения краткий управленческий отчёт — kpi, статусы скважин, риски, решения">
+          <div class="tool-card-top">
+            <div class="tool-icon-home">📊</div>
+            <span class="tool-badge-home demo">Executive</span>
+          </div>
+          <h3>Брифинг менеджера бурения</h3>
+          <p>Краткий управленческий отчёт — KPI, статусы скважин, риски, решения</p>
+          <div class="tool-cta-home"><span>Открыть</span><span class="arrow">→</span></div>
+        </a>
+        <a class="tool-card-home" href="docs/82_ctis_fleet_tracker.html" target="_blank" data-search=" цитс: трекер флота бу отслеживание буровых установок, статус и дислокация по объектам">
+          <div class="tool-card-top">
+            <div class="tool-icon-home">📊</div>
+            <span class="tool-badge-home demo">Флот</span>
+          </div>
+          <h3>ЦИТС: Трекер флота БУ</h3>
+          <p>Отслеживание буровых установок, статус и дислокация по объектам</p>
+          <div class="tool-cta-home"><span>Открыть</span><span class="arrow">→</span></div>
+        </a>
+        <a class="tool-card-home" href="docs/34_digital_control_center.html" target="_blank" data-search=" цифровой центр управления digital control center — единое окно мониторинга операций по всем объектам">
+          <div class="tool-card-top">
+            <div class="tool-icon-home">📊</div>
+            <span class="tool-badge-home demo">ЦУ</span>
+          </div>
+          <h3>Цифровой Центр Управления</h3>
+          <p>Digital Control Center — единое окно мониторинга операций по всем объектам</p>
+          <div class="tool-cta-home"><span>Открыть</span><span class="arrow">→</span></div>
+        </a>
+        <a class="tool-card-home" href="docs/27_digitalization_analysis_dashboard_v2.html" target="_blank" data-search=" дашборд цифровизации анализ прогресса цифровых инициатив i1–i5, метрики и kpi проекта">
+          <div class="tool-card-top">
+            <div class="tool-icon-home">📊</div>
+            <span class="tool-badge-home demo">KPI</span>
+          </div>
+          <h3>Дашборд цифровизации</h3>
+          <p>Анализ прогресса цифровых инициатив I1–I5, метрики и KPI проекта</p>
+          <div class="tool-cta-home"><span>Открыть</span><span class="arrow">→</span></div>
+        </a>
+        <a class="tool-card-home" href="marketplace-ru.html" target="_blank" data-search=" маркетплейс закупок каталог, склады, rfq, ai-инженер — полный цикл закупок буровой химии">
+          <div class="tool-card-top">
+            <div class="tool-icon-home">📊</div>
+            
+          </div>
+          <h3>Маркетплейс закупок</h3>
+          <p>Каталог, склады, RFQ, AI-инженер — полный цикл закупок буровой химии</p>
+          <div class="tool-cta-home"><span>Открыть</span><span class="arrow">→</span></div>
+        </a>
+      </div>
+    </section>
+
+    <section class="cat" id="well" data-cat>
+      <h2 class="cat-title"><span class="cat-title-ic">🛠️</span>Проекты Скважин<span class="cat-title-count">8</span></h2>
+      <div class="cat-grid">
+        <a class="tool-card-home" href="docs/66_my_wells.html" target="_blank" data-search=" мои скважины список всех скважин с быстрым доступом к проектам и дашбордам">
+          <div class="tool-card-top">
+            <div class="tool-icon-home">🛠️</div>
+            <span class="tool-badge-home demo">Портфель</span>
+          </div>
+          <h3>Мои Скважины</h3>
+          <p>Список всех скважин с быстрым доступом к проектам и дашбордам</p>
+          <div class="tool-cta-home"><span>Открыть</span><span class="arrow">→</span></div>
+        </a>
+        <a class="tool-card-home" href="docs/project_general_data.html" target="_blank" data-search=" проект: общие данные общие технические данные проекта строительства скважины">
+          <div class="tool-card-top">
+            <div class="tool-icon-home">🛠️</div>
+            <span class="tool-badge-home demo">Проект</span>
+          </div>
+          <h3>Проект: Общие данные</h3>
+          <p>Общие технические данные проекта строительства скважины</p>
+          <div class="tool-cta-home"><span>Открыть</span><span class="arrow">→</span></div>
+        </a>
+        <a class="tool-card-home" href="docs/project_geology.html" target="_blank" data-search=" проект: геологический разрез литология, стратиграфия, пластовые и гидростатические давления">
+          <div class="tool-card-top">
+            <div class="tool-icon-home">🛠️</div>
+            <span class="tool-badge-home demo">Геология</span>
+          </div>
+          <h3>Проект: Геологический разрез</h3>
+          <p>Литология, стратиграфия, пластовые и гидростатические давления</p>
+          <div class="tool-cta-home"><span>Открыть</span><span class="arrow">→</span></div>
+        </a>
+        <a class="tool-card-home" href="docs/project_well_construction.html" target="_blank" data-search=" проект: конструкция скважины конструкция скважины — диаметры долот, обсадные колонны, интервалы">
+          <div class="tool-card-top">
+            <div class="tool-icon-home">🛠️</div>
+            <span class="tool-badge-home demo">Проект</span>
+          </div>
+          <h3>Проект: Конструкция скважины</h3>
+          <p>Конструкция скважины — диаметры долот, обсадные колонны, интервалы</p>
+          <div class="tool-cta-home"><span>Открыть</span><span class="arrow">→</span></div>
+        </a>
+        <a class="tool-card-home" href="docs/project_well_mud_program.html" target="_blank" data-search=" проект: программа раствора программа бр по интервалам — тип системы, параметры, компоненты">
+          <div class="tool-card-top">
+            <div class="tool-icon-home">🛠️</div>
+            <span class="tool-badge-home demo">Программа</span>
+          </div>
+          <h3>Проект: Программа раствора</h3>
+          <p>Программа БР по интервалам — тип системы, параметры, компоненты</p>
+          <div class="tool-cta-home"><span>Открыть</span><span class="arrow">→</span></div>
+        </a>
+        <a class="tool-card-home" href="docs/project_well_cement_program.html" target="_blank" data-search=" проект: программа цементирования программа цементирования колонн — объёмы, рецептуры, параметры давлений">
+          <div class="tool-card-top">
+            <div class="tool-icon-home">🛠️</div>
+            <span class="tool-badge-home demo">Программа</span>
+          </div>
+          <h3>Проект: Программа цементирования</h3>
+          <p>Программа цементирования колонн — объёмы, рецептуры, параметры давлений</p>
+          <div class="tool-cta-home"><span>Открыть</span><span class="arrow">→</span></div>
+        </a>
+        <a class="tool-card-home" href="docs/64_yuzhno_russkoe_project_dashboard.html" target="_blank" data-search=" южно-русское: дашборд дашборд проекта южно-русское — kpi, прогресс, глубина-день">
+          <div class="tool-card-top">
+            <div class="tool-icon-home">🛠️</div>
+            <span class="tool-badge-home demo">Проект</span>
+          </div>
+          <h3>Южно-Русское: Дашборд</h3>
+          <p>Дашборд проекта Южно-Русское — KPI, прогресс, глубина-день</p>
+          <div class="tool-cta-home"><span>Открыть</span><span class="arrow">→</span></div>
+        </a>
+        <a class="tool-card-home" href="docs/58_yuzhno_obskoe_project_dashboard.html" target="_blank" data-search=" южно-обское: дашборд дашборд проекта южно-обское — статус, kpi, интервалы раствора">
+          <div class="tool-card-top">
+            <div class="tool-icon-home">🛠️</div>
+            <span class="tool-badge-home demo">Проект</span>
+          </div>
+          <h3>Южно-Обское: Дашборд</h3>
+          <p>Дашборд проекта Южно-Обское — статус, KPI, интервалы раствора</p>
+          <div class="tool-cta-home"><span>Открыть</span><span class="arrow">→</span></div>
+        </a>
+      </div>
+    </section>
+
+    <section class="cat" id="report" data-cat>
+      <h2 class="cat-title"><span class="cat-title-ic">📄</span>Суточные Отчёты &amp; Программы<span class="cat-title-count">3</span></h2>
+      <div class="cat-grid">
+        <a class="tool-card-home" href="docs/39_wellsite_daily_report_studio.html" target="_blank" data-search=" daily report studio конструктор суточного геолого-технического отчёта (гто/ddr)">
+          <div class="tool-card-top">
+            <div class="tool-icon-home">📄</div>
+            <span class="tool-badge-home demo">Отчёт</span>
+          </div>
+          <h3>Daily Report Studio</h3>
+          <p>Конструктор суточного геолого-технического отчёта (ГТО/DDR)</p>
+          <div class="tool-cta-home"><span>Открыть</span><span class="arrow">→</span></div>
+        </a>
+        <a class="tool-card-home" href="docs/40_wellsite_program_site_edition.html" target="_blank" data-search=" well site program (полевое) полевое издание программы бурения — готово к распечатке на буровой">
+          <div class="tool-card-top">
+            <div class="tool-icon-home">📄</div>
+            <span class="tool-badge-home demo">Программа</span>
+          </div>
+          <h3>Well Site Program (полевое)</h3>
+          <p>Полевое издание программы бурения — готово к распечатке на буровой</p>
+          <div class="tool-cta-home"><span>Открыть</span><span class="arrow">→</span></div>
+        </a>
+        <a class="tool-card-home" href="extracted/dmr16_sample.html" target="_blank" data-search=" dmr — образец отчёта заполненный образец daily morning report (формат dmr16)">
+          <div class="tool-card-top">
+            <div class="tool-icon-home">📄</div>
+            <span class="tool-badge-home demo">Образец</span>
+          </div>
+          <h3>DMR — Образец отчёта</h3>
+          <p>Заполненный образец Daily Morning Report (формат DMR16)</p>
+          <div class="tool-cta-home"><span>Открыть</span><span class="arrow">→</span></div>
+        </a>
+      </div>
+    </section>
+
+    <section class="cat" id="strat" data-cat>
+      <h2 class="cat-title"><span class="cat-title-ic">🎯</span>Стратегия &amp; Цифровые Инициативы<span class="cat-title-count">6</span></h2>
+      <div class="cat-grid">
+        <a class="tool-card-home" href="docs/01_strategy.html" target="_blank" data-search=" стратегия платформы ai-платформа для бурения — видение, цели, конкурентные преимущества">
+          <div class="tool-card-top">
+            <div class="tool-icon-home">🎯</div>
+            <span class="tool-badge-home demo">Стратегия</span>
+          </div>
+          <h3>Стратегия платформы</h3>
+          <p>AI-платформа для бурения — видение, цели, конкурентные преимущества</p>
+          <div class="tool-cta-home"><span>Открыть</span><span class="arrow">→</span></div>
+        </a>
+        <a class="tool-card-home" href="docs/26_digitalization_master_roadmap.html" target="_blank" data-search=" мастер-дорожная карта все цифровые инициативы i1–i5 на едином временном горизонте">
+          <div class="tool-card-top">
+            <div class="tool-icon-home">🎯</div>
+            <span class="tool-badge-home demo">Roadmap</span>
+          </div>
+          <h3>Мастер-дорожная карта</h3>
+          <p>Все цифровые инициативы I1–I5 на едином временном горизонте</p>
+          <div class="tool-cta-home"><span>Открыть</span><span class="arrow">→</span></div>
+        </a>
+        <a class="tool-card-home" href="docs/10_first_client_pitch.html" target="_blank" data-search=" первый питч клиенту шаблон первой презентации для потенциального заказчика — структура и аргументы">
+          <div class="tool-card-top">
+            <div class="tool-icon-home">🎯</div>
+            <span class="tool-badge-home demo">Продажи</span>
+          </div>
+          <h3>Первый питч клиенту</h3>
+          <p>Шаблон первой презентации для потенциального заказчика — структура и аргументы</p>
+          <div class="tool-cta-home"><span>Открыть</span><span class="arrow">→</span></div>
+        </a>
+        <a class="tool-card-home" href="docs/05_financial_model.html" target="_blank" data-search=" финансовая модель доходы, расходы, окупаемость и финансовые прогнозы платформы">
+          <div class="tool-card-top">
+            <div class="tool-icon-home">🎯</div>
+            <span class="tool-badge-home demo">Финансы</span>
+          </div>
+          <h3>Финансовая модель</h3>
+          <p>Доходы, расходы, окупаемость и финансовые прогнозы платформы</p>
+          <div class="tool-cta-home"><span>Открыть</span><span class="arrow">→</span></div>
+        </a>
+        <a class="tool-card-home" href="docs/06_implementation_roadmap_180d.html" target="_blank" data-search=" дорожная карта внедрения (180 дней) пошаговый план внедрения платформы за 180 дней с вехами и kpi">
+          <div class="tool-card-top">
+            <div class="tool-icon-home">🎯</div>
+            <span class="tool-badge-home demo">Roadmap</span>
+          </div>
+          <h3>Дорожная карта внедрения (180 дней)</h3>
+          <p>Пошаговый план внедрения платформы за 180 дней с вехами и KPI</p>
+          <div class="tool-cta-home"><span>Открыть</span><span class="arrow">→</span></div>
+        </a>
+        <a class="tool-card-home" href="docs/30_gantt_665_operations_detailed.html" target="_blank" data-search=" gantt: детальный план (665 дней) детальная диаграмма ганта операций бурения на 665 дней">
+          <div class="tool-card-top">
+            <div class="tool-icon-home">🎯</div>
+            <span class="tool-badge-home demo">Планирование</span>
+          </div>
+          <h3>Gantt: Детальный план (665 дней)</h3>
+          <p>Детальная диаграмма Ганта операций бурения на 665 дней</p>
+          <div class="tool-cta-home"><span>Открыть</span><span class="arrow">→</span></div>
+        </a>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-grid">
+    <div>
+      <a class="nav-logo" href="index.html" style="text-decoration:none">
+        <div class="nav-mark">DQ</div>
+        <div class="nav-name">DRILL<span>-Q</span></div>
+      </a>
+      <p class="foot-desc">AI-платформа для планирования и оперативного сопровождения бурения нефтегазовых скважин.</p>
+    </div>
+    <div class="foot-col">
+      <h4>Платформа</h4>
+      <ul>
+        <li><a href="index.html#how">Как работает</a></li>
+        <li><a href="index.html#features">Возможности</a></li>
+        <li><a href="index.html#fields">Месторождения</a></li>
+        <li><a href="tools-home.html">Инструменты</a></li>
+      </ul>
+    </div>
+    <div class="foot-col">
+      <h4>Инструменты</h4>
+      <ul>
+        <li><a href="docs/87_mudgpt_chemicals_materials.html">MudGPT</a></li>
+        <li><a href="docs/36_hydraulics_calculator_interactive.html">Гидравлика</a></li>
+        <li><a href="docs/39_wellsite_daily_report_studio.html">Суточный рапорт</a></li>
+        <li><a href="docs/120_drilling_calculations_menu.html">Расчёты</a></li>
+      </ul>
+    </div>
+    <div class="foot-col">
+      <h4>Компания</h4>
+      <ul>
+        <li><a href="index.html">О платформе</a></li>
+        <li><a href="docs/56_fields_projects_dashboard.html">База месторождений</a></li>
+        <li><a href="mailto:arcticdf@gmail.com">Связаться</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot-bottom">
+    <span>© 2026 DRILL-Q. Все права защищены.</span>
+    <div class="foot-links">
+      <a href="#">Конфиденциальность</a>
+      <a href="#">Условия использования</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  /* Search filter */
+  function filterTools() {
+    var q = (document.getElementById('toolSearch').value || '').toLowerCase().trim();
+    var cards = document.querySelectorAll('.tool-card-home');
+    var shown = 0;
+    cards.forEach(function(card){
+      var hay = card.getAttribute('data-search') || '';
+      var ok = !q || hay.indexOf(q) !== -1;
+      card.style.display = ok ? '' : 'none';
+      if (ok) shown++;
+    });
+    document.querySelectorAll('.cat').forEach(function(cat){
+      var any = cat.querySelectorAll('.tool-card-home:not([style*="display: none"])').length;
+      cat.style.display = any ? '' : 'none';
+    });
+    document.getElementById('noResults').style.display = shown ? 'none' : 'block';
+    document.getElementById('toolCount').textContent = shown;
+  }
+
+  /* Active category highlight on scroll */
+  var navItems = Array.prototype.slice.call(document.querySelectorAll('.cat-nav-item'));
+  var sections = navItems.map(function(a){ return document.getElementById(a.getAttribute('href').slice(1)); });
+  function onScroll() {
+    var pos = window.scrollY + 120;
+    var idx = 0;
+    sections.forEach(function(sec, i){ if (sec && sec.offsetTop <= pos) idx = i; });
+    navItems.forEach(function(a, i){ a.classList.toggle('active', i === idx); });
+  }
+  window.addEventListener('scroll', onScroll);
+  onScroll();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DRILL-Q — Платформа операционного интеллекта · Powered by Cloto</title>
+  <meta name="description" content="AI-платформа для интеллекта буровых операций, химического снабжения и автоматизации тендеров. На базе Клото с 1991 года.">
+  <link rel="stylesheet" href="drill-q.css">
+  <style>
+    /* ── Terminal animation ── */
+    .cmd-line { animation: fadeInLine 0.14s ease both; }
+    @keyframes fadeInLine {
+      from { opacity: 0; transform: translateY(2px); }
+      to   { opacity: 1; transform: none; }
+    }
+    #cmd-terminal { overflow-y: auto; max-height: 280px; scroll-behavior: smooth; }
+
+    /* ── MudGPT typing dots ── */
+    @keyframes typingBounce {
+      0%, 60%, 100% { transform: translateY(0); }
+      30%            { transform: translateY(-5px); }
+    }
+
+    /* ── RFQ drop zone states ── */
+    #rfq-drop { cursor: pointer; transition: border-color 0.2s ease, background 0.2s ease; }
+    #rfq-drop:not(.rfq-processing):not(.rfq-done):hover {
+      border-color: var(--blue-border) !important;
+      background: var(--blue-subtle) !important;
+    }
+    #rfq-drop.rfq-processing { cursor: default; }
+    #rfq-drop.rfq-done { cursor: pointer; }
+
+    /* ── Toast ── */
+    #dq-toast {
+      position: fixed; bottom: 24px; right: 24px;
+      background: var(--bg-03); border: 1px solid var(--b-02);
+      border-radius: var(--r2); padding: 11px 16px;
+      font-size: 12px; color: var(--t-01); font-family: var(--mono);
+      z-index: 9999; max-width: 320px;
+      transform: translateY(20px); opacity: 0;
+      transition: all 0.22s ease; pointer-events: none;
+    }
+    #dq-toast.show { opacity: 1; transform: none; }
+  </style>
+</head>
+<body>
+
+<!-- ── ТИКЕР ── -->
+<div class="ticker-bar">
+  <div class="ticker-track">
+    <span class="ticker-item"><span class="lbl">BRENT</span><span class="t-up">$82,14 ↑1,2%</span></span>
+    <span class="ticker-item sep">·</span>
+    <span class="ticker-item"><span class="lbl">СКВАЖИН ОНЛАЙН</span><span class="t-blue">147 активных</span></span>
+    <span class="ticker-item sep">·</span>
+    <span class="ticker-item"><span class="lbl">AI ALERT</span><span class="t-warn">СКВ-НВ-042 · Прихват · ВЫСОКИЙ РИСК</span></span>
+    <span class="ticker-item sep">·</span>
+    <span class="ticker-item"><span class="lbl">ТЕНДЕР</span><span class="t-up">3 новых · Ответ до 14:00</span></span>
+    <span class="ticker-item sep">·</span>
+    <span class="ticker-item"><span class="lbl">LUBRIMIX-K</span><span class="t-blue">Склад: 42 т · Архангельск</span></span>
+    <span class="ticker-item sep">·</span>
+    <span class="ticker-item"><span class="lbl">AI РЕШЕНИЙ</span><span class="t-up">2 847 сегодня · +18%</span></span>
+    <span class="ticker-item sep">·</span>
+    <span class="ticker-item"><span class="lbl">НПВ ПРЕДОТВРАЩЕНО</span><span class="t-up">11,4 ч · за неделю</span></span>
+    <span class="ticker-item sep">·</span>
+    <span class="ticker-item"><span class="lbl">BRENT</span><span class="t-up">$82,14 ↑1,2%</span></span>
+    <span class="ticker-item sep">·</span>
+    <span class="ticker-item"><span class="lbl">СКВАЖИН ОНЛАЙН</span><span class="t-blue">147 активных</span></span>
+    <span class="ticker-item sep">·</span>
+    <span class="ticker-item"><span class="lbl">AI ALERT</span><span class="t-warn">СКВ-НВ-042 · Прихват · ВЫСОКИЙ РИСК</span></span>
+    <span class="ticker-item sep">·</span>
+    <span class="ticker-item"><span class="lbl">ТЕНДЕР</span><span class="t-up">3 новых · Ответ до 14:00</span></span>
+    <span class="ticker-item sep">·</span>
+    <span class="ticker-item"><span class="lbl">LUBRIMIX-K</span><span class="t-blue">Склад: 42 т · Архангельск</span></span>
+    <span class="ticker-item sep">·</span>
+    <span class="ticker-item"><span class="lbl">AI РЕШЕНИЙ</span><span class="t-up">2 847 сегодня · +18%</span></span>
+    <span class="ticker-item sep">·</span>
+    <span class="ticker-item"><span class="lbl">НПВ ПРЕДОТВРАЩЕНО</span><span class="t-up">11,4 ч · за неделю</span></span>
+  </div>
+</div>
+
+<!-- ── НАВ ── -->
+<nav>
+  <a class="nav-logo" href="index-ru.html">
+    <div class="dq-mark">DQ</div>
+    <div class="dq-wordmark">
+      <div class="dq-name">DRILL-Q</div>
+      <div class="dq-powered">powered by <span>cloto</span></div>
+    </div>
+  </a>
+
+  <ul class="nav-links">
+    <li><a href="#platform">Платформа</a></li>
+    <li><a href="#ai-demo">Интеллект</a></li>
+    <li><a href="#rfq">Тендеры</a></li>
+    <li><a href="#supply">Химия</a></li>
+    <li><a href="tools-ru.html">Инструменты</a></li>
+  </ul>
+
+  <div class="nav-right">
+    <a class="lang-link" href="index-en.html">EN</a>
+    <a class="btn-primary" href="proposal-ru.html">Запросить доступ</a>
+  </div>
+</nav>
+
+<!-- ── ГЕРОЙ ── -->
+<section class="hero">
+  <div class="hero-noise"></div>
+  <div class="hero-grid"></div>
+
+  <div class="hero-content">
+    <div class="hero-eyebrow">
+      <span class="dot-live"></span>
+      Операционный интеллект · v2.4.1 · Онлайн
+    </div>
+
+    <h1 class="dq-headline">
+      AI-платформа<br>
+      для <span class="br-blue">бурения</span><br>
+      и химии
+    </h1>
+
+    <p class="hero-sub">
+      DRILL-Q преобразует данные скважин, тендерные документы и операционные сигналы в готовые решения.
+      Обнаружение рисков в реальном времени, автоматизация тендеров и химическое снабжение — в одной платформе.
+    </p>
+
+    <div class="hero-actions">
+      <a class="btn-large" href="proposal-ru.html">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        Запросить доступ
+      </a>
+      <a class="btn-outline" href="tools-ru.html">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Все инструменты
+      </a>
+    </div>
+
+    <div class="hero-status-row">
+      <div class="status-item">
+        <span class="dot dot-g"></span>
+        <span>Decision Engine</span>
+        <span class="val">Онлайн</span>
+      </div>
+      <div class="status-item">
+        <span class="dot dot-b"></span>
+        <span>MudGPT</span>
+        <span class="val">Готов</span>
+      </div>
+      <div class="status-item">
+        <span class="dot dot-a"></span>
+        <span>2 Алерта</span>
+        <span class="val">Активно</span>
+      </div>
+      <div class="status-item">
+        <span class="dot dot-g"></span>
+        <span>Склад</span>
+        <span class="val">Доступен</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Командная панель -->
+  <div class="hero-panel">
+    <div class="cmd-panel">
+      <div class="cmd-header">
+        <div class="cmd-header-left">
+          <div class="cmd-dots">
+            <div class="cmd-dot cmd-dot-r"></div>
+            <div class="cmd-dot cmd-dot-y"></div>
+            <div class="cmd-dot cmd-dot-g"></div>
+          </div>
+          <div class="cmd-title">DRILL-Q · Decision Engine</div>
+        </div>
+        <div class="cmd-badge-live">
+          <span style="width:4px;height:4px;background:var(--green);border-radius:50%;animation:pulse 2s infinite;display:inline-block;"></span>
+          Live
+        </div>
+      </div>
+
+      <div class="cmd-well-bar">
+        <div class="cmd-well-id">СКВ-НВ-042</div>
+        <div class="cmd-well-meta">Новопортовское · 3 847 м · WBM</div>
+      </div>
+
+      <div class="cmd-alert-strip">
+        <span class="alert-icon">⚠</span>
+        <span>Вероятность прихвата 74% · ЭЦП 1,94 г/см³ · Момент ↑ 22%</span>
+      </div>
+
+      <div class="cmd-terminal" id="cmd-terminal"></div>
+
+      <div class="cmd-actions">
+        <button class="cmd-act-btn">PDF-отчёт</button>
+        <button class="cmd-act-btn">В суточку</button>
+        <button class="cmd-act-btn primary">Применить решение</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── СТАТ-ПОЛОСА ── -->
+<div class="stat-strip">
+  <div class="stat-cell">
+    <div class="stat-cell-val sc-blue">147</div>
+    <div class="stat-cell-label">Скважин на мониторинге</div>
+  </div>
+  <div class="stat-cell">
+    <div class="stat-cell-val sc-green">2 847</div>
+    <div class="stat-cell-label">AI-решений в сутки</div>
+  </div>
+  <div class="stat-cell">
+    <div class="stat-cell-val sc-white">1 200+</div>
+    <div class="stat-cell-label">Химреагентов в базе</div>
+  </div>
+  <div class="stat-cell">
+    <div class="stat-cell-val sc-amber">340</div>
+    <div class="stat-cell-label">Обработано тендеров</div>
+  </div>
+  <div class="stat-cell">
+    <div class="stat-cell-val sc-cloto">11,4 ч</div>
+    <div class="stat-cell-label">НПВ предотвращено · за неделю</div>
+  </div>
+</div>
+
+<!-- ── МОДУЛИ ПЛАТФОРМЫ ── -->
+<section class="modules-section" id="platform">
+  <div class="section-label"><span class="sl-dot"></span>Платформа</div>
+  <h2>Один инструмент. <span class="c">Четыре</span> уровня интеллекта.</h2>
+  <p class="section-sub">DRILL-Q объединяет поддержку решений, мониторинг операций, тендерный интеллект и химическое снабжение в единую операционную систему.</p>
+
+  <div class="modules-grid">
+    <div class="module-card">
+      <div class="module-icon mi-blue">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+      </div>
+      <div class="module-name">Decision Engine</div>
+      <div class="module-desc">AI-анализ параметров бурения в реальном времени. Прогнозирует осложнения, рекомендует действия и оценивает эффект до возникновения проблем.</div>
+      <ul class="module-list">
+        <li>Прогноз прихватов и газопроявлений</li>
+        <li>Оптимизация программы бурения</li>
+        <li>Моделирование ЭЦП / ЭСД</li>
+        <li>Корреляция по 847+ скважинам</li>
+      </ul>
+      <span class="module-tag mt-blue">AI · Реальное время</span>
+    </div>
+
+    <div class="module-card">
+      <div class="module-icon mi-green">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      </div>
+      <div class="module-name">Operations Monitor</div>
+      <div class="module-desc">Дашборды реального времени по параметрам бурения, свойствам жидкости и производительности буровой. Автоматическое обнаружение аномалий.</div>
+      <ul class="module-list">
+        <li>Дашборды параметров бурения</li>
+        <li>Контроль свойств бурового раствора</li>
+        <li>Автогенерация суточных рапортов</li>
+        <li>Отчёты сдачи-приёма смены</li>
+      </ul>
+      <span class="module-tag mt-green">Live · 24/7</span>
+    </div>
+
+    <div class="module-card">
+      <div class="module-icon mi-amber">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      </div>
+      <div class="module-name">RFQ Intelligence</div>
+      <div class="module-desc">Загрузите тендерную документацию — DRILL-Q извлечёт требования, подберёт химреагенты, рассчитает объёмы и подготовит техническое предложение.</div>
+      <ul class="module-list">
+        <li>Разбор тендерных документов</li>
+        <li>Автоматическое сопоставление ТУ</li>
+        <li>Формирование техпредложений</li>
+        <li>Анализ цен и маржинальности</li>
+      </ul>
+      <span class="module-tag mt-amber">Закупки · AI</span>
+    </div>
+
+    <div class="module-card">
+      <div class="module-icon mi-cloto">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--cloto)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+      </div>
+      <div class="module-name">Chemical Supply</div>
+      <div class="module-desc">Прямой доступ к химической сети Клото с 33-летней историей. 1 200+ реагентов, остатки на складе в режиме реального времени, доставка из 3 баз Архангельска.</div>
+      <ul class="module-list">
+        <li>1 200+ реагентов в базе</li>
+        <li>Склады Архангельска онлайн</li>
+        <li>WBM / OBM / Жидкости заканчивания</li>
+        <li>ТТС и Паспорта безопасности</li>
+      </ul>
+      <span class="module-tag mt-cloto">Клото · с 1991 г.</span>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── AI ДЕМО ── -->
+<section class="ai-demo-section" id="ai-demo">
+  <div class="ai-layout">
+    <div class="ai-interface">
+      <div class="ai-if-header">
+        <div>
+          <div class="ai-if-title">MudGPT · Помощник по буровым операциям</div>
+          <div class="ai-if-sub">DRILL-Q · База знаний химреагентов Клото</div>
+        </div>
+        <div class="ai-status">
+          <span style="width:5px;height:5px;background:var(--green);border-radius:50%;animation:pulse 2s infinite;display:inline-block;"></span>
+          Онлайн
+        </div>
+      </div>
+
+      <div class="ai-body" id="ai-body">
+        <div class="ai-msg user">
+          <div class="ai-avatar av-user">ВЫ</div>
+          <div class="bubble bubble-user">
+            Плотность WBM 1,45, высокий момент на 3 200 м. Глинистые сланцы. Что рекомендуешь?
+          </div>
+        </div>
+
+        <div class="ai-msg">
+          <div class="ai-avatar av-ai">DQ</div>
+          <div class="bubble bubble-ai">
+            По параметрам и геологическому разрезу — вероятно гидратация глин и нестабильность стенок. Высокий момент при плотности 1,45 указывает на недостаточное ингибирование, а не дефицит плотности.
+            <div class="ai-rec-list">
+              <div class="ai-rec-item">
+                <div class="ri-icon">✓</div>
+                <div>
+                  <div class="ri-text"><span class="em-cloto">INHIBIT-MAX KCl</span> — добавка 5% раствора</div>
+                  <div class="ri-sub">Подавляет набухание глин · Уверенность 89%</div>
+                </div>
+              </div>
+              <div class="ai-rec-item">
+                <div class="ri-icon">✓</div>
+                <div>
+                  <div class="ri-text"><span class="em-blue">LUBRIMIX-K</span> — 3% об. добавки в раствор</div>
+                  <div class="ri-sub">Снижение момента 18–25% · Есть на складе Архангельск</div>
+                </div>
+              </div>
+              <div class="ai-rec-item alert-rec">
+                <div class="ri-icon">!</div>
+                <div>
+                  <div class="ri-text">Снизить МСП до <span class="em-amber">12 м/ч</span> на время обработки</div>
+                  <div class="ri-sub">Даёт ингибитору время подействовать до углубления</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ai-msg user">
+          <div class="ai-avatar av-user">ВЫ</div>
+          <div class="bubble bubble-user">
+            Какие потери НПВ, если не принять меры в ближайшие 3 часа?
+          </div>
+        </div>
+
+        <div class="ai-msg">
+          <div class="ai-avatar av-ai">DQ</div>
+          <div class="bubble bubble-ai">
+            По данным 23 аналогичных скважин Новопортовского месторождения:
+            <br><br>
+            <span class="em-amber">Без мер:</span> вероятность прихвата 67% в течение 3–5 часов. Ожидаемый НПВ: <span class="em-amber">14–22 часа</span> + ловильные работы.
+            <br><br>
+            <span class="em-green">С рекомендованной обработкой:</span> риск снижается до 11%. НПВ при своевременной обработке: <span class="em-green">&lt;1,5 ч</span> + мониторинг.
+            <br><br>
+            <span class="em-dim">Стоимость бездействия: ~2 300 000 – 3 800 000 руб. по текущей ставке БУ.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="ai-input-row">
+        <input class="ai-input" id="ai-input" type="text" placeholder="Спросите про раствор, пласт, риск или химреагенты…">
+        <button class="ai-send" id="ai-send">Отправить</button>
+      </div>
+    </div>
+
+    <div>
+      <div class="section-label"><span class="sl-dot"></span>Интеллект</div>
+      <h2>AI, говорящий на <span class="c">языке бурения</span></h2>
+      <p class="section-sub">MudGPT объединяет 33 года полевого опыта Клото с данными скважин в реальном времени — и даёт ответы, которые реально работают на буровой.</p>
+
+      <div class="ai-features">
+        <div class="af-item">
+          <div class="af-num">01</div>
+          <div class="af-content">
+            <h4>Контекст скважины в реальном времени</h4>
+            <p>Подключение к потокам WITS/WITSML. Каждый ответ основан на том, что происходит в скважине прямо сейчас — не на учебных примерах.</p>
+          </div>
+        </div>
+        <div class="af-item">
+          <div class="af-num">02</div>
+          <div class="af-content">
+            <h4>База химреагентов Клото</h4>
+            <p>Полный доступ к 1 200 продуктам. Рекомендации включают конкретный реагент, дозировку, технологию ввода и текущий остаток на складе.</p>
+          </div>
+        </div>
+        <div class="af-item">
+          <div class="af-num">03</div>
+          <div class="af-content">
+            <h4>Поиск по историческим паттернам</h4>
+            <p>Корреляция с 847+ скважинами обслуживания Клото. Когда система говорит «67%» — это реальная статистика, не абстрактная модель.</p>
+          </div>
+        </div>
+        <div class="af-item">
+          <div class="af-num">04</div>
+          <div class="af-content">
+            <h4>Оценка НПВ и экономического эффекта</h4>
+            <p>Каждая рекомендация содержит оценку сэкономленного времени и стоимостного эффекта. Не просто техническое мнение — экономическое обоснование.</p>
+          </div>
+        </div>
+        <div class="af-item">
+          <div class="af-num">05</div>
+          <div class="af-content">
+            <h4>Экспорт в суточный рапорт и отчёты</h4>
+            <p>Одним нажатием — в суточный рапорт, рапорт сдачи смены или техническое предложение. Полевая документация ведётся без лишних усилий.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── ТЕНДЕРНЫЙ ИНТЕЛЛЕКТ ── -->
+<section class="rfq-section" id="rfq">
+  <div class="rfq-layout">
+    <div>
+      <div class="section-label"><span class="sl-dot"></span>Тендерный интеллект</div>
+      <h2>От тендера до КП <span class="g">за минуты</span></h2>
+      <p class="section-sub">Загрузите любой закупочный документ — спецификацию, техническое приложение, объём работ. DRILL-Q извлекает требования, подбирает продукты Клото и формирует полное техническое предложение.</p>
+
+      <div class="rfq-steps">
+        <div class="rfq-step">
+          <div class="rfq-step-num">1</div>
+          <div class="rfq-step-content">
+            <h4>Загрузка тендерного документа</h4>
+            <p>PDF, Word или Excel. DRILL-Q читает российские и зарубежные закупочные документы.</p>
+          </div>
+        </div>
+        <div class="rfq-connector"></div>
+        <div class="rfq-step">
+          <div class="rfq-step-num">2</div>
+          <div class="rfq-step-content">
+            <h4>AI извлекает требования</h4>
+            <p>Определяет реагенты, объёмы, технические условия, сроки поставки и требования соответствия.</p>
+          </div>
+        </div>
+        <div class="rfq-connector"></div>
+        <div class="rfq-step">
+          <div class="rfq-step-num">3</div>
+          <div class="rfq-step-content">
+            <h4>Подбор и цена из каталога Клото</h4>
+            <p>Точные или аналогичные позиции с техническим обоснованием, ссылками на ТТС и ценами.</p>
+          </div>
+        </div>
+        <div class="rfq-connector"></div>
+        <div class="rfq-step">
+          <div class="rfq-step-num">4</div>
+          <div class="rfq-step-content">
+            <h4>Готовое коммерческое предложение</h4>
+            <p>Технико-коммерческое предложение готово к отправке. Редактируйте, согласовывайте, экспортируйте в PDF или Word.</p>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top: var(--s10);">
+        <a class="btn-primary" href="proposal-ru.html">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          Попробовать RFQ Intelligence
+        </a>
+      </div>
+    </div>
+
+    <div class="rfq-panel">
+      <div class="rfq-panel-header">
+        <div class="rfq-panel-title" id="rfq-panel-title">RFQ Intelligence · Загрузка</div>
+        <span id="rfq-status-badge" style="font-size:9px;font-family:var(--mono);font-weight:600;display:none;">✓ ОБРАБОТАН</span>
+      </div>
+
+      <div class="rfq-drop" id="rfq-drop">
+        <div class="rfq-drop-icon" id="rfq-drop-icon">⬆</div>
+        <h3 id="rfq-drop-title">Загрузите тендерный документ</h3>
+        <p id="rfq-drop-sub" style="color:var(--t-03);">PDF, Word, Excel · нажмите для загрузки</p>
+      </div>
+
+      <div id="rfq-progress" style="display:none;height:3px;background:var(--b-01);border-radius:2px;margin:8px 0;overflow:hidden;">
+        <div id="rfq-progress-bar" style="height:100%;background:var(--amber);border-radius:2px;width:0%;transition:width 0.25s linear;"></div>
+      </div>
+
+      <div class="rfq-analysis" id="rfq-analysis" style="display:none;">
+        <div class="rfq-row">
+          <span class="rfq-row-label">Объём тендера</span>
+          <span class="rfq-row-val ok">4 200 000 руб.</span>
+        </div>
+        <div class="rfq-row">
+          <span class="rfq-row-label">Позиций требуется</span>
+          <span class="rfq-row-val">14 позиций</span>
+        </div>
+        <div class="rfq-row">
+          <span class="rfq-row-label">Совпадение с каталогом</span>
+          <span class="rfq-row-val ok">12 / 14 точное</span>
+        </div>
+        <div class="rfq-row">
+          <span class="rfq-row-label">Предложены аналоги</span>
+          <span class="rfq-row-val warn">2 позиции · с обоснованием</span>
+        </div>
+        <div class="rfq-row">
+          <span class="rfq-row-label">Реализуемость поставки</span>
+          <span class="rfq-row-val ok">Подтверждена · 14 дней</span>
+        </div>
+        <div class="rfq-row">
+          <span class="rfq-row-label">Статус предложения</span>
+          <span class="rfq-row-val ok">Готово к экспорту</span>
+        </div>
+      </div>
+
+      <div id="rfq-export-row" style="display:none;gap:var(--s3);margin-top:var(--s4);">
+        <button onclick="window.rfqExport&&rfqExport('pdf')" style="flex:1;padding:9px 12px;background:var(--blue);color:#fff;border:none;border-radius:var(--r2);font-size:11px;font-weight:700;cursor:pointer;font-family:var(--mono);letter-spacing:.03em;">Экспорт PDF</button>
+        <button onclick="window.rfqExport&&rfqExport('word')" style="flex:1;padding:9px 12px;background:var(--bg-03);color:var(--t-01);border:1px solid var(--b-02);border-radius:var(--r2);font-size:11px;font-weight:700;cursor:pointer;font-family:var(--mono);letter-spacing:.03em;">Word · КП</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── ХИМИЧЕСКОЕ СНАБЖЕНИЕ ── -->
+<section class="supply-section" id="supply">
+  <div class="supply-layout">
+    <div>
+      <div class="section-label"><span class="sl-dot"></span>Химическое снабжение</div>
+      <h2>Химическая сеть <span class="o">Клото</span><br>внутри DRILL-Q</h2>
+      <p class="section-sub">33 года опыта в нефтехимии — теперь в единой индексированной базе. 1 200+ реагентов по WBM, OBM, жидкостям заканчивания, потерям циркуляции и спецхимии — с остатками из Архангельска в реальном времени.</p>
+
+      <div style="display:flex;flex-direction:column;gap:0;margin-top:var(--s8);">
+        <div style="display:flex;align-items:center;gap:var(--s4);padding:var(--s4) 0;border-bottom:1px solid var(--b-01);">
+          <div style="width:32px;height:32px;background:var(--blue-subtle);border:1px solid var(--blue-border);border-radius:var(--r2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          </div>
+          <div>
+            <div style="font-size:13px;font-weight:600;color:var(--t-01);margin-bottom:2px;">3 базы в Архангельске</div>
+            <div style="font-size:11px;color:var(--t-03);">Остатки онлайн · Доставка в арктические районы за 1 день</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:var(--s4);padding:var(--s4) 0;border-bottom:1px solid var(--b-01);">
+          <div style="width:32px;height:32px;background:var(--green-subtle);border:1px solid var(--green-border);border-radius:var(--r2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          </div>
+          <div>
+            <div style="font-size:13px;font-weight:600;color:var(--t-01);margin-bottom:2px;">Полная документация ТТС и ПБ</div>
+            <div style="font-size:11px;color:var(--t-03);">Технические листы привязаны к каждой карточке товара</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:var(--s4);padding:var(--s4) 0;border-bottom:1px solid var(--b-01);">
+          <div style="width:32px;height:32px;background:var(--amber-subtle);border:1px solid var(--amber-border);border-radius:var(--r2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          </div>
+          <div>
+            <div style="font-size:13px;font-weight:600;color:var(--t-01);margin-bottom:2px;">AI-замена реагентов</div>
+            <div style="font-size:11px;color:var(--t-03);">Предлагает аналоги с техническим обоснованием замены</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:var(--s4);padding:var(--s4) 0;">
+          <div style="width:32px;height:32px;background:var(--cloto-subtle);border:1px solid var(--cloto-border);border-radius:var(--r2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--cloto)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+          </div>
+          <div>
+            <div style="font-size:13px;font-weight:600;color:var(--t-01);margin-bottom:2px;">Напрямую от Клото · Без посредников</div>
+            <div style="font-size:11px;color:var(--t-03);">Заводские цены · Возможны договорные условия</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:var(--s8);display:flex;gap:var(--s3);flex-wrap:wrap;">
+        <a class="btn-cloto" href="catalog-ru.html">Каталог реагентов</a>
+        <a class="btn-outline" href="docs/93_mudgpt_stock_arkhangelsk.html">Склад Архангельск</a>
+      </div>
+    </div>
+
+    <div class="supply-grid">
+      <div class="supply-card">
+        <div class="supply-card-top">
+          <span class="supply-cat scat-wbm">WBM</span>
+        </div>
+        <div class="supply-name">LUBRIMIX-K</div>
+        <div class="supply-chem">Смазочная добавка на эфирной основе</div>
+        <div class="supply-spec">
+          <span class="supply-spec-k">Снижение КТТ</span>
+          <span class="supply-spec-v">до 35%</span>
+        </div>
+        <div class="supply-spec">
+          <span class="supply-spec-k">Дозировка</span>
+          <span class="supply-spec-v">2–5% об.</span>
+        </div>
+        <div class="supply-spec">
+          <span class="supply-spec-k">Склад АРХ</span>
+          <span class="supply-spec-v" style="color:var(--green);">42 т ✓</span>
+        </div>
+      </div>
+
+      <div class="supply-card">
+        <div class="supply-card-top">
+          <span class="supply-cat scat-obm">OBM</span>
+        </div>
+        <div class="supply-name">BARAZAN-D</div>
+        <div class="supply-chem">Реагент регулирования реологии · органофильный</div>
+        <div class="supply-spec">
+          <span class="supply-spec-k">ДНС</span>
+          <span class="supply-spec-v">5–35 фунт/100 фут²</span>
+        </div>
+        <div class="supply-spec">
+          <span class="supply-spec-k">Темп. диапазон</span>
+          <span class="supply-spec-v">до 220°C</span>
+        </div>
+        <div class="supply-spec">
+          <span class="supply-spec-k">Склад АРХ</span>
+          <span class="supply-spec-v" style="color:var(--green);">18 т ✓</span>
+        </div>
+      </div>
+
+      <div class="supply-card">
+        <div class="supply-card-top">
+          <span class="supply-cat scat-lcm">ПП</span>
+        </div>
+        <div class="supply-name">SEALPEX-5</div>
+        <div class="supply-chem">Кольматирующий материал · смешанный</div>
+        <div class="supply-spec">
+          <span class="supply-spec-k">Фракция</span>
+          <span class="supply-spec-v">Мелкая / Средняя / Крупная</span>
+        </div>
+        <div class="supply-spec">
+          <span class="supply-spec-k">Плотность</span>
+          <span class="supply-spec-v">0,88–1,12 г/см³</span>
+        </div>
+        <div class="supply-spec">
+          <span class="supply-spec-k">Склад АРХ</span>
+          <span class="supply-spec-v" style="color:var(--amber);">На заказ</span>
+        </div>
+      </div>
+
+      <div class="supply-card">
+        <div class="supply-card-top">
+          <span class="supply-cat scat-lub">ИНГИБИТОР</span>
+        </div>
+        <div class="supply-name">INHIBIT-MAX KCl</div>
+        <div class="supply-chem">Ингибитор гидратации глин · на основе KCl</div>
+        <div class="supply-spec">
+          <span class="supply-spec-k">Концентрация</span>
+          <span class="supply-spec-v">3–7% мас.</span>
+        </div>
+        <div class="supply-spec">
+          <span class="supply-spec-k">Снижение набух.</span>
+          <span class="supply-spec-v">до 78%</span>
+        </div>
+        <div class="supply-spec">
+          <span class="supply-spec-k">Склад АРХ</span>
+          <span class="supply-spec-v" style="color:var(--green);">31 т ✓</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── CTA ── -->
+<section class="cta-section">
+  <div class="cta-glow"></div>
+  <div class="section-label" style="justify-content:center;margin-bottom:var(--s4);"><span class="sl-dot"></span>Начать работу</div>
+  <h2>Интеллект для <span class="c">каждой скважины</span></h2>
+  <p class="cta-sub">К DRILL-Q подключаются буровые инженеры и операторы по всей России. Запросите доступ или свяжитесь с Клото напрямую.</p>
+  <div class="cta-actions">
+    <a class="btn-large" href="proposal-ru.html">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      Запросить доступ к платформе
+    </a>
+    <a class="btn-outline" href="tools-ru.html">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      Все инструменты
+    </a>
+    <a class="btn-cloto" href="catalog-ru.html">Каталог химреагентов</a>
+  </div>
+</section>
+
+<!-- ── ФУТЕР ── -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <a class="nav-logo" href="index-ru.html" style="margin-bottom:var(--s4);display:inline-flex;">
+        <div class="dq-mark">DQ</div>
+        <div class="dq-wordmark">
+          <div class="dq-name">DRILL-Q</div>
+          <div class="dq-powered">powered by <span>cloto</span></div>
+        </div>
+      </a>
+      <p class="footer-brand-desc">
+        Платформа операционного интеллекта для буровых операций и промышленной химии. На базе 33-летней экспертизы Клото.
+        <br><br>
+        ООО «КЛОТО» · Архангельск · с 1991 г.
+      </p>
+    </div>
+
+    <div class="footer-col">
+      <h4>Платформа</h4>
+      <ul>
+        <li><a href="#platform">Decision Engine</a></li>
+        <li><a href="#platform">Operations Monitor</a></li>
+        <li><a href="#rfq">RFQ Intelligence</a></li>
+        <li><a href="#supply">Chemical Supply</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>Инструменты</h4>
+      <ul>
+        <li><a href="tools-ru.html">Все инструменты</a></li>
+        <li><a href="docs/87_mudgpt_chemicals_materials.html">MudGPT</a></li>
+        <li><a href="docs/120_drilling_calculations_menu.html">Калькуляторы</a></li>
+        <li><a href="docs/93_mudgpt_stock_arkhangelsk.html">Склад · Архангельск</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>Компания</h4>
+      <ul>
+        <li><a href="proposal-ru.html">Запросить доступ</a></li>
+        <li><a href="catalog-ru.html">Каталог</a></li>
+        <li><a href="index-en.html">English</a></li>
+        <li><a href="mailto:arcticdf@gmail.com">arcticdf@gmail.com</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <span>© 2025 ООО «КЛОТО» · Платформа DRILL-Q · Все права защищены</span>
+    <div class="footer-links">
+      <a href="index-en.html">EN</a>
+      <a href="proposal-ru.html">Контакт</a>
+      <a href="tools-ru.html">Инструменты</a>
+    </div>
+  </div>
+</footer>
+
+
+<div id="dq-toast"></div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ══════════════════════════════════════════════
+     HELPERS
+  ══════════════════════════════════════════════ */
+  function mkEl(tag, cls, txt) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (txt !== undefined) e.textContent = txt;
+    return e;
+  }
+  function sleep(ms) { return new Promise(function(r){ setTimeout(r, ms); }); }
+
+  var _toastTimer;
+  function showToast(icon, text, color) {
+    var t = document.getElementById('dq-toast');
+    if (!t) return;
+    t.innerHTML = '<span style="color:' + (color||'var(--green)') + ';margin-right:8px;">' + icon + '</span>' + text;
+    t.classList.add('show');
+    clearTimeout(_toastTimer);
+    _toastTimer = setTimeout(function(){ t.classList.remove('show'); }, 3000);
+  }
+
+  /* ══════════════════════════════════════════════
+     TERMINAL — auto-plays on page load
+  ══════════════════════════════════════════════ */
+  var term = document.getElementById('cmd-terminal');
+
+  async function typeInto(el, text, speed) {
+    for (var i = 0; i < text.length; i++) {
+      el.textContent += text[i];
+      await sleep(speed);
+    }
+  }
+
+  async function runTerminal() {
+    if (!term) return;
+    term.innerHTML = '';
+
+    function addLine() {
+      var ln = mkEl('div', 'cmd-line');
+      term.appendChild(ln);
+      term.scrollTop = term.scrollHeight;
+      return ln;
+    }
+    async function addDim(text, d) {
+      var ln = addLine(); ln.appendChild(mkEl('span', 'cmd-out-dim', text)); await sleep(d);
+    }
+    async function addOk(text, d) {
+      var ln = addLine(); ln.appendChild(mkEl('span', 'cmd-out-ok', text)); await sleep(d);
+    }
+    async function addBlank(d) {
+      var ln = addLine(); ln.innerHTML = '&nbsp;'; await sleep(d);
+    }
+    async function addCmd(cmdText, pauseAfter) {
+      var ln = addLine();
+      ln.appendChild(mkEl('span', 'cmd-prompt', 'dq> '));
+      var cmd = mkEl('span', 'cmd-cmd', '');
+      var cur = mkEl('span', 'cmd-cursor', '');
+      ln.append(cmd, cur);
+      await typeInto(cmd, cmdText, 42);
+      cur.remove();
+      term.scrollTop = term.scrollHeight;
+      await sleep(pauseAfter);
+    }
+
+    await sleep(1200);
+
+    await addCmd('analyze --well НВ-042 --realtime', 300);
+    await addDim('Подключение к потокам WITS...', 450);
+    await addDim('Анализ пластовых условий...', 550);
+    await addDim('Корреляция с 847 скважинами...', 720);
+    await addBlank(200);
+    await addOk('✓ Причина: набухание глин · недостаток смазки', 350);
+    await addOk('✓ Критическое окно: ближайшие 2–4 часа', 350);
+    await addBlank(500);
+
+    await addCmd('recommend --action lubricity', 300);
+    await addBlank(200);
+
+    var r1 = addLine();
+    r1.append(mkEl('span','cmd-out-val','1. '), mkEl('span','cmd-out-cloto','LUBRIMIX-K '), mkEl('span','cmd-out-val','4% об. · немедленно'));
+    term.scrollTop = term.scrollHeight;
+    await sleep(300);
+
+    var r2 = addLine();
+    r2.append(mkEl('span','cmd-out-val','2. '), mkEl('span','cmd-out-accent','Плотность р-ра '), mkEl('span','cmd-out-val','1,42 → 1,38 г/см³'));
+    term.scrollTop = term.scrollHeight;
+    await sleep(250);
+
+    var r3 = addLine();
+    r3.append(mkEl('span','cmd-out-val','3. '), mkEl('span','cmd-out-val','Проработка до 3 600 м'));
+    term.scrollTop = term.scrollHeight;
+    await sleep(250);
+
+    await addBlank(200);
+    await addOk('✓ Уверенность: 91% · НПВ сэкономлено: 8,5 ч', 300);
+    await addDim('─────────────────────────────', 150);
+
+    var last = addLine();
+    last.append(mkEl('span','cmd-prompt','dq> '), mkEl('span','cmd-cursor',''));
+    term.scrollTop = term.scrollHeight;
+  }
+
+  runTerminal();
+
+  /* ── Terminal buttons ── */
+  document.querySelectorAll('.cmd-act-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var txt = btn.textContent.trim();
+      var orig = btn.textContent;
+      if (txt === 'PDF-отчёт') {
+        btn.textContent = '✓ Готово'; btn.style.color = 'var(--green)';
+        showToast('✓', 'PDF-отчёт сформирован · Открытие...', 'var(--green)');
+        setTimeout(function(){ btn.textContent = orig; btn.style.color = ''; }, 2500);
+      } else if (txt === 'В суточку') {
+        btn.textContent = '✓ Добавлено'; btn.style.color = 'var(--green)';
+        showToast('✓', 'Решение добавлено в суточный рапорт', 'var(--green)');
+        setTimeout(function(){ btn.textContent = orig; btn.style.color = ''; }, 2500);
+      } else if (txt === 'Применить решение') {
+        showToast('⚡', 'Решение активировано · Инженер уведомлён', 'var(--amber)');
+        btn.style.background = 'var(--green)';
+        setTimeout(function(){ btn.style.background = ''; }, 2500);
+      }
+    });
+  });
+
+  /* ══════════════════════════════════════════════
+     MUDGPT — keyword-matched responses
+  ══════════════════════════════════════════════ */
+  var aiBody  = document.getElementById('ai-body');
+  var aiInput = document.getElementById('ai-input');
+  var aiSend  = document.getElementById('ai-send');
+
+  var RESPONSES = [
+    {
+      keys: ['глин','ингибит','набух','сланц','kcl','kla','инкапсул'],
+      ans: {
+        text: 'По симптомам — активная гидратация глинистых пород. Ингибирование раствора недостаточно для данного геологического разреза.',
+        recs: [
+          { name:'INHIBIT-MAX KCl', clr:'cloto', info:'5–7% мас. · снижение набухания до 78%', stock:'Склад АРХ: 31 т ✓' },
+          { name:'КЛА-ФРИ®',        clr:'blue',  info:'0,5–1,5% об. · инкапсулятор выбуренной породы', stock:'Под заказ' },
+          { alert:true, info:'Добавить KCl в раствор замещения при промывке интервала' }
+        ],
+        footer:'Уверенность: 87% · НПВ при бездействии: 6–12 ч · ~1 800 000 руб.'
+      }
+    },
+    {
+      keys: ['смазк','момент','трени','прихват','ктт','lubr','смаз'],
+      ans: {
+        text: 'Высокий момент и риск прихвата — критический дефицит смазки в интервале. Требуется немедленная обработка.',
+        recs: [
+          { name:'LUBRIMIX-K',       clr:'blue',  info:'3–5% об. · снижение КТТ до 35%',            stock:'Склад АРХ: 42 т ✓' },
+          { name:'СУПЕРСЛАЙДЕР®-М',  clr:'cloto', info:'1–3% об. · синтетический смазчик WBM',      stock:'Под заказ' },
+          { alert:true, info:'Снизить МСП до 10–12 м/ч на время обработки раствора' }
+        ],
+        footer:'Уверенность: 93% · НПВ при бездействии: 8–22 ч · ~3 200 000 руб.'
+      }
+    },
+    {
+      keys: ['фильтр','водоотд','корка','фко'],
+      ans: {
+        text: 'Высокая водоотдача ведёт к утолщению фильтрационной корки и нестабильности ствола. Необходима обработка понизителем.',
+        recs: [
+          { name:'ОПТИТРОЛ®',    clr:'blue',  info:'0,3–0,6% мас. · полимерный понизитель водоотдачи', stock:'Склад АРХ' },
+          { name:'ХАЙТЕМП®-200', clr:'cloto', info:'до 200°C · высокотемпературные скважины',          stock:'Под заказ' }
+        ],
+        footer:'Уверенность: 85% · Цель: ФК ≤ 4 мл/30 мин API'
+      }
+    },
+    {
+      keys: ['рuo','obm','инвер','эмульс','нефтеба','рно','рао'],
+      ans: {
+        text: 'Для РУО (обратная эмульсия) требуются специализированные реагенты на органической основе. Состав подбирается под ВГК и температуру.',
+        recs: [
+          { name:'ЭКСТРАМУЛ® СУПРИМ', clr:'blue',  info:'Эмульгатор первичный · ДНС 15–40 · до 220°C', stock:'Склад АРХ' },
+          { name:'КЛОТОНЕКС®',        clr:'cloto', info:'Смачиватель для РУО · ВГК 5–9',                stock:'Под заказ' }
+        ],
+        footer:'Уверенность: 88% · Совместимость с WBM-переходом подтверждена'
+      }
+    },
+    {
+      keys: ['поглощ','циркул','кольмат','lcm','sealpex','wellbond'],
+      ans: {
+        text: 'Потери циркуляции требуют немедленного кольматажа. Выбор материала зависит от типа и ширины трещин.',
+        recs: [
+          { name:'SEALPEX-5', clr:'blue',  info:'Смешанный фракционный состав · мелкая/средняя/крупная', stock:'На заказ' },
+          { name:'WELLBOND®', clr:'cloto', info:'Жидкая обсадная колонна · тампонирование зоны',          stock:'На заказ' },
+          { alert:true, info:'При полных потерях — снизить давление насосов, применить LCM-пробку' }
+        ],
+        footer:'Уверенность: 82% · Без мер: риск потери ствола · от 5 000 000 руб.'
+      }
+    },
+    {
+      keys: ['реолог','вязк','днс','снс','структур','загущ'],
+      ans: {
+        text: 'Реологические параметры критичны для очистки ствола и выноса шлама. Оптимизация ДНС и СНС под текущую глубину и УВК.',
+        recs: [
+          { name:'BARAZAN-D',  clr:'blue',  info:'Органофильный · ДНС 5–35 · до 220°C', stock:'Склад АРХ: 18 т ✓' },
+          { name:'ПОЛИТРОЛ®', clr:'cloto', info:'Полимерный регулятор реологии WBM · 0,1–0,5%', stock:'Склад АРХ' }
+        ],
+        footer:'Уверенность: 89% · Цель: ДНС 12–18, СНС 7/12 г/100 см²'
+      }
+    },
+    {
+      keys: ['плотн','утяжел','барит','эцп','эсд','тяжел','мвт'],
+      ans: {
+        text: 'Подбор режима утяжеления для удержания ЭЦП в допустимом окне плотности на всём профиле скважины.',
+        recs: [
+          { name:'Баритовый утяжелитель', clr:'blue', info:'Плотность до 2,1 г/см³ · чистота 92%+', stock:'Склад АРХ' },
+          { alert:true, info:'При плотности >1,6 г/см³ — проверить ЭЦП и несущую способность обсадки' }
+        ],
+        footer:'Уверенность: 91% · Калькулятор утяжеления — в разделе Инструменты DRILL-Q'
+      }
+    }
+  ];
+
+  var DEFAULT_ANS = {
+    text: 'Опишите проблему детальнее — параметры раствора, глубину, геологию разреза. Чем конкретнее вопрос, тем точнее рекомендация.',
+    recs: [
+      { name:'Каталог реагентов Клото', clr:'blue', info:'1 200+ позиций · WBM, OBM, жидкости заканчивания', stock:'→ catalog-ru.html' }
+    ],
+    footer:'MudGPT · База знаний Клото · 847 скважин в исторической базе'
+  };
+
+  function findAns(text) {
+    var low = text.toLowerCase();
+    for (var i = 0; i < RESPONSES.length; i++) {
+      var item = RESPONSES[i];
+      for (var j = 0; j < item.keys.length; j++) {
+        if (low.indexOf(item.keys[j]) !== -1) return item.ans;
+      }
+    }
+    return DEFAULT_ANS;
+  }
+
+  function buildUserMsg(text) {
+    var msg = mkEl('div','ai-msg user');
+    msg.append(mkEl('div','ai-avatar av-user','ВЫ'), mkEl('div','bubble bubble-user', text));
+    return msg;
+  }
+
+  function buildAiMsg(ans) {
+    var msg    = mkEl('div','ai-msg');
+    var av     = mkEl('div','ai-avatar av-ai','DQ');
+    var bubble = mkEl('div','bubble bubble-ai');
+
+    bubble.appendChild(mkEl('div','',ans.text));
+
+    if (ans.recs && ans.recs.length) {
+      var list = mkEl('div','ai-rec-list');
+      ans.recs.forEach(function(rec) {
+        var item = mkEl('div','ai-rec-item' + (rec.alert ? ' alert-rec' : ''));
+        var icon = mkEl('div','ri-icon', rec.alert ? '!' : '✓');
+        var body = mkEl('div');
+        if (rec.name) {
+          var rText = mkEl('div','ri-text');
+          rText.appendChild(mkEl('span','em-'+(rec.clr||'blue'), rec.name));
+          rText.appendChild(document.createTextNode(' — ' + rec.info));
+          body.appendChild(rText);
+          if (rec.stock) body.appendChild(mkEl('div','ri-sub', rec.stock));
+        } else {
+          body.appendChild(mkEl('div','ri-text', rec.info));
+        }
+        item.append(icon, body);
+        list.appendChild(item);
+      });
+      bubble.appendChild(list);
+    }
+
+    if (ans.footer) {
+      var foot = mkEl('div','ri-sub', ans.footer);
+      foot.style.cssText = 'margin-top:8px;padding-top:8px;border-top:1px solid var(--b-01);';
+      bubble.appendChild(foot);
+    }
+
+    msg.append(av, bubble);
+    return msg;
+  }
+
+  function showTyping() {
+    var msg    = mkEl('div','ai-msg');
+    var av     = mkEl('div','ai-avatar av-ai','DQ');
+    var bubble = mkEl('div','bubble bubble-ai');
+    msg.id     = 'typing-msg';
+    bubble.style.cssText = 'display:flex;align-items:center;gap:4px;padding:10px 14px;';
+    for (var i = 0; i < 3; i++) {
+      var dot = document.createElement('div');
+      dot.style.cssText = 'width:5px;height:5px;background:var(--t-03);border-radius:50%;' +
+        'animation:typingBounce 1.2s ' + (i * 0.2) + 's infinite ease-in-out;';
+      bubble.appendChild(dot);
+    }
+    msg.append(av, bubble);
+    aiBody.appendChild(msg);
+    aiBody.scrollTop = aiBody.scrollHeight;
+  }
+
+  function removeTyping() {
+    var t = document.getElementById('typing-msg');
+    if (t) t.remove();
+  }
+
+  var _sending = false;
+
+  function sendMsg() {
+    if (!aiBody || !aiInput || _sending) return;
+    var text = aiInput.value.trim();
+    if (!text) return;
+    _sending = true;
+    aiInput.value = '';
+    aiBody.appendChild(buildUserMsg(text));
+    aiBody.scrollTop = aiBody.scrollHeight;
+    showTyping();
+    var ans   = findAns(text);
+    var delay = 1100 + Math.random() * 700;
+    setTimeout(function() {
+      removeTyping();
+      aiBody.appendChild(buildAiMsg(ans));
+      aiBody.scrollTop = aiBody.scrollHeight;
+      _sending = false;
+    }, delay);
+  }
+
+  if (aiSend)  aiSend.addEventListener('click', sendMsg);
+  if (aiInput) aiInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMsg(); }
+  });
+
+  /* ══════════════════════════════════════════════
+     RFQ UPLOAD SIMULATION
+  ══════════════════════════════════════════════ */
+  var rfqDrop      = document.getElementById('rfq-drop');
+  var rfqAnalysis  = document.getElementById('rfq-analysis');
+  var rfqProgress  = document.getElementById('rfq-progress');
+  var rfqProgBar   = document.getElementById('rfq-progress-bar');
+  var rfqTitle     = document.getElementById('rfq-panel-title');
+  var rfqBadge     = document.getElementById('rfq-status-badge');
+  var rfqDropIcon  = document.getElementById('rfq-drop-icon');
+  var rfqDropTitle = document.getElementById('rfq-drop-title');
+  var rfqDropSub   = document.getElementById('rfq-drop-sub');
+  var rfqExportRow = document.getElementById('rfq-export-row');
+  var _rfqBusy     = false;
+
+  async function simulateUpload() {
+    if (_rfqBusy) return;
+    _rfqBusy = true;
+    rfqDrop.classList.add('rfq-processing');
+
+    rfqDropIcon.textContent  = '⟳';
+    rfqDropTitle.textContent = 'Тендер_2025_0441.pdf';
+    rfqDropSub.textContent   = 'Загрузка файла...';
+    rfqDrop.style.borderColor = 'var(--amber-border)';
+    rfqDrop.style.background  = 'var(--amber-subtle)';
+    if (rfqProgress) rfqProgress.style.display = 'block';
+
+    var steps = [
+      { pct:15, text:'Чтение документа... 28 стр.',  d:500 },
+      { pct:38, text:'Извлечение требований...',       d:650 },
+      { pct:62, text:'Сопоставление с каталогом...',  d:700 },
+      { pct:82, text:'Расчёт объёмов и цен...',        d:550 },
+      { pct:100,text:'Формирование КП...',             d:450 }
+    ];
+
+    for (var si = 0; si < steps.length; si++) {
+      var s = steps[si];
+      if (rfqProgBar) rfqProgBar.style.width = s.pct + '%';
+      rfqDropSub.textContent = s.text;
+      await sleep(s.d);
+    }
+
+    /* — done — */
+    rfqDrop.classList.remove('rfq-processing');
+    rfqDrop.classList.add('rfq-done');
+    rfqDrop.style.borderColor  = 'var(--green-border)';
+    rfqDrop.style.background   = 'var(--green-subtle)';
+    rfqDropIcon.style.color    = 'var(--green)';
+    rfqDropIcon.textContent    = '✓';
+    rfqDropSub.textContent     = '28 стр. · 14 позиций найдено · Обработано за 12 сек';
+    if (rfqProgress) rfqProgress.style.display = 'none';
+
+    if (rfqTitle) rfqTitle.textContent   = 'Анализ тендера · ТЕНДЕР-2025-0441';
+    if (rfqBadge) { rfqBadge.style.color = 'var(--green)'; rfqBadge.style.display = 'inline'; }
+
+    if (rfqAnalysis) {
+      rfqAnalysis.style.display   = 'block';
+      rfqAnalysis.style.animation = 'fadeInLine 0.3s ease';
+    }
+    if (rfqExportRow) rfqExportRow.style.display = 'flex';
+
+    showToast('✓', 'Тендер обработан · КП готово к экспорту', 'var(--green)');
+    _rfqBusy = false;
+  }
+
+  function resetRfq() {
+    rfqDrop.classList.remove('rfq-done', 'rfq-processing');
+    rfqDrop.style.borderColor  = '';
+    rfqDrop.style.background   = '';
+    rfqDropIcon.style.color    = '';
+    rfqDropIcon.textContent    = '⬆';
+    rfqDropTitle.textContent   = 'Загрузите тендерный документ';
+    rfqDropSub.textContent     = 'PDF, Word, Excel · нажмите для загрузки';
+    rfqDropSub.style.color     = 'var(--t-03)';
+    if (rfqTitle)     rfqTitle.textContent  = 'RFQ Intelligence · Загрузка';
+    if (rfqBadge)     rfqBadge.style.display = 'none';
+    if (rfqAnalysis)  rfqAnalysis.style.display = 'none';
+    if (rfqExportRow) rfqExportRow.style.display = 'none';
+  }
+
+  if (rfqDrop) {
+    rfqDrop.addEventListener('click', function() {
+      if (rfqDrop.classList.contains('rfq-done'))        resetRfq();
+      else if (!rfqDrop.classList.contains('rfq-processing')) simulateUpload();
+    });
+  }
+
+  window.rfqExport = function(type) {
+    showToast('⬇', type === 'pdf'
+      ? 'PDF-предложение формируется...'
+      : 'Word-документ формируется...', 'var(--blue)');
+  };
+
+})();
+</script>
+</body>
+</html>

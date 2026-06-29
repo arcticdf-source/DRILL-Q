@@ -1,0 +1,933 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>141 · Северо-Ярудейское · ГИС и испытания</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap");
+
+    :root {
+      --bg-0: #071019;
+      --bg-1: #11263a;
+      --bg-2: #1b3e58;
+      --panel: rgba(10, 18, 29, 0.84);
+      --panel-strong: rgba(14, 26, 42, 0.96);
+      --line: rgba(225, 236, 255, 0.16);
+      --line-soft: rgba(225, 236, 255, 0.08);
+      --text: #edf5ff;
+      --muted: #a8bbcf;
+      --cyan: #22d7b4;
+      --teal: #79efe5;
+      --amber: #f6bf64;
+      --blue: #8db4ff;
+      --violet: #c2a7ff;
+      --red: #ff8b7f;
+      --brown: #9c7558;
+      --shadow: 0 26px 56px rgba(0, 0, 0, 0.42);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      font-family: "Manrope", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(980px 520px at -4% -6%, rgba(34,215,180,.22), transparent),
+        radial-gradient(760px 420px at 100% 0%, rgba(246,191,100,.18), transparent),
+        linear-gradient(145deg, var(--bg-0), var(--bg-1) 44%, var(--bg-2));
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(to right, rgba(255,255,255,.022) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,.022) 1px, transparent 1px);
+      background-size: 44px 44px;
+      mask-image: radial-gradient(circle at 50% 16%, rgba(0,0,0,.95), transparent 72%);
+    }
+
+    .wrap {
+      position: relative;
+      z-index: 1;
+      width: min(1360px, 94vw);
+      margin: 0 auto;
+      padding: 24px 0 64px;
+    }
+
+    .topbar,
+    .hero,
+    .section,
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 12px 14px;
+      position: sticky;
+      top: 12px;
+      z-index: 20;
+      backdrop-filter: blur(12px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text);
+      text-decoration: none;
+      font-family: "Oswald", sans-serif;
+      font-size: 21px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 35% 35%, #d9fffa, var(--cyan));
+      box-shadow: 0 0 18px rgba(34, 215, 180, 0.45);
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn,
+    .btn-ghost {
+      text-decoration: none;
+      border-radius: 12px;
+      padding: 10px 14px;
+      font: 800 12px/1 "Manrope", sans-serif;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .btn {
+      color: #082922;
+      background: linear-gradient(130deg, #9efcef, var(--cyan));
+      border: 1px solid rgba(34, 215, 180, 0.8);
+    }
+
+    .btn-ghost {
+      color: #dbeaff;
+      background: rgba(255,255,255,.04);
+      border: 1px solid var(--line-soft);
+    }
+
+    .hero,
+    .section,
+    .panel {
+      margin-top: 18px;
+      padding: 24px;
+    }
+
+    .hero {
+      background:
+        radial-gradient(420px 220px at 4% 0%, rgba(34,215,180,.16), transparent),
+        radial-gradient(520px 260px at 100% 0%, rgba(246,191,100,.14), transparent),
+        linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015)),
+        var(--panel);
+    }
+
+    .eyebrow,
+    .tag,
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line-soft);
+      background: rgba(255,255,255,.04);
+      color: #dce9f7;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    h1, h2, h3, h4 {
+      margin: 0;
+      font-family: "Oswald", sans-serif;
+      letter-spacing: -.01em;
+    }
+
+    h1 {
+      margin-top: 14px;
+      font-size: clamp(36px, 5vw, 64px);
+      line-height: .96;
+      max-width: 960px;
+    }
+
+    .hero p,
+    .card p,
+    .note,
+    .stat-card p,
+    .service-card p,
+    .well-card p,
+    .bullet-card p {
+      margin: 0;
+      color: #c7d7ea;
+      line-height: 1.7;
+      font-size: 14px;
+    }
+
+    .hero-grid,
+    .interval-grid,
+    .service-grid,
+    .bullet-grid,
+    .well-grid,
+    .legend-row,
+    .summary-strip {
+      display: grid;
+      gap: 14px;
+    }
+
+    .hero-grid {
+      margin-top: 22px;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .stat-card,
+    .card,
+    .service-card,
+    .bullet-card,
+    .well-card {
+      border: 1px solid var(--line-soft);
+      border-radius: 20px;
+      background: rgba(255,255,255,.03);
+      padding: 18px;
+    }
+
+    .stat-card strong {
+      display: block;
+      font-size: 30px;
+      line-height: 1;
+    }
+
+    .stat-card span {
+      display: block;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .section-head h2 {
+      font-size: 30px;
+    }
+
+    .interval-grid {
+      grid-template-columns: 1.1fr .9fr;
+      align-items: start;
+    }
+
+    .interval-board {
+      border: 1px solid var(--line-soft);
+      border-radius: 24px;
+      padding: 22px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015)),
+        rgba(15, 26, 40, 0.8);
+    }
+
+    .interval-ruler {
+      position: relative;
+      margin-top: 18px;
+      padding: 24px 24px 20px 110px;
+      border-radius: 20px;
+      border: 1px solid var(--line-soft);
+      background: rgba(255,255,255,.025);
+      overflow: hidden;
+    }
+
+    .interval-ruler::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to right, rgba(255,255,255,.03) 1px, transparent 1px);
+      background-size: calc(100% / 8) 100%;
+      pointer-events: none;
+    }
+
+    .ruler-axis {
+      position: absolute;
+      left: 24px;
+      top: 24px;
+      bottom: 24px;
+      width: 70px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      color: #a7bbce;
+      font-size: 12px;
+    }
+
+    .interval-row {
+      position: relative;
+      display: grid;
+      grid-template-columns: 178px 1fr;
+      gap: 16px;
+      align-items: center;
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(255,255,255,.05);
+    }
+
+    .interval-row:last-child { border-bottom: 0; }
+
+    .interval-label strong {
+      display: block;
+      font-size: 18px;
+    }
+
+    .interval-label span {
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .interval-track {
+      position: relative;
+      height: 28px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.06);
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,.05);
+    }
+
+    .interval-fill {
+      position: absolute;
+      top: 3px;
+      bottom: 3px;
+      border-radius: 999px;
+      box-shadow: 0 0 26px rgba(255,255,255,.08);
+    }
+
+    .interval-text {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 12px;
+      font-weight: 800;
+      color: #081018;
+      letter-spacing: .03em;
+      white-space: nowrap;
+    }
+
+    .summary-strip {
+      margin-top: 16px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .mini-stat {
+      border: 1px solid var(--line-soft);
+      border-radius: 18px;
+      padding: 16px;
+      background: rgba(255,255,255,.03);
+    }
+
+    .mini-stat strong {
+      display: block;
+      font-size: 22px;
+    }
+
+    .mini-stat span {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .service-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .service-card {
+      position: relative;
+      overflow: hidden;
+      min-height: 220px;
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+    }
+
+    .service-card::after {
+      content: "";
+      position: absolute;
+      inset: auto -40px -40px auto;
+      width: 120px;
+      height: 120px;
+      border-radius: 999px;
+      background: radial-gradient(circle, rgba(255,255,255,.12), transparent 70%);
+      pointer-events: none;
+    }
+
+    .service-card h3 {
+      font-size: 22px;
+      text-transform: uppercase;
+      margin-top: 10px;
+    }
+
+    .service-pills,
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .bullet-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .bullet-card h3 {
+      font-size: 24px;
+      margin-bottom: 12px;
+    }
+
+    .bullet-card ul {
+      margin: 0;
+      padding-left: 18px;
+      color: #d9e7f4;
+      line-height: 1.7;
+      font-size: 14px;
+    }
+
+    .well-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .well-card {
+      background:
+        linear-gradient(180deg, rgba(141,180,255,.06), rgba(255,255,255,.02)),
+        rgba(255,255,255,.02);
+    }
+
+    .well-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .well-name {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .well-badge {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      font: 700 20px/1 "Oswald", sans-serif;
+      color: #081018;
+      background: linear-gradient(135deg, #ffd188, #ffb84c);
+    }
+
+    .well-head h3 {
+      font-size: 28px;
+    }
+
+    .well-sub {
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .well-bars {
+      margin-top: 18px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .well-bar {
+      display: grid;
+      grid-template-columns: 150px 1fr;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .well-bar label {
+      color: #dce9f7;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .well-track {
+      position: relative;
+      height: 26px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.06);
+      background: rgba(255,255,255,.05);
+      overflow: hidden;
+    }
+
+    .well-fill {
+      position: absolute;
+      top: 3px;
+      bottom: 3px;
+      border-radius: 999px;
+    }
+
+    .well-range {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 11px;
+      font-weight: 800;
+      color: #081018;
+      letter-spacing: .03em;
+    }
+
+    .well-meta {
+      margin-top: 16px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .well-meta div {
+      border: 1px solid var(--line-soft);
+      border-radius: 14px;
+      padding: 12px;
+      background: rgba(255,255,255,.025);
+    }
+
+    .well-meta strong {
+      display: block;
+      font-size: 18px;
+    }
+
+    .well-meta span {
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .well-note {
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid rgba(255,255,255,.06);
+      color: #d2e1f0;
+      font-size: 13px;
+      line-height: 1.65;
+    }
+
+    .footer {
+      margin-top: 18px;
+      text-align: center;
+      color: #8ea4ba;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    @media (max-width: 1180px) {
+      .hero-grid,
+      .interval-grid,
+      .service-grid,
+      .bullet-grid,
+      .well-grid,
+      .summary-strip { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 860px) {
+      .topbar { position: static; }
+      .well-bar,
+      .interval-row { grid-template-columns: 1fr; }
+      .interval-ruler { padding-left: 24px; }
+      .ruler-axis { display: none; }
+      .well-meta { grid-template-columns: 1fr; }
+    }
+  </style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+  <main class="wrap">
+    <header class="topbar">
+      <a class="brand" href="119_severo_yarudeyskoe_project_dashboard.html"><span class="dot" aria-hidden="true"></span><span>Северо-Ярудейское · ГИС/испытания</span></a>
+      <div class="actions">
+        <a class="btn-ghost" href="119_severo_yarudeyskoe_project_dashboard.html">Назад к проекту</a>
+        <a class="btn" href="136_severo_yarudeyskoe_geology.html">Геология ЮН2-4</a>
+      </div>
+    </header>
+
+    <section class="hero">
+      <span class="eyebrow">Doc 141 · Геофизика, керн и испытания</span>
+      <h1>ГИС/испытания по Северо-Ярудейскому: ЮН2-4, керн, опробование и фонд 302Г-308Г</h1>
+      <p>Модуль собирает в один рабочий экран три слоя, которые обычно расползаются по разным таблицам: программу ГИС по секциям ствола, интервал отбора керна и шлама по ЮН2-4, а также контур опробования пластов. Вместо листания исходных таблиц здесь сразу видно, где идет целевая геофизика, какой сервис обязателен по каждой секции и на каких глубинах находится ключевое окно для решения по испытанию.</p>
+
+      <div class="hero-grid">
+        <article class="stat-card"><strong>7</strong><span>скважин в серии 302Г-308Г</span></article>
+        <article class="stat-card"><strong>85 м</strong><span>проходка с отбором керна</span></article>
+        <article class="stat-card"><strong>1965-2104 м</strong><span>окно испытания по вертикали</span></article>
+        <article class="stat-card"><strong>18 / 4 / 1 / 2 / 2</strong><span>ГДК / ОПК / КВД / УВ / пробы воды</span></article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>Ключевое окно ЮН2-4</h2>
+        <span class="tag">Core + Testing Window</span>
+      </div>
+
+      <div class="interval-grid">
+        <div class="interval-board">
+          <p>Ниже сведены три критичных контура из скринов: сам пласт ЮН2-4 по вертикали, интервал отбора керна по вертикали и соответствующий интервал по стволу. Это не просто геология, а рабочее окно для сервиса: именно здесь сходятся керн, ГТИ/ГК и дальнейшее испытание пластов.</p>
+          <div class="interval-ruler">
+            <div class="ruler-axis">
+              <span>1965 м</span>
+              <span>2000 м</span>
+              <span>2050 м</span>
+              <span>2104 м</span>
+            </div>
+
+            <div class="interval-row">
+              <div class="interval-label">
+                <strong>Пласт ЮН2-4</strong>
+                <span>по вертикали</span>
+              </div>
+              <div class="interval-track">
+                <div class="interval-fill" style="left:0%;width:100%;background:linear-gradient(90deg,#9df08e,#32c56d)">
+                  <span class="interval-text">1965-2104 м TVD</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="interval-row">
+              <div class="interval-label">
+                <strong>Отбор керна</strong>
+                <span>по вертикали</span>
+              </div>
+              <div class="interval-track">
+                <div class="interval-fill" style="left:31.7%;width:49.6%;background:linear-gradient(90deg,#ffe082,#ffb74d)">
+                  <span class="interval-text">2009-2078 м TVD</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="interval-row">
+              <div class="interval-label">
+                <strong>Отбор керна</strong>
+                <span>по стволу</span>
+              </div>
+              <div class="interval-track">
+                <div class="interval-fill" style="left:18%;width:64%;background:linear-gradient(90deg,#94e7ff,#5ca4ff)">
+                  <span class="interval-text">2300-2385 м MD</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="summary-strip">
+            <article class="mini-stat"><strong>80 мм</strong><span>минимальный диаметр керна</span></article>
+            <article class="mini-stat"><strong>24 м</strong><span>минимальная проходка за рейс</span></article>
+            <article class="mini-stat"><strong>через 5 м / через 1 м</strong><span>шлам и грунты, в продуктивных пластах шаг уплотняется</span></article>
+          </div>
+        </div>
+
+        <div class="card">
+          <span class="tag">Таблицы 1.16-1.18</span>
+          <h3 style="margin-top:12px;font-size:30px;">Что фиксируется в этой зоне</h3>
+          <div class="chips" style="margin-top:16px;">
+            <span class="chip">ГТИ и ГК</span>
+            <span class="chip">0-забой</span>
+            <span class="chip">Опробователь на трубах</span>
+          </div>
+          <p style="margin-top:16px;">По керну и шламу модуль держит продуктивный интервал под более плотным шагом отбора. По испытанию весь вертикальный коридор 1965-2104 м оставлен открытым под уточнение по результатам ГИС, но сама сервисная схема уже задана: 18 замеров ГДК, 4 ОПК, 1 КВД, 2 УВ-пробы и 2 пробы воды.</p>
+          <p style="margin-top:14px;">Оборудование для испытания задано как опробователь пластов на трубах по согласованию с заказчиком. Это означает, что интерфейс модуля нужен не для архивной справки, а для ежедневной инженерной синхронизации между геологом, супервайзером и сервисом ГИС.</p>
+          <div class="well-note">Примечание исходной таблицы сохранено: объемы и интервалы исследований будут уточняться по результатам ГИС.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="section-head">
+        <h2>Сервисный контур</h2>
+        <span class="tag">Logging Stack</span>
+      </div>
+
+      <div class="service-grid">
+        <article class="service-card">
+          <span class="tag">Section 01</span>
+          <h3>Кондуктор</h3>
+          <p>Базовый обязательный набор по верхней секции: ГК и инклинометрия в открытом стволе, затем контроль качества цементирования в обсаженной колонне.</p>
+          <div class="service-pills">
+            <span class="chip">ГК</span>
+            <span class="chip">Инклинометрия</span>
+            <span class="chip">ЦМ</span>
+            <span class="chip">АКЦ</span>
+            <span class="chip">ГМ</span>
+          </div>
+        </article>
+
+        <article class="service-card">
+          <span class="tag">Section 02</span>
+          <h3>178 мм секция</h3>
+          <p>Основная эксплуатационная секция ведется в режиме LWD: ГК, УЭС, инклинометрия и ЭЦП. После спуска колонны добавляется кабельный контроль цементирования.</p>
+          <div class="service-pills">
+            <span class="chip">ГК</span>
+            <span class="chip">УЭС</span>
+            <span class="chip">ЭЦП</span>
+            <span class="chip">СГДТ</span>
+            <span class="chip">Цемент</span>
+          </div>
+        </article>
+
+        <article class="service-card">
+          <span class="tag">Section 03</span>
+          <h3>Хвостовик 114 мм</h3>
+          <p>Нижняя геофизика уже работает как полноценный reservoir package: нейтрон, многозондовый индукционный каротаж, азимутальный ГГК, инклинометрия, ЭЦП и картограф границ.</p>
+          <div class="service-pills">
+            <span class="chip">ННК</span>
+            <span class="chip">МИК</span>
+            <span class="chip">ГГК-П</span>
+            <span class="chip">Имидж</span>
+            <span class="chip">КВ</span>
+          </div>
+        </article>
+
+        <article class="service-card">
+          <span class="tag">Section 04</span>
+          <h3>Испытание</h3>
+          <p>Для продуктивного окна модуль держит не только логирование, но и блок опробования: ГДК/ОПК/КВД/УВ и вода. Это уже не просто каротаж, а прямой мост в решение по испытанию пласта.</p>
+          <div class="service-pills">
+            <span class="chip">ГДК</span>
+            <span class="chip">ОПК</span>
+            <span class="chip">КВД</span>
+            <span class="chip">УВ</span>
+            <span class="chip">Вода</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="section-head">
+        <h2>Операционные акценты</h2>
+        <span class="tag">Supervisor Brief</span>
+      </div>
+
+      <div class="bullet-grid">
+        <article class="bullet-card">
+          <h3>1. Керн как якорь</h3>
+          <p>Отбор керна не размазан по разрезу, а жестко привязан к продуктивному окну ЮН2-4.</p>
+          <ul>
+            <li>85 м проходки по стволу 2300-2385 м.</li>
+            <li>Минимальный диаметр керна 80 мм.</li>
+            <li>Минимальная проходка за рейс 24 м.</li>
+          </ul>
+        </article>
+
+        <article class="bullet-card">
+          <h3>2. ГИС не одной строкой</h3>
+          <p>По фонду 302Г-308Г программа отличается по глубине и углам, но логика неизменна.</p>
+          <ul>
+            <li>Верх: обязательный каркас ГК + инклинометрия.</li>
+            <li>Средняя секция: LWD с УЭС и ЭЦП.</li>
+            <li>Низ: полноценный reservoir imaging пакет.</li>
+          </ul>
+        </article>
+
+        <article class="bullet-card">
+          <h3>3. Испытание идет следом</h3>
+          <p>Окно испытания по вертикали совпадает с главным геологическим узлом и не должно теряться между разделами проекта.</p>
+          <ul>
+            <li>Интервал испытания 1965-2104 м TVD.</li>
+            <li>Оборудование: опробователь пластов на трубах.</li>
+            <li>Финальные объемы уточняются только после ГИС.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="section-head">
+        <h2>Фонд 302Г-308Г</h2>
+        <span class="tag">Well-by-Well Program</span>
+      </div>
+      <p class="note">Ниже сведен визуальный контур по всем скважинам из скрина. Первая полоса показывает глубину по кондуктору, вторая - 178 мм секцию, третья - хвостовик 114 мм. Так быстрее видеть, где фонд расходится по длине секций и где reservoir-logging пакет становится самым длинным.</p>
+      <div class="well-grid" id="wellGrid"></div>
+    </section>
+
+    <p class="footer">Северо-Ярудейское · ГИС и испытания · Doc 141</p>
+  </main>
+
+  <script>
+    const wells = [
+      {
+        name: '302Г',
+        conductorAngle: '22°',
+        sectionAngle: '60°',
+        tailAngle: '90°',
+        conductorEnd: 941.8,
+        sectionStart: 891.8,
+        sectionEnd: 2160,
+        tailStart: 2110,
+        tailEnd: 4249,
+        note: 'Стратиграфическое расчленение разреза, контроль набора ЗУ и посадки башмака ЭК. В нижней секции - литологическое расчленение и оценка ФЕС/насыщенности.'
+      },
+      {
+        name: '303Г',
+        conductorAngle: '42°',
+        sectionAngle: '68°',
+        tailAngle: '90°',
+        conductorEnd: 1026.12,
+        sectionStart: 976.12,
+        sectionEnd: 2520,
+        tailStart: 2470,
+        tailEnd: 4865.38,
+        note: 'Средняя секция заметно длиннее 302Г, а нижний хвостовик уже переводит проект в полноценный reservoir-logging режим до 4865,38 м.'
+      },
+      {
+        name: '304Г',
+        conductorAngle: '50°',
+        sectionAngle: '67°',
+        tailAngle: '90°',
+        conductorEnd: 1022.13,
+        sectionStart: 972.13,
+        sectionEnd: 2880,
+        tailStart: 2830,
+        tailEnd: 4960,
+        note: 'Фондовая логика сохраняется, но верх 178 мм секции уходит глубже 2880 м, после чего включается длинный хвостовиковый пакет до 4960 м.'
+      },
+      {
+        name: '305Г',
+        conductorAngle: '53°',
+        sectionAngle: '73°',
+        tailAngle: '90°',
+        conductorEnd: 1025.11,
+        sectionStart: 975.11,
+        sectionEnd: 3190,
+        tailStart: 3140,
+        tailEnd: 6100,
+        note: 'Самая длинная нижняя геофизика в серии: хвостовик тянется до 6100 м и становится главным носителем детального reservoir-описания.'
+      },
+      {
+        name: '306Г',
+        conductorAngle: '50°',
+        sectionAngle: '72°',
+        tailAngle: '94°',
+        conductorEnd: 1022.13,
+        sectionStart: 972.13,
+        sectionEnd: 3180,
+        tailStart: 3130,
+        tailEnd: 5930,
+        note: 'Почти предельный угол хвостовика и длинный блок ГИС до 5930 м. Для такой геометрии модуль особенно полезен как общий опорный экран по сервису.'
+      },
+      {
+        name: '307Г',
+        conductorAngle: '50°',
+        sectionAngle: '67°',
+        tailAngle: '90°',
+        conductorEnd: 1022.05,
+        sectionStart: 972.05,
+        sectionEnd: 2524,
+        tailStart: 2474,
+        tailEnd: 4290,
+        note: 'Более компактная траектория: 178 мм секция заканчивается на 2524 м, хвостовик - на 4290 м. Это удобный базовый контур для сравнения с более длинными скважинами фонда.'
+      },
+      {
+        name: '308Г',
+        conductorAngle: '41°',
+        sectionAngle: '69°',
+        tailAngle: '90°',
+        conductorEnd: 1004.57,
+        sectionStart: 954.57,
+        sectionEnd: 2510,
+        tailStart: 2460,
+        tailEnd: 4620,
+        note: 'Самый короткий кондуктор в серии и сбалансированная нижняя секция до 4620 м. Подходит как эталон средней длины между 307Г и 303-304Г.'
+      }
+    ];
+
+    const maxDepth = 6100;
+    const wellGrid = document.getElementById('wellGrid');
+
+    function formatDepth(value) {
+      return new Intl.NumberFormat('ru-RU', {
+        minimumFractionDigits: value % 1 === 0 ? 0 : 2,
+        maximumFractionDigits: value % 1 === 0 ? 0 : 2
+      }).format(value);
+    }
+
+    function makeBar(label, start, end, color) {
+      const left = (start / maxDepth) * 100;
+      const width = ((end - start) / maxDepth) * 100;
+      return `
+        <div class="well-bar">
+          <label>${label}</label>
+          <div class="well-track">
+            <div class="well-fill" style="left:${left.toFixed(2)}%;width:${width.toFixed(2)}%;background:${color};">
+              <span class="well-range">${formatDepth(start)}-${formatDepth(end)} м</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    wellGrid.innerHTML = wells.map((well, index) => `
+      <article class="well-card">
+        <div class="well-head">
+          <div class="well-name">
+            <div class="well-badge">${index + 1}</div>
+            <div>
+              <h3>${well.name}</h3>
+              <div class="well-sub">Северо-Ярудейское · маршрут ГИС</div>
+            </div>
+          </div>
+          <span class="tag">0-${formatDepth(well.tailEnd)} м MD</span>
+        </div>
+
+        <div class="well-bars">
+          ${makeBar('Кондуктор 245 мм', 0, well.conductorEnd, 'linear-gradient(90deg,#8ae8ff,#64b9ff)')}
+          ${makeBar('Секция 178 мм', well.sectionStart, well.sectionEnd, 'linear-gradient(90deg,#91f0b0,#40ca77)')}
+          ${makeBar('Хвостовик 114 мм', well.tailStart, well.tailEnd, 'linear-gradient(90deg,#ffd483,#ff9b4e)')}
+        </div>
+
+        <div class="well-meta">
+          <div><strong>${well.conductorAngle}</strong><span>угол кондуктора</span></div>
+          <div><strong>${well.sectionAngle}</strong><span>угол 178 мм секции</span></div>
+          <div><strong>${well.tailAngle}</strong><span>угол хвостовика</span></div>
+        </div>
+
+        <div class="well-note">${well.note}</div>
+      </article>
+    `).join('');
+  </script>
+</body>
+</html>

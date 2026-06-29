@@ -1,0 +1,377 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>77 · I3 Losses Cockpit</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap");
+    :root { --bg-0:#090d14; --bg-1:#241a11; --bg-2:#3b2717; --panel:rgba(17,14,11,.88); --line:rgba(255,234,214,.15); --line-soft:rgba(255,234,214,.08); --text:#fff5ea; --muted:#d0b9a0; --amber:#ffbf66; --sand:#ffd59d; --orange:#ff9f61; --coral:#ff8f5d; --red:#ff6f61; --cyan:#7de7df; --shadow:0 24px 56px rgba(0,0,0,.42); }
+    *{box-sizing:border-box} html,body{margin:0;min-height:100%;font-family:"Manrope",sans-serif;color:var(--text);background:radial-gradient(960px 540px at 0% -10%, rgba(255,191,102,.18), transparent),radial-gradient(840px 500px at 100% 0%, rgba(255,143,93,.12), transparent),linear-gradient(145deg,var(--bg-0),var(--bg-1) 46%,var(--bg-2))}
+    .wrap{width:min(1500px,95vw);margin:0 auto;padding:24px 0 64px}.top,.hero,.section{margin-top:18px;border:1px solid var(--line);border-radius:24px;background:var(--panel);box-shadow:var(--shadow);padding:24px}.top{display:flex;align-items:center;justify-content:space-between;gap:12px;background:rgba(15,12,10,.7);position:sticky;top:12px;z-index:20}.brand{display:flex;align-items:center;gap:10px;font-family:"Oswald",sans-serif;text-transform:uppercase;letter-spacing:.05em;font-size:20px}.dot{width:12px;height:12px;border-radius:999px;background:radial-gradient(circle at 35% 35%,#fff3dd,var(--amber))}.nav{display:flex;gap:8px;flex-wrap:wrap}.nav a{text-decoration:none;font-size:12px;text-transform:uppercase;letter-spacing:.06em;font-weight:800;border-radius:10px;padding:8px 12px;color:#2b1706;background:linear-gradient(130deg,#ffe6b6,#ffbf66);border:1px solid rgba(255,191,102,.72)}
+    .hero{background:radial-gradient(620px 240px at 5% 0%, rgba(255,191,102,.14), transparent),radial-gradient(520px 260px at 100% 0%, rgba(125,231,223,.10), transparent),linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.015)),var(--panel)} .hero h1{margin:10px 0 0;font-family:"Oswald",sans-serif;font-size:clamp(34px,5vw,60px);line-height:1}.hero p{margin:12px 0 0;max-width:1080px;color:#f2dcc5;line-height:1.7}
+    .label{display:inline-flex;align-items:center;border-radius:999px;padding:5px 10px;border:1px solid var(--line-soft);background:rgba(255,255,255,.04);font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#ffefdb}.hero-grid,.grid-2,.grid-3,.grid-4{display:grid;gap:12px}.hero-grid{margin-top:20px;grid-template-columns:1.25fr .75fr}.grid-2{grid-template-columns:1.05fr .95fr}.grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}.grid-4{grid-template-columns:repeat(4,minmax(0,1fr))}
+    .card,.panel,.chart,.metric,.timeline-item{border:1px solid var(--line-soft);border-radius:18px;background:rgba(255,255,255,.03);padding:16px}.section-head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin-bottom:16px}.section-head h2{margin:0;font-size:24px}.section-head span{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+    .kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.kpi{border:1px solid var(--line-soft);border-radius:18px;background:rgba(255,255,255,.03);padding:16px}.kpi strong{display:block;font-size:24px}.kpi span{display:block;margin-top:4px;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+    .control-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.field{display:flex;flex-direction:column;gap:6px}.field label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#ffdfbf}.field input,.field select{width:100%;border-radius:12px;border:1px solid rgba(255,234,214,.14);background:rgba(12,9,8,.78);color:#fff4ea;padding:10px 12px;font:inherit}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}.btn{appearance:none;border:1px solid rgba(255,191,102,.45);background:linear-gradient(130deg,#ffe6b6,#ffbf66);color:#2b1706;border-radius:12px;padding:10px 14px;font:inherit;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;cursor:pointer}.btn.secondary{background:rgba(255,255,255,.04);color:#ffe7ca;border-color:rgba(255,234,214,.16)}
+    .badge-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.pill{display:inline-flex;align-items:center;border-radius:999px;padding:5px 10px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;border:1px solid rgba(255,234,214,.18)}.observe{background:rgba(255,213,157,.14);color:#ffe3b8}.low{background:rgba(255,191,102,.16);color:#ffd9a1}.medium{background:rgba(255,159,97,.18);color:#ffd0ad}.high{background:rgba(255,143,93,.22);color:#ffd2c0}.stop{background:rgba(255,111,97,.24);color:#ffd5cf}.ready{background:rgba(125,231,223,.18);color:#caf8f4}
+    .metric-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.metric strong{display:block;font-size:22px}.metric span{display:block;margin-top:4px;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+    .chart{padding:18px}.chart h3,.card h3,.panel h3{margin:0 0 10px;font-size:16px}.chart p,.card p,.panel p{margin:0;color:#efdbc7;font-size:13px;line-height:1.6}.chart svg{width:100%;height:auto;display:block}.rec-list,.materials-list,.timeline{display:grid;gap:10px}.rec-item,.materials-item,.timeline-item{border:1px solid rgba(255,234,214,.1);border-radius:14px;background:rgba(255,255,255,.03);padding:12px}.rec-item strong,.materials-item strong,.timeline-item strong{display:block;font-size:13px;color:#fff0dc}.rec-item small,.materials-item small,.timeline-item small{display:block;margin-top:4px;color:#d9c1a6;line-height:1.5}.split{display:grid;grid-template-columns:1.1fr .9fr;gap:12px}.helper{margin-top:10px;color:#d7bea3;font-size:12px;line-height:1.6}.footer{margin-top:16px;font-size:12px;color:#ccb39a;text-align:center;text-transform:uppercase;letter-spacing:.08em}
+    @media (max-width:1280px){.hero-grid,.grid-2,.grid-3,.grid-4,.control-grid,.metric-grid,.split,.kpis{grid-template-columns:1fr}} @media (max-width:900px){.top{position:static;flex-direction:column;align-items:flex-start}.section-head{flex-direction:column;align-items:flex-start}}
+  </style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+  <main class="wrap">
+    <header class="top">
+      <div class="brand"><span class="dot"></span><span>I3 · Losses Cockpit</span></div>
+      <nav class="nav"><a href="23_digitalization_i3_losses_engine_charter.html">К charter I3</a><a href="22_digitalization_i2_hydraulics_twin_charter.html">I2 Hydraulics</a><a href="37_drilling_modules.html">Модуль бурение</a></nav>
+    </header>
+
+    <section class="hero">
+      <span class="label">Interactive Loss Response Dashboard</span>
+      <h1>Losses Cockpit</h1>
+      <p>Полноэкранный рабочий инструмент для инженера по бурению: считает интенсивность поглощения, показывает сценарный профиль по минутам, оценивает лимит по cumulative loss, связывает гидравлический риск с I2 и автоматически предлагает action ladder, материалы и stop-rules.</p>
+      <div class="hero-grid">
+        <div class="kpis">
+          <div class="kpi"><strong>&lt; 5 мин</strong><span>decision target</span></div>
+          <div class="kpi"><strong>20 м³</strong><span>cumulative stop rule</span></div>
+          <div class="kpi"><strong>0.5 м³</strong><span>early sensor detection</span></div>
+          <div class="kpi"><strong>10-15 м³</strong><span>typical VUS response</span></div>
+        </div>
+        <div class="panel"><h3>Что здесь нового</h3><p>В отличие от charter-страницы, cockpit собран как рабочий экран. Можно прогнать сценарий, посмотреть графики `flow in/out`, `loss rate`, `static level` и `ECD margin`, а затем получить графическую и материальную response-карту.</p></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>Scenario Inputs</h2><span>live what-if setup</span></div>
+      <div class="control-grid">
+        <div class="field"><label for="zone">Зона</label><select id="zone"><option value="conductor">Кондуктор</option><option value="technical">Техническая колонна</option></select></div>
+        <div class="field"><label for="mode">Режим</label><select id="mode"><option value="pdm">ВЗД / motor</option><option value="rotary">Роторная КНБК</option></select></div>
+        <div class="field"><label for="depth">Глубина, м</label><input id="depth" type="number" value="1740" min="0" step="1" /></div>
+        <div class="field"><label for="duration">Длительность события, мин</label><input id="duration" type="number" value="35" min="1" step="1" /></div>
+        <div class="field"><label for="flowInLs">Flow in, л/с</label><input id="flowInLs" type="number" value="32" min="0" step="0.1" /></div>
+        <div class="field"><label for="flowOutLs">Flow out, л/с</label><input id="flowOutLs" type="number" value="30.9" min="0" step="0.1" /></div>
+        <div class="field"><label for="staticLevelM">Статический уровень, м</label><input id="staticLevelM" type="number" value="12" min="0" step="0.1" /></div>
+        <div class="field"><label for="cumulativeLossM3">Суммарные потери, м³</label><input id="cumulativeLossM3" type="number" value="9" min="0" step="0.1" /></div>
+        <div class="field"><label for="ecdMarginPpg">Запас до mud window, ppg</label><input id="ecdMarginPpg" type="number" value="0.04" min="-1" step="0.01" /></div>
+        <div class="field"><label for="mudDensity">Плотность раствора, г/см³</label><input id="mudDensity" type="number" value="1.21" min="0" step="0.01" /></div>
+        <div class="field"><label for="tripSpeed">Скорость СПО, м/с</label><input id="tripSpeed" type="number" value="0.24" min="0" step="0.01" /></div>
+        <div class="field"><label for="sppTrend2">Тренд SPP</label><select id="sppTrend2"><option value="falling">Падает</option><option value="flat">Стабильно</option><option value="rising">Растет</option></select></div>
+      </div>
+      <div class="actions"><button class="btn" id="runCockpit" type="button">Построить сценарий</button><button class="btn secondary" id="resetCockpit" type="button">Сбросить</button></div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>I3 Runtime Sync</h2><span>loss response signal</span></div>
+      <div class="panel">
+        <div class="badge-row"><span class="pill observe" id="i3RuntimePill">Active</span></div>
+        <p id="i3RuntimeSummary">Loss response cockpit is active but still needs a stable scenario before it can be treated as a ready field response engine.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>Decision Summary</h2><span>status + metrics + recommendations</span></div>
+      <div class="badge-row" id="summaryBadges"></div>
+      <div class="metric-grid" id="summaryMetrics"></div>
+      <div class="split" style="margin-top:12px">
+        <div class="panel"><h3>Recommended Actions</h3><div class="rec-list" id="recommendationList"></div></div>
+        <div class="panel"><h3>Material Plan</h3><div class="materials-list" id="materialsList"></div><p id="materialsHelper" class="helper"></p></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>Scenario Charts</h2><span>flow / losses / static / ecd</span></div>
+      <div class="grid-2">
+        <div class="chart"><h3>Flow In / Out</h3><svg id="flowChart" viewBox="0 0 680 260" role="img" aria-label="Flow in and flow out chart"></svg></div>
+        <div class="chart"><h3>Loss Rate</h3><svg id="lossChart" viewBox="0 0 680 260" role="img" aria-label="Loss rate chart"></svg></div>
+        <div class="chart"><h3>Static Level</h3><svg id="staticChart" viewBox="0 0 680 260" role="img" aria-label="Static level chart"></svg></div>
+        <div class="chart"><h3>ECD Margin</h3><svg id="ecdChart" viewBox="0 0 680 260" role="img" aria-label="ECD margin chart"></svg></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>Action Timeline</h2><span>what to do minute by minute</span></div>
+      <div class="timeline" id="timelineList"></div>
+    </section>
+
+    <p class="footer">I3 Cockpit · Losses Response Dashboard · Doc 77</p>
+  </main>
+  <script src="assets/js/global-auth-widget.js"></script>
+  <script>
+    (function () {
+      const I3_RUNTIME_KEY = 'nexus_i3_losses_runtime_v1';
+      const defaults = {
+        zone: 'technical',
+        mode: 'pdm',
+        depth: 1740,
+        duration: 35,
+        flowIn: 32,
+        flowOut: 30.9,
+        staticLevel: 12,
+        cumulativeLoss: 9,
+        ecdMargin: 0.04,
+        mudDensity: 1.21,
+        tripSpeed: 0.24,
+        sppTrend: 'falling'
+      };
+
+      const profiles = {
+        conductor: {
+          label: 'Кондуктор',
+          lossBha: 'КНБК №4',
+          preventiveFlow: { pdm: 30, rotary: 20 },
+          responseFlow: '5-12 л/с',
+          vusMin: 10,
+          vusMax: 15,
+          pillMin: 5,
+          pillMax: 8,
+          intervalStock: { medium: 1.0, fine: 1.0, coconut: 0.75 }
+        },
+        technical: {
+          label: 'Техническая колонна',
+          lossBha: 'КНБК №8',
+          preventiveFlow: { pdm: 30, rotary: 20 },
+          responseFlow: '10-12 л/с',
+          vusMin: 10,
+          vusMax: 12,
+          pillMin: 5,
+          pillMax: 8,
+          intervalStock: { medium: 0.75, fine: 0.75, coconut: 0.5 }
+        }
+      };
+
+      function node(id) { return document.getElementById(id); }
+      function num(id) { const value = Number(node(id).value); return Number.isFinite(value) ? value : 0; }
+      function val(id) { return node(id).value; }
+
+      function classify(lossRate, cumulativeLoss, staticLevel) {
+        if (cumulativeLoss > 20 || lossRate > 10) return 'stop';
+        if (lossRate >= 5 || staticLevel > 10) return 'high';
+        if (lossRate > 2) return 'medium';
+        if (lossRate > 0.5) return 'low';
+        return 'observe';
+      }
+
+      function riskBand(depth) {
+        if (depth >= 2195 && depth <= 2230) return 'critical interval';
+        if ((depth >= 1680 && depth <= 1745) || (depth >= 1745 && depth <= 1820)) return 'high-risk interval';
+        if (depth >= 1165 && depth <= 1405) return 'elevated interval';
+        if (depth >= 235 && depth <= 400) return 'watch interval';
+        return 'base interval';
+      }
+
+      function materialPlan(profile, severity, lossRate) {
+        const pillVolume = severity === 'observe' ? 5 : severity === 'low' ? 6 : severity === 'medium' ? 8 : severity === 'high' ? 12 : 15;
+        const vusVolume = severity === 'medium' ? profile.vusMin : severity === 'high' ? profile.vusMax : severity === 'stop' ? profile.vusMax + 3 : profile.vusMin;
+        const poliplug5Pct = 2.5;
+        const poliplug6Pct = 2.5;
+        return {
+          pillVolume,
+          vusVolume,
+          poliplug5: (pillVolume * poliplug5Pct / 100).toFixed(2),
+          poliplug6: (pillVolume * poliplug6Pct / 100).toFixed(2),
+          mediumKg: (pillVolume * profile.intervalStock.medium).toFixed(2),
+          fineKg: (pillVolume * profile.intervalStock.fine).toFixed(2),
+          coconutKg: (pillVolume * profile.intervalStock.coconut).toFixed(2),
+          note: lossRate > 5 ? 'Нужен staged response с VUS и static-level check.' : 'Можно начать с кольматационной пачки и preparedness по VUS.'
+        };
+      }
+
+      function buildSeries(current, duration, trendFactor) {
+        const points = 9;
+        const out = [];
+        for (let index = 0; index < points; index += 1) {
+          const progress = index / (points - 1);
+          out.push({
+            minute: Math.round(progress * duration),
+            value: current * (1 + trendFactor * (progress - 0.5))
+          });
+        }
+        return out;
+      }
+
+      function drawChart(svgId, seriesA, seriesB, options) {
+        const svg = node(svgId);
+        const width = 680;
+        const height = 260;
+        const padding = { top: 18, right: 18, bottom: 34, left: 46 };
+        const series = (seriesB || []).length ? seriesA.concat(seriesB) : seriesA.slice();
+        const minX = 0;
+        const maxX = Math.max.apply(null, series.map(function (point) { return point.minute; }));
+        const rawMinY = Math.min.apply(null, series.map(function (point) { return point.value; }));
+        const rawMaxY = Math.max.apply(null, series.map(function (point) { return point.value; }));
+        const minY = options.minY != null ? options.minY : Math.min(0, rawMinY * 0.9);
+        const maxY = options.maxY != null ? options.maxY : rawMaxY * 1.15 + 0.01;
+        const chartWidth = width - padding.left - padding.right;
+        const chartHeight = height - padding.top - padding.bottom;
+
+        function px(point) { return padding.left + ((point.minute - minX) / Math.max(1, maxX - minX)) * chartWidth; }
+        function py(point) { return padding.top + chartHeight - ((point.value - minY) / Math.max(0.0001, maxY - minY)) * chartHeight; }
+        function poly(seriesInput) {
+          return seriesInput.map(function (point) { return px(point).toFixed(1) + ',' + py(point).toFixed(1); }).join(' ');
+        }
+
+        const gridLines = [0, 0.25, 0.5, 0.75, 1].map(function (ratio) {
+          const y = padding.top + chartHeight * ratio;
+          return '<line x1="' + padding.left + '" y1="' + y.toFixed(1) + '" x2="' + (padding.left + chartWidth) + '" y2="' + y.toFixed(1) + '" stroke="rgba(255,234,214,.08)" stroke-width="1" />';
+        }).join('');
+
+        const threshold = options.threshold != null ? '<line x1="' + padding.left + '" y1="' + (padding.top + chartHeight - ((options.threshold - minY) / Math.max(0.0001, maxY - minY)) * chartHeight).toFixed(1) + '" x2="' + (padding.left + chartWidth) + '" y2="' + (padding.top + chartHeight - ((options.threshold - minY) / Math.max(0.0001, maxY - minY)) * chartHeight).toFixed(1) + '" stroke="rgba(255,111,97,.8)" stroke-width="2" stroke-dasharray="6 6" />' : '';
+
+        svg.innerHTML = [
+          '<rect x="0" y="0" width="680" height="260" rx="18" fill="rgba(255,255,255,.01)" stroke="rgba(255,234,214,.08)" />',
+          gridLines,
+          threshold,
+          '<polyline fill="none" stroke="' + options.colorA + '" stroke-width="4" points="' + poly(seriesA) + '" />',
+          seriesB && seriesB.length ? '<polyline fill="none" stroke="' + options.colorB + '" stroke-width="4" points="' + poly(seriesB) + '" />' : '',
+          '<text x="24" y="28" fill="#d7bea3" font-size="11">' + options.label + '</text>',
+          '<text x="24" y="246" fill="#d7bea3" font-size="11">0 min</text>',
+          '<text x="610" y="246" fill="#d7bea3" font-size="11" text-anchor="end">' + maxX + ' min</text>'
+        ].join('');
+      }
+
+      function render() {
+        const state = {
+          zone: val('zone'),
+          mode: val('mode'),
+          depth: num('depth'),
+          duration: num('duration'),
+          flowIn: num('flowInLs'),
+          flowOut: num('flowOutLs'),
+          staticLevel: num('staticLevelM'),
+          cumulativeLoss: num('cumulativeLossM3'),
+          ecdMargin: num('ecdMarginPpg'),
+          mudDensity: num('mudDensity'),
+          tripSpeed: num('tripSpeed'),
+          sppTrend: val('sppTrend2')
+        };
+
+        const profile = profiles[state.zone];
+        const lossRate = Math.max(0, (state.flowIn - state.flowOut) * 3.6);
+        const severity = classify(lossRate, state.cumulativeLoss, state.staticLevel);
+        const risk = riskBand(state.depth);
+        const material = materialPlan(profile, severity, lossRate);
+        const preventiveFlow = profile.preventiveFlow[state.mode];
+        const severityClass = severity === 'stop' ? 'stop' : severity === 'high' ? 'high' : severity === 'medium' ? 'medium' : severity === 'low' ? 'low' : 'observe';
+        const runtimeStatus = severity === 'stop' || severity === 'high' ? 'at_risk' : severity === 'medium' || severity === 'low' ? 'active' : 'ready';
+        const runtimePill = runtimeStatus === 'ready' ? 'Ready' : runtimeStatus === 'at_risk' ? 'At risk' : 'Active';
+
+        node('summaryBadges').innerHTML = [
+          '<span class="pill ' + severityClass + '">' + severity + '</span>',
+          '<span class="pill observe">' + profile.label + '</span>',
+          '<span class="pill ' + (state.ecdMargin < 0.05 ? 'high' : 'ready') + '">' + (state.ecdMargin < 0.05 ? 'tight ECD margin' : 'hydraulic margin') + '</span>',
+          '<span class="pill ' + (state.tripSpeed > 0.2 ? 'medium' : 'ready') + '">' + risk + '</span>'
+        ].join('');
+
+        node('summaryMetrics').innerHTML = [
+          { value: lossRate.toFixed(1) + ' м³/ч', label: 'loss rate' },
+          { value: state.cumulativeLoss.toFixed(1) + ' м³', label: 'cumulative loss' },
+          { value: state.staticLevel.toFixed(1) + ' м', label: 'static level' },
+          { value: state.ecdMargin.toFixed(2) + ' ppg', label: 'ecd margin' },
+          { value: preventiveFlow + ' л/с', label: 'preventive flow' },
+          { value: profile.lossBha, label: 'loss BHA' },
+          { value: material.pillVolume + ' м³', label: 'pill volume' },
+          { value: material.vusVolume + ' м³', label: 'VUS volume' }
+        ].map(function (metric) {
+          return '<div class="metric"><strong>' + metric.value + '</strong><span>' + metric.label + '</span></div>';
+        }).join('');
+
+        const recs = [
+          'Перед зоной держать профилактическую подачу около ' + preventiveFlow + ' л/с и ограничивать скорость СПО до 0.2 м/с.',
+          severity === 'observe' ? 'Пока это уровень раннего предупреждения: усилить volume tracking и подготовить пачку.' : 'Сценарий требует response-режима по loss playbook.',
+          severity === 'low' ? 'Продолжать с поддержанием кольматанта 5-10% и готовностью к быстрой закачке VUS.' : 'Готовить staged response с фиксированием параметров, уровней и качества раствора.',
+          severity === 'medium' || severity === 'high' ? 'Переходить к ВУС ' + material.vusVolume + ' м³ и техотстою 15 минут при соблюдении критериев возврата к бурению.' : 'Следить за trend SPP и запасом ECD margin.',
+          severity === 'stop' ? 'Достигнут contingency mode: cumulative loss или loss rate требуют работы только по дополнительному плану.' : 'Если статический уровень остается > 10 м, не возвращаться к обычному режиму.'
+        ];
+        node('recommendationList').innerHTML = recs.map(function (item, index) {
+          return '<div class="rec-item"><strong>' + (index + 1) + '. Action</strong><small>' + item + '</small></div>';
+        }).join('');
+
+        node('materialsList').innerHTML = [
+          { title: 'Кольматирующая пачка', text: 'Объем ' + material.pillVolume + ' м³. Poliplug 5: ' + material.poliplug5 + ' м³. Poliplug 6: ' + material.poliplug6 + ' м³.' },
+          { title: 'Organic LCM blend', text: 'Средний: ' + material.mediumKg + ' кг, мелкий: ' + material.fineKg + ' кг, кокосовая стружка: ' + material.coconutKg + ' кг.' },
+          { title: 'ВУС / kill support', text: 'Рекомендуемый VUS volume: ' + material.vusVolume + ' м³. ' + material.note },
+          { title: 'Hydraulic note', text: 'Плотность раствора ' + state.mudDensity.toFixed(2) + ' г/см³ и ECD margin ' + state.ecdMargin.toFixed(2) + ' ppg должны быть сверены с I2.' }
+        ].map(function (item) {
+          return '<div class="materials-item"><strong>' + item.title + '</strong><small>' + item.text + '</small></div>';
+        }).join('');
+        node('materialsHelper').textContent = 'Материальный блок опирается на найденные в файлах пачки 5-10 м³, VUS 10-15 м³ и интервальные запасы органических кольматантов.';
+
+        const flowInSeries = buildSeries(state.flowIn, state.duration, 0.04);
+        const flowOutSeries = buildSeries(state.flowOut, state.duration, severity === 'stop' ? -0.12 : severity === 'high' ? -0.08 : -0.04);
+        const lossSeries = flowInSeries.map(function (point, index) {
+          return { minute: point.minute, value: Math.max(0, (point.value - flowOutSeries[index].value) * 3.6) };
+        });
+        const staticSeries = buildSeries(state.staticLevel, state.duration, severity === 'high' || severity === 'stop' ? 0.22 : 0.08);
+        const ecdSeries = buildSeries(state.ecdMargin, state.duration, state.sppTrend === 'falling' ? -0.45 : state.sppTrend === 'rising' ? 0.18 : -0.12);
+
+        drawChart('flowChart', flowInSeries, flowOutSeries, { colorA: '#ffd59d', colorB: '#7de7df', label: 'л/с', minY: 0 });
+        drawChart('lossChart', lossSeries, [], { colorA: '#ff9f61', label: 'м³/ч', minY: 0, threshold: 5 });
+        drawChart('staticChart', staticSeries, [], { colorA: '#ffbf66', label: 'м', minY: 0, threshold: 10 });
+        drawChart('ecdChart', ecdSeries, [], { colorA: '#ff8f5d', label: 'ppg margin', threshold: 0.05, minY: -0.05 });
+
+        const timeline = [
+          { minute: '0-5', text: 'Подтвердить delta flow, zone, trend SPP и включить intensified monitoring.' },
+          { minute: '5-15', text: severity === 'observe' ? 'Держать early warning mode, готовить LCM и проверять датчики.' : 'Собрать параметры события: интенсивность, забой, статический уровень, свойства выходящего раствора.' },
+          { minute: '15-30', text: severity === 'low' ? 'Продолжать бурение с поддержанием кольматанта 5-10%.' : 'Прокачать пачку / ВУС и удерживать response flow ' + profile.responseFlow + '.' },
+          { minute: '30-45', text: state.staticLevel <= 10 ? 'Если статический уровень <= 10 м, можно рассматривать возвращение к углублению.' : 'Статический уровень > 10 м: переход к следующей ступени escalation.' },
+          { minute: '45+', text: severity === 'stop' ? 'Работать только по дополнительному плану и customer-approved contingency.' : 'Проверить необходимость смены на ' + profile.lossBha + ' и согласовать дальнейшее углубление.' }
+        ];
+        node('timelineList').innerHTML = timeline.map(function (item) {
+          return '<div class="timeline-item"><strong>' + item.minute + ' мин</strong><small>' + item.text + '</small></div>';
+        }).join('');
+
+        const summary = runtimeStatus === 'ready'
+          ? 'Losses cockpit is in a stable early-warning mode. The current scenario is controllable without escalation.'
+          : runtimeStatus === 'at_risk'
+            ? 'Losses cockpit is in escalation mode. Loss rate, cumulative loss, or static level require a high-discipline response ladder.'
+            : 'Losses cockpit is active. Response logic is engaged, but the scenario still needs close supervision.';
+        const blockers = runtimeStatus === 'at_risk'
+          ? ['Loss intensity or cumulative volume is above the safe working band.', 'Hydraulic margin is too tight for routine continuation.']
+          : state.ecdMargin < 0.05
+            ? ['ECD margin is tight and needs confirmation with I2.']
+            : [];
+        const actions = recs.slice(0, 3);
+
+        localStorage.setItem(I3_RUNTIME_KEY, JSON.stringify({
+          status: runtimeStatus,
+          pill: runtimePill,
+          health: runtimeStatus === 'ready' ? 86 : runtimeStatus === 'at_risk' ? 34 : 64,
+          summary: summary,
+          blockers: blockers,
+          actions: actions,
+          severity: severity,
+          lossRate: Number(lossRate.toFixed(1)),
+          cumulativeLoss: Number(state.cumulativeLoss.toFixed(1)),
+          updatedAt: new Date().toISOString()
+        }));
+
+        node('i3RuntimePill').className = 'pill ' + (runtimeStatus === 'ready' ? 'ready' : runtimeStatus === 'at_risk' ? 'stop' : 'medium');
+        node('i3RuntimePill').textContent = runtimePill;
+        node('i3RuntimeSummary').textContent = summary;
+      }
+
+      function reset() {
+        node('zone').value = defaults.zone;
+        node('mode').value = defaults.mode;
+        node('depth').value = defaults.depth;
+        node('duration').value = defaults.duration;
+        node('flowInLs').value = defaults.flowIn;
+        node('flowOutLs').value = defaults.flowOut;
+        node('staticLevelM').value = defaults.staticLevel;
+        node('cumulativeLossM3').value = defaults.cumulativeLoss;
+        node('ecdMarginPpg').value = defaults.ecdMargin;
+        node('mudDensity').value = defaults.mudDensity;
+        node('tripSpeed').value = defaults.tripSpeed;
+        node('sppTrend2').value = defaults.sppTrend;
+        render();
+      }
+
+      node('runCockpit').addEventListener('click', render);
+      node('resetCockpit').addEventListener('click', reset);
+      render();
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,621 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>A1 — Бриф по проектированию бурения | NEXUS OILFIELD AI</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap");
+
+    :root {
+      --bg-0: #060a10;
+      --bg-1: #0d1623;
+      --bg-2: #16243a;
+      --text: #ebf3ff;
+      --muted: #9aaec8;
+      --cyan: #1ad8b5;
+      --amber: #ffbf57;
+      --blue: #83baff;
+      --line: rgba(230,239,255,.14);
+      --line-soft: rgba(230,239,255,.08);
+      --panel: rgba(10,16,28,.78);
+      --shadow: 0 22px 52px rgba(0,0,0,.44);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      font-family: "Manrope", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(840px 420px at 0% -12%, rgba(26,216,181,.18), transparent),
+        radial-gradient(720px 360px at 100% 0%, rgba(131,186,255,.13), transparent),
+        linear-gradient(150deg, var(--bg-0), var(--bg-1) 45%, var(--bg-2));
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(to right, rgba(255,255,255,.024) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,.024) 1px, transparent 1px);
+      background-size: 40px 40px;
+      mask-image: radial-gradient(circle at 50% 18%, rgba(0,0,0,.92), transparent 72%);
+    }
+
+    .wrap { position: relative; z-index: 1; width: min(1220px, 92vw); margin: 0 auto; padding: 24px 0 60px; }
+    .topbar, .hero, .section { border: 1px solid var(--line-soft); box-shadow: var(--shadow); }
+    .topbar {
+      display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap;
+      position: static; padding: 12px 16px; border-radius: 14px;
+      background: rgba(7,12,21,.62); backdrop-filter: blur(10px);
+    }
+    .brand { display: flex; gap: 10px; align-items: center; font-family: "Oswald", sans-serif; font-size: 20px; text-transform: uppercase; letter-spacing: .05em; }
+    .brand-dot { width: 12px; height: 12px; border-radius: 999px; background: radial-gradient(circle at 30% 30%, #d7fff8, var(--cyan)); }
+    .actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    .btn, .btn-ghost { text-decoration: none; border-radius: 999px; padding: 7px 12px; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; }
+    .btn { color: #05241f; background: linear-gradient(135deg, #9efcef, var(--cyan)); border: 1px solid rgba(26,216,181,.82); }
+    .btn-ghost { color: var(--muted); border: 1px solid var(--line-soft); background: rgba(255,255,255,.03); }
+    .stage-rail {
+      margin-top: 14px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding: 12px 14px;
+      border: 1px solid var(--line-soft);
+      border-radius: 14px;
+      background: rgba(8,13,22,.6);
+      box-shadow: var(--shadow);
+    }
+    .rail-chip {
+      text-decoration: none;
+      padding: 7px 11px;
+      border-radius: 999px;
+      border: 1px solid var(--line-soft);
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      background: rgba(255,255,255,.03);
+    }
+    .rail-chip.active {
+      color: #06241f;
+      background: linear-gradient(135deg, #9efcef, var(--cyan));
+      border-color: rgba(26,216,181,.82);
+    }
+
+    .hero {
+      margin-top: 18px; border-radius: 28px; padding: clamp(22px, 3vw, 38px);
+      background: linear-gradient(145deg, rgba(26,216,181,.1), rgba(7,12,20,.92) 42%, rgba(131,186,255,.1));
+      position: relative; overflow: hidden;
+    }
+    .hero::after {
+      content: ""; position: absolute; width: 420px; height: 420px; right: -140px; top: -120px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(26,216,181,.18), transparent 70%); filter: blur(18px);
+    }
+    .eyebrow { display: inline-flex; align-items: center; gap: 8px; border-radius: 999px; border: 1px solid var(--line-soft); background: rgba(255,255,255,.04); padding: 6px 11px; font-size: 11px; text-transform: uppercase; letter-spacing: .09em; color: #cfddf0; }
+    .eyebrow::before { content: ""; width: 7px; height: 7px; border-radius: 999px; background: var(--amber); }
+    h1 { margin: 14px 0 0; font-family: "Oswald", sans-serif; font-size: clamp(40px, 5.8vw, 72px); line-height: .98; text-transform: uppercase; }
+    h1 span { color: var(--cyan); }
+    .lead { margin-top: 14px; max-width: 780px; color: #abbcd3; font-size: clamp(15px,2vw,19px); line-height: 1.5; }
+
+    .stats, .grid-2, .grid-3, .grid-4, .stack-grid, .nav-grid { display: grid; gap: 12px; }
+    .stats, .grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .grid-3, .stack-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .grid-2, .nav-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .stat, .card, .stack, .nav-card { border: 1px solid var(--line-soft); border-radius: 16px; background: rgba(255,255,255,.03); padding: 14px; }
+    .stats { margin-top: 20px; }
+    .stat-k { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+    .stat-v { margin-top: 6px; font-size: 28px; font-weight: 900; }
+    .stat-p, .card p, .stack p, .nav-card p, .caption { margin: 8px 0 0; font-size: 13px; line-height: 1.45; color: #a7bad2; }
+
+    .section { margin-top: 18px; border-radius: var(--radius); background: var(--panel); padding: 18px; }
+    .section-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+    .section h2 { margin: 0; font-family: "Oswald", sans-serif; font-size: 30px; text-transform: uppercase; letter-spacing: .04em; }
+    .tag { border-radius: 999px; border: 1px solid rgba(26,216,181,.3); background: rgba(26,216,181,.08); color: #91ecdb; padding: 5px 10px; font-size: 11px; text-transform: uppercase; letter-spacing: .08em; font-weight: 800; }
+    .num { display: inline-flex; align-items: center; justify-content: center; min-width: 32px; height: 26px; border-radius: 8px; background: rgba(255,191,87,.14); border: 1px solid rgba(255,191,87,.42); color: var(--amber); font-size: 12px; font-weight: 800; margin-bottom: 10px; }
+    .card h3, .stack h3, .nav-card h3 { margin: 0; font-size: 16px; }
+    .mini-list { margin: 10px 0 0; padding-left: 18px; display: grid; gap: 6px; font-size: 13px; line-height: 1.42; color: #bed0e6; }
+    .svg-shell { width: 100%; overflow: auto; border: 1px solid var(--line-soft); border-radius: 16px; background: rgba(7,12,21,.6); padding: 10px; }
+    .svg-shell svg { width: 100%; height: auto; display: block; }
+    .stack { background: linear-gradient(180deg, rgba(131,186,255,.08), rgba(255,255,255,.02)); }
+    .nav-card { text-decoration: none; color: inherit; transition: transform .18s ease, border-color .18s ease; }
+    .nav-card:hover { transform: translateY(-3px); border-color: rgba(26,216,181,.42); }
+    .control-grid, .control-row, .sync-grid, .sync-list { display: grid; gap: 12px; }
+    .control-grid, .sync-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .control-row, .sync-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .control-panel, .sync-card, .sync-box, .decision-card { border: 1px solid var(--line-soft); border-radius: 16px; background: rgba(255,255,255,.03); padding: 14px; }
+    .artifact-grid { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .artifact-field { display: grid; gap: 7px; border: 1px solid var(--line-soft); border-radius: 12px; background: rgba(255,255,255,.02); padding: 12px; }
+    .artifact-field--wide { grid-column: 1 / -1; }
+    .field { display: grid; gap: 7px; }
+    .field label, .check-group legend, .artifact-field label { font-size: 12px; color: #ccdaec; text-transform: uppercase; letter-spacing: .07em; font-weight: 800; }
+    .field select, .field textarea, .artifact-field input, .artifact-field select, .artifact-field textarea {
+      width: 100%; border: 1px solid var(--line-soft); border-radius: 12px; background: rgba(7,12,21,.74); color: var(--text); padding: 11px 12px; font: inherit;
+    }
+    .field textarea, .artifact-field textarea { min-height: 92px; resize: vertical; }
+    .field small { color: var(--muted); font-size: 12px; line-height: 1.35; }
+    .check-group { margin: 0; padding: 0; border: 0; display: grid; gap: 8px; }
+    .check-card { display: flex; align-items: flex-start; gap: 10px; border: 1px solid var(--line-soft); border-radius: 12px; background: rgba(255,255,255,.02); padding: 11px 12px; }
+    .check-card input { margin-top: 3px; accent-color: var(--cyan); }
+    .check-card strong { display: block; font-size: 13px; }
+    .check-card span { display: block; margin-top: 3px; font-size: 12px; color: var(--muted); line-height: 1.35; }
+    .decision-pill { display: inline-flex; align-items: center; gap: 8px; border-radius: 999px; padding: 6px 10px; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; border: 1px solid var(--line-soft); background: rgba(255,255,255,.05); color: #dfeaf8; }
+    .decision-pill.ready { border-color: rgba(26,216,181,.35); background: rgba(26,216,181,.12); color: #96ecda; }
+    .decision-pill.conditional { border-color: rgba(255,191,87,.35); background: rgba(255,191,87,.12); color: #ffe1a0; }
+    .decision-pill.blocked { border-color: rgba(255,120,120,.35); background: rgba(255,120,120,.12); color: #ffbcbc; }
+    .decision-card span, .sync-card span { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+    .decision-card strong, .sync-card strong { display: block; margin-top: 6px; font-size: 25px; }
+    .decision-card p, .sync-box p { margin: 8px 0 0; font-size: 13px; line-height: 1.45; color: #afc1d7; }
+    .decision-list, .sync-box ul { margin: 10px 0 0; padding-left: 18px; display: grid; gap: 7px; font-size: 13px; line-height: 1.42; color: #c9d8eb; }
+    .action-links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+    .footer { margin-top: 18px; font-size: 12px; color: #8097b0; text-align: center; text-transform: uppercase; letter-spacing: .08em; }
+
+    @media (max-width: 1040px) { .stats, .grid-4, .grid-3, .stack-grid, .sync-grid, .artifact-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 820px) { .topbar { position: static; } .stats, .grid-2, .grid-3, .grid-4, .stack-grid, .nav-grid, .control-grid, .control-row, .sync-grid, .sync-list, .artifact-grid { grid-template-columns: 1fr; } }
+  </style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+  <main class="wrap">
+    <header class="topbar">
+      <div class="brand"><span class="brand-dot" aria-hidden="true"></span>Nexus Oilfield AI</div>
+      <div class="actions">
+        <a class="btn-ghost" href="19_drilling_stage_1_design.html">Этап 1</a>
+        <a class="btn" href="20_drilling_stage_1_execution_playbook.html">Playbook</a>
+      </div>
+    </header>
+
+    <nav class="stage-rail">
+      <a class="rail-chip" href="19_drilling_stage_1_design.html">Stage 1</a>
+      <a class="rail-chip active" href="15_drilling_design_block.html">Design Block</a>
+      <a class="rail-chip" href="20_drilling_stage_1_execution_playbook.html">Playbook</a>
+      <a class="rail-chip" href="16_drilling_stage_2_pilot.html">Stage 2</a>
+      <a class="rail-chip" href="17_drilling_stage_3_scaling.html">Stage 3</a>
+      <a class="rail-chip" href="18_drilling_stage_4_autonomous_ops.html">Stage 4</a>
+      <a class="rail-chip" href="63_drilling_stage_roadmap.html">Roadmap</a>
+      <a class="rail-chip" href="64_drilling_board_overview.html">Board View</a>
+    </nav>
+
+    <section class="hero">
+      <div class="eyebrow">Артефакт 01 · Бриф проектирования</div>
+      <h1>Бриф <span>ПРОЕКТИРОВАНИЯ</span><br>Бурения</h1>
+      <p class="lead">Рабочий артефакт A1 для Stage 1: здесь фиксируется периметр, ключевые риски, KPI, AI-контур и ограничения до старта пилота. Это не обзорная схема, а реальный бриф, который должен быть синхронизирован с общим пакетом артефактов.</p>
+      <div class="stats">
+        <div class="stat"><div class="stat-k">Target effect</div><div class="stat-v">10-15%</div><div class="stat-p">ожидаемое снижение NPT на пилотном периметре</div></div>
+        <div class="stat"><div class="stat-k">ROP uplift</div><div class="stat-v">5-12%</div><div class="stat-p">рост проходки без нарушения safety-границ</div></div>
+        <div class="stat"><div class="stat-k">Decision speed</div><div class="stat-v">20-40%</div><div class="stat-p">сокращение времени инженерного цикла</div></div>
+        <div class="stat"><div class="stat-k">Planning horizon</div><div class="stat-v">90</div><div class="stat-p">дней на архитектуру, baseline и readiness</div></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>Управление артефактом A1</h2><span class="tag">Stage 1 Workbench Sync</span></div>
+      <div class="control-panel">
+        <p class="caption">Этот блок управляет A1 в общем реестре артефактов Stage 1. Ниже остается сама детальная проработка design-решений и архитектурных ограничений.</p>
+        <div class="artifact-grid" style="margin-top:12px;">
+          <div class="artifact-field">
+            <label for="artifactStatus">Статус артефакта</label>
+            <select id="artifactStatus" data-artifact-sync="status">
+              <option value="not_started">Не начат</option>
+              <option value="in_progress">В работе</option>
+              <option value="review">На проверке</option>
+              <option value="approved">Утвержден</option>
+            </select>
+          </div>
+          <div class="artifact-field">
+            <label for="artifactOwner">Владелец</label>
+            <input id="artifactOwner" type="text" data-artifact-sync="owner" placeholder="Руководитель проекта" />
+          </div>
+          <div class="artifact-field artifact-field--wide">
+            <label for="artifactNextAction">Ближайшее действие</label>
+            <input id="artifactNextAction" type="text" data-artifact-sync="nextAction" placeholder="Подтвердить периметр, KPI и ключевые ограничения." />
+          </div>
+          <div class="artifact-field artifact-field--wide">
+            <label for="artifactNote">Рабочая заметка</label>
+            <textarea id="artifactNote" data-artifact-sync="note" placeholder="Что еще не согласовано по периметру, KPI, ролям и архитектурным ограничениям до readiness review."></textarea>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>Architecture Control Panel</h2><span class="decision-pill blocked" id="designDecisionPill">Architecture not aligned</span></div>
+      <div class="control-grid">
+        <div class="control-panel">
+          <form id="designBlockForm">
+            <div class="control-row">
+              <div class="field">
+                <label for="dataBackbone">Состояние data backbone</label>
+                <select id="dataBackbone" name="dataBackbone">
+                  <option value="partial">Подключено частично</option>
+                  <option value="stable">Стабильный контур Stage 1</option>
+                  <option value="production">Production-grade data layer</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="priorityKpi">Главный KPI pilot</label>
+                <select id="priorityKpi" name="priorityKpi">
+                  <option value="npt">NPT reduction</option>
+                  <option value="rop">ROP improvement</option>
+                  <option value="decision_speed">Decision speed</option>
+                  <option value="stuck_pipe">Stuck pipe risk</option>
+                </select>
+              </div>
+            </div>
+            <div class="control-row">
+              <div class="field">
+                <label for="aiScope">Состав AI-слоя</label>
+                <select id="aiScope" name="aiScope">
+                  <option value="advisor">Один advisory-модуль</option>
+                  <option value="dual">Predictor + alerting pair</option>
+                  <option value="multi">Multi-model stack</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="deliveryMode">Режим внедрения</label>
+                <select id="deliveryMode" name="deliveryMode">
+                  <option value="shadow">Shadow mode</option>
+                  <option value="supervisor_confirm">Supervisor confirm</option>
+                  <option value="restricted_loop">Restricted closed loop</option>
+                </select>
+              </div>
+            </div>
+            <fieldset class="check-group" style="margin-top:12px;">
+              <legend>Критичные design-decisions</legend>
+              <label class="check-card"><input type="checkbox" name="unitsNormalized" /><span><strong>Нормализация единиц и time alignment закрыты</strong><span>Данные согласованы по времени, единицам и семантике.</span></span></label>
+              <label class="check-card"><input type="checkbox" name="explainabilityReady" /><span><strong>Explainability для алертов определена</strong><span>Есть понятная трассировка причин и severity logic.</span></span></label>
+              <label class="check-card"><input type="checkbox" name="workflowApproved" /><span><strong>Workflow confirm / escalation описан</strong><span>Понятно, как совет попадает к супервайзеру и как логируется ответ.</span></span></label>
+              <label class="check-card"><input type="checkbox" name="guardrailsLocked" /><span><strong>Guardrails и human-in-the-loop зафиксированы</strong><span>Критические действия не могут выйти за policy boundary.</span></span></label>
+            </fieldset>
+            <div class="field" style="margin-top:12px;">
+              <label for="designRisk">Главный архитектурный риск</label>
+              <textarea id="designRisk" name="designRisk" placeholder="Например: нет устойчивого event taxonomy, сигнал stuck pipe еще не объясним, workflow confirm пока не встроен в operations."></textarea>
+              <small>Этот риск попадет в control panel и будет виден как обязательный design follow-up.</small>
+            </div>
+          </form>
+        </div>
+        <div class="control-panel">
+          <div class="sync-grid">
+            <div class="sync-card"><span>Design fit</span><strong id="designFitScore">0%</strong></div>
+            <div class="sync-card"><span>Stage readiness</span><strong id="designReadinessScore">0%</strong></div>
+            <div class="sync-card"><span>Architecture gates</span><strong id="designGateScore">0 / 4</strong></div>
+            <div class="sync-card"><span>Tracker progress</span><strong id="designTrackerScore">0%</strong></div>
+          </div>
+          <div class="decision-card" style="margin-top:12px;">
+            <span>Архитектурное решение</span>
+            <strong id="designDecisionTitle">Сначала собери базовый контур</strong>
+            <p id="designDecisionSummary">Design block должен отвечать на практический вопрос: какую конфигурацию реально можно вынести в pilot, а не просто показывать reference architecture.</p>
+          </div>
+          <div class="sync-list" style="margin-top:12px;">
+            <div class="sync-box">
+              <p>Что блокирует архитектуру</p>
+              <ul id="designBlockers">
+                <li>Нет зафиксированных design-decisions.</li>
+              </ul>
+            </div>
+            <div class="sync-box">
+              <p>Следующие design-actions</p>
+              <ul id="designActions">
+                <li>Выбери операционный режим и закрывай data/workflow guardrails.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="action-links">
+            <a class="btn" href="19_drilling_stage_1_design.html">Открыть Stage 1 cockpit</a>
+            <a class="btn-ghost" href="20_drilling_stage_1_execution_playbook.html">Открыть playbook</a>
+            <a class="btn-ghost" href="artifacts/pilot_launch_readiness_sheet.html">Открыть readiness sheet</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>Что проектируется на этом уровне</h2><span class="tag">Business architecture</span></div>
+      <div class="grid-4">
+        <div class="card"><span class="num">01</span><h3>Периметр</h3><p>Какие бригады, скважины, интервалы и типы операций входят в пилот и на каком baseline они сравниваются.</p></div>
+        <div class="card"><span class="num">02</span><h3>Модель ценности</h3><p>Какие KPI считаются главными, как считается эффект и что считается подтвержденным value case.</p></div>
+        <div class="card"><span class="num">03</span><h3>AI-архитектура</h3><p>Какие модели и сигналы входят в контур: NPT, ROP, stuck pipe, drift и explainability.</p></div>
+        <div class="card"><span class="num">04</span><h3>Ограничения</h3><p>Как HSE, технологические окна и human-in-the-loop встроены в систему до старта пилота.</p></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>Архитектура блока бурения</h2><span class="tag">Data + AI + workflow</span></div>
+      <div class="grid-2">
+        <div>
+          <div class="svg-shell">
+            <svg viewBox="0 0 620 300" xmlns="http://www.w3.org/2000/svg">
+              <rect x="0" y="0" width="620" height="300" rx="18" fill="rgba(8,14,22,.2)"/>
+              <text x="36" y="40" fill="#edf4ff" font-size="14" font-weight="700">Reference architecture</text>
+              <text x="36" y="58" fill="#9fb3cd" font-size="11">Источники данных, AI-слой и контур принятия решений</text>
+              <rect x="54" y="92" width="146" height="128" rx="16" fill="rgba(131,186,255,.15)" stroke="rgba(131,186,255,.42)"/>
+              <rect x="238" y="92" width="146" height="128" rx="16" fill="rgba(26,216,181,.15)" stroke="rgba(26,216,181,.42)"/>
+              <rect x="422" y="92" width="146" height="128" rx="16" fill="rgba(255,191,87,.15)" stroke="rgba(255,191,87,.42)"/>
+              <text x="127" y="122" fill="#edf4ff" font-size="13" text-anchor="middle" font-weight="700">Источники данных</text>
+              <text x="127" y="146" fill="#a7bdd6" font-size="11" text-anchor="middle">WITS/WITSML</text>
+              <text x="127" y="161" fill="#a7bdd6" font-size="11" text-anchor="middle">суточные отчеты</text>
+              <text x="127" y="176" fill="#a7bdd6" font-size="11" text-anchor="middle">журналы осложнений</text>
+              <text x="127" y="191" fill="#a7bdd6" font-size="11" text-anchor="middle">КНБК, долота, режимы</text>
+              <text x="311" y="122" fill="#edf4ff" font-size="13" text-anchor="middle" font-weight="700">AI-слой</text>
+              <text x="311" y="146" fill="#a7bdd6" font-size="11" text-anchor="middle">NPT Predictor</text>
+              <text x="311" y="161" fill="#a7bdd6" font-size="11" text-anchor="middle">ROP Advisor</text>
+              <text x="311" y="176" fill="#a7bdd6" font-size="11" text-anchor="middle">Stuck Pipe EW</text>
+              <text x="311" y="191" fill="#a7bdd6" font-size="11" text-anchor="middle">Drift Detection</text>
+              <text x="495" y="122" fill="#edf4ff" font-size="13" text-anchor="middle" font-weight="700">Workflow</text>
+              <text x="495" y="146" fill="#a7bdd6" font-size="11" text-anchor="middle">alert routing</text>
+              <text x="495" y="161" fill="#a7bdd6" font-size="11" text-anchor="middle">supervisor confirm</text>
+              <text x="495" y="176" fill="#a7bdd6" font-size="11" text-anchor="middle">execution log</text>
+              <text x="495" y="191" fill="#a7bdd6" font-size="11" text-anchor="middle">feedback loop</text>
+              <path d="M200 156 L238 156" stroke="#88a1bb" stroke-width="2" stroke-dasharray="7 6"/>
+              <path d="M384 156 L422 156" stroke="#88a1bb" stroke-width="2" stroke-dasharray="7 6"/>
+            </svg>
+          </div>
+          <p class="caption">Design block должен с самого начала увязать данные, модели и workflow. Если хотя бы один слой не спроектирован, пилот распадается на разрозненные активности.</p>
+        </div>
+        <div class="stack-grid">
+          <div class="stack"><span class="num">D1</span><h3>Источники данных</h3><p>WITS/WITSML, суточные отчеты, события осложнений, КНБК и параметры режима.</p></div>
+          <div class="stack"><span class="num">D2</span><h3>Обработка</h3><p>Нормализация единиц, синхронизация временных рядов, контроль пропусков, выбросов и задержек.</p></div>
+          <div class="stack"><span class="num">D3</span><h3>AI-модули</h3><p>NPT Predictor, ROP Advisor, раннее предупреждение прихвата и drift monitoring.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>KPI и ограничения</h2><span class="tag">Value with guardrails</span></div>
+      <div class="grid-2">
+        <div class="card"><span class="num">KPI</span><h3>Целевые метрики блока</h3><ul class="mini-list"><li>NPT Reduction (%)</li><li>ROP Improvement (%)</li><li>Precision / Recall алертов</li><li>Recommendation Adoption Rate (%)</li><li>Time-to-Decision (мин)</li></ul></div>
+        <div class="card"><span class="num">HSE</span><h3>Негласных компромиссов быть не должно</h3><ul class="mini-list"><li>Критические действия только после подтверждения инженером</li><li>Любые рекомендации вне техокна отклоняются автоматически</li><li>HSE-барьеры проектируются до любых моделей и UI</li></ul></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>Команда design stage</h2><span class="tag">Operating roles</span></div>
+      <div class="grid-3">
+        <div class="card"><span class="num">01</span><h3>Product & Domain</h3><p>Product Owner и Domain Engineer определяют use cases, KPI, ограничения и требуемую объяснимость решений.</p></div>
+        <div class="card"><span class="num">02</span><h3>Data & ML</h3><p>Data Engineer, ML Engineer и MLOps Engineer создают надежный контур данных, базовые модели и механизм контроля деградации.</p></div>
+        <div class="card"><span class="num">03</span><h3>Remote Ops</h3><p>Remote Ops Engineer связывает цифровой контур с реальным супервайзером и operational workflow на буровой.</p></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>Навигация</h2><span class="tag">Stage 1 pages</span></div>
+      <div class="nav-grid">
+        <a class="nav-card" href="19_drilling_stage_1_design.html"><span class="num">19</span><h3>Stage 1 overview</h3><p>Краткая executive-страница про первый этап и его артефакты.</p></a>
+        <a class="nav-card" href="20_drilling_stage_1_execution_playbook.html"><span class="num">20</span><h3>Execution playbook</h3><p>Недельный рабочий контур исполнения, RACI, gates и быстрый старт на 5 дней.</p></a>
+      </div>
+    </section>
+
+    <p class="footer">Strategic drilling design block · Doc 15</p>
+  </main>
+  <script>
+    (function () {
+      var DESIGN_KEY = 'nexus_stage1_design_block_v1';
+      var SUMMARY_KEY = 'nexus_stage1_manager_summary_v1';
+      var TRACKER_KEY = 'tracker_tasks';
+      var ARTIFACTS_KEY = 'nexus_stage1_artifact_workbench_v1';
+      var ARTIFACT_ID = 'a1';
+      var ARTIFACT_DEFAULTS = {
+        status: 'not_started',
+        owner: 'Руководитель проекта',
+        nextAction: 'Подтвердить периметр, KPI и ключевые ограничения.',
+        note: ''
+      };
+      var form = document.getElementById('designBlockForm');
+      if (!form) {
+        return;
+      }
+
+      function readJson(key) {
+        try {
+          return JSON.parse(localStorage.getItem(key) || 'null');
+        } catch (error) {
+          return null;
+        }
+      }
+
+      function writeJson(key, value) {
+        try {
+          localStorage.setItem(key, JSON.stringify(value));
+        } catch (error) {
+          // Ignore local storage failures.
+        }
+      }
+
+      function getState() {
+        var state = {};
+        Array.prototype.forEach.call(form.elements, function (element) {
+          if (!element.name) {
+            return;
+          }
+          state[element.name] = element.type === 'checkbox' ? element.checked : element.value;
+        });
+        return state;
+      }
+
+      function applyState(state) {
+        Object.keys(state || {}).forEach(function (name) {
+          var field = form.elements[name];
+          if (!field) {
+            return;
+          }
+          if (field.type === 'checkbox') {
+            field.checked = Boolean(state[name]);
+          } else {
+            field.value = state[name];
+          }
+        });
+      }
+
+      function setText(id, value) {
+        var node = document.getElementById(id);
+        if (node) {
+          node.textContent = value;
+        }
+      }
+
+      function renderList(id, items, fallback) {
+        var node = document.getElementById(id);
+        if (!node) {
+          return;
+        }
+        var list = items && items.length ? items : [fallback];
+        node.innerHTML = list.map(function (item) { return '<li>' + item + '</li>'; }).join('');
+      }
+
+      function loadArtifactState() {
+        var state = readJson(ARTIFACTS_KEY) || {};
+        var current = Object.assign({}, ARTIFACT_DEFAULTS, state[ARTIFACT_ID] || {});
+        var statusNode = document.getElementById('artifactStatus');
+        var ownerNode = document.getElementById('artifactOwner');
+        var nextActionNode = document.getElementById('artifactNextAction');
+        var noteNode = document.getElementById('artifactNote');
+        if (statusNode) {
+          statusNode.value = current.status;
+        }
+        if (ownerNode) {
+          ownerNode.value = current.owner;
+        }
+        if (nextActionNode) {
+          nextActionNode.value = current.nextAction;
+        }
+        if (noteNode) {
+          noteNode.value = current.note;
+        }
+      }
+
+      function saveArtifactState() {
+        var state = readJson(ARTIFACTS_KEY) || {};
+        state[ARTIFACT_ID] = {
+          status: document.getElementById('artifactStatus').value,
+          owner: document.getElementById('artifactOwner').value,
+          nextAction: document.getElementById('artifactNextAction').value,
+          note: document.getElementById('artifactNote').value
+        };
+        writeJson(ARTIFACTS_KEY, state);
+      }
+
+      function update() {
+        var state = getState();
+        var summary = readJson(SUMMARY_KEY);
+        var tasks = readJson(TRACKER_KEY) || [];
+        var doneTasks = tasks.filter(function (task) { return task.status === 'done'; }).length;
+        var trackerProgress = tasks.length ? Math.round((doneTasks / tasks.length) * 100) : 0;
+        var dataBackboneScore = { partial: 45, stable: 75, production: 95 }[state.dataBackbone || 'partial'];
+        var aiScopeScore = { advisor: 60, dual: 82, multi: 74 }[state.aiScope || 'advisor'];
+        var deliveryModeScore = { shadow: 82, supervisor_confirm: 90, restricted_loop: 58 }[state.deliveryMode || 'shadow'];
+        var designChecks = ['unitsNormalized', 'explainabilityReady', 'workflowApproved', 'guardrailsLocked'];
+        var passed = designChecks.filter(function (key) { return state[key]; }).length;
+        var designGateScore = Math.round((passed / designChecks.length) * 100);
+        var stageReadiness = summary ? Number(summary.readinessScore || 0) : 0;
+        var designFit = Math.round(dataBackboneScore * 0.3 + aiScopeScore * 0.2 + deliveryModeScore * 0.15 + designGateScore * 0.25 + stageReadiness * 0.1);
+        var blockers = [];
+        var actions = [];
+        var status = 'blocked';
+        var pill = 'Architecture not aligned';
+        var title = 'Сначала собери базовый контур';
+        var summaryText = 'Архитектура Stage 1 пока не выглядит достаточно устойчивой для pilot. Нужен минимально защищенный data + AI + workflow контур.';
+
+        if (!state.unitsNormalized) {
+          blockers.push('Не закрыты нормализация единиц и time alignment. Любая модель будет спорить с данными.');
+          actions.push('Собрать единую схему единиц, временных меток и event taxonomy до model build.');
+        }
+        if (!state.explainabilityReady) {
+          blockers.push('Explainability по алертам не определена. Супервайзер не увидит, почему система советует действие.');
+          actions.push('Задать feature-level explanation и severity rationale для каждого advisory/alert.');
+        }
+        if (!state.workflowApproved) {
+          blockers.push('Workflow confirm / escalation пока не описан как операционный процесс.');
+          actions.push('Привязать alert routing, supervisor confirm и feedback logging к реальным ролям.');
+        }
+        if (!state.guardrailsLocked) {
+          blockers.push('Guardrails не зафиксированы как policy boundary для pilot.');
+          actions.push('Закрыть список hard-stop rules, forbidden recommendations и human-in-the-loop gates.');
+        }
+        if ((state.deliveryMode || 'shadow') === 'restricted_loop') {
+          blockers.push('Restricted closed loop для Stage 1 слишком агрессивен и создает операционный риск.');
+          actions.push('Сместить Stage 1 обратно в shadow или supervisor-confirm режим.');
+        }
+        if ((state.aiScope || 'advisor') === 'multi' && (state.dataBackbone || 'partial') !== 'production') {
+          blockers.push('Multi-model stack не соответствует зрелости data backbone. Архитектура перегружена.');
+          actions.push('Сократить Stage 1 до predictor + alerting pair, пока data backbone не станет стабильным.');
+        }
+
+        if (!blockers.length && designFit >= 85 && passed >= 4 && (state.deliveryMode || 'shadow') !== 'restricted_loop') {
+          status = 'ready';
+          pill = 'Architecture ready for pilot';
+          title = 'Архитектура собрана под Stage 2';
+          summaryText = 'Design block выглядит операционно здравым: data backbone устойчивый, workflow защищен, guardrails зафиксированы и AI-layer не перегружен для текущей зрелости.';
+          actions = [
+            'Перенести архитектурные решения в pilot rollout packet и readiness sheet.',
+            'Заморозить scope AI-layer и не расширять его до завершения shadow validation.',
+            'Привязать decision workflow к live pilot dashboard и supervisor cadence.'
+          ];
+        } else if (designFit >= 70 && passed >= 3) {
+          status = 'conditional';
+          pill = 'Architecture conditionally aligned';
+          title = 'Архитектура близка к пилоту';
+          summaryText = 'Основной каркас собран, но еще есть архитектурные разрывы, которые могут ударить по adoption или reliability на pilot этапе.';
+        }
+
+        if ((state.designRisk || '').trim()) {
+          actions.push('Отдельно закрыть архитектурный риск: ' + state.designRisk.trim());
+        }
+
+        setText('designFitScore', designFit + '%');
+        setText('designReadinessScore', stageReadiness + '%');
+        setText('designGateScore', passed + ' / ' + designChecks.length);
+        setText('designTrackerScore', trackerProgress + '%');
+        setText('designDecisionTitle', title);
+        setText('designDecisionSummary', summaryText);
+        renderList('designBlockers', blockers, 'Критичных архитектурных блокеров не видно.');
+        renderList('designActions', actions.slice(0, 5), 'Поддерживать архитектурную дисциплину и не раздувать scope.');
+
+        var pillNode = document.getElementById('designDecisionPill');
+        pillNode.textContent = pill;
+        pillNode.className = 'decision-pill ' + status;
+
+        writeJson(DESIGN_KEY, {
+          designFit: designFit,
+          passedGates: passed,
+          totalGates: designChecks.length,
+          status: status,
+          pill: pill,
+          title: title,
+          summary: summaryText,
+          blockers: blockers,
+          actions: actions.slice(0, 5),
+          stageReadiness: stageReadiness,
+          trackerProgress: trackerProgress,
+          updatedAt: new Date().toISOString()
+        });
+      }
+
+      applyState(readJson(DESIGN_KEY));
+      loadArtifactState();
+      form.addEventListener('input', update);
+      form.addEventListener('change', update);
+      document.querySelectorAll('[data-artifact-sync]').forEach(function (node) {
+        node.addEventListener('change', saveArtifactState);
+        node.addEventListener('blur', saveArtifactState, true);
+      });
+      window.addEventListener('storage', function (event) {
+        if (event.key === SUMMARY_KEY || event.key === TRACKER_KEY) {
+          update();
+        }
+        if (event.key === ARTIFACTS_KEY) {
+          loadArtifactState();
+        }
+      });
+      update();
+    })();
+  </script>
+  <script src="assets/js/stage1-live-status.js"></script>
+  <script src="assets/js/global-auth-widget.js"></script>
+</body>
+</html>

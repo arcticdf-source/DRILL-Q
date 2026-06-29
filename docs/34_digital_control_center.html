@@ -1,0 +1,240 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Digital Control Center</title>
+  <style>
+    :root {
+      --bg-0: #070a10;
+      --bg-1: #0f1726;
+      --panel: #111c2f;
+      --text: #ecf2ff;
+      --muted: #98a6bc;
+      --cyan: #1ad8b5;
+      --amber: #ffbc4c;
+      --line: rgba(231, 240, 255, 0.14);
+      --radius: 16px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Manrope", "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(900px 420px at 10% -15%, rgba(26, 216, 181, 0.2), rgba(26, 216, 181, 0)),
+        radial-gradient(760px 420px at 100% 10%, rgba(255, 188, 76, 0.16), rgba(255, 188, 76, 0)),
+        linear-gradient(150deg, var(--bg-0), var(--bg-1));
+      min-height: 100vh;
+    }
+
+    .wrap {
+      width: min(1240px, 94vw);
+      margin: 0 auto;
+      padding: 20px 0 32px;
+    }
+
+    .top {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(11, 18, 30, 0.78);
+      padding: 18px;
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(24px, 3vw, 36px);
+      line-height: 1.1;
+    }
+
+    .sub {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .toolbar {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .tab-btn {
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text);
+      border-radius: 12px;
+      padding: 10px 12px;
+      text-align: left;
+      cursor: pointer;
+      font-size: 13px;
+      transition: 0.2s ease;
+    }
+
+    .tab-btn:hover { border-color: rgba(26, 216, 181, 0.5); }
+    .tab-btn.active {
+      border-color: var(--cyan);
+      box-shadow: inset 0 0 0 1px rgba(26, 216, 181, 0.22);
+      background: rgba(26, 216, 181, 0.08);
+    }
+
+    .content {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(11, 18, 30, 0.78);
+      overflow: hidden;
+    }
+
+    .content-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .content-head .title {
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .link-btn {
+      border: 1px solid var(--line);
+      color: var(--text);
+      text-decoration: none;
+      border-radius: 10px;
+      padding: 8px 10px;
+      font-size: 12px;
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .link-btn.primary {
+      border-color: var(--cyan);
+      background: rgba(26, 216, 181, 0.12);
+    }
+
+    iframe {
+      width: 100%;
+      height: min(74vh, 900px);
+      border: 0;
+      background: #0c1524;
+    }
+
+    .quick-links {
+      margin-top: 14px;
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .quick-links a {
+      display: block;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px;
+      color: var(--text);
+      text-decoration: none;
+      background: rgba(255, 255, 255, 0.03);
+      font-size: 13px;
+    }
+
+    .quick-links a span {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    @media (max-width: 1000px) {
+      .toolbar, .quick-links { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 640px) {
+      .toolbar, .quick-links { grid-template-columns: 1fr; }
+      iframe { height: 72vh; }
+    }
+  </style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+  <main class="wrap">
+    <section class="top">
+      <h1>Digital Control Center</h1>
+      <p class="sub">Единая точка входа в модель: ROI, Detailed Gantt, Executive Summary, Integration Matrix, Delivery Checklist.</p>
+
+      <div class="toolbar" id="tabs"></div>
+    </section>
+
+    <section class="content">
+      <div class="content-head">
+        <div class="title" id="panelTitle">Загрузка...</div>
+        <div class="actions">
+          <a id="openDoc" class="link-btn" href="#" target="_blank" rel="noopener noreferrer">Открыть документ</a>
+          <a id="openDirect" class="link-btn primary" href="#" target="_blank" rel="noopener noreferrer">Открыть в новой вкладке</a>
+        </div>
+      </div>
+      <iframe id="viewer" title="Digital model viewer"></iframe>
+    </section>
+
+    <section class="quick-links">
+      <a href="29_roi_calculator_interactive.html" target="_blank" rel="noopener noreferrer">29 ROI Calculator<span>Интерактивная оценка ROI и payback</span></a>
+      <a href="30_gantt_665_operations_detailed.html" target="_blank" rel="noopener noreferrer">30 Detailed Gantt<span>Полный план по всем операциям</span></a>
+      <a href="31_executive_summary_presentation.html" target="_blank" rel="noopener noreferrer">31 Executive Summary<span>Слайды для руководства</span></a>
+      <a href="32_integration_matrix_i1_i5.html" target="_blank" rel="noopener noreferrer">32 Integration Matrix<span>Связи и API-события I1-I5</span></a>
+      <a href="33_delivery_checklist.html" target="_blank" rel="noopener noreferrer">33 Delivery Checklist<span>Что готово и что сделать дальше</span></a>
+    </section>
+  </main>
+
+  <script>
+    const views = [
+      { id: "roi", label: "29 ROI", title: "29 ROI Calculator (Interactive)", href: "29_roi_calculator_interactive.html" },
+      { id: "gantt", label: "30 Gantt", title: "30 Detailed Gantt (all operations)", href: "30_gantt_665_operations_detailed.html" },
+      { id: "summary", label: "31 Summary", title: "31 Executive Summary", href: "31_executive_summary_presentation.html" },
+      { id: "matrix", label: "32 Matrix", title: "32 Integration Matrix I1-I5", href: "32_integration_matrix_i1_i5.html" },
+      { id: "checklist", label: "33 Checklist", title: "33 Delivery Checklist", href: "33_delivery_checklist.html" }
+    ];
+
+    const tabs = document.getElementById("tabs");
+    const viewer = document.getElementById("viewer");
+    const panelTitle = document.getElementById("panelTitle");
+    const openDoc = document.getElementById("openDoc");
+    const openDirect = document.getElementById("openDirect");
+
+    function activate(viewId) {
+      const current = views.find(v => v.id === viewId) || views[0];
+      panelTitle.textContent = current.title;
+      viewer.src = current.href;
+      openDoc.href = current.href;
+      openDirect.href = current.href;
+
+      [...tabs.querySelectorAll("button")].forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.id === current.id);
+      });
+    }
+
+    views.forEach((v, idx) => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "tab-btn" + (idx === 0 ? " active" : "");
+      btn.dataset.id = v.id;
+      btn.textContent = v.label;
+      btn.addEventListener("click", () => activate(v.id));
+      tabs.appendChild(btn);
+    });
+
+    activate("roi");
+  </script>
+  <script src="assets/js/global-auth-widget.js"></script>
+</body>
+</html>

@@ -1,0 +1,465 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>133 · Северо-Ярудейское · Общая информация</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap");
+
+    :root {
+      --bg-0:#081018;
+      --bg-1:#122233;
+      --bg-2:#173845;
+      --panel:rgba(11,20,31,.84);
+      --panel-soft:rgba(255,255,255,.035);
+      --line:rgba(227,238,255,.14);
+      --line-soft:rgba(227,238,255,.08);
+      --text:#edf5ff;
+      --muted:#a8bdd2;
+      --cyan:#22d7b4;
+      --amber:#f8bd5f;
+      --blue:#8db4ff;
+      --shadow:0 20px 48px rgba(0,0,0,.42);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      font-family: "Manrope", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(900px 460px at 0% -10%, rgba(34,215,180,.18), transparent),
+        radial-gradient(760px 420px at 100% 0%, rgba(248,189,95,.16), transparent),
+        linear-gradient(145deg, var(--bg-0), var(--bg-1) 46%, var(--bg-2));
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(to right, rgba(255,255,255,.02) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,.02) 1px, transparent 1px);
+      background-size: 34px 34px;
+      mask-image: radial-gradient(circle at 50% 18%, rgba(0,0,0,.94), transparent 72%);
+    }
+
+    .wrap {
+      position: relative;
+      z-index: 1;
+      width: min(1380px, 94vw);
+      margin: 0 auto;
+      padding: 24px 0 64px;
+    }
+
+    .top,
+    .hero,
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+
+    .top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 14px;
+      position: sticky;
+      top: 12px;
+      z-index: 20;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: "Oswald", sans-serif;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      font-size: 20px;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 35% 35%, #cffff7, var(--cyan));
+    }
+
+    .nav {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .nav a {
+      text-decoration: none;
+      color: #06231f;
+      background: linear-gradient(130deg, #8df7e7, #1ad8b5);
+      border: 1px solid rgba(26,216,181,.8);
+      border-radius: 10px;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      font-weight: 800;
+      padding: 8px 12px;
+    }
+
+    .hero,
+    .panel {
+      margin-top: 18px;
+      padding: 24px;
+    }
+
+    .hero {
+      background:
+        radial-gradient(520px 220px at 6% 0%, rgba(34,215,180,.12), transparent),
+        radial-gradient(560px 240px at 100% 0%, rgba(248,189,95,.1), transparent),
+        var(--panel);
+    }
+
+    .eyebrow,
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      border: 1px solid var(--line-soft);
+      border-radius: 999px;
+      background: rgba(255,255,255,.04);
+      color: #d8e8f8;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    h1, h2, h3 {
+      margin: 0;
+      font-family: "Oswald", sans-serif;
+      letter-spacing: -.01em;
+    }
+
+    h1 {
+      margin-top: 14px;
+      font-size: clamp(34px, 5vw, 58px);
+      line-height: .98;
+    }
+
+    p, li, td, th {
+      color: #c7d7ec;
+      line-height: 1.68;
+      font-size: 14px;
+      margin: 0;
+    }
+
+    .hero-grid,
+    .grid-2,
+    .stats-grid,
+    .table-wrap {
+      display: grid;
+      gap: 14px;
+    }
+
+    .hero-grid {
+      margin-top: 18px;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+
+    .grid-2 {
+      grid-template-columns: 1.05fr .95fr;
+      margin-top: 18px;
+    }
+
+    .stats-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .hero-stat,
+    .card,
+    .table-card {
+      border: 1px solid var(--line-soft);
+      border-radius: 18px;
+      background: var(--panel-soft);
+      padding: 16px;
+    }
+
+    .hero-stat strong {
+      display: block;
+      font-size: 24px;
+      line-height: 1;
+    }
+
+    .hero-stat span {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .card h3,
+    .table-card h3 {
+      font-size: 22px;
+      margin-bottom: 10px;
+    }
+
+    .list {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .list-item {
+      border-top: 1px solid var(--line-soft);
+      padding-top: 10px;
+    }
+
+    .accent {
+      color: var(--amber);
+      font-weight: 800;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 12px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    .section-note {
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+    }
+
+    th,
+    td {
+      text-align: left;
+      vertical-align: top;
+      padding: 10px 12px;
+      border-top: 1px solid var(--line-soft);
+    }
+
+    th {
+      color: #eff6ff;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .subhead td {
+      color: #f3f7ff;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      background: rgba(255,255,255,.04);
+    }
+
+    .footer {
+      margin-top: 16px;
+      font-size: 12px;
+      color: #8ea2bc;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+      .image-stack {
+        display: grid;
+        gap: 18px;
+        margin-top: 12px;
+      }
+
+      .image-frame {
+        border: 1px solid var(--line-soft);
+        border-radius: 18px;
+        background: rgba(255,255,255,.02);
+        padding: 10px;
+        overflow: hidden;
+      }
+
+      .image-frame img {
+        display: block;
+        width: 100%;
+        height: auto;
+        border-radius: 12px;
+      }
+
+    @media (max-width: 1080px) {
+      .top { position: static; }
+      .hero-grid,
+      .grid-2,
+      .stats-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+  <main class="wrap">
+    <header class="top">
+      <a class="brand" href="119_severo_yarudeyskoe_project_dashboard.html"><span class="dot" aria-hidden="true"></span><span>Северо-Ярудейское</span></a>
+      <nav class="nav">
+        <a href="119_severo_yarudeyskoe_project_dashboard.html">К дашборду проекта</a>
+        <a href="56_fields_projects_dashboard.html">Мои месторождения</a>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <span class="eyebrow">Doc 133 · Общие сведения</span>
+      <h1>Северо-Ярудейское · Общая информация</h1>
+      <p>Стартовый паспорт проекта собран по исходной таблице общих сведений. Здесь вынесены параметры строительства эксплуатационных скважин, базовые проектные ограничения, дорожная логистика и обеспечение площадки ресурсами.</p>
+
+      <div class="hero-grid">
+        <article class="hero-stat"><strong>301-308</strong><span>номера скважин</span></article>
+        <article class="hero-stat"><strong>ЮН2-4</strong><span>проектный горизонт</span></article>
+        <article class="hero-stat"><strong>15 м</strong><span>альтитуда ротора</span></article>
+        <article class="hero-stat"><strong>25 м</strong><span>радиус допуска</span></article>
+        <article class="hero-stat"><strong>ООО «ЯРГЕО»</strong><span>заказчик</span></article>
+      </div>
+
+      <div class="grid-2">
+        <article class="card">
+          <h3>Паспорт строительства</h3>
+          <div class="list">
+            <div class="list-item"><span class="accent">Тип скважины:</span> эксплуатационная.</div>
+            <div class="list-item"><span class="accent">Вид строительства:</span> новое строительство.</div>
+            <div class="list-item"><span class="accent">Организация работ:</span> генеральный подряд.</div>
+            <div class="list-item"><span class="accent">Район работ:</span> Россия, Тюменская область, ЯНАО, Надымский район.</div>
+            <div class="list-item"><span class="accent">Участок:</span> Северо-Ярудейский ЛУ.</div>
+            <div class="list-item"><span class="accent">Начало работ:</span> май 2026 г.</div>
+          </div>
+        </article>
+
+        <article class="card">
+          <h3>Ключевые проектные параметры</h3>
+          <div class="list">
+            <div class="list-item"><span class="accent">Фонд скважин:</span> № 301, 302, 303, 304, 305, 306, 307, 308.</div>
+            <div class="list-item"><span class="accent">Проектная глубина по AO:</span> см. раздел 6 ТЗ.</div>
+            <div class="list-item"><span class="accent">Тип заканчивания:</span> фильтр-хвостовик с МСП РП.</div>
+            <div class="list-item"><span class="accent">Станция ГТИ:</span> на все время строительства скважин.</div>
+            <div class="list-item"><span class="accent">Коммерческая скорость:</span> скв. 302-308 не менее 4500 м/ст.мес.; скв. 301 не менее 2150 м/ст.мес.</div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="section-head">
+        <h2>Логистика И Обеспечение</h2>
+        <div class="section-note">Access and site support</div>
+      </div>
+
+      <div class="stats-grid">
+        <article class="hero-stat"><strong>69,1 км</strong><span>ведомственная дорога</span></article>
+        <article class="hero-stat"><strong>11,4 км</strong><span>внутрипромысловая дорога</span></article>
+        <article class="hero-stat"><strong>700 м</strong><span>карьер песка от КП № 30</span></article>
+      </div>
+
+      <div class="grid-2" style="margin-top:14px">
+        <article class="card">
+          <h3>Подъездные дороги</h3>
+          <div class="list">
+            <div class="list-item"><span class="accent">Маршрут 1:</span> г. Надым - Ярудейское НГКМ: грунтовая федеральная дорога 69,1 км, вдольтрассовый проезд 40,4 км. Ориентировочные периоды снятия понтонно-мостовой переправы через р. Ярудей: май-июнь (2-3 недели), сентябрь (2 недели).</div>
+            <div class="list-item"><span class="accent">Маршрут 2:</span> Ярудейское НГКМ: грунтовая внутрипромысловая дорога 11,4 км.</div>
+            <div class="list-item"><span class="accent">Маршрут 3:</span> КП № 18 - КП № 30: автозимник 14,9 км. С июня 2026 г. планируется открытие грунтовой дороги 13 км.</div>
+            <div class="list-item"><span class="accent">Примечание:</span> схемы расположения кустовой площадки № 30, подъездной дороги и генплан указаны в приложении № 31 к ТЗ.</div>
+          </div>
+        </article>
+
+        <article class="card">
+          <h3>Ресурсное обеспечение</h3>
+          <div class="list">
+            <div class="list-item"><span class="accent">Источник водоснабжения:</span> техническая вода из оз. Миссионерское и р. Шуга; питьевая вода привозная.</div>
+            <div class="list-item"><span class="accent">Карьер песка:</span> проектный, 700 м от КП № 30.</div>
+            <div class="list-item"><span class="accent">Контур работ:</span> строительство эксплуатационных скважин по генеральному подряду.</div>
+            <div class="list-item"><span class="accent">Режим сопровождения:</span> постоянное присутствие станции ГТИ на период строительства.</div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="section-head">
+        <h2>Таблица Общих Сведений</h2>
+        <div class="section-note">Project passport table</div>
+      </div>
+      <div class="table-wrap">
+        <article class="table-card">
+          <h3>Исходные параметры проекта</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Параметр</th>
+                <th>Значение</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="subhead"><td colspan="2">Общие сведения</td></tr>
+              <tr><td>Тип скважины</td><td>Эксплуатационная</td></tr>
+              <tr><td>Вид строительства</td><td>Новое строительство</td></tr>
+              <tr><td>Организация работ</td><td>Генеральный подряд</td></tr>
+              <tr><td>Район, пункт строительства</td><td>Россия, Тюменская область, ЯНАО, Надымский район</td></tr>
+              <tr><td>Месторождение (участок)</td><td>Северо-Ярудейский ЛУ</td></tr>
+              <tr><td>Номер скважины</td><td>301, 302, 303, 304, 305, 306, 307, 308</td></tr>
+              <tr><td>Начало проведения работ</td><td>Май 2026 г.</td></tr>
+              <tr><td>Заказчик</td><td>ООО «ЯРГЕО»</td></tr>
+              <tr><td>Проектный горизонт</td><td>ЮН2-4</td></tr>
+              <tr><td>Проектная глубина по AO, м</td><td>См. раздел 6 ТЗ</td></tr>
+              <tr><td>Предварительная альтитуда ротора</td><td>15</td></tr>
+              <tr><td>Величина радиуса круга допуска на кровлю пласта / забой</td><td>25 м (по вертикали 1 м)</td></tr>
+              <tr><td>Проектная коммерческая скорость</td><td>Скв. № 302, 303, 304, 305, 306, 307, 308 - не менее 4500 м/ст.мес. Скв. № 301 - не менее 2150 м/ст.мес.</td></tr>
+              <tr><td>Тип заканчивания</td><td>Фильтр-хвостовик с МСП РП</td></tr>
+              <tr><td>Станция ГТИ</td><td>На все время строительства скважин</td></tr>
+
+              <tr class="subhead"><td colspan="2">Логистика и снабжение</td></tr>
+              <tr><td>Подъездные дороги</td><td>1) Надым - Ярудейское НГКМ: 69,1 км грунтовой федеральной дороги и 40,4 км вдольтрассового проезда. 2) Ярудейское НГКМ: 11,4 км грунтовой внутрипромысловой дороги. 3) КП № 18 - КП № 30: автозимник 14,9 км, с июня 2026 г. планируется открытие грунтовой дороги 13 км.</td></tr>
+              <tr><td>Источник водоснабжения</td><td>Техническая вода: оз. Миссионерское, р. Шуга; питьевая вода привозная</td></tr>
+              <tr><td>Карьер песка (проектный)</td><td>700 м от КП № 30</td></tr>
+            </tbody>
+          </table>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="section-head">
+        <h2>Схемы и рисунки</h2>
+        <span class="section-note">Вставлены без изменений</span>
+      </div>
+      <div class="image-stack">
+        <div class="image-frame">
+          <img src="assets/img/severo_yarudeyskoe_scheme_01.png" alt="Схема проектной автодороги и участка строительства" />
+        </div>
+        <div class="image-frame">
+          <img src="assets/img/severo_yarudeyskoe_scheme_02.png" alt="Схема кустовых площадок и карьеров" />
+        </div>
+        <div class="image-frame">
+          <img src="assets/img/severo_yarudeyskoe_scheme_03.png" alt="Схема транспортной доступности и объектов участка" />
+        </div>
+      </div>
+    </section>
+
+    <p class="footer">Северо-Ярудейское · Общая информация · Doc 133</p>
+  </main>
+  <script src="assets/js/global-auth-widget.js"></script>
+</body>
+</html>

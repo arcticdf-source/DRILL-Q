@@ -1,0 +1,251 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>38 · База знаний WS2000/WELLSIGHT</title>
+<style>
+  :root{--bg:#0d1117;--surface:#161b22;--card:#1c2330;--accent:#1ad8b5;--accent2:#ffbc4c;--text:#e6edf3;--muted:#8b949e;--line:#30363d;--good:#3fb950;--warn:#f0a500;--bad:#f85149}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+  header{padding:24px 34px;border-bottom:1px solid var(--line);background:linear-gradient(135deg,#0b2137,#0d1117 60%)}
+  h1{font-size:25px;color:var(--accent)}
+  header p{color:var(--muted);margin-top:6px}
+  nav{display:flex;gap:6px;overflow:auto;padding:0 34px;background:var(--surface);border-bottom:1px solid var(--line)}
+  nav button{background:none;border:none;color:var(--muted);padding:12px 14px;cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap}
+  nav button.active,nav button:hover{color:var(--accent);border-bottom-color:var(--accent)}
+  main{max-width:1280px;margin:0 auto;padding:24px 34px}
+  section{display:none}
+  section.active{display:block}
+  h2{font-size:20px;color:var(--accent);margin-bottom:14px;border-bottom:1px solid var(--line);padding-bottom:8px}
+  h3{font-size:15px;color:var(--accent2);margin:16px 0 8px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:14px}
+  .metric{font-size:28px;font-weight:800;color:var(--accent)}
+  .mcap{font-size:12px;color:var(--muted)}
+  table{width:100%;border-collapse:collapse;margin:10px 0}
+  th,td{border:1px solid var(--line);padding:8px 10px;font-size:12px;vertical-align:top}
+  th{background:var(--surface);color:var(--accent)}
+  .rule{border-left:3px solid var(--accent2);background:rgba(255,188,76,.08);padding:8px 12px;border-radius:0 6px 6px 0;margin:8px 0}
+  .ok{color:var(--good)} .wn{color:var(--warn)} .er{color:var(--bad)}
+  ul{padding-left:20px}
+  li{margin:5px 0;color:var(--muted)}
+  li strong{color:var(--text)}
+  .chip{display:inline-block;padding:2px 8px;border:1px solid var(--line);border-radius:999px;font-size:11px;margin-right:6px;color:#c7d4e9}
+  .mono{font-family:Consolas,monospace}
+</style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+<header>
+  <h1>База знаний программы инжиниринга буровых растворов WS2000/WELLSIGHT</h1>
+  <p>Сводный разбор 4 руководств из books/WellSite: структура системы, сущности, workflow, правила валидации и архитектура аналога</p>
+</header>
+<nav>
+  <button class="active" onclick="showTab('overview',this)">Обзор</button>
+  <button onclick="showTab('modules',this)">Модули системы</button>
+  <button onclick="showTab('workflows',this)">Операционные потоки</button>
+  <button onclick="showTab('data',this)">Модель данных</button>
+  <button onclick="showTab('rules',this)">Правила/валидации</button>
+  <button onclick="showTab('exports',this)">Отчеты, экспорт, языки</button>
+  <button onclick="showTab('implementation',this)">План реализации</button>
+</nav>
+<main>
+
+<section id="overview" class="active">
+  <h2>1) Обзор источников и масштаба</h2>
+  <div class="grid3">
+    <div class="card"><div class="metric">4</div><div class="mcap">Руководства проанализировано</div></div>
+    <div class="card"><div class="metric">13 434</div><div class="mcap">Строк текста обработано</div></div>
+    <div class="card"><div class="metric">15+</div><div class="mcap">Ключевых end-to-end workflow</div></div>
+  </div>
+  <br>
+  <div class="grid2">
+    <div class="card">
+      <h3>Файлы (books/WellSite)</h3>
+      <ul>
+        <li><strong>Учебное руководство WS2000</strong>: пошаговое обучение, day-by-day сценарии работы инженера БР</li>
+        <li><strong>Краткое руководство WS2000</strong>: обзор интерфейса, mud reports, post well audit</li>
+        <li><strong>Управление данными WELLSIGHT</strong>: сервер, обмен, статусы, роли, quality gates</li>
+        <li><strong>Настройка языков WELLSIGHT</strong>: региональные настройки ОС + языки отчетов</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Что это за система</h3>
+      <p>WELLSIGHT/WS2000 — это система инженерного учета по скважине, где все ежедневные операции по буровым растворам ведутся через <span class="mono">Daily Field Reports</span>, а затем агрегируются в <span class="mono">Post Well Audit</span>. Ядро системы: баланс <strong>объемов + потерь/приростов + затрат + свойств раствора + гидравлики</strong>.</p>
+      <br>
+      <span class="chip">Daily Reporting</span><span class="chip">Mud Engineering</span><span class="chip">Post Well Audit</span><span class="chip">Data Exchange</span>
+    </div>
+  </div>
+</section>
+
+<section id="modules">
+  <h2>2) Функциональные модули и экраны</h2>
+  <table>
+    <tr><th>Модуль</th><th>Назначение</th><th>Основные сущности</th></tr>
+    <tr><td>Well Data</td><td>Паспорт скважины</td><td>API/PCN, оператор, профиль, глубины MD/TVD, rig info</td></tr>
+    <tr><td>Well Casing</td><td>Конструкция скважины</td><td>Обсадные колонны, диаметры, глубины установки</td></tr>
+    <tr><td>Well Sections</td><td>Интервалы ствола</td><td>Open hole / cased hole, диапазоны глубин</td></tr>
+    <tr><td>Bit Records</td><td>Журнал долот</td><td>Тип, IADC, проходка, ROP, сработка</td></tr>
+    <tr><td>Fluid Sets</td><td>Системы буровых растворов</td><td>Тип раствора, свойства, концентрации, объемы</td></tr>
+    <tr><td>Inventory</td><td>Учет материалов</td><td>Поступление, расход, остатки, SG компонентов</td></tr>
+    <tr><td>Costing</td><td>Экономика</td><td>Материальные затраты, услуги, стоимость интервала</td></tr>
+    <tr><td>Volumes</td><td>Объемный баланс</td><td>Ствол, ЗП, амбары, смещение, adjustment</td></tr>
+    <tr><td>Losses & Gains</td><td>Потери/прирост</td><td>Типы потерь, источники прироста, объемные события</td></tr>
+    <tr><td>Fluid Properties</td><td>Лабораторные данные</td><td>Плотность, реология, фильтрат, соли</td></tr>
+    <tr><td>Hydraulics</td><td>Гидравлические расчеты</td><td>Расход, давления, ECD, annular velocity</td></tr>
+    <tr><td>Time Breakdown</td><td>Баланс времени</td><td>Фазы операций, NPT-классификация</td></tr>
+    <tr><td>Issues</td><td>Проблемы и меры</td><td>Категория, влияние, corrective/preventive actions</td></tr>
+    <tr><td>Post Well Audit</td><td>Итог по скважине</td><td>Интервалы, recap costs/volumes, статус закрытия</td></tr>
+  </table>
+</section>
+
+<section id="workflows">
+  <h2>3) Ключевые workflow (от ежедневки до закрытия)</h2>
+  <div class="grid2">
+    <div class="card">
+      <h3>Workflow A: Запуск новой скважины</h3>
+      <ul>
+        <li>Создать <strong>Well Data</strong>, задать систему единиц, профиль, MD/TVD</li>
+        <li>Заполнить <strong>Well Casing</strong> и <strong>Well Sections</strong></li>
+        <li>Создать базовые <strong>Fluid Sets</strong> и <strong>Product List</strong></li>
+        <li>Проверить обязательные поля (*) перед первым Daily Report</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Workflow B: Суточный отчет инженера БР</h3>
+      <ul>
+        <li>Создать Daily Report (Draft)</li>
+        <li>Ввести Wellbore + Bit run + Inventory + Costing</li>
+        <li>Ввести Volumes и Losses & Gains</li>
+        <li>Ввести Fluid Properties и Hydraulics (ECD)</li>
+        <li>Заполнить Time Breakdown + Issues</li>
+        <li>Запустить Finish Report (валидация) и закрыть день</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Workflow C: Обязательная сверка балансов</h3>
+      <div class="rule">
+        <strong>Net Volume Change (Volumes)</strong> должен совпадать с <strong>Documented Net Volume Change (Losses & Gains)</strong>.
+      </div>
+      <p>При расхождении отчет помечается ошибкой и не должен уходить в completed/approved.</p>
+    </div>
+    <div class="card">
+      <h3>Workflow D: Post Well Audit</h3>
+      <ul>
+        <li>Сформировать интервалы между обсадками</li>
+        <li>Построить recap по затратам, объемам и типам раствора</li>
+        <li>Добавить инженерные выводы и рекомендации</li>
+        <li>Закрыть аудит (status = closed)</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="data">
+  <h2>4) Сущности и связи (data model)</h2>
+  <table>
+    <tr><th>Сущность</th><th>Ключи</th><th>Связи</th></tr>
+    <tr><td>Well</td><td>wellId, API/PCN</td><td>1:N с DailyReport, Casing, Survey, BitRun, AuditInterval</td></tr>
+    <tr><td>DailyReport</td><td>reportId, reportDate, status</td><td>N:1 к Well; 1:N с VolumeEntry, LossEvent, CostEntry, Issue</td></tr>
+    <tr><td>FluidSet</td><td>fluidSetId, type</td><td>N:N с Product через ProductConcentration</td></tr>
+    <tr><td>InventoryEntry</td><td>productId, qtyIn, qtyOut</td><td>N:1 к DailyReport; влияет на Costing и Volumes</td></tr>
+    <tr><td>VolumeEntry</td><td>pitVol, annVol, holeVol</td><td>N:1 к DailyReport; сравнивается с LossEvent</td></tr>
+    <tr><td>LossEvent</td><td>lossType, gainType, volume</td><td>N:1 к DailyReport</td></tr>
+    <tr><td>HydraulicsEntry</td><td>Q, P, ECD</td><td>N:1 к DailyReport</td></tr>
+    <tr><td>PostWellAudit</td><td>auditId, status</td><td>N:1 к Well; 1:N с AuditInterval</td></tr>
+  </table>
+  <div class="card">
+    <h3>Минимальные обязательные поля для MVP</h3>
+    <p class="mono">wellName, operator, profile, unitSystem, reportDate, mudDensity, flowRate, pitVolume, netChangeVolumes, netChangeLosses, totalCost</p>
+  </div>
+</section>
+
+<section id="rules">
+  <h2>5) Критичные правила и валидации</h2>
+  <div class="rule"><strong>R1:</strong> Все обязательные поля (*) заполнены до статуса completed.</div>
+  <div class="rule"><strong>R2:</strong> Нельзя менять titration method после начала серии анализов.</div>
+  <div class="rule"><strong>R3:</strong> Net change из Volumes = Documented net change из Losses & Gains.</div>
+  <div class="rule"><strong>R4:</strong> Нельзя отправлять на сервер отчеты Draft.</div>
+  <div class="rule"><strong>R5:</strong> Post Well Audit должен быть closed перед финальной передачей.</div>
+  <div class="rule"><strong>R6:</strong> Для компонентов в Product List обязателен specific gravity (SG).</div>
+  <div class="rule"><strong>R7:</strong> Tight Hole ограничивает доступ к данным скважины.</div>
+  <br>
+  <div class="grid3">
+    <div class="card"><h3 class="ok">Green checks</h3><p>Баланс объема сошелся, ECD в пределах, costs согласованы.</p></div>
+    <div class="card"><h3 class="wn">Warnings</h3><p>Неполные поля, отклонения свойств раствора от target range.</p></div>
+    <div class="card"><h3 class="er">Blocking errors</h3><p>Несходимость объемов, отрицательные остатки, missing mandatory.</p></div>
+  </div>
+</section>
+
+<section id="exports">
+  <h2>6) Отчеты, обмен и локализация</h2>
+  <div class="grid2">
+    <div class="card">
+      <h3>Отчеты и экспорт</h3>
+      <ul>
+        <li>Daily report / Summary / Recap Costs / Recap Volumes</li>
+        <li>Форматы: PDF, XLSX, DOCX (или HTML-предпросмотр)</li>
+        <li>Данные выгружаются в server inbox, затем публикуются</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Локализация</h3>
+      <ul>
+        <li>2 уровня: регион ОС + язык отчетов в приложении</li>
+        <li>Поддержка: RU, EN, ES, DE, PT (из руководства)</li>
+        <li>Интерфейс может оставаться EN, язык отчета настраивается отдельно</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="implementation">
+  <h2>7) Как реализовано в этом проекте (NEXUS)</h2>
+  <div class="grid2">
+    <div class="card">
+      <h3>Новые документы модуля БУРЕНИЕ</h3>
+      <ul>
+        <li><strong>Doc 38</strong> (эта страница): база знаний WS2000/WELLSIGHT</li>
+        <li><strong>Doc 39</strong>: интерактивное приложение Daily Report Studio</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>MVP scope</h3>
+      <p><strong>P1:</strong> Well Data, Daily Report, Volumes/Losses balance, Costing, Hydraulics, Report Builder.</p>
+      <p><strong>P2:</strong> Post Well Audit intervals, role workflow, offline drafts.</p>
+      <p><strong>P3:</strong> Server sync adapters, multilingual report templates.</p>
+    </div>
+  </div>
+  <br>
+  <div class="card">
+    <h3>Матрица соответствия руководствам (manual item -> реализация)</h3>
+    <table>
+      <tr><th>Manual item</th><th>Реализация в проекте</th><th>Статус</th></tr>
+      <tr><td>Well Data / Well Casing / Well Sections</td><td>Doc 40: модули Well Data и Well Casing & Sections</td><td class="ok">Implemented</td></tr>
+      <tr><td>Lithology / Well Surveys / Well Testings</td><td>Doc 40: модули Lithology, Well Surveys, Well Testings</td><td class="ok">Implemented</td></tr>
+      <tr><td>Bit Records / Fluid Sets / Product Lists</td><td>Doc 40: модули Bit Records, Fluid Sets, Product Lists</td><td class="ok">Implemented</td></tr>
+      <tr><td>Zero Defects Tracking / Mud Reports</td><td>Doc 40: модули Zero Defects Tracking и Mud Reports</td><td class="ok">Implemented</td></tr>
+      <tr><td>Post Well Audit + recap</td><td>Doc 40: модуль Post Well Audit + QC gates</td><td class="ok">Implemented</td></tr>
+      <tr><td>Report Manager 4 screens</td><td>Doc 40: Task -> Type -> Selection -> Results</td><td class="ok">Implemented</td></tr>
+      <tr><td>Print Manager launch path</td><td>Doc 40: отдельный модуль Print Manager</td><td class="ok">Implemented</td></tr>
+      <tr><td>Exchange Data with Server / Download / Retrieve</td><td>Doc 40: модуль Data Management</td><td class="ok">Implemented</td></tr>
+      <tr><td>Export to DIMS</td><td>Doc 40: действие Export to DIMS (JSON payload simulation)</td><td class="ok">Implemented</td></tr>
+      <tr><td>RU/EN/ES/DE/PT report languages</td><td>Doc 40: выбор языка отчета в Report Manager</td><td class="ok">Implemented</td></tr>
+    </table>
+  </div>
+</section>
+
+</main>
+<script>
+function showTab(id,btn){
+  document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+</script>
+  <script src="assets/js/global-auth-widget.js"></script>
+</body>
+</html>

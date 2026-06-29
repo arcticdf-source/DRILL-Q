@@ -1,0 +1,97 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Сквозной поток: Прогноз NPT (бурение)</title>
+  <style>
+    body { background:#10192a; color:#eef4ff; font-family:sans-serif; margin:0; }
+    .wrap { max-width:600px; margin:40px auto; background:#162339; border-radius:14px; padding:32px 28px; box-shadow:0 4px 32px #0004; }
+    h1 { color:#19c37d; font-size:2em; margin-bottom:18px; }
+    label { display:block; margin:18px 0 6px; font-weight:600; }
+    input, select, textarea { width:100%; padding:8px; border-radius:6px; border:1px solid #23304a; background:#10192a; color:#eef4ff; font-size:1em; }
+    button { background:#19c37d; color:#10192a; border:none; border-radius:8px; padding:10px 22px; font-size:1em; font-weight:700; margin-top:18px; cursor:pointer; }
+    .result, .effect { background:#0f192b; border-radius:8px; padding:14px; margin:18px 0; }
+    .label { color:#ffbc4c; font-weight:700; }
+  </style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Сквозной поток: Прогноз NPT (бурение)</h1>
+    <form id="nptForm">
+      <label>Скважина/проект</label>
+      <input id="well" placeholder="Например, Скв. 1234" required />
+      <label>Параметры бурения (тестовые данные)</label>
+      <textarea id="params" rows="3" placeholder="ROP=8 м/ч, WOB=12 т, Mud=OBM, Section=12 1/4''" required>ROP=8 м/ч, WOB=12 т, Mud=OBM, Section=12 1/4''</textarea>
+      <button type="submit">Рассчитать прогноз NPT</button>
+    </form>
+    <div id="result" class="result" style="display:none;"></div>
+    <div id="recommend" class="result" style="display:none;"></div>
+    <form id="actionForm" style="display:none;">
+      <label>Действие (рекомендация)</label>
+      <select id="action">
+        <option value="Снизить ROP">Снизить ROP</option>
+        <option value="Изменить плотность раствора">Изменить плотность раствора</option>
+        <option value="Провести обработку раствора">Провести обработку раствора</option>
+        <option value="Провести очистку скважины">Провести очистку скважины</option>
+      </select>
+      <button type="submit">Подтвердить действие</button>
+    </form>
+    <form id="effectForm" style="display:none;">
+      <label>Фактический NPT (часов)</label>
+      <input id="factNpt" type="number" min="0" step="0.1" required />
+      <button type="submit">Рассчитать экономический эффект</button>
+    </form>
+    <div id="effect" class="effect" style="display:none;"></div>
+  </div>
+  <script>
+    const nptForm = document.getElementById('nptForm');
+    const resultDiv = document.getElementById('result');
+    const recommendDiv = document.getElementById('recommend');
+    const actionForm = document.getElementById('actionForm');
+    const effectForm = document.getElementById('effectForm');
+    const effectDiv = document.getElementById('effect');
+    let predictedNpt = null;
+    let wellName = '';
+
+    nptForm.onsubmit = function(e) {
+      e.preventDefault();
+      wellName = document.getElementById('well').value.trim();
+      const params = document.getElementById('params').value.trim();
+      // Stub-прогноз: если ROP > 7, риск высокий
+      let risk = 'низкий';
+      let npt = 4;
+      if (/ROP\s*[=>:]?\s*(\d+)/i.test(params)) {
+        const rop = parseFloat(params.match(/ROP\s*[=>:]?\s*(\d+)/i)[1]);
+        if (rop > 10) { risk = 'очень высокий'; npt = 16; }
+        else if (rop > 7) { risk = 'высокий'; npt = 12; }
+        else if (rop > 5) { risk = 'средний'; npt = 8; }
+      }
+      predictedNpt = npt;
+      resultDiv.innerHTML = `<span class='label'>Прогноз NPT:</span> ${npt} ч<br><span class='label'>Риск:</span> ${risk}`;
+      resultDiv.style.display = 'block';
+      recommendDiv.innerHTML = `<span class='label'>Рекомендация:</span> ${risk === 'высокий' || risk === 'очень высокий' ? 'Снизить ROP и провести обработку раствора' : 'Контролировать параметры, осложнений не ожидается'}`;
+      recommendDiv.style.display = 'block';
+      actionForm.style.display = 'block';
+      effectForm.style.display = 'none';
+      effectDiv.style.display = 'none';
+    };
+
+    actionForm.onsubmit = function(e) {
+      e.preventDefault();
+      effectForm.style.display = 'block';
+    };
+
+    effectForm.onsubmit = function(e) {
+      e.preventDefault();
+      const fact = parseFloat(document.getElementById('factNpt').value);
+      let saved = Math.max(0, predictedNpt - fact);
+      let econ = saved * 100000; // 100 тыс руб за 1 час NPT
+      effectDiv.innerHTML = `<span class='label'>Экономический эффект:</span> Сэкономлено ${saved} ч NPT (~${econ.toLocaleString()} руб.)`;
+      effectDiv.style.display = 'block';
+    };
+  </script>
+  <script src="assets/js/global-auth-widget.js"></script>
+</body>
+</html>

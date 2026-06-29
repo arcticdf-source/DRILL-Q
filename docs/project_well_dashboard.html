@@ -1,0 +1,256 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Скважина проекта — DRILL-Q</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Arial, sans-serif; background: #F5F5F7; color: #1D1D1F; font-size: 15px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+:root { --white:#FFFFFF; --bg:#F5F5F7; --text:#1D1D1F; --text2:#6E6E73; --text3:#AEAEB2; --blue:#2563EB; --blue-l:#EFF6FF; --border:rgba(0,0,0,0.08); --sh-sm:0 1px 4px rgba(0,0,0,0.06); --sh:0 4px 20px rgba(0,0,0,0.08); --r:16px; --r-sm:10px; }
+nav { position:sticky; top:0; z-index:100; background:rgba(255,255,255,0.85); backdrop-filter:saturate(180%) blur(20px); border-bottom:1px solid var(--border); height:56px; display:flex; align-items:center; padding:0 40px; justify-content:space-between; }
+.nav-logo { display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--text); }
+.nav-mark { width:28px; height:28px; border-radius:7px; background:var(--blue); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:#fff; }
+.nav-name { font-size:15px; font-weight:700; letter-spacing:-.4px; }
+.btn-ghost { padding:7px 16px; border-radius:var(--r-sm); border:1px solid var(--border); background:transparent; color:var(--text); font-size:13px; font-weight:500; text-decoration:none; } .btn-ghost:hover { background:var(--bg); }
+.btn-nav { padding:7px 16px; border-radius:var(--r-sm); background:var(--blue); color:#fff; font-size:13px; font-weight:600; text-decoration:none; } .btn-nav:hover { background:#1D4ED8; }
+.nav-right { display:flex; gap:10px; align-items:center; }
+.nav-status { font-size:13px; color:var(--text2); padding:7px 12px; border-radius:var(--r-sm); background:var(--bg); border:1px solid var(--border); }
+.wrap { width:min(1120px, 92vw); margin:0 auto; padding:48px 0 80px; }
+.breadcrumb { display:flex; align-items:center; gap:6px; font-size:13px; color:var(--text3); margin-bottom:28px; }
+.breadcrumb a { color:var(--text3); text-decoration:none; } .breadcrumb a:hover { color:var(--blue); }
+.hero { background:var(--white); border:1.5px solid var(--border); border-radius:var(--r); padding:40px; margin-bottom:24px; box-shadow:var(--sh-sm); }
+.hero-eyebrow { display:inline-flex; align-items:center; gap:8px; background:var(--blue-l); color:var(--blue); border-radius:99px; padding:4px 14px; font-size:12px; font-weight:600; margin-bottom:16px; }
+.hero h1 { font-size:clamp(26px, 4vw, 42px); font-weight:700; letter-spacing:-.8px; line-height:1.1; margin-bottom:20px; }
+.hero-actions { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:24px; }
+.btn-action { padding:9px 20px; border-radius:var(--r-sm); background:var(--blue); color:#fff; font-size:13px; font-weight:600; text-decoration:none; border:none; cursor:pointer; }
+.btn-action:hover { background:#1D4ED8; }
+.btn-action.secondary { background:var(--bg); color:var(--text); border:1px solid var(--border); }
+.btn-action.secondary:hover { border-color:var(--blue); color:var(--blue); background:var(--blue-l); }
+.add-well-form { display:none; background:var(--bg); border:1.5px solid var(--border); border-radius:var(--r-sm); padding:20px; margin-bottom:16px; max-width:460px; }
+.add-well-form.visible { display:block; }
+.add-well-form label { display:block; font-size:12px; font-weight:600; color:var(--text2); text-transform:uppercase; letter-spacing:.06em; margin-bottom:8px; }
+.add-well-form input { width:100%; padding:10px 14px; border:1.5px solid var(--border); border-radius:var(--r-sm); font-size:14px; color:var(--text); background:var(--white); outline:none; margin-bottom:12px; }
+.add-well-form input:focus { border-color:var(--blue); box-shadow:0 0 0 3px rgba(37,99,235,0.1); }
+.form-status { font-size:13px; color:var(--text2); margin-top:8px; min-height:20px; }
+.form-status.ok { color:#16a34a; }
+.wells-panel { background:var(--white); border:1.5px solid var(--border); border-radius:var(--r); padding:28px 32px; margin-bottom:24px; box-shadow:var(--sh-sm); }
+.wells-panel h2 { font-size:16px; font-weight:700; margin-bottom:6px; }
+.wells-panel p { color:var(--text2); font-size:13px; margin-bottom:20px; }
+.wells-row { display:flex; flex-wrap:wrap; gap:10px; }
+.well-pair { display:flex; flex-direction:column; gap:6px; }
+.well-btn { padding:8px 18px; border-radius:var(--r-sm); border:1.5px solid var(--border); background:var(--bg); color:var(--text); font-size:13px; font-weight:600; text-decoration:none; text-align:center; transition:all .15s; white-space:nowrap; }
+.well-btn:hover { border-color:var(--blue); color:var(--blue); background:var(--blue-l); }
+.well-btn.active { background:var(--blue); border-color:var(--blue); color:#fff; }
+.well-sub { padding:5px 12px; border-radius:var(--r-sm); border:1.5px solid var(--border); background:var(--bg); color:var(--text2); font-size:11px; font-weight:500; text-decoration:none; text-align:center; transition:all .15s; }
+.well-sub:hover { border-color:var(--blue); color:var(--blue); }
+.section { background:var(--white); border:1.5px solid var(--border); border-radius:var(--r); padding:32px; box-shadow:var(--sh-sm); }
+.section h2 { font-size:20px; font-weight:700; letter-spacing:-.3px; margin-bottom:6px; }
+.section-sub { color:var(--text2); font-size:14px; margin-bottom:24px; }
+.cards { display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:16px; }
+.mod-card { background:var(--bg); border:1.5px solid var(--border); border-radius:var(--r-sm); padding:24px; text-decoration:none; color:inherit; display:flex; flex-direction:column; gap:12px; transition:all .2s; position:relative; }
+.mod-card:hover { background:var(--white); border-color:var(--blue); box-shadow:var(--sh), 0 0 0 2px var(--blue); transform:translateY(-2px); }
+.mod-num { width:40px; height:40px; border-radius:10px; background:var(--blue-l); color:var(--blue); display:flex; align-items:center; justify-content:center; font-size:16px; font-weight:700; }
+.mod-card h3 { font-size:16px; font-weight:700; letter-spacing:-.2px; }
+.mod-card p { color:var(--text); font-size:13px; line-height:1.55; flex:1; }
+.mod-chips { display:flex; gap:6px; flex-wrap:wrap; }
+.chip { font-size:11px; font-weight:600; color:var(--text); background:var(--white); border:1px solid var(--border); border-radius:99px; padding:3px 10px; }
+.mod-arrow { position:absolute; right:16px; bottom:16px; font-size:16px; color:var(--text3); transition:color .2s; }
+.mod-card:hover .mod-arrow { color:var(--blue); }
+@media(max-width:640px){ nav{padding:0 20px;} .wrap{padding:32px 0 60px;} .cards{grid-template-columns:1fr;} }
+</style>
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="../index.html"><div class="nav-mark">DQ</div><span class="nav-name">DRILL-Q</span></a>
+  <div class="nav-right" id="navRight">
+    <a class="btn-ghost" href="56_fields_projects_dashboard.html">← Все месторождения</a>
+    <a class="btn-nav" href="../app.html">Приложение →</a>
+  </div>
+</nav>
+<div class="wrap">
+  <div class="breadcrumb">
+    <a href="../index.html">DRILL-Q</a> <span>/</span>
+    <a href="56_fields_projects_dashboard.html">Месторождения</a> <span>/</span>
+    <a href="#" id="breadProject"></a> <span>/</span>
+    <span style="color:var(--text)" id="breadWell"></span>
+  </div>
+
+  <div class="hero" id="heroBlock">
+    <div class="hero-eyebrow" id="heroEyebrow">⛽ Скважина</div>
+    <h1 id="pageTitle">Скважина проекта</h1>
+    <div class="hero-actions" id="heroActions">
+      <a class="btn-action" id="myWellsBtn" href="65_my_wells_auth.html">Войти · Мои скважины</a>
+      <button class="btn-action secondary" id="addWellBtn" type="button" style="display:none;">+ Добавить скважину</button>
+    </div>
+    <div class="add-well-form" id="userWellForm">
+      <label for="userWellNumberInput">Номер новой скважины</label>
+      <input id="userWellNumberInput" type="text" placeholder="Например, 9304">
+      <button class="btn-action" id="createUserWellBtn" type="button">Создать</button>
+      <div class="form-status" id="formStatus"></div>
+    </div>
+  </div>
+
+  <div class="wells-panel" id="wellsPanel">
+    <h2>Фонд скважин</h2>
+    <p>Выберите скважину — контент разделов обновится автоматически</p>
+    <div class="wells-row" id="wellsRow"></div>
+  </div>
+
+  <div class="section" id="sectionsBlock">
+    <h2>Разделы по скважине</h2>
+    <p class="section-sub" id="sectionsSub">Инженерные разделы · Кликните чтобы открыть</p>
+    <div class="cards" id="sectionsGrid"></div>
+  </div>
+</div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const projectName = params.get('name') || 'Проект';
+const wellName = params.get('well') || '9301';
+const workDate = '14.04.2026';
+
+const AUTH_SESSION_KEY = 'nexus-auth-session-v2';
+const USER_WELLS_STORAGE_PREFIX = 'nexus-user-wells-v2:';
+
+function normalizeProjectName(name) {
+  return String(name || '').toLowerCase().replace(/[-\s]+/g, ' ').trim();
+}
+function isSeveroYarudeyskoeProject(name) {
+  return normalizeProjectName(name) === 'северо ярудейское';
+}
+function getSession() {
+  try {
+    const s = JSON.parse(localStorage.getItem(AUTH_SESSION_KEY) || 'null');
+    return s && s.login ? s : null;
+  } catch { return null; }
+}
+function getUserWellsKey(name, login) {
+  return `${USER_WELLS_STORAGE_PREFIX}${name}::${login}`;
+}
+function loadUserWells(name, login) {
+  if (!login) return [];
+  try {
+    const w = JSON.parse(localStorage.getItem(getUserWellsKey(name, login)) || '[]');
+    return Array.isArray(w) ? w : [];
+  } catch { return []; }
+}
+function saveUserWells(name, login, wells) {
+  localStorage.setItem(getUserWellsKey(name, login), JSON.stringify(wells));
+}
+function buildLink(page, name, well) {
+  const p = new URLSearchParams();
+  p.set('name', name);
+  if (well) p.set('well', well);
+  return `${page}?${p.toString()}`;
+}
+function buildWorkLink(name, well, date) {
+  const p = new URLSearchParams();
+  p.set('name', name); p.set('well', well); p.set('date', date);
+  return `project_well_work_dashboard.html?${p.toString()}`;
+}
+function buildSectionLink(name, well, section, number) {
+  const p = new URLSearchParams();
+  p.set('name', name); p.set('well', well); p.set('section', section); p.set('number', number);
+  return `project_well_section.html?${p.toString()}`;
+}
+
+const isSY = isSeveroYarudeyskoeProject(projectName);
+const session = getSession();
+const baseWells = isSY
+  ? ['301','302','303','304','305','306','307','308']
+  : ['9301','9302','9303'];
+const userWells = session ? loadUserWells(projectName, session.login) : [];
+const allWells = [...baseWells, ...userWells.map(w => String(w.number))];
+const visibleWells = isSY ? [wellName] : allWells;
+
+document.title = `${projectName} · Скважина ${wellName} · DRILL-Q`;
+document.getElementById('pageTitle').textContent = `${projectName} · Скважина ${wellName}`;
+document.getElementById('heroEyebrow').textContent = `⛽ Скважина ${wellName} · ${projectName}`;
+document.getElementById('breadProject').textContent = projectName;
+document.getElementById('breadProject').href = buildLink('project_well_dashboard.html', projectName, baseWells[0]);
+document.getElementById('breadWell').textContent = `Скважина ${wellName}`;
+
+if (isSY) {
+  document.getElementById('heroBlock').style.display = 'none';
+  document.getElementById('wellsPanel').style.display = 'none';
+  document.getElementById('sectionsBlock').style.display = 'none';
+} else {
+  if (session) {
+    document.getElementById('myWellsBtn').style.display = 'none';
+    document.getElementById('addWellBtn').style.display = 'inline-flex';
+    const navRight = document.getElementById('navRight');
+    const statusEl = document.createElement('span');
+    statusEl.className = 'nav-status';
+    statusEl.textContent = session.login;
+    navRight.insertBefore(statusEl, navRight.firstChild);
+    const logoutBtn = document.createElement('a');
+    logoutBtn.className = 'btn-ghost';
+    logoutBtn.href = '#';
+    logoutBtn.textContent = 'Выйти';
+    logoutBtn.onclick = (e) => {
+      e.preventDefault();
+      localStorage.removeItem(AUTH_SESSION_KEY);
+      window.location.href = buildLink('65_my_wells_auth.html', projectName);
+    };
+    navRight.insertBefore(logoutBtn, navRight.querySelector('.btn-nav'));
+  } else {
+    document.getElementById('myWellsBtn').href = buildLink('65_my_wells_auth.html', projectName);
+    document.getElementById('myWellsBtn').textContent = 'Войти · Мои скважины';
+  }
+
+  document.getElementById('wellsRow').innerHTML = visibleWells.map(w => `
+    <a class="well-btn ${w === wellName ? 'active' : ''}" href="${buildLink('project_well_dashboard.html', projectName, w)}">Скважина ${w}</a>
+  `).join('');
+
+  const sections = [
+    { n:'1', t:'Общие сведения', d:`Базовые вводные: объект, оператор, цели бурения, глубины и ограничения.`, href: buildLink('project_general_data.html', projectName, wellName), chips:['паспорт','вводные'] },
+    { n:'2', t:'Геология', d:`Литология, стратиграфия, осложнения, давления и температуры по месторождению.`, href: buildLink('project_geology.html', projectName, wellName), chips:['геология','риски'] },
+    { n:'3', t:'Конструкция скважин', d:`Каркас обсадных колонн, диаметры, глубины спуска и логика цементирования.`, href: buildLink('project_well_construction.html', projectName, wellName), chips:['casing','design'] },
+    { n:'4', t:'Профиль ствола скважины', d:`Траектория, MD/TVD, зенитные углы и целевой профиль ствола.`, href: buildLink('project_well_profile.html', projectName, wellName), chips:['trajectory','survey'] },
+    { n:'5', t:'Буровые растворы', d:`Системы раствора, переходы между интервалами, контроль свойств и химобработка.`, href: buildSectionLink(projectName, wellName, 'Буровые растворы', '5'), chips:['mud','chemicals'] },
+    { n:'6', t:'Углубление скважины', d:`Режимы бурения, компоновки BHA, параметры проходки и управление МСП.`, href: buildSectionLink(projectName, wellName, 'Углубление скважины', '6'), chips:['drilling','bha'] },
+    { n:'7', t:'Крепление скважины', d:`Интервалы крепления, цементирование, контроль качества изоляции.`, href: buildSectionLink(projectName, wellName, 'Крепление скважины', '7'), chips:['casing','cementing'] },
+    { n:'8', t:'Испытание скважины', d:`План испытаний, освоение, отбор проб, замеры дебита и критерии готовности.`, href: buildSectionLink(projectName, wellName, 'Испытание скважины', '8'), chips:['test','flow'] },
+    { n:'9', t:'Продолжительность строительства', d:`Календарный график, длительность по фазам, критический путь и резервы.`, href: buildSectionLink(projectName, wellName, 'Продолжительность строительства скважины', '9'), chips:['schedule','critical path'] },
+    { n:'10', t:'Автоматизация процессов', d:`Контуры автоматизации, цифровые датчики, alerting и автоматизированные решения.`, href: buildSectionLink(projectName, wellName, 'Автоматизация технологических процессов', '10'), chips:['automation','sensors'] },
+    { n:'11', t:'Предотвращение осложнений', d:`Профилактика поглощений, прихватов, ГНВП, осыпей и других рисков.`, href: buildSectionLink(projectName, wellName, 'Мероприятия по предотвращению осложнений', '11'), chips:['risks','mitigation'] },
+  ];
+
+  document.getElementById('sectionsSub').textContent = `${sections.length} инженерных разделов · скв. ${wellName}`;
+  document.getElementById('sectionsGrid').innerHTML = sections.map(s => `
+    <a class="mod-card" href="${s.href}">
+      <div class="mod-num">${s.n}</div>
+      <h3>${s.t}</h3>
+      <p>${s.d}</p>
+      <div class="mod-chips">${s.chips.map(c => `<span class="chip">${c}</span>`).join('')}<span class="chip">скв. ${wellName}</span></div>
+      <span class="mod-arrow">→</span>
+    </a>
+  `).join('');
+
+  if (session) {
+    const addWellBtn = document.getElementById('addWellBtn');
+    const form = document.getElementById('userWellForm');
+    const numberInput = document.getElementById('userWellNumberInput');
+    const createBtn = document.getElementById('createUserWellBtn');
+    const formStatus = document.getElementById('formStatus');
+
+    addWellBtn.addEventListener('click', () => { form.classList.toggle('visible'); });
+
+    createBtn.addEventListener('click', () => {
+      const number = numberInput.value.trim();
+      if (!number) { formStatus.textContent = 'Введите номер скважины.'; return; }
+      const current = loadUserWells(projectName, session.login);
+      const exists = current.some(w => String(w.number).toLowerCase() === number.toLowerCase());
+      if (exists || baseWells.includes(number)) { formStatus.textContent = 'Скважина с таким номером уже существует.'; return; }
+      current.push({ title: `Скважина ${number}`, number });
+      saveUserWells(projectName, session.login, current);
+      formStatus.className = 'form-status ok';
+      formStatus.textContent = `Скважина ${number} добавлена.`;
+      window.location.href = buildLink('project_well_dashboard.html', projectName, number);
+    });
+  }
+}
+</script>
+</body>
+</html>

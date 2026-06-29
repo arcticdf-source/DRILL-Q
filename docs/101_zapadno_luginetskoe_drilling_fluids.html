@@ -1,0 +1,1173 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>101 · Западно-Лугинецкое · Буровые растворы</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap");
+
+    :root {
+      --bg-0: #071019;
+      --bg-1: #112334;
+      --bg-2: #1b344a;
+      --panel: rgba(8, 18, 29, 0.88);
+      --panel-soft: rgba(255, 255, 255, 0.035);
+      --line: rgba(226, 237, 255, 0.15);
+      --line-soft: rgba(226, 237, 255, 0.08);
+      --text: #edf5ff;
+      --muted: #9ab0c9;
+      --cyan: #23d8b3;
+      --amber: #ffbf66;
+      --blue: #8db4ff;
+      --violet: #c6a6ff;
+      --green: #7fe3a4;
+      --rose: #ff8a7a;
+      --gold: #f6d986;
+      --shadow: 0 26px 64px rgba(0, 0, 0, 0.42);
+      --sec-1: linear-gradient(180deg, #ffd987, #ffb859);
+      --sec-2: linear-gradient(180deg, #8de8d3, #36c7af);
+      --sec-3: linear-gradient(180deg, #98beff, #5e87ff);
+      --sec-4: linear-gradient(180deg, #cbb0ff, #8d61ff);
+      --sec-5: linear-gradient(180deg, #ffb899, #ff7b67);
+      --ink: #07141f;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      font-family: "Manrope", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(860px 420px at 0% -8%, rgba(35, 216, 179, .18), transparent),
+        radial-gradient(760px 420px at 100% 0%, rgba(255, 191, 102, .14), transparent),
+        radial-gradient(620px 280px at 50% 0%, rgba(141, 180, 255, .14), transparent),
+        linear-gradient(145deg, var(--bg-0), var(--bg-1) 46%, var(--bg-2));
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(to right, rgba(255,255,255,.02) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,.02) 1px, transparent 1px);
+      background-size: 38px 38px;
+      mask-image: radial-gradient(circle at 50% 18%, rgba(0,0,0,.96), transparent 72%);
+    }
+
+    .wrap {
+      width: min(1460px, 95vw);
+      margin: 0 auto;
+      padding: 24px 0 56px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .top,
+    .hero,
+    .section,
+    .tab-shell {
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+    }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 12px 16px;
+      border-radius: 16px;
+      background: rgba(8, 14, 24, 0.66);
+      backdrop-filter: blur(10px);
+      position: sticky;
+      top: 12px;
+      z-index: 20;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text);
+      font-family: "Oswald", sans-serif;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      font-size: 20px;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 35% 35%, #defff8, var(--cyan));
+      box-shadow: 0 0 18px rgba(35, 216, 179, .45);
+    }
+
+    .nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .nav a {
+      text-decoration: none;
+      border-radius: 999px;
+      padding: 9px 14px;
+      font: 800 12px/1 "Manrope", sans-serif;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: #06231f;
+      background: linear-gradient(135deg, #9efcef, var(--cyan));
+      border: 1px solid rgba(35, 216, 179, .8);
+    }
+
+    .hero,
+    .section,
+    .tab-shell {
+      margin-top: 18px;
+      border-radius: 28px;
+      padding: clamp(22px, 3vw, 34px);
+      background: var(--panel);
+    }
+
+    .hero {
+      background:
+        radial-gradient(420px 220px at 0% 0%, rgba(35, 216, 179, .14), transparent),
+        radial-gradient(520px 260px at 100% 0%, rgba(255, 191, 102, .12), transparent),
+        linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015)),
+        var(--panel);
+    }
+
+    .eyebrow,
+    .tag,
+    .chip,
+    .info-chip,
+    .tab-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 999px;
+      border: 1px solid var(--line-soft);
+      background: rgba(255,255,255,.04);
+      color: #d8e8f8;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .eyebrow,
+    .tag,
+    .chip,
+    .info-chip {
+      padding: 6px 10px;
+    }
+
+    h1, h2, h3, h4 {
+      margin: 0;
+      font-family: "Oswald", sans-serif;
+      letter-spacing: -.01em;
+    }
+
+    h1 {
+      margin-top: 14px;
+      font-size: clamp(40px, 5.2vw, 68px);
+      line-height: .96;
+      max-width: 1100px;
+    }
+
+    h1 span { color: var(--amber); }
+
+    p, td, li {
+      color: #d0dded;
+      line-height: 1.7;
+      font-size: 14px;
+    }
+
+    .hero-grid,
+    .summary-grid,
+    .program-grid,
+    .cards-grid,
+    .chart-grid,
+    .equipment-grid,
+    .mini-grid,
+    .table-grid,
+    .param-grid,
+    .tab-stats,
+    .density-bars,
+    .ops-grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .hero-grid {
+      margin-top: 18px;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .summary-grid,
+    .program-grid,
+    .chart-grid,
+    .table-grid {
+      margin-top: 18px;
+      grid-template-columns: 1.05fr .95fr;
+    }
+
+    .cards-grid,
+    .equipment-grid,
+    .ops-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .hero-stat,
+    .summary-box,
+    .card,
+    .equipment-card,
+    .table-card,
+    .ops-card,
+    .metric,
+    .tab-box {
+      border: 1px solid var(--line-soft);
+      border-radius: 20px;
+      background: var(--panel-soft);
+      padding: 16px;
+      min-width: 0;
+    }
+
+    .hero-stat strong,
+    .metric strong {
+      display: block;
+      font-size: clamp(21px, 2.1vw, 26px);
+      line-height: 1.04;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+      max-width: 100%;
+    }
+
+    .hero-stat span,
+    .metric span {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .summary-box h3,
+    .card h3,
+    .table-card h3,
+    .equipment-card h3,
+    .ops-card h3,
+    .tab-box h3 {
+      font-size: 22px;
+    }
+
+    .list {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .list-item {
+      border-top: 1px solid var(--line-soft);
+      padding-top: 10px;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .section-head h2 {
+      font-size: 28px;
+    }
+
+    .well-card {
+      border: 1px solid var(--line-soft);
+      border-radius: 24px;
+      background: rgba(255,255,255,.03);
+      padding: 18px;
+    }
+
+    .well-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .depth-layout {
+      display: grid;
+      grid-template-columns: 70px 1fr;
+      gap: 12px;
+      align-items: stretch;
+    }
+
+    .depth-labels {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      color: #dce9f7;
+      font-size: 12px;
+      padding: 4px 0;
+    }
+
+    .well-column {
+      position: relative;
+      min-height: 930px;
+      border-radius: 22px;
+      overflow: hidden;
+      border: 1px solid var(--line-soft);
+      background: rgba(255,255,255,.03);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .well-layer {
+      position: relative;
+      color: var(--ink);
+      padding: 10px 14px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      isolation: isolate;
+    }
+
+    .well-layer::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,.24), transparent 45%, rgba(255,255,255,.08));
+      z-index: -1;
+    }
+
+    .well-layer strong {
+      font-size: 14px;
+      line-height: 1.1;
+    }
+
+    .well-layer span {
+      margin-top: 4px;
+      font-size: 11.5px;
+      line-height: 1.35;
+    }
+
+    .tab-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .tab-btn {
+      padding: 12px 16px;
+      cursor: pointer;
+      font-family: "Manrope", sans-serif;
+      font-weight: 800;
+      transition: transform .2s ease, background .2s ease, border-color .2s ease;
+    }
+
+    .tab-btn:hover,
+    .tab-btn.active {
+      transform: translateY(-1px);
+      border-color: transparent;
+      color: #071826;
+    }
+
+    .tab-shell {
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .tab-head {
+      padding: 18px 18px 0;
+    }
+
+    .tab-head h2 {
+      font-size: 30px;
+    }
+
+    .tab-head p {
+      margin: 8px 0 0;
+      max-width: 100ch;
+    }
+
+    .tab-stats {
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      padding: 18px;
+    }
+
+    .tab-body {
+      padding: 0 18px 18px;
+      display: grid;
+      grid-template-columns: 1.02fr .98fr;
+      gap: 16px;
+    }
+
+    .mini-grid {
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      margin-top: 12px;
+    }
+
+    .metric.compact strong {
+      font-size: clamp(16px, 1.45vw, 21px);
+      line-height: 1.12;
+    }
+
+    .metric {
+      background: rgba(255,255,255,.025);
+    }
+
+    .param-grid {
+      grid-template-columns: 1fr;
+      margin-top: 12px;
+    }
+
+    .param-box {
+      border: 1px solid var(--line-soft);
+      border-radius: 16px;
+      background: rgba(255,255,255,.025);
+      padding: 14px;
+      min-width: 0;
+    }
+
+    .param-box h4 {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    .param-row,
+    .bar-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: start;
+      border-bottom: 1px solid var(--line-soft);
+      padding-bottom: 8px;
+      margin-bottom: 8px;
+    }
+
+    .param-row:last-child,
+    .bar-row:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+      margin-bottom: 0;
+    }
+
+    .param-name,
+    .bar-name {
+      color: #dce8f7;
+      font-weight: 700;
+      min-width: 0;
+    }
+
+    .param-value,
+    .bar-value {
+      text-align: right;
+      color: var(--muted);
+      max-width: 170px;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+    .density-bars {
+      margin-top: 12px;
+    }
+
+    .bar-row {
+      align-items: center;
+    }
+
+    .bar-track {
+      flex: 1 1 auto;
+      height: 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.06);
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,.05);
+      min-width: 120px;
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: inherit;
+    }
+
+    .flow-card svg,
+    .chart-card svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .equipment-card {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .equipment-card::before,
+    .ops-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(160deg, rgba(255,255,255,.05), transparent 52%, rgba(255,255,255,.02));
+      pointer-events: none;
+    }
+
+    .caption,
+    .note {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    th, td {
+      border: 1px solid var(--line-soft);
+      padding: 9px 10px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: #c7d9ec;
+      background: rgba(255,255,255,.04);
+    }
+
+    .table-wrap {
+      overflow: auto;
+      margin-top: 12px;
+    }
+
+    .footer {
+      margin-top: 18px;
+      text-align: center;
+      color: #8197b0;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    @media (max-width: 1220px) {
+      .hero-grid,
+      .summary-grid,
+      .program-grid,
+      .cards-grid,
+      .chart-grid,
+      .equipment-grid,
+      .table-grid,
+      .tab-stats,
+      .tab-body,
+      .param-grid,
+      .ops-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .top {
+        position: static;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .hero-grid,
+      .mini-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 640px) {
+      .hero-grid,
+      .mini-grid,
+      .tab-stats,
+      .cards-grid,
+      .equipment-grid,
+      .ops-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .depth-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .well-column {
+        min-height: auto;
+      }
+
+      .param-row,
+      .bar-row {
+        grid-template-columns: 1fr;
+      }
+
+      .param-value,
+      .bar-value {
+        max-width: none;
+        text-align: left;
+      }
+    }
+  </style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+  <main class="wrap">
+    <header class="top">
+      <a class="brand" href="97_zapadno_luginetskoe_project_dashboard.html"><span class="dot" aria-hidden="true"></span><span>Западно-Лугинецкое · Mud Program</span></a>
+      <nav class="nav">
+        <a href="97_zapadno_luginetskoe_project_dashboard.html">К дашборду</a>
+        <a href="99_zapadno_luginetskoe_well_constructions.html">Конструкция</a>
+        <a href="100_zapadno_luginetskoe_lithology.html">Литология</a>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <span class="eyebrow">Mud design cockpit · Западно-Лугинецкое · Раздел 4</span>
+      <h1>Раздел 4. <span>Буровые растворы</span></h1>
+      <p>Интервальный mud-program для 101ПО собран по тем же принципам, что и сильные референсы проекта: отдельно по секциям крепления и нижнему блоку, с реальными параметрами БР, плотностным коридором, требованиями к МБТ, смазке и CaCO3. Дополнительно вынесена отдельная графика solids control, чтобы сразу читалась архитектура очистки: активные емкости, вибросита, гидроциклоны, дегазатор, центрифуга, эжектор и два насоса УНБ-600.</p>
+      <div class="hero-grid">
+        <div class="hero-stat"><strong>5</strong><span>рабочих секций mud-program</span></div>
+        <div class="hero-stat"><strong>1,10-1,18</strong><span>коридор плотности, г/см³</span></div>
+        <div class="hero-stat"><strong>65%</strong><span>эффективность очистки</span></div>
+        <div class="hero-stat"><strong>2 x УНБ-600</strong><span>буровые насосы</span></div>
+      </div>
+      <div class="summary-grid">
+        <article class="summary-box">
+          <h3>Как устроен режим БР</h3>
+          <div class="list">
+            <div class="list-item">Верхний стартовый блок работает на глинистом и полимерглинистом растворе для направления и кондуктора.</div>
+            <div class="list-item">Нижний блок после входа в целевую часть разреза переходит на полимер-карбонатную систему с более жестким контролем МБТ, смазки и CaCO3.</div>
+            <div class="list-item">Пилотные стволы, эксплуатационная колонна и хвостовик сведены в единый нижний mud-контур с разными окнами по плотности и фильтрации.</div>
+            <div class="list-item">Система очистки вынесена отдельно, потому что именно она держит плотность и твердую фазу в проектном коридоре при росте глубины и выноса шлама.</div>
+          </div>
+        </article>
+        <article class="summary-box">
+          <h3>Что важно инженеру</h3>
+          <p>В источнике верхние интервалы описаны просто, но нижняя часть уже явно инженерная: МБТ должен снижаться с уровня меньше 60 кг/м³ на кондукторе до меньше 25 кг/м³ на хвостовике, смазка держится от 3% и выше, а карбонатный блок требует не менее 80 кг/м³ CaCO3 на пилотах и эксплуатационной колонне. Там, где по Cl- значение в таблице не указано, это сохранено как отсутствие требования, а не заменено выдуманной цифрой.</p>
+          <div class="note">Глубины секций привязаны к уже собранному модулю конструкции 101ПО: направление 0-60 м, кондуктор до 970 м, нижний каркас раскрывается через пилотный блок, эксплуатационную колонну до 2910/3216 м и хвостовик до 3020/3326 м.</div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>Интервальная карта mud-program</h2>
+          <p>Слева показан общий профиль по секциям, справа раскрывается активный интервал с параметрами раствора, механикой очистки и технологическими требованиями.</p>
+        </div>
+        <span class="tag">Скв. 101ПО · 5 секций</span>
+      </div>
+      <div class="program-grid">
+        <article class="well-card">
+          <div class="well-title">
+            <h3>Профиль по секциям</h3>
+            <span class="info-chip">от 0 до 3326 м MD</span>
+          </div>
+          <div class="depth-layout">
+            <div class="depth-labels" id="depthLabels"></div>
+            <div class="well-column" id="wellColumn"></div>
+          </div>
+          <div class="caption">Цвета секций синхронизированы с интервальными карточками ниже: верхний блок теплее и мягче по параметрам, нижний полимер-карбонатный блок холоднее и жестче по управлению твердой фазой.</div>
+        </article>
+        <div>
+          <div class="tab-row" id="intervalTabs"></div>
+          <div class="tab-shell" id="intervalContent"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>Коридоры свойств и операционная логика</h2>
+          <p>Отдельно вынесены тренды по плотности, фильтрации и твердой фазе, чтобы быстро видеть, как mud-program ужесточается по мере углубления и перехода к хвостовику.</p>
+        </div>
+      </div>
+      <div class="chart-grid">
+        <article class="card chart-card">
+          <h3>Плотность и фильтрация по секциям</h3>
+          <div class="density-bars" id="densityBars"></div>
+          <div class="caption">Верхние интервалы допускают более широкое окно по условной вязкости, но по мере перехода в карбонатный блок приоритет смещается в сторону более низкой фильтрации и устойчивого контроля твердой фазы.</div>
+        </article>
+        <article class="card">
+          <h3>Ключевые сигналы по solids control</h3>
+          <div class="ops-grid">
+            <article class="ops-card">
+              <h3>МБТ</h3>
+              <p>Кондуктор допускает <strong>&lt;60 кг/м³</strong>, пилотный блок и эксплуатационная колонна требуют <strong>&lt;40 кг/м³</strong>, а хвостовик уже ужимает окно до <strong>&lt;25 кг/м³</strong>.</p>
+            </article>
+            <article class="ops-card">
+              <h3>Смазка</h3>
+              <p>На верхнем старте смазка либо не нормируется, либо держится на уровне <strong>1%</strong>, но на всем нижнем полимер-карбонатном каскаде она должна быть <strong>не ниже 3%</strong>.</p>
+            </article>
+            <article class="ops-card">
+              <h3>Карбонатный мост</h3>
+              <p>Пилотные стволы и эксплуатационная колонна идут с <strong>CaCO3 не менее 80 кг/м³</strong>, а хвостовик удерживает не менее <strong>60 кг/м³</strong> как защитный и кольматирующий запас.</p>
+            </article>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>Система очистки и циркуляционный контур</h2>
+          <p>Графика ниже превращает исходную таблицу в рабочую схему оборудования: от активных емкостей и вибросит до центрифуги, дегазатора и ввода химреагентов через эжектор.</p>
+        </div>
+        <span class="tag">Таблица 3.3 · Solids control</span>
+      </div>
+      <div class="chart-grid">
+        <article class="card flow-card">
+          <h3>Графическая схема очистки</h3>
+          <div id="equipmentGraphic"></div>
+          <div class="caption">Поток на схеме собран как технологическая цепочка: возврат из скважины, первичное отсечение крупного шлама на двух виброситах, гидроциклонный блок, дегазация, центрифугирование, возврат в активные емкости и снова на два УНБ-600. Ввод химреагентов показан отдельной боковой веткой через эжектор.</div>
+        </article>
+        <div class="equipment-grid" id="equipmentCards"></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>Табличный паспорт mud-program</h2>
+          <p>Ниже оставлены исходные численные параметры по секциям и оборудование системы очистки. Там, где в источнике нет значения, это явно отмечено как отсутствие регламента или как незаданный параметр.</p>
+        </div>
+      </div>
+      <div class="table-grid">
+        <article class="table-card">
+          <h3>Параметры бурового раствора по секциям</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Секция</th>
+                  <th>Глубина / привязка</th>
+                  <th>Колонна / долото</th>
+                  <th>Тип БР</th>
+                  <th>Параметры</th>
+                </tr>
+              </thead>
+              <tbody id="mudTableBody"></tbody>
+            </table>
+          </div>
+        </article>
+        <article class="table-card">
+          <h3>Оборудование системы очистки</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Наименование</th>
+                  <th>Характеристика</th>
+                </tr>
+              </thead>
+              <tbody id="equipmentTableBody"></tbody>
+            </table>
+          </div>
+          <div class="note">Отдельная технологическая ремарка из источника сохранена без интерпретации: ввод химреагентов производится с помощью эжектора.</div>
+        </article>
+      </div>
+    </section>
+
+    <p class="footer">Западно-Лугинецкое · Doc 101 · Буровые растворы</p>
+  </main>
+
+  <script>
+    const intervals = [
+      {
+        id: "dir",
+        name: "Направление",
+        depthLabel: "0-60 м TVD/MD",
+        anchor: "Привязка к конструкции: 324 x 9,5 до 60 м",
+        casing: "324 мм",
+        bit: "393,7 мм",
+        cavern: 1.3,
+        system: "Глинистый",
+        density: "1,16-1,18 г/см³",
+        densityLow: 1.16,
+        densityHigh: 1.18,
+        funnel: "50-80 сек",
+        filtration: "6-8 см³/30 мин",
+        filtrationHigh: 8,
+        mbt: "Не регламентируется",
+        mbtValue: 0,
+        lubricity: "Не регламентируется",
+        caco3: "Не регламентируется",
+        chloride: "Не задано источником",
+        top: 0,
+        base: 60,
+        color: "var(--sec-1)",
+        swatch: "#ffb859",
+        note: "Стартовый верхний интервал с самым мягким режимом по solids control: задача не в жестком карбонатном окне, а в безопасном запуске верхней секции и контроле базовой реологии."
+      },
+      {
+        id: "cond",
+        name: "Кондуктор",
+        depthLabel: "60-970 м TVD/MD",
+        anchor: "Привязка к конструкции: 245 x 8,9 до 970 м",
+        casing: "245 мм",
+        bit: "295,3 мм",
+        cavern: 1.25,
+        system: "Полимерглинистый",
+        density: "1,14-1,16 г/см³",
+        densityLow: 1.14,
+        densityHigh: 1.16,
+        funnel: "45-55 сек",
+        filtration: "6-8 см³/30 мин",
+        filtrationHigh: 8,
+        mbt: "<60 кг/м³",
+        mbtValue: 60,
+        lubricity: "1%",
+        caco3: "Не задано источником",
+        chloride: "Не задано источником",
+        top: 60,
+        base: 970,
+        color: "var(--sec-2)",
+        swatch: "#36c7af",
+        note: "Здесь mud-program уже переключается на полимерглинистый режим: появляется предельное окно по МБТ и фиксируется смазка, но карбонатный буфер еще не обязателен."
+      },
+      {
+        id: "pilot",
+        name: "Пилотные стволы №1, 2, 3",
+        depthLabel: "2474-2573 м TVD / 2940-3093 м MD",
+        anchor: "Кластер пилотов: 2540/2940, 2474/2996, 2573/3093",
+        casing: "Технологические ветви",
+        bit: "220,7 мм",
+        cavern: 1.2,
+        system: "Полимер-карбонатный",
+        density: "1,12-1,14 до 2620 м по верт.; ниже 1,12-1,10 г/см³",
+        densityLow: 1.10,
+        densityHigh: 1.14,
+        funnel: "35-55 сек",
+        filtration: "≤6 см³/30 мин",
+        filtrationHigh: 6,
+        mbt: "<40 кг/м³",
+        mbtValue: 40,
+        lubricity: "≥3%",
+        caco3: "Не менее 80 кг/м³",
+        chloride: "Не задано источником",
+        top: 2474,
+        base: 3093,
+        color: "var(--sec-3)",
+        swatch: "#5e87ff",
+        note: "Нижний блок начинается именно здесь: полимер-карбонатная система держит фильтрацию не выше 6, требует устойчивой смазки и постоянного карбонатного барьера для работы в более чувствительном интервале."
+      },
+      {
+        id: "prod",
+        name: "Эксплуатационная колонна",
+        depthLabel: "2910 м TVD / 3216 м MD",
+        anchor: "Привязка к конструкции: 178 x 9,2 до 2910/3216",
+        casing: "178 мм",
+        bit: "220,7 мм",
+        cavern: 1.2,
+        system: "Полимер-карбонатный",
+        density: "1,12-1,14 до 2620 м по верт.; ниже 1,12-1,10 г/см³",
+        densityLow: 1.10,
+        densityHigh: 1.14,
+        funnel: "35-55 сек",
+        filtration: "≤6 см³/30 мин",
+        filtrationHigh: 6,
+        mbt: "<40 кг/м³",
+        mbtValue: 40,
+        lubricity: "≥3%",
+        caco3: "Не менее 80 кг/м³",
+        chloride: "Не задано источником",
+        top: 2910,
+        base: 3216,
+        color: "var(--sec-4)",
+        swatch: "#8d61ff",
+        note: "Эксплуатационная колонна использует тот же нижний mud-контур, что и пилоты, но здесь режим уже связан с основным стволом: стабильность твердой фазы и lubricity влияют на весь переход к хвостовику."
+      },
+      {
+        id: "liner",
+        name: "Хвостовик",
+        depthLabel: "3020 м TVD / 3326 м MD",
+        anchor: "Привязка к конструкции: 114 x 7,4, ТОЦ 3141 м",
+        casing: "114 мм",
+        bit: "155,6 мм",
+        cavern: 1.1,
+        system: "Полимер-карбонатный",
+        density: "1,12-1,10 г/см³",
+        densityLow: 1.10,
+        densityHigh: 1.12,
+        funnel: "20-45 сек",
+        filtration: "≤5 см³/30 мин",
+        filtrationHigh: 5,
+        mbt: "<25 кг/м³",
+        mbtValue: 25,
+        lubricity: "≥3%",
+        caco3: "Не менее 60 кг/м³",
+        chloride: "Не задано источником",
+        top: 3020,
+        base: 3326,
+        color: "var(--sec-5)",
+        swatch: "#ff7b67",
+        note: "Финальный нижний интервал делает программу самой жесткой: окно по условной вязкости сужается, фильтрация падает до 5, а МБТ снижается до менее 25 кг/м³."
+      }
+    ];
+
+    const equipment = [
+      { name: "Объем рабочих емкостей циркуляционной системы", value: "120 м³ + ЦСГО 30 м³", icon: "Емкости", detail: "Активный объем циркуляции и отдельный блок ЦСГО." },
+      { name: "Вибросита первой ступени очистки", value: "2 шт, MI-SWACO", icon: "Вибросита", detail: "Первичный отбор крупного шлама сразу после потока из скважины." },
+      { name: "Сито-гидроциклонная установка", value: "1 шт, CTC-1MT", icon: "Гидроциклон", detail: "Вторая ступень сепарации по более мелкой фракции." },
+      { name: "Центрифуга", value: "1 шт, MI-SWACO", icon: "Центрифуга", detail: "Тонкая очистка и контроль плотности твердой фазы." },
+      { name: "Вакуумный дегазатор", value: "1 шт, КАСКАД-40", icon: "Дегазатор", detail: "Стабилизация системы при наличии газа в потоке." },
+      { name: "Эффективность системы очистки", value: "65%", icon: "KPI", detail: "Проектный уровень удаления шлама по исходной таблице." },
+      { name: "Буровая установка", value: "Уралмаш 3Д-76", icon: "Риг", detail: "Базовая буровая платформа для всей компоновки." },
+      { name: "Буровые насосы", value: "2 шт, УНБ-600", icon: "Насосы", detail: "Основная подача раствора в скважину." },
+      { name: "Ввод химреагентов", value: "С помощью эжектора", icon: "Эжектор", detail: "Химический ввод показан как отдельная боковая ветка в схеме." }
+    ];
+
+    let activeId = intervals[0].id;
+
+    function renderDepthLabels() {
+      const marks = [0, 60, 970, 2000, 2620, 2910, 3020, 3326];
+      document.getElementById("depthLabels").innerHTML = marks.map((mark) => `<span>${mark} м</span>`).join("");
+    }
+
+    function renderWellColumn() {
+      const root = document.getElementById("wellColumn");
+      root.innerHTML = intervals.map((item) => {
+        const depthSpan = Math.max(item.base - item.top, 60);
+        const height = Math.max((depthSpan / 3326) * 930, 90);
+        return `
+          <article class="well-layer" style="height:${height}px; background:${item.color}">
+            <strong>${item.name}</strong>
+            <span>${item.depthLabel}<br />${item.system}</span>
+          </article>
+        `;
+      }).join("");
+    }
+
+    function renderTabs() {
+      const root = document.getElementById("intervalTabs");
+      root.innerHTML = intervals.map((item) => `
+        <button class="tab-btn${item.id === activeId ? " active" : ""}" style="background:${item.id === activeId ? item.color : "rgba(255,255,255,.04)"}" data-id="${item.id}">${item.name}</button>
+      `).join("");
+
+      root.querySelectorAll(".tab-btn").forEach((button) => {
+        button.addEventListener("click", () => {
+          activeId = button.dataset.id;
+          renderTabs();
+          renderIntervalContent();
+        });
+      });
+    }
+
+    function renderIntervalContent() {
+      const item = intervals.find((entry) => entry.id === activeId);
+      const typeMetricClass = item.system.length > 16 ? "metric compact" : "metric";
+      const anchorMetricClass = item.anchor.length > 28 ? "metric compact" : "metric";
+
+      document.getElementById("intervalContent").innerHTML = `
+        <div class="tab-head">
+          <h2>${item.name}</h2>
+          <p>${item.note}</p>
+        </div>
+        <div class="tab-stats">
+          <div class="metric"><strong>${item.depthLabel}</strong><span>глубинная привязка</span></div>
+          <div class="${typeMetricClass}"><strong>${item.system}</strong><span>тип бурового раствора</span></div>
+          <div class="metric"><strong>${String(item.cavern).replace('.', ',')}</strong><span>коэффициент кавернозности</span></div>
+          <div class="metric"><strong>${item.density}</strong><span>плотностной режим</span></div>
+        </div>
+        <div class="tab-body">
+          <div class="tab-box">
+            <h3>Паспорт секции</h3>
+            <div class="mini-grid">
+              <div class="metric"><strong>${item.casing}</strong><span>обсадная колонна</span></div>
+              <div class="metric"><strong>${item.bit}</strong><span>долото</span></div>
+              <div class="${anchorMetricClass}"><strong>${item.anchor}</strong><span>привязка к конструкции</span></div>
+            </div>
+            <div class="param-grid">
+              <div class="param-box">
+                <h4>Реология и фильтрация</h4>
+                <div class="param-row"><span class="param-name">Плотность</span><span class="param-value">${item.density}</span></div>
+                <div class="param-row"><span class="param-name">T</span><span class="param-value">${item.funnel}</span></div>
+                <div class="param-row"><span class="param-name">Ф</span><span class="param-value">${item.filtration}</span></div>
+              </div>
+              <div class="param-box">
+                <h4>Твердая фаза и химия</h4>
+                <div class="param-row"><span class="param-name">МБТ</span><span class="param-value">${item.mbt}</span></div>
+                <div class="param-row"><span class="param-name">Смазка</span><span class="param-value">${item.lubricity}</span></div>
+                <div class="param-row"><span class="param-name">CaCO3</span><span class="param-value">${item.caco3}</span></div>
+                <div class="param-row"><span class="param-name">Cl-</span><span class="param-value">${item.chloride}</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="tab-box">
+            <h3>Интервальный смысл</h3>
+            <div class="list">
+              <div class="list-item">Секция: <strong>${item.name}</strong></div>
+              <div class="list-item">Раствор: <strong>${item.system}</strong></div>
+              <div class="list-item">Управление плотностью: <strong>${item.density}</strong></div>
+              <div class="list-item">Критичный показатель очистки: <strong>${item.mbt}</strong></div>
+              <div class="list-item">Критичный защитный барьер: <strong>${item.caco3}</strong></div>
+            </div>
+            <div class="note">Если сравнивать интервалы между собой, именно нижний полимер-карбонатный каскад делает mud-program дорогим и чувствительным: там одновременно работают требования к фильтрации, lubricity и удалению твердой фазы.</div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderDensityBars() {
+      const root = document.getElementById("densityBars");
+      const minDensity = 1.10;
+      const maxDensity = 1.18;
+      root.innerHTML = intervals.map((item) => {
+        const lowWidth = ((item.densityLow - minDensity) / (maxDensity - minDensity)) * 100;
+        const width = ((item.densityHigh - item.densityLow) / (maxDensity - minDensity)) * 100;
+        return `
+          <div class="bar-row">
+            <span class="bar-name">${item.name}</span>
+            <div class="bar-track"><div class="bar-fill" style="margin-left:${lowWidth}%; width:${Math.max(width, 2)}%; background:${item.color}"></div></div>
+            <span class="bar-value">${item.density}</span>
+          </div>
+          <div class="bar-row">
+            <span class="bar-name">Ф / МБТ</span>
+            <div class="bar-track"><div class="bar-fill" style="width:${Math.min((item.filtrationHigh / 8) * 100, 100)}%; background:linear-gradient(90deg, #7fe3a4, #23d8b3)"></div></div>
+            <span class="bar-value">${item.filtration} · ${item.mbt}</span>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function renderEquipmentGraphic() {
+      const svg = `
+        <svg viewBox="0 0 920 520" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Схема системы очистки">
+          <defs>
+            <linearGradient id="tankGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#9efcef" />
+              <stop offset="100%" stop-color="#23d8b3" />
+            </linearGradient>
+            <linearGradient id="eqGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#8db4ff" />
+              <stop offset="100%" stop-color="#5f88ff" />
+            </linearGradient>
+            <linearGradient id="warnGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#ffd987" />
+              <stop offset="100%" stop-color="#ff8a7a" />
+            </linearGradient>
+            <filter id="glow">
+              <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="rgba(0,0,0,.28)" />
+            </filter>
+            <marker id="arrow" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L6,3 L0,6 Z" fill="#bfe2ff" />
+            </marker>
+          </defs>
+
+          <rect x="20" y="20" width="880" height="480" rx="30" fill="rgba(255,255,255,.03)" stroke="rgba(255,255,255,.08)" />
+          <text x="36" y="54" fill="#edf5ff" font-size="26" font-family="Oswald, sans-serif">Solids Control Train</text>
+          <text x="36" y="78" fill="#a6bed7" font-size="14">Возврат из скважины → очистка → активные емкости → насосы → снова в скважину</text>
+
+          <rect x="48" y="320" width="170" height="112" rx="24" fill="url(#tankGrad)" filter="url(#glow)" />
+          <text x="68" y="362" fill="#06221d" font-size="24" font-weight="700">Активные емкости</text>
+          <text x="68" y="392" fill="#06221d" font-size="18">120 м³ + ЦСГО 30 м³</text>
+          <text x="68" y="416" fill="#0a3d35" font-size="14">Рабочий объем циркуляции</text>
+
+          <rect x="278" y="116" width="142" height="92" rx="22" fill="url(#eqGrad)" filter="url(#glow)" />
+          <text x="302" y="150" fill="#f7fbff" font-size="20" font-weight="700">2 вибросита</text>
+          <text x="302" y="176" fill="#eff5ff" font-size="14">MI-SWACO</text>
+
+          <rect x="468" y="116" width="142" height="92" rx="22" fill="url(#eqGrad)" filter="url(#glow)" />
+          <text x="486" y="150" fill="#f7fbff" font-size="20" font-weight="700">Гидроциклон</text>
+          <text x="486" y="176" fill="#eff5ff" font-size="14">CTC-1MT</text>
+
+          <rect x="658" y="116" width="142" height="92" rx="22" fill="url(#warnGrad)" filter="url(#glow)" />
+          <text x="692" y="150" fill="#2b130f" font-size="20" font-weight="700">Дегазатор</text>
+          <text x="692" y="176" fill="#3a1c16" font-size="14">КАСКАД-40</text>
+
+          <rect x="658" y="248" width="142" height="92" rx="22" fill="url(#eqGrad)" filter="url(#glow)" />
+          <text x="688" y="282" fill="#f7fbff" font-size="20" font-weight="700">Центрифуга</text>
+          <text x="688" y="308" fill="#eff5ff" font-size="14">MI-SWACO</text>
+
+          <rect x="468" y="360" width="164" height="88" rx="22" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.16)" />
+          <text x="502" y="394" fill="#edf5ff" font-size="20" font-weight="700">2 x УНБ-600</text>
+          <text x="502" y="420" fill="#cfe0f1" font-size="14">Подача раствора в скважину</text>
+
+          <rect x="264" y="360" width="150" height="84" rx="22" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.16)" />
+          <text x="292" y="393" fill="#edf5ff" font-size="20" font-weight="700">Эжектор</text>
+          <text x="292" y="418" fill="#cfe0f1" font-size="14">Ввод химреагентов</text>
+
+          <rect x="776" y="378" width="92" height="48" rx="14" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.16)" />
+          <text x="804" y="408" fill="#edf5ff" font-size="18" font-weight="700">65%</text>
+
+          <path d="M218 376 C260 376, 246 162, 278 162" fill="none" stroke="#bfe2ff" stroke-width="5" marker-end="url(#arrow)" />
+          <path d="M420 162 C444 162, 446 162, 468 162" fill="none" stroke="#bfe2ff" stroke-width="5" marker-end="url(#arrow)" />
+          <path d="M610 162 C636 162, 634 162, 658 162" fill="none" stroke="#bfe2ff" stroke-width="5" marker-end="url(#arrow)" />
+          <path d="M730 208 C730 224, 730 228, 730 248" fill="none" stroke="#bfe2ff" stroke-width="5" marker-end="url(#arrow)" />
+          <path d="M658 292 C620 292, 634 404, 632 404" fill="none" stroke="#bfe2ff" stroke-width="5" marker-end="url(#arrow)" />
+          <path d="M468 404 C438 404, 436 404, 414 404" fill="none" stroke="#bfe2ff" stroke-width="5" marker-end="url(#arrow)" />
+          <path d="M338 360 C320 328, 296 266, 296 208" fill="none" stroke="#8de8d3" stroke-width="4" stroke-dasharray="8 8" marker-end="url(#arrow)" />
+          <path d="M632 404 C696 404, 720 404, 776 404" fill="none" stroke="#ffd987" stroke-width="4" marker-end="url(#arrow)" />
+
+          <text x="84" y="305" fill="#a6bed7" font-size="13">Возврат из скважины / flowline</text>
+          <text x="548" y="472" fill="#a6bed7" font-size="13">После очистки раствор возвращается в активные емкости и снова на насосы</text>
+        </svg>
+      `;
+      document.getElementById("equipmentGraphic").innerHTML = svg;
+    }
+
+    function renderEquipmentCards() {
+      document.getElementById("equipmentCards").innerHTML = equipment.map((item) => `
+        <article class="equipment-card">
+          <h3>${item.icon}</h3>
+          <p><strong>${item.value}</strong></p>
+          <p>${item.name}</p>
+          <div class="caption">${item.detail}</div>
+        </article>
+      `).join("");
+    }
+
+    function renderTables() {
+      document.getElementById("mudTableBody").innerHTML = intervals.map((item) => `
+        <tr>
+          <td>${item.name}</td>
+          <td>${item.depthLabel}<br />${item.anchor}</td>
+          <td>${item.casing} / ${item.bit}<br />Кавернозность ${String(item.cavern).replace('.', ',')}</td>
+          <td>${item.system}</td>
+          <td>ρ ${item.density}<br />T ${item.funnel}<br />Ф ${item.filtration}<br />МБТ ${item.mbt}<br />Смазка ${item.lubricity}<br />CaCO3 ${item.caco3}<br />Cl- ${item.chloride}</td>
+        </tr>
+      `).join("");
+
+      document.getElementById("equipmentTableBody").innerHTML = equipment.map((item) => `
+        <tr>
+          <td>${item.name}</td>
+          <td>${item.value}</td>
+        </tr>
+      `).join("");
+    }
+
+    renderDepthLabels();
+    renderWellColumn();
+    renderTabs();
+    renderIntervalContent();
+    renderDensityBars();
+    renderEquipmentGraphic();
+    renderEquipmentCards();
+    renderTables();
+  </script>
+  <script src="assets/js/global-auth-widget.js"></script>
+</body>
+</html>

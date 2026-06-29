@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ввод параметров — DRILL-Q</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #F5F5F7;
+    --surface: #FFFFFF;
+    --surface2: #F9F9FB;
+    --border: #E5E5EA;
+    --border2: #D1D1D6;
+    --text: #1D1D1F;
+    --text2: #6E6E73;
+    --text3: #AEAEB2;
+    --blue: #2563EB;
+    --blue-light: #EFF6FF;
+    --blue-mid: #BFDBFE;
+    --green: #059669;
+    --green-light: #ECFDF5;
+    --amber: #D97706;
+    --amber-light: #FFFBEB;
+    --amber-mid: #FDE68A;
+    --red: #DC2626;
+    --red-light: #FEF2F2;
+    --purple: #7C3AED;
+    --purple-light: #F5F3FF;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,.06);
+    --shadow: 0 4px 16px rgba(0,0,0,.08);
+    --shadow-lg: 0 8px 32px rgba(0,0,0,.12);
+    --r: 12px;
+    --r-sm: 8px;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  /* ── Topbar ── */
+  .topbar {
+    position: sticky; top: 0; z-index: 100;
+    height: 56px;
+    background: rgba(255,255,255,.88);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 24px; gap: 16px;
+  }
+  .topbar-left { display: flex; align-items: center; gap: 12px; }
+  .logo { font-size: 15px; font-weight: 700; letter-spacing: -.5px; color: var(--text); }
+  .logo span { color: var(--blue); }
+  .breadcrumb { display: flex; align-items: center; gap: 6px; color: var(--text2); font-size: 13px; }
+  .breadcrumb a { color: var(--text2); text-decoration: none; }
+  .breadcrumb a:hover { color: var(--blue); }
+  .breadcrumb .sep { color: var(--text3); }
+  .breadcrumb .current { color: var(--text); font-weight: 500; }
+  .topbar-right { display: flex; align-items: center; gap: 12px; }
+  .avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #2563EB, #7C3AED); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 12px; font-weight: 600; }
+
+  /* ── Layout ── */
+  .layout { display: flex; min-height: calc(100vh - 56px); }
+
+  /* ── Sidebar ── */
+  .sidebar {
+    width: 220px; flex-shrink: 0;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 20px 12px;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .sidebar-section { font-size: 11px; font-weight: 600; color: var(--text3); letter-spacing: .06em; text-transform: uppercase; padding: 8px 10px 4px; margin-top: 8px; }
+  .sidebar-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 10px; border-radius: var(--r-sm);
+    color: var(--text2); font-size: 13px; font-weight: 500;
+    text-decoration: none; cursor: pointer; border: none; background: none; width: 100%; text-align: left;
+    transition: background .15s, color .15s;
+  }
+  .sidebar-item:hover { background: var(--bg); color: var(--text); }
+  .sidebar-item.active { background: var(--blue-light); color: var(--blue); }
+  .sidebar-item .icon { width: 18px; text-align: center; flex-shrink: 0; font-size: 15px; }
+  .badge-count { margin-left: auto; background: var(--red); color: #fff; border-radius: 99px; font-size: 11px; font-weight: 600; padding: 1px 6px; }
+  .badge-count.amber { background: var(--amber); }
+
+  /* ── Main ── */
+  .main { flex: 1; padding: 28px 32px; overflow-x: hidden; }
+  .page-header { margin-bottom: 28px; }
+  .page-header h1 { font-size: 22px; font-weight: 700; letter-spacing: -.4px; margin-bottom: 6px; }
+  .page-header p { color: var(--text2); font-size: 13px; }
+
+  /* ── Mode tabs ── */
+  .mode-tabs {
+    display: flex; gap: 0;
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--r);
+    padding: 4px; width: fit-content; margin-bottom: 28px;
+    box-shadow: var(--shadow-sm);
+  }
+  .mode-tab {
+    padding: 8px 20px; border-radius: 9px; border: none; cursor: pointer;
+    font-size: 13px; font-weight: 500; color: var(--text2); background: none;
+    transition: all .2s; display: flex; align-items: center; gap: 8px;
+  }
+  .mode-tab.active { background: var(--blue); color: #fff; box-shadow: 0 2px 8px rgba(37,99,235,.35); }
+
+  /* ── Section selector bar ── */
+  .section-selector {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--r);
+    padding: 16px 20px; margin-bottom: 24px; box-shadow: var(--shadow-sm);
+    display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+  }
+  .section-selector label { font-size: 12px; font-weight: 600; color: var(--text2); white-space: nowrap; }
+  .section-pills { display: flex; gap: 8px; flex-wrap: wrap; }
+  .section-pill {
+    padding: 6px 14px; border-radius: 99px; font-size: 12px; font-weight: 500; cursor: pointer;
+    border: 1.5px solid var(--border); background: var(--surface); color: var(--text2);
+    transition: all .2s;
+  }
+  .section-pill:hover { border-color: var(--blue); color: var(--blue); }
+  .section-pill.active { background: var(--blue); border-color: var(--blue); color: #fff; }
+  .section-pill.done { background: var(--green-light); border-color: #6EE7B7; color: var(--green); }
+  .depth-info { margin-left: auto; display: flex; gap: 16px; }
+  .depth-kv { display: flex; flex-direction: column; align-items: flex-end; }
+  .depth-kv .kv-label { font-size: 11px; color: var(--text3); }
+  .depth-kv .kv-val { font-size: 15px; font-weight: 700; font-family: 'JetBrains Mono', monospace; color: var(--text); }
+
+  /* ── Form grid ── */
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  @media (max-width: 900px) { .form-grid { grid-template-columns: 1fr; } }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r); padding: 20px; box-shadow: var(--shadow-sm);
+  }
+  .card-header {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 18px;
+    padding-bottom: 14px; border-bottom: 1px solid var(--border);
+  }
+  .card-icon { font-size: 18px; }
+  .card-title { font-size: 14px; font-weight: 700; }
+  .card-subtitle { font-size: 12px; color: var(--text2); margin-top: 1px; }
+
+  /* ── Field groups ── */
+  .field-group { display: flex; flex-direction: column; gap: 14px; }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .field-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+
+  .field { display: flex; flex-direction: column; gap: 5px; }
+  .field label {
+    font-size: 12px; font-weight: 500; color: var(--text2);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .field label .unit { color: var(--text3); font-weight: 400; font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+  .field label .plan-val { color: var(--blue); background: var(--blue-light); border-radius: 4px; padding: 1px 6px; font-size: 10px; font-weight: 600; font-family: 'JetBrains Mono', monospace; }
+
+  .field input, .field select {
+    height: 38px; padding: 0 12px; border: 1.5px solid var(--border);
+    border-radius: var(--r-sm); font-size: 13px; font-family: 'Inter', sans-serif;
+    background: var(--surface); color: var(--text);
+    transition: border-color .15s, box-shadow .15s;
+    outline: none;
+  }
+  .field input:focus, .field select:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(37,99,235,.12); }
+  .field input.warn { border-color: var(--amber); background: var(--amber-light); }
+  .field input.ok { border-color: #6EE7B7; background: var(--green-light); }
+  .field input.danger { border-color: var(--red); background: var(--red-light); }
+
+  .field-hint { font-size: 11px; color: var(--text3); margin-top: 2px; }
+  .field-hint.warn-hint { color: var(--amber); }
+  .field-hint.ok-hint { color: var(--green); }
+  .field-hint.danger-hint { color: var(--red); }
+
+  /* ── Deviation section ── */
+  .deviation-strip { display: flex; gap: 8px; margin-top: 6px; flex-wrap: wrap; }
+  .dev-chip {
+    display: flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 99px;
+    font-size: 11px; font-weight: 600;
+  }
+  .dev-chip.ok { background: var(--green-light); color: var(--green); }
+  .dev-chip.warn { background: var(--amber-light); color: var(--amber); }
+  .dev-chip.danger { background: var(--red-light); color: var(--red); }
+  .dev-chip .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+  /* ── Depth + drilling card ── */
+  .depth-field { font-size: 28px; font-weight: 800; font-family: 'JetBrains Mono', monospace; }
+  .depth-field-wrap { position: relative; }
+  .depth-field-wrap input { padding-left: 12px; font-size: 22px; font-weight: 700; font-family: 'JetBrains Mono', monospace; height: 52px; }
+  .depth-delta { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 12px; color: var(--green); font-weight: 600; }
+
+  /* ── Shift note ── */
+  .shift-note { display: flex; flex-direction: column; gap: 5px; margin-top: 4px; }
+  .shift-note textarea {
+    border: 1.5px solid var(--border); border-radius: var(--r-sm); padding: 10px 12px;
+    font-size: 13px; font-family: 'Inter', sans-serif; color: var(--text);
+    resize: vertical; min-height: 72px; outline: none; transition: border-color .15s;
+  }
+  .shift-note textarea:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(37,99,235,.12); }
+
+  /* ── Submit row ── */
+  .submit-row {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--border);
+    gap: 16px; flex-wrap: wrap;
+  }
+  .submit-meta { font-size: 12px; color: var(--text2); }
+  .submit-meta strong { color: var(--text); }
+  .submit-actions { display: flex; gap: 12px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px; padding: 0 20px; height: 40px;
+    border-radius: var(--r-sm); font-size: 13px; font-weight: 600; cursor: pointer;
+    border: none; transition: all .2s;
+  }
+  .btn-primary { background: var(--blue); color: #fff; box-shadow: 0 2px 8px rgba(37,99,235,.3); }
+  .btn-primary:hover { background: #1D4ED8; box-shadow: 0 4px 14px rgba(37,99,235,.4); }
+  .btn-ghost { background: var(--bg); color: var(--text2); border: 1.5px solid var(--border); }
+  .btn-ghost:hover { background: var(--border); color: var(--text); }
+
+  /* ── Live preview strip ── */
+  .live-preview {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r); padding: 16px 20px; margin-bottom: 24px;
+    box-shadow: var(--shadow-sm); display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+  }
+  .live-preview-title { font-size: 12px; font-weight: 600; color: var(--text2); margin-right: 4px; }
+  .live-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+  .lc {
+    display: flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 8px;
+    font-size: 12px; font-family: 'JetBrains Mono', monospace; font-weight: 500;
+    border: 1px solid var(--border); background: var(--bg);
+  }
+  .lc .lc-name { color: var(--text2); font-size: 10px; font-weight: 500; font-family: 'Inter', sans-serif; margin-right: 2px; }
+  .lc.ok { border-color: #6EE7B7; background: var(--green-light); color: var(--green); }
+  .lc.warn { border-color: var(--amber-mid); background: var(--amber-light); color: var(--amber); }
+  .lc.danger { border-color: #FCA5A5; background: var(--red-light); color: var(--red); }
+
+  /* ── Excel upload mode ── */
+  .upload-zone {
+    border: 2px dashed var(--border2); border-radius: var(--r);
+    background: var(--surface2); padding: 48px 32px; text-align: center;
+    transition: all .2s; cursor: pointer;
+  }
+  .upload-zone:hover, .upload-zone.drag { border-color: var(--blue); background: var(--blue-light); }
+  .upload-zone .icon { font-size: 40px; margin-bottom: 12px; }
+  .upload-zone h3 { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
+  .upload-zone p { color: var(--text2); font-size: 13px; margin-bottom: 16px; }
+  .upload-formats { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+  .fmt-badge { background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 3px 10px; font-size: 11px; font-weight: 600; color: var(--text2); font-family: 'JetBrains Mono', monospace; }
+
+  .upload-progress {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 20px;
+    display: none;
+  }
+  .upload-progress.visible { display: block; }
+  .ufile { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+  .ufile-icon { font-size: 24px; flex-shrink: 0; }
+  .ufile-info { flex: 1; }
+  .ufile-name { font-weight: 600; font-size: 13px; }
+  .ufile-meta { font-size: 11px; color: var(--text2); }
+  .progress-bar-track { height: 4px; background: var(--border); border-radius: 99px; overflow: hidden; margin-bottom: 6px; }
+  .progress-bar-fill { height: 100%; border-radius: 99px; background: var(--blue); transition: width .4s; }
+  .progress-status { font-size: 12px; color: var(--text2); }
+
+  .field-map-table {
+    width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 12px;
+  }
+  .field-map-table th { background: var(--bg); font-weight: 600; color: var(--text2); text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--border); }
+  .field-map-table td { padding: 7px 12px; border-bottom: 1px solid var(--border); }
+  .field-map-table tr:last-child td { border-bottom: none; }
+  .map-status { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 600; }
+  .map-status.found { color: var(--green); }
+  .map-status.manual { color: var(--amber); }
+  .map-status.missing { color: var(--text3); }
+
+  .preview-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--r);
+    padding: 16px 20px; margin-top: 20px; display: none;
+  }
+  .preview-card.visible { display: block; }
+  .preview-card h4 { font-size: 13px; font-weight: 700; margin-bottom: 14px; }
+  .preview-values { display: flex; gap: 10px; flex-wrap: wrap; }
+  .pv { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; }
+  .pv-name { font-size: 10px; color: var(--text2); font-weight: 600; margin-bottom: 2px; }
+  .pv-val { font-size: 15px; font-weight: 700; font-family: 'JetBrains Mono', monospace; color: var(--blue); }
+  .pv-unit { font-size: 10px; color: var(--text3); }
+
+  /* ── Success toast ── */
+  .toast {
+    position: fixed; bottom: 28px; right: 28px; z-index: 1000;
+    background: var(--text); color: #fff; border-radius: var(--r); padding: 14px 20px;
+    box-shadow: var(--shadow-lg); display: flex; align-items: center; gap: 12px;
+    font-size: 13px; font-weight: 500; opacity: 0; transform: translateY(12px);
+    transition: all .3s; pointer-events: none;
+  }
+  .toast.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+  .toast-icon { font-size: 18px; }
+
+  /* ── Timestamp row ── */
+  .ts-row { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+  .ts-field { display: flex; flex-direction: column; gap: 4px; }
+  .ts-field label { font-size: 11px; font-weight: 600; color: var(--text2); }
+  .ts-field input[type="datetime-local"] {
+    height: 36px; padding: 0 10px; border: 1.5px solid var(--border);
+    border-radius: var(--r-sm); font-size: 12px; font-family: 'Inter', sans-serif;
+    background: var(--surface); color: var(--text); outline: none;
+    transition: border-color .15s;
+  }
+  .ts-field input[type="datetime-local"]:focus { border-color: var(--blue); }
+  .shift-chip { padding: 6px 14px; border-radius: 99px; font-size: 12px; font-weight: 600; cursor: pointer; border: 1.5px solid var(--border); background: var(--surface); color: var(--text2); transition: all .2s; }
+  .shift-chip.active { background: var(--purple-light); border-color: var(--purple); color: var(--purple); }
+
+  /* ── Prev readings compare ── */
+  .prev-compare {
+    background: var(--blue-light); border: 1px solid var(--blue-mid); border-radius: var(--r-sm);
+    padding: 10px 14px; margin-top: 4px; font-size: 11px; color: var(--blue);
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  /* ── Hidden section ── */
+  [data-mode="excel"] { display: none; }
+  [data-mode="excel"].visible { display: block; }
+  [data-mode="manual"] { display: block; }
+  [data-mode="manual"].hidden { display: none; }
+</style>
+</head>
+<body>
+
+<!-- Шапка -->
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="logo">DRILL<span>-Q</span></div>
+    <div class="breadcrumb">
+      <span class="sep">/</span>
+      <a href="app.html">Проекты</a>
+      <span class="sep">/</span>
+      <a href="app-project.html">Ковыкта ГКМ</a>
+      <span class="sep">/</span>
+      <span class="current">Ввод параметров</span>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <div class="avatar">АК</div>
+  </div>
+</div>
+
+<!-- Макет -->
+<div class="layout">
+
+  <!-- Боковая панель -->
+  <aside class="sidebar">
+    <a href="app-project.html" class="sidebar-item" style="color:var(--text2);">
+      <span class="icon">←</span> Ковыкта ГКМ
+    </a>
+    <div style="height:8px;"></div>
+    <div class="sidebar-section">Навигация</div>
+    <a href="app-project.html" class="sidebar-item">
+      <span class="icon">⊞</span> Обзор проекта
+    </a>
+    <a href="tools/drilling_command_center.html" class="sidebar-item">
+      <span class="icon">◉</span> Командный центр
+      <span class="badge-count amber">2</span>
+    </a>
+    <a href="app-input.html" class="sidebar-item active">
+      <span class="icon">✎</span> Ввод параметров
+    </a>
+    <div class="sidebar-section">Данные</div>
+    <a href="#" class="sidebar-item">
+      <span class="icon">◷</span> История
+    </a>
+    <a href="#" class="sidebar-item">
+      <span class="icon">⬆</span> Документы
+      <span class="badge-count" style="background:var(--text2);">6</span>
+    </a>
+    <a href="#" class="sidebar-item">
+      <span class="icon">◈</span> База знаний
+    </a>
+  </aside>
+
+  <!-- Основной контент -->
+  <main class="main">
+    <div class="page-header">
+      <h1>Ввод параметров — Скважина 73</h1>
+      <p>Вводите параметры бурения вручную каждые 4–6 часов или загрузите суточный рапорт для автоматического извлечения данных.</p>
+    </div>
+
+    <!-- Переключатель режима -->
+    <div class="mode-tabs">
+      <button class="mode-tab active" id="tab-manual" onclick="switchMode('manual')">
+        ✎ Ручной ввод
+      </button>
+      <button class="mode-tab" id="tab-excel" onclick="switchMode('excel')">
+        ⬆ Загрузить рапорт (Excel / PDF)
+      </button>
+    </div>
+
+    <!-- ══ РУЧНОЙ РЕЖИМ ══ -->
+    <div id="manual-mode" data-mode="manual">
+
+      <!-- Выбор секции -->
+      <div class="section-selector">
+        <label>Текущая секция:</label>
+        <div class="section-pills">
+          <div class="section-pill done" onclick="selectSection(this, 0)">Направление <small>0–60м</small></div>
+          <div class="section-pill active" onclick="selectSection(this, 1)">Кондуктор <small>60–700м</small></div>
+          <div class="section-pill" onclick="selectSection(this, 2)">Тех. колонна-1 <small>700–2140м</small></div>
+          <div class="section-pill" onclick="selectSection(this, 3)">Тех. колонна-2 <small>2140–2700м</small></div>
+          <div class="section-pill" onclick="selectSection(this, 4)">Экспл. колонна <small>2700–3180м</small></div>
+          <div class="section-pill" onclick="selectSection(this, 5)">Хвостовик <small>3180–3540м</small></div>
+        </div>
+        <div class="depth-info">
+          <div class="depth-kv">
+            <span class="kv-label">Текущая глубина</span>
+            <span class="kv-val" id="hdr-depth">156 м</span>
+          </div>
+          <div class="depth-kv">
+            <span class="kv-label">Проектная глубина секции</span>
+            <span class="kv-val" style="color:var(--text2);">700 м</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Время и смена -->
+      <div class="ts-row">
+        <div class="ts-field">
+          <label>Дата / Время (местное)</label>
+          <input type="datetime-local" id="ts-input" />
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px;">
+          <label style="font-size:11px;font-weight:600;color:var(--text2);">Смена</label>
+          <div style="display:flex;gap:6px;">
+            <button class="shift-chip" onclick="setShift(this,'День')">☀ Дневная</button>
+            <button class="shift-chip active" onclick="setShift(this,'Ночь')">☾ Ночная</button>
+          </div>
+        </div>
+        <div class="prev-compare">
+          <span>⏱</span>
+          <span>Последний ввод: <strong>4 ч 32 мин назад</strong> — Глубина 151.5 м, Плотность 0.94 г/см³</span>
+        </div>
+      </div>
+
+      <!-- Текущие параметры (живая строка) -->
+      <div class="live-preview">
+        <span class="live-preview-title">Текущие показатели:</span>
+        <div class="live-chips" id="live-chips">
+          <div class="lc warn"><span class="lc-name">Плотн.</span>0.94</div>
+          <div class="lc ok"><span class="lc-name">УВ</span>73</div>
+          <div class="lc ok"><span class="lc-name">ПВ</span>14</div>
+          <div class="lc ok"><span class="lc-name">ДНС</span>95</div>
+          <div class="lc ok"><span class="lc-name">Ф</span>—</div>
+          <div class="lc ok"><span class="lc-name">МСП</span>5.5</div>
+          <div class="lc ok"><span class="lc-name">НД</span>—</div>
+        </div>
+      </div>
+
+      <!-- Сетка форм -->
+      <div class="form-grid">
+
+        <!-- ── Глубина и параметры бурения ── -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-icon">⬇</span>
+            <div>
+              <div class="card-title">Глубина и параметры бурения</div>
+              <div class="card-subtitle">Механические параметры за данный замер</div>
+            </div>
+          </div>
+          <div class="field-group">
+            <div class="field">
+              <label>Текущая глубина <span class="unit">м по стволу</span></label>
+              <div class="depth-field-wrap">
+                <input type="number" id="f-depth" value="156" step="0.5" min="0" max="700" oninput="onDepthChange(this)" />
+                <span class="depth-delta" id="depth-delta">+4.5 м/смена</span>
+              </div>
+              <div class="field-hint ok-hint" id="depth-hint">Секция пройдена на 22.3%</div>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label>Зенитный угол <span class="unit">°</span></label>
+                <input type="number" id="f-incl" placeholder="напр. 2.4" step="0.1" min="0" max="90" />
+              </div>
+              <div class="field">
+                <label>Азимут <span class="unit">°</span></label>
+                <input type="number" id="f-azimuth" placeholder="напр. 47" step="0.5" min="0" max="360" />
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label>МСП <span class="unit">м/ч</span></label>
+                <input type="number" id="f-rop" value="5.5" step="0.1" min="0" oninput="updateLive('МСП', this.value, 0, 99)" />
+              </div>
+              <div class="field">
+                <label>Нагрузка на долото <span class="unit">т</span></label>
+                <input type="number" id="f-wob" placeholder="напр. 6" step="0.5" min="0" oninput="updateLive('НД', this.value, 0, 30)" />
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label>Частота вращения <span class="unit">об/мин</span></label>
+                <input type="number" id="f-rpm" placeholder="напр. 80" step="1" min="0" max="300" />
+              </div>
+              <div class="field">
+                <label>Расход раствора <span class="unit">л/с</span></label>
+                <input type="number" id="f-flow" placeholder="напр. 35" step="0.5" min="0" />
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label>Давление на стояке <span class="unit">атм</span></label>
+                <input type="number" id="f-spp" placeholder="напр. 85" step="1" min="0" />
+              </div>
+              <div class="field">
+                <label>Момент вращения <span class="unit">кН·м</span></label>
+                <input type="number" id="f-torque" placeholder="напр. 3.2" step="0.1" min="0" />
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label>Нагрузка на крюке <span class="unit">т</span></label>
+                <input type="number" id="f-hookload" placeholder="напр. 42" step="0.5" />
+              </div>
+              <div class="field">
+                <label>Диаметр долота <span class="unit">мм</span></label>
+                <input type="number" id="f-bitsize" value="393.7" step="0.1" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Параметры бурового раствора ── -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-icon">🧪</span>
+            <div>
+              <div class="card-title">Параметры бурового раствора</div>
+              <div class="card-subtitle">План: полимер-глинистый ВБР, 0.95 г/см³ (кондуктор)</div>
+            </div>
+          </div>
+          <div class="field-group">
+            <div class="field-row">
+              <div class="field">
+                <label>
+                  Плотность <span class="unit">г/см³</span>
+                  <span class="plan-val">план 0.95</span>
+                </label>
+                <input type="number" id="f-density" value="0.94" step="0.01" min="0.85" max="2.5" oninput="checkMud('density', this)" />
+                <div class="field-hint warn-hint" id="hint-density">⚠ На 0.01 ниже минимума плана</div>
+              </div>
+              <div class="field">
+                <label>
+                  УВ (воронка Марша) <span class="unit">с</span>
+                  <span class="plan-val">план 60–80</span>
+                </label>
+                <input type="number" id="f-fv" value="73" step="1" min="30" max="200" oninput="checkMud('fv', this)" />
+                <div class="field-hint ok-hint" id="hint-fv">✓ В пределах плана</div>
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label>
+                  ПВ (пластическая вязкость) <span class="unit">мПа·с</span>
+                  <span class="plan-val">план 12–20</span>
+                </label>
+                <input type="number" id="f-pv" value="14" step="0.5" min="0" oninput="checkMud('pv', this)" />
+                <div class="field-hint ok-hint" id="hint-pv">✓ В пределах плана</div>
+              </div>
+              <div class="field">
+                <label>
+                  ДНС (динамическое напряжение сдвига) <span class="unit">lb/100ft²</span>
+                  <span class="plan-val">план 70–120</span>
+                </label>
+                <input type="number" id="f-yp" value="95" step="1" min="0" oninput="checkMud('yp', this)" />
+                <div class="field-hint ok-hint" id="hint-yp">✓ В пределах плана</div>
+              </div>
+            </div>
+            <div class="field-row-3">
+              <div class="field">
+                <label>СНС 10 с <span class="unit">lb/100ft²</span></label>
+                <input type="number" id="f-gel10" placeholder="напр. 30" step="1" min="0" />
+              </div>
+              <div class="field">
+                <label>СНС 10 мин <span class="unit">lb/100ft²</span></label>
+                <input type="number" id="f-gel10m" placeholder="напр. 65" step="1" min="0" />
+              </div>
+              <div class="field">
+                <label>pH</label>
+                <input type="number" id="f-ph" placeholder="напр. 9.5" step="0.1" min="6" max="14" />
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label>Фильтрация API <span class="unit">см³/30 мин</span></label>
+                <input type="number" id="f-fl" placeholder="напр. 6" step="0.5" min="0" />
+              </div>
+              <div class="field">
+                <label>Толщина фильтрационной корки <span class="unit">мм</span></label>
+                <input type="number" id="f-cake" placeholder="напр. 1.0" step="0.5" min="0" />
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label>Содержание песка <span class="unit">%</span></label>
+                <input type="number" id="f-sand" placeholder="напр. 0.5" step="0.1" min="0" max="5" />
+              </div>
+              <div class="field">
+                <label>МСТ (метиленовый синий) <span class="unit">кг/м³</span></label>
+                <input type="number" id="f-mbt" placeholder="напр. 18" step="1" min="0" />
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label>Хлориды <span class="unit">мг/л</span></label>
+                <input type="number" id="f-cl" placeholder="напр. 800" step="100" min="0" />
+              </div>
+              <div class="field">
+                <label>Температура раствора <span class="unit">°C</span></label>
+                <input type="number" id="f-temp" placeholder="напр. 28" step="1" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Осложнения и потери циркуляции ── -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-icon">⚠</span>
+            <div>
+              <div class="card-title">Осложнения и потери циркуляции</div>
+              <div class="card-subtitle">Фиксируйте осложнения за текущую смену</div>
+            </div>
+          </div>
+          <div class="field-group">
+            <div class="field-row">
+              <div class="field">
+                <label>Поглощение <span class="unit">м³/ч</span></label>
+                <input type="number" id="f-loss" placeholder="0 = нет поглощения" step="0.5" min="0" oninput="checkLoss(this)" />
+                <div class="field-hint" id="hint-loss">Протокол: &lt;5 м³/ч → контроль; 5–10 → ВУС; ≥10 → пробка ЛЦМ</div>
+              </div>
+              <div class="field">
+                <label>Суммарные потери раствора <span class="unit">м³</span></label>
+                <input type="number" id="f-loss-total" placeholder="нарастающим итогом" step="0.5" min="0" />
+              </div>
+            </div>
+            <div class="field">
+              <label>Тип осложнения</label>
+              <select id="f-compl">
+                <option value="">Нет осложнений за смену</option>
+                <option value="loss">Поглощение бурового раствора</option>
+                <option value="kick">Газопроявление / флюидопроявление</option>
+                <option value="stuck">Прихват / посадки и затяжки</option>
+                <option value="washout">Размыв / нарушение выноса шлама</option>
+                <option value="collapse">Обвал / осыпи породы</option>
+                <option value="torsion">Повышенный момент / затяжки</option>
+                <option value="other">Прочее</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Глубина осложнения <span class="unit">м</span></label>
+              <input type="number" id="f-compl-depth" placeholder="глубина возникновения" step="0.5" />
+            </div>
+            <div class="field">
+              <label>Статус ВУС</label>
+              <select id="f-vus">
+                <option value="ready">Готов (35 м³ в наличии)</option>
+                <option value="partial">Частично приготовлен</option>
+                <option value="used">Использован за смену</option>
+                <option value="preparing">В процессе приготовления</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Принятые меры</label>
+              <textarea id="f-actions" placeholder="Опишите корректирующие действия, обработки раствора, наблюдения…" style="border:1.5px solid var(--border);border-radius:var(--r-sm);padding:10px 12px;font-size:13px;font-family:'Inter',sans-serif;resize:vertical;min-height:68px;outline:none;transition:border-color .15s;" onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--border)'"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Итоги смены ── -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-icon">📋</span>
+            <div>
+              <div class="card-title">Итоги смены</div>
+              <div class="card-subtitle">Записка инженера и общая оценка смены</div>
+            </div>
+          </div>
+          <div class="field-group">
+            <div class="field-row">
+              <div class="field">
+                <label>Проходка за смену <span class="unit">м</span></label>
+                <input type="number" id="f-footage" placeholder="проходка за смену" step="0.5" min="0" />
+              </div>
+              <div class="field">
+                <label>Производительное время <span class="unit">ч</span></label>
+                <input type="number" id="f-prod-hrs" placeholder="напр. 10.5" step="0.5" min="0" max="12" />
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label>НПВ <span class="unit">ч</span></label>
+                <input type="number" id="f-npt" placeholder="0" step="0.5" min="0" max="12" />
+              </div>
+              <div class="field">
+                <label>Категория НПВ</label>
+                <select id="f-npt-cat">
+                  <option value="">НПВ отсутствует</option>
+                  <option value="eq">Отказ оборудования</option>
+                  <option value="wbp">Осложнения в скважине</option>
+                  <option value="comp">Ликвидация осложнения</option>
+                  <option value="wait">ОЦС / ожидание оборудования</option>
+                  <option value="weather">Погода / логистика</option>
+                </select>
+              </div>
+            </div>
+            <div class="field">
+              <label>Следующий этап / планируемые работы</label>
+              <select id="f-next-activity">
+                <option value="drilling">Продолжение бурения</option>
+                <option value="survey">Замер MWD</option>
+                <option value="reaming">Проработка / кондиционирование ствола</option>
+                <option value="casing">Спуск обсадной колонны</option>
+                <option value="cement">Цементирование</option>
+                <option value="core">Отбор керна</option>
+                <option value="logging">Геофизические исследования (ГИС)</option>
+                <option value="mud-treatment">Обработка бурового раствора</option>
+              </select>
+            </div>
+            <div class="shift-note">
+              <label class="field" style="font-size:12px;font-weight:500;color:var(--text2);">Записка инженера смены</label>
+              <textarea id="f-note" placeholder="Наблюдения, прогнозируемые риски, указания для следующей смены…"></textarea>
+            </div>
+            <div class="field">
+              <label>Общая оценка смены</label>
+              <div style="display:flex;gap:8px;margin-top:4px;">
+                <button class="shift-chip" onclick="setAssessment(this,'normal')" style="background:var(--green-light);border-color:#6EE7B7;color:var(--green);">✓ Норма</button>
+                <button class="shift-chip" onclick="setAssessment(this,'attention')">⚠ Внимание</button>
+                <button class="shift-chip" onclick="setAssessment(this,'critical')">● Критично</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /form-grid -->
+
+      <!-- Кнопки отправки -->
+      <div class="submit-row">
+        <div class="submit-meta">
+          Сохраняется в: <strong>Ковыкта ГКМ → Скважина 73 → Кондуктор</strong> &nbsp;·&nbsp;
+          Командный центр обновится автоматически
+        </div>
+        <div class="submit-actions">
+          <button class="btn btn-ghost" onclick="saveDraft()">Сохранить черновик</button>
+          <button class="btn btn-primary" onclick="submitEntry()">
+            ✓ Отправить и обновить дашборд
+          </button>
+        </div>
+      </div>
+
+    </div><!-- /manual-mode -->
+
+    <!-- ══ РЕЖИМ ЗАГРУЗКИ ФАЙЛА ══ -->
+    <div id="excel-mode" data-mode="excel">
+
+      <!-- Зона загрузки -->
+      <div class="upload-zone" id="upload-zone"
+        onclick="document.getElementById('file-input').click()"
+        ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event)">
+        <div class="icon">📊</div>
+        <h3>Перетащите суточный рапорт сюда</h3>
+        <p>AI автоматически распознает колонки и извлечёт все параметры бурения и раствора</p>
+        <div class="upload-formats">
+          <span class="fmt-badge">.xlsx</span>
+          <span class="fmt-badge">.xls</span>
+          <span class="fmt-badge">.csv</span>
+          <span class="fmt-badge">.pdf</span>
+          <span class="fmt-badge">.docx</span>
+        </div>
+        <input type="file" id="file-input" style="display:none" accept=".xlsx,.xls,.csv,.pdf,.docx" onchange="handleFileInput(this)" />
+      </div>
+
+      <!-- Прогресс -->
+      <div class="upload-progress" id="upload-progress">
+        <div class="ufile" id="ufile-info">
+          <span class="ufile-icon">📊</span>
+          <div class="ufile-info">
+            <div class="ufile-name" id="ufile-name">rapor_smena_20260522.xlsx</div>
+            <div class="ufile-meta" id="ufile-meta">Анализирую…</div>
+          </div>
+        </div>
+        <div class="progress-bar-track">
+          <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
+        </div>
+        <div class="progress-status" id="progress-status">Чтение структуры файла…</div>
+      </div>
+
+      <!-- Таблица сопоставления полей -->
+      <div class="preview-card" id="field-map-card">
+        <h4>Сопоставление полей AI — проверьте перед импортом</h4>
+        <table class="field-map-table">
+          <thead>
+            <tr>
+              <th>Параметр DRILL-Q</th>
+              <th>Обнаруженная колонка в файле</th>
+              <th>Извлечённое значение</th>
+              <th>Статус</th>
+            </tr>
+          </thead>
+          <tbody id="field-map-body"></tbody>
+        </table>
+      </div>
+
+      <!-- Извлечённые значения -->
+      <div class="preview-card" id="extracted-values-card">
+        <h4>Извлечённые значения — подтвердите и импортируйте</h4>
+        <div class="preview-values" id="extracted-values"></div>
+        <div class="submit-row" style="margin-top:20px;">
+          <div class="submit-meta">Уверенность AI: <strong style="color:var(--green);">92%</strong> — все ключевые параметры найдены</div>
+          <div class="submit-actions">
+            <button class="btn btn-ghost" onclick="rejectImport()">✕ Отклонить, ввести вручную</button>
+            <button class="btn btn-primary" onclick="confirmImport()">✓ Импортировать и обновить дашборд</button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /excel-mode -->
+
+  </main>
+</div><!-- /layout -->
+
+<!-- Уведомление -->
+<div class="toast" id="toast">
+  <span class="toast-icon" id="toast-icon">✓</span>
+  <span id="toast-msg">Параметры применены.</span>
+  <a href="tools/drilling_command_center.html" style="margin-left:12px;color:#60a5fa;font-size:12px;white-space:nowrap;text-decoration:none;">← Командный центр</a>
+</div>
+
+<script>
+// ── Все поля формы и их ключи в localStorage ──
+const FIELD_MAP = {
+  depth:'f-depth', density:'f-density', fv:'f-fv', pv:'f-pv',
+  yp:'f-yp', rop:'f-rop', wob:'f-wob', flow:'f-flow',
+  spp:'f-spp', torque:'f-torque', rpm:'f-rpm', hookload:'f-hookload',
+  ph:'f-ph', gel10:'f-gel10', gel10m:'f-gel10m', incl:'f-incl',
+  sand:'f-sand', mbt:'f-mbt', cl:'f-cl', temp:'f-temp',
+};
+
+// ── Сохраняем все поля в localStorage ──
+function saveAllFields() {
+  Object.entries(FIELD_MAP).forEach(([key, id]) => {
+    const el = document.getElementById(id);
+    if (el && el.value !== '') localStorage.setItem('dq_' + key, el.value);
+  });
+  localStorage.setItem('dq_ts', new Date().toISOString());
+}
+
+// ── Загружаем сохранённые значения при открытии страницы ──
+function loadAllFields() {
+  // Приоритет глубины: sim_live_depth (текущий забой) > dq_depth (последний введённый)
+  const simDepth = localStorage.getItem('sim_live_depth');
+  if (simDepth && parseInt(simDepth) > 0) {
+    localStorage.setItem('dq_depth', simDepth);
+  }
+
+  Object.entries(FIELD_MAP).forEach(([key, id]) => {
+    const saved = localStorage.getItem('dq_' + key);
+    const el = document.getElementById(id);
+    if (saved !== null && saved !== '' && el) {
+      el.value = saved;
+    }
+  });
+}
+
+// Сохраняем при ЛЮБОМ изменении любого поля
+document.addEventListener('input',  () => saveAllFields());
+document.addEventListener('change', () => saveAllFields());
+// Сохраняем при уходе со страницы
+window.addEventListener('beforeunload', saveAllFields);
+
+// ── Реал-тайм синхронизация с кокпитом (обратная совместимость) ──
+function syncToCockpit() { saveAllFields(); }
+
+// ── Инициализация времени ──
+(function() {
+  const now = new Date();
+  const pad = n => String(n).padStart(2,'0');
+  const local = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}`;
+  document.getElementById('ts-input').value = local;
+})();
+
+// ── Загрузка при открытии страницы ──
+document.addEventListener('DOMContentLoaded', function() {
+  loadAllFields();
+  // Обновляем визуальные индикаторы после загрузки
+  const densEl = document.getElementById('f-density');
+  if (densEl && densEl.value) checkMud('density', densEl);
+  const fvEl = document.getElementById('f-fv');
+  if (fvEl && fvEl.value) checkMud('fv', fvEl);
+  const pvEl = document.getElementById('f-pv');
+  if (pvEl && pvEl.value) checkMud('pv', pvEl);
+  const ypEl = document.getElementById('f-yp');
+  if (ypEl && ypEl.value) checkMud('yp', ypEl);
+  const ropEl = document.getElementById('f-rop');
+  if (ropEl && ropEl.value) updateLive('МСП', ropEl.value, 0, 99);
+  const wobEl = document.getElementById('f-wob');
+  if (wobEl && wobEl.value) updateLive('НД', wobEl.value, 0, 30);
+  const depthEl = document.getElementById('f-depth');
+  if (depthEl && depthEl.value) onDepthChange(depthEl);
+  // Обновляем live-chips
+  const chipMap = {density:'Плотн.',fv:'УВ',pv:'ПВ',yp:'ДНС',rop:'МСП',wob:'НД'};
+  Object.entries(chipMap).forEach(([key, name]) => {
+    const v = localStorage.getItem('dq_' + key);
+    if (v) updateLive(name, v, 0, 99999);
+  });
+});
+
+// ── Переключение режима ──
+function switchMode(mode) {
+  document.getElementById('manual-mode').classList.toggle('hidden', mode !== 'manual');
+  document.getElementById('excel-mode').classList.toggle('visible', mode === 'excel');
+  document.getElementById('tab-manual').classList.toggle('active', mode === 'manual');
+  document.getElementById('tab-excel').classList.toggle('active', mode === 'excel');
+}
+
+// ── Данные секций ──
+const sectionData = [
+  { name:'Направление', range:'0–60м', target:60, fluid:'Полимер-глинистый ВБР', density:'1.05', fv:'60–80', pv:'12–25', yp:'70–120' },
+  { name:'Кондуктор', range:'60–700м', target:700, fluid:'Полимер-глинистый ВБР', density:'0.95', fv:'60–80', pv:'12–20', yp:'70–120' },
+  { name:'Тех. колонна-1', range:'700–2140м', target:2140, fluid:'Полибур-Турбо', density:'1.04', fv:'65–85', pv:'15–28', yp:'80–130' },
+  { name:'Тех. колонна-2 (АВПД)', range:'2140–2700м', target:2700, fluid:'Высокоплотный ВБР / РУО', density:'1.21–2.42', fv:'70–90', pv:'20–35', yp:'90–150' },
+  { name:'Экспл. колонна', range:'2700–3180м', target:3180, fluid:'Полибур-Турбо', density:'1.11', fv:'65–85', pv:'15–28', yp:'80–130' },
+  { name:'Хвостовик', range:'3180–3540м', target:3540, fluid:'Полибур-Турбо', density:'1.08', fv:'65–85', pv:'15–28', yp:'80–130' },
+];
+
+function selectSection(el, idx) {
+  document.querySelectorAll('.section-pill').forEach((p,i) => {
+    p.className = 'section-pill' + (i < idx ? ' done' : i === idx ? ' active' : '');
+  });
+  const s = sectionData[idx];
+  document.querySelector('.card:nth-child(2) .card-subtitle').textContent =
+    `План: ${s.fluid}, ${s.density} г/см³ (${s.name.toLowerCase()})`;
+}
+
+// ── Выбор смены ──
+function setShift(el, val) {
+  document.querySelectorAll('.shift-chip').forEach(c => {
+    if(c.textContent.includes('Дневная') || c.textContent.includes('Ночная')) c.classList.remove('active');
+  });
+  el.classList.add('active');
+}
+
+function setAssessment(el, val) {
+  document.querySelectorAll('[onclick^="setAssessment"]').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ── Изменение глубины ──
+function onDepthChange(el) {
+  const d = parseFloat(el.value) || 0;
+  const pct = Math.round((d - 60) / (700 - 60) * 100);
+  document.getElementById('hdr-depth').textContent = d + ' м';
+  const hint = document.getElementById('depth-hint');
+  hint.textContent = `Секция пройдена на ${Math.max(0,pct)}%`;
+  hint.className = 'field-hint ok-hint';
+}
+
+// ── Обновление живой строки ──
+function updateLive(name, val, min, max) {
+  const chips = document.getElementById('live-chips').children;
+  for(const c of chips) {
+    if(c.querySelector('.lc-name')?.textContent === name) {
+      c.innerHTML = `<span class="lc-name">${name}</span>${val || '—'}`;
+      break;
+    }
+  }
+}
+
+// ── Проверка параметров раствора ──
+const mudPlan = {
+  density: { min:0.95, max:0.97 },
+  fv:      { min:60,   max:80   },
+  pv:      { min:12,   max:20   },
+  yp:      { min:70,   max:120  },
+};
+
+function checkMud(param, el) {
+  const val = parseFloat(el.value);
+  const plan = mudPlan[param];
+  const hint = document.getElementById(`hint-${param}`);
+  if(!plan || isNaN(val)) return;
+  if(val < plan.min) {
+    el.className = el.className.replace(/\b(ok|warn|danger)\b/g,'') + ' warn';
+    const diff = (plan.min - val).toFixed(2);
+    hint.textContent = `⚠ На ${diff} ниже минимума плана (${plan.min})`;
+    hint.className = 'field-hint warn-hint';
+  } else if(val > plan.max) {
+    el.className = el.className.replace(/\b(ok|warn|danger)\b/g,'') + ' warn';
+    const diff = (val - plan.max).toFixed(2);
+    hint.textContent = `⚠ На ${diff} выше максимума плана (${plan.max})`;
+    hint.className = 'field-hint warn-hint';
+  } else {
+    el.className = el.className.replace(/\b(ok|warn|danger)\b/g,'') + ' ok';
+    hint.textContent = '✓ В пределах плана';
+    hint.className = 'field-hint ok-hint';
+  }
+  const chipMap = { density:'Плотн.', fv:'УВ', pv:'ПВ', yp:'ДНС' };
+  if(chipMap[param]) updateLiveChip(chipMap[param], val, plan.min, plan.max);
+}
+
+function updateLiveChip(name, val, min, max) {
+  const chips = document.getElementById('live-chips');
+  for(const c of chips.children) {
+    const nameEl = c.querySelector('.lc-name');
+    if(nameEl && nameEl.textContent === name) {
+      const status = val < min || val > max ? 'warn' : 'ok';
+      c.className = `lc ${status}`;
+      c.innerHTML = `<span class="lc-name">${name}</span>${val}`;
+      break;
+    }
+  }
+}
+
+// ── Проверка поглощений ──
+function checkLoss(el) {
+  const v = parseFloat(el.value) || 0;
+  const hint = document.getElementById('hint-loss');
+  if(v === 0) {
+    hint.textContent = 'Протокол: <5 м³/ч → контроль; 5–10 → ВУС; ≥10 → пробка ЛЦМ';
+    hint.className = 'field-hint';
+    el.className = el.className.replace(/\b(ok|warn|danger)\b/g,'');
+  } else if(v < 5) {
+    hint.textContent = '⚠ Незначительные поглощения — усилить контроль, запись каждые 30 мин';
+    hint.className = 'field-hint warn-hint';
+    el.className = el.className.replace(/\b(ok|warn|danger)\b/g,'') + ' warn';
+  } else if(v < 10) {
+    hint.textContent = '⚠⚠ Значительные поглощения — приготовить порцию ВУС, снизить расход';
+    hint.className = 'field-hint warn-hint';
+    el.className = el.className.replace(/\b(ok|warn|danger)\b/g,'') + ' warn';
+  } else {
+    hint.textContent = '● КРИТИЧНО — остановить бурение, закачать пробку ЛЦМ немедленно';
+    hint.className = 'field-hint danger-hint';
+    el.className = el.className.replace(/\b(ok|warn|danger)\b/g,'') + ' danger';
+  }
+}
+
+// ── Сохранение черновика ──
+function saveDraft() {
+  showToast('💾', 'Черновик сохранён — данные ещё не отправлены на дашборд');
+}
+
+// ── Отправка ──
+function submitEntry() {
+  const fields = {
+    depth:   'f-depth',   density: 'f-density', fv:  'f-fv',
+    pv:      'f-pv',      yp:      'f-yp',       rop: 'f-rop',
+    wob:     'f-wob',     flow:    'f-flow',      spp: 'f-spp',
+    torque:  'f-torque',  rpm:     'f-rpm',       ph:  'f-ph',
+    gel10:   'f-gel10',   gel10m:  'f-gel10m',    sand:'f-sand',
+    mbt:     'f-mbt',     cl:      'f-cl',        temp:'f-temp',
+  };
+  // Сохраняем все параметры в localStorage (читает командный центр)
+  Object.entries(fields).forEach(([key, id]) => {
+    const el = document.getElementById(id);
+    if (el && el.value) localStorage.setItem('dq_' + key, el.value);
+  });
+  localStorage.setItem('dq_ts', new Date().toISOString());
+  // НЕ делаем редирект — симулятор в командном центре продолжает бурить
+  // Параметры применятся через storage event без перезагрузки страницы
+  showToast('✓', 'Параметры применены — симулятор продолжает бурение с новыми данными');
+}
+
+// ── Уведомление ──
+function showToast(icon, msg) {
+  document.getElementById('toast-icon').textContent = icon;
+  document.getElementById('toast-msg').textContent = msg;
+  const t = document.getElementById('toast');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ── Drag & Drop ──
+function onDragOver(e) {
+  e.preventDefault();
+  document.getElementById('upload-zone').classList.add('drag');
+}
+function onDragLeave(e) {
+  document.getElementById('upload-zone').classList.remove('drag');
+}
+function onDrop(e) {
+  e.preventDefault();
+  document.getElementById('upload-zone').classList.remove('drag');
+  const file = e.dataTransfer.files[0];
+  if(file) processFile(file);
+}
+function handleFileInput(input) {
+  if(input.files[0]) processFile(input.files[0]);
+}
+
+function processFile(file) {
+  document.getElementById('upload-zone').style.display = 'none';
+  const prog = document.getElementById('upload-progress');
+  prog.classList.add('visible');
+  document.getElementById('ufile-name').textContent = file.name;
+  document.getElementById('ufile-meta').textContent = (file.size/1024).toFixed(0) + ' КБ — анализирую…';
+
+  let si = 0;
+  const steps = [
+    [20, 'Чтение структуры файла…'],
+    [45, 'Определение заголовков колонок…'],
+    [68, 'Сопоставление со схемой DRILL-Q…'],
+    [88, 'Извлечение числовых значений…'],
+    [100, 'Извлечение завершено ✓'],
+  ];
+  const timer = setInterval(() => {
+    if(si >= steps.length) { clearInterval(timer); showFieldMap(); return; }
+    const [p, msg] = steps[si++];
+    document.getElementById('progress-fill').style.width = p + '%';
+    document.getElementById('progress-status').textContent = msg;
+    document.getElementById('ufile-meta').textContent = (file.size/1024).toFixed(0) + ' КБ — ' + msg;
+  }, 600);
+}
+
+function showFieldMap() {
+  const mapData = [
+    { param:'Текущая глубина',     column:'Глубина забоя (м)',       value:'156.0 м',      status:'found'   },
+    { param:'Плотность',           column:'Уд. вес р-ра (г/см³)',    value:'0.94 г/см³',   status:'found'   },
+    { param:'УВ (воронка Марша)',  column:'УВ (с)',                   value:'73 с',         status:'found'   },
+    { param:'ПВ',                  column:'ПВ (мПа·с)',               value:'14 мПа·с',     status:'found'   },
+    { param:'ДНС',                 column:'ДНС (lb/100ft²)',                value:'95 lb/100ft²',       status:'found'   },
+    { param:'Фильтрация API',      column:'Ф (см³/30 мин)',          value:'—',            status:'manual'  },
+    { param:'МСП',                 column:'МСП (м/ч)',                value:'5.5 м/ч',      status:'found'   },
+    { param:'Нагрузка на долото',  column:'НД (т)',                   value:'6.0 т',        status:'found'   },
+    { param:'Расход раствора',     column:'Расход (л/с)',             value:'34.5 л/с',     status:'found'   },
+    { param:'Поглощение',          column:'(не обнаружено)',          value:'—',            status:'missing' },
+  ];
+
+  const tbody = document.getElementById('field-map-body');
+  tbody.innerHTML = mapData.map(r => `
+    <tr>
+      <td style="font-weight:500">${r.param}</td>
+      <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text2)">${r.column}</td>
+      <td style="font-family:'JetBrains Mono',monospace;font-weight:600">${r.value}</td>
+      <td>
+        ${r.status === 'found'   ? '<span class="map-status found">✓ Автоматически</span>' :
+          r.status === 'manual'  ? '<span class="map-status manual">⚠ Требует проверки</span>' :
+                                   '<span class="map-status missing">— Не найдено</span>'}
+      </td>
+    </tr>
+  `).join('');
+
+  document.getElementById('field-map-card').classList.add('visible');
+
+  const evData = [
+    { name:'Глубина',   val:'156.0',  unit:'м'      },
+    { name:'Плотность', val:'0.94',   unit:'г/см³'  },
+    { name:'УВ',        val:'73',     unit:'с'       },
+    { name:'ПВ',        val:'14',     unit:'мПа·с'  },
+    { name:'ДНС',       val:'95',     unit:'lb/100ft²'    },
+    { name:'МСП',       val:'5.5',    unit:'м/ч'    },
+    { name:'НД',        val:'6.0',    unit:'т'      },
+    { name:'Расход',    val:'34.5',   unit:'л/с'    },
+  ];
+  document.getElementById('extracted-values').innerHTML = evData.map(v => `
+    <div class="pv">
+      <div class="pv-name">${v.name}</div>
+      <div class="pv-val">${v.val}</div>
+      <div class="pv-unit">${v.unit}</div>
+    </div>
+  `).join('');
+  document.getElementById('extracted-values-card').classList.add('visible');
+}
+
+function rejectImport() {
+  switchMode('manual');
+  document.getElementById('upload-zone').style.display = '';
+  document.getElementById('upload-progress').classList.remove('visible');
+  document.getElementById('field-map-card').classList.remove('visible');
+  document.getElementById('extracted-values-card').classList.remove('visible');
+}
+
+function confirmImport() {
+  showToast('✓', 'Рапорт импортирован — дашборд обновляется…');
+  setTimeout(() => {
+    window.location.href = 'tools/drilling_command_center.html';
+  }, 1400);
+}
+</script>
+</body>
+</html>

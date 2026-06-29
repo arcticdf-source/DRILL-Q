@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Проект скважины — DRILL-Q</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Arial, sans-serif; background: #F5F5F7; color: #1D1D1F; font-size: 15px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+:root {
+  --white:#FFFFFF; --bg:#F5F5F7;
+  --text:#1D1D1F; --text2:#6E6E73; --text3:#AEAEB2;
+  --blue:#2563EB; --blue-l:#EFF6FF; --blue-d:#1D4ED8;
+  --border:rgba(0,0,0,.08); --border-m:rgba(0,0,0,.12);
+  --sh-sm:0 1px 4px rgba(0,0,0,.06); --sh:0 4px 20px rgba(0,0,0,.08);
+  --r:16px; --r-sm:10px;
+  --green:#16A34A; --green-l:#F0FDF4;
+  --amber:#D97706; --amber-l:#FFFBEB;
+  --red:#DC2626; --red-l:#FEF2F2;
+}
+
+/* ── Nav ── */
+nav { position:sticky; top:0; z-index:100; background:rgba(255,255,255,.88); backdrop-filter:saturate(180%) blur(20px); border-bottom:1px solid var(--border); height:56px; display:flex; align-items:center; padding:0 40px; justify-content:space-between; }
+.nav-logo { display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--text); }
+.nav-mark { width:28px; height:28px; border-radius:7px; background:var(--blue); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:#fff; }
+.nav-name { font-size:15px; font-weight:700; letter-spacing:-.4px; }
+.btn-ghost { padding:7px 16px; border-radius:var(--r-sm); border:1px solid var(--border); background:transparent; color:var(--text); font-size:13px; font-weight:500; text-decoration:none; cursor:pointer; font-family:inherit; transition:all .15s; }
+.btn-ghost:hover { background:var(--bg); }
+.btn-nav { padding:7px 16px; border-radius:var(--r-sm); background:var(--blue); color:#fff; font-size:13px; font-weight:600; text-decoration:none; border:none; cursor:pointer; font-family:inherit; transition:all .15s; }
+.btn-nav:hover { background:var(--blue-d); }
+.nav-right { display:flex; gap:10px; }
+
+/* ── Layout ── */
+.wrap { width:min(1120px, 92vw); margin:0 auto; padding:48px 0 80px; }
+.breadcrumb { display:flex; align-items:center; gap:6px; font-size:13px; color:var(--text3); margin-bottom:28px; }
+.breadcrumb a { color:var(--text3); text-decoration:none; } .breadcrumb a:hover { color:var(--blue); }
+
+/* ── Hero ── */
+.hero { background:var(--white); border:1.5px solid var(--border); border-radius:var(--r); padding:40px; margin-bottom:24px; box-shadow:var(--sh-sm); }
+.hero-eyebrow { display:inline-flex; align-items:center; gap:8px; background:var(--blue-l); color:var(--blue); border-radius:99px; padding:4px 14px; font-size:12px; font-weight:600; margin-bottom:16px; }
+.hero h1 { font-size:clamp(26px,4vw,40px); font-weight:700; letter-spacing:-.8px; line-height:1.1; margin-bottom:12px; }
+.hero p { color:var(--text2); font-size:15px; max-width:760px; line-height:1.65; margin-bottom:28px; }
+.stats-row { display:grid; grid-template-columns:repeat(4, 1fr); gap:16px; }
+.stat-card { background:var(--bg); border:1px solid var(--border); border-radius:var(--r-sm); padding:16px 18px; }
+.stat-card strong { display:block; font-size:22px; font-weight:700; letter-spacing:-.4px; margin-bottom:4px; color:var(--text); }
+.stat-card span { font-size:11px; color:var(--text3); font-weight:600; text-transform:uppercase; letter-spacing:.06em; }
+
+/* ── Block ── */
+.block { background:var(--white); border:1.5px solid var(--border); border-radius:var(--r); padding:32px; margin-bottom:24px; box-shadow:var(--sh-sm); }
+.block h2 { font-size:20px; font-weight:700; letter-spacing:-.3px; margin-bottom:6px; }
+.block-sub { color:var(--text2); font-size:14px; margin-bottom:24px; }
+
+/* ── Summary list ── */
+.summary-list { display:flex; flex-direction:column; gap:10px; }
+.summary-item { background:var(--bg); border:1px solid var(--border); border-radius:var(--r-sm); padding:14px 18px; font-size:13px; color:var(--text2); line-height:1.6; }
+.summary-item strong { color:var(--text); font-weight:600; }
+
+/* ── Mod cards ── */
+.cards { display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:16px; }
+.mod-card { background:var(--bg); border:1.5px solid var(--border); border-radius:var(--r-sm); padding:24px; text-decoration:none; color:inherit; display:flex; flex-direction:column; gap:12px; transition:all .2s; position:relative; cursor:default; }
+.mod-card.clickable { cursor:pointer; }
+.mod-card.clickable:hover { background:var(--white); border-color:var(--blue); box-shadow:var(--sh), 0 0 0 2px rgba(37,99,235,.12); transform:translateY(-2px); }
+.mod-num { width:40px; height:40px; border-radius:10px; background:var(--blue-l); color:var(--blue); display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:700; flex-shrink:0; }
+.mod-card h3 { font-size:16px; font-weight:700; letter-spacing:-.2px; }
+.mod-card p { color:var(--text2); font-size:13px; line-height:1.55; flex:1; }
+.mod-chips { display:flex; gap:6px; flex-wrap:wrap; }
+.chip { font-size:11px; font-weight:500; color:var(--text2); background:var(--white); border:1px solid var(--border); border-radius:99px; padding:3px 10px; }
+.mod-arrow { position:absolute; right:16px; bottom:16px; font-size:16px; color:var(--text3); transition:color .2s; }
+.mod-card.clickable:hover .mod-arrow { color:var(--blue); }
+
+/* ── Parameters table ── */
+table.params { width:100%; border-collapse:collapse; }
+table.params th { padding:10px 14px; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--text3); text-align:left; background:var(--bg); border-bottom:1px solid var(--border); }
+table.params td { padding:11px 14px; font-size:13px; border-bottom:1px solid var(--border); }
+table.params tr:last-child td { border-bottom:none; }
+table.params tr:hover td { background:var(--blue-l); }
+.p-name { font-weight:600; }
+.p-val  { font-weight:700; font-size:14px; }
+.p-norm { font-size:11px; color:var(--text3); }
+.badge-ok   { background:var(--green-l); color:var(--green); font-size:11px; font-weight:700; padding:2px 7px; border-radius:99px; }
+.badge-warn { background:var(--amber-l); color:var(--amber); font-size:11px; font-weight:700; padding:2px 7px; border-radius:99px; }
+.badge-na   { background:var(--bg); color:var(--text3); font-size:11px; font-weight:600; padding:2px 7px; border-radius:99px; }
+.prog-bar { width:80px; height:4px; background:var(--bg); border-radius:99px; overflow:hidden; display:inline-block; vertical-align:middle; margin-right:8px; }
+.prog-fill { height:100%; border-radius:99px; }
+
+/* ── Doc list ── */
+.doc-list { display:flex; flex-direction:column; gap:8px; }
+.doc-item { display:flex; align-items:center; gap:12px; padding:10px 14px; background:var(--bg); border:1px solid var(--border); border-radius:var(--r-sm); font-size:13px; }
+.doc-icon { font-size:20px; flex-shrink:0; }
+.doc-name { font-weight:500; color:var(--text); flex:1; }
+.doc-tag  { font-size:11px; font-weight:600; padding:2px 8px; border-radius:99px; background:var(--blue-l); color:var(--blue); flex-shrink:0; }
+
+/* ── Paragraphs ── */
+.para-list { display:flex; flex-direction:column; gap:10px; max-height:400px; overflow-y:auto; }
+.para-item { background:var(--bg); border-left:3px solid var(--blue-l); border-radius:0 8px 8px 0; padding:12px 14px; font-size:13px; color:var(--text2); line-height:1.6; }
+.para-item:hover { border-left-color:var(--blue); background:var(--blue-l); }
+
+/* ── Raw table ── */
+.raw-scroll { overflow-x:auto; max-height:360px; overflow-y:auto; border:1px solid var(--border); border-radius:var(--r-sm); }
+table.raw { width:100%; border-collapse:collapse; font-size:12px; }
+table.raw th { padding:8px 12px; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--text3); background:var(--bg); border-bottom:1px solid var(--border); position:sticky; top:0; white-space:nowrap; }
+table.raw td { padding:7px 12px; border-bottom:1px solid var(--border); white-space:nowrap; }
+table.raw tr:last-child td { border-bottom:none; }
+table.raw tr:hover td { background:var(--blue-l); }
+
+/* ── Upload more ── */
+.upload-more { border:2px dashed var(--border-m); border-radius:var(--r); padding:28px; text-align:center; cursor:pointer; transition:all .18s; background:var(--white); }
+.upload-more:hover { border-color:var(--blue); background:var(--blue-l); }
+
+/* ── DWOP promo ── */
+.promo { background:linear-gradient(135deg,#0F172A,#1E3A5F); border-radius:var(--r); padding:32px 40px; color:#fff; display:flex; align-items:center; justify-content:space-between; gap:32px; }
+.promo h3 { font-size:20px; font-weight:700; letter-spacing:-.3px; margin-bottom:8px; }
+.promo p { font-size:14px; color:rgba(255,255,255,.6); max-width:520px; line-height:1.6; }
+.promo-actions { display:flex; flex-direction:column; gap:10px; flex-shrink:0; }
+.promo-btn { display:inline-flex; align-items:center; gap:7px; padding:10px 20px; border-radius:9px; font-size:13px; font-weight:600; text-decoration:none; white-space:nowrap; transition:all .15s; }
+.promo-btn-p { background:#2563EB; color:#fff; }
+.promo-btn-p:hover { background:#1D4ED8; }
+.promo-btn-g { background:rgba(255,255,255,.1); color:#fff; border:1px solid rgba(255,255,255,.18); }
+.promo-btn-g:hover { background:rgba(255,255,255,.18); }
+
+/* ── Delete ── */
+.btn-danger { padding:8px 16px; border-radius:var(--r-sm); background:transparent; border:1px solid #FECACA; color:#DC2626; font-size:13px; font-weight:600; cursor:pointer; font-family:inherit; transition:all .15s; }
+.btn-danger:hover { background:var(--red-l); }
+
+@media(max-width:860px){ nav{padding:0 20px;} .wrap{padding:32px 0 60px;} .stats-row{grid-template-columns:1fr 1fr;} .promo{flex-direction:column;} .hero{padding:28px;} .block{padding:24px;} }
+@media(max-width:560px){ .stats-row{grid-template-columns:1fr 1fr;} .cards{grid-template-columns:1fr;} }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="../index.html">
+    <div class="nav-mark">DQ</div>
+    <span class="nav-name">DRILL-Q</span>
+  </a>
+  <div class="nav-right">
+    <a class="btn-ghost" href="cabinet.html">← Мои проекты</a>
+    <button class="btn-nav" onclick="document.getElementById('moreFiles').click()">+ Добавить файлы</button>
+    <input type="file" id="moreFiles" style="display:none" multiple accept=".xlsx,.xls,.csv,.docx,.doc,.pdf,.las" onchange="addMoreFiles(this.files)">
+  </div>
+</nav>
+
+<div class="wrap" id="mainWrap">
+  <div style="padding:80px 0;text-align:center;color:var(--text3)">Загрузка...</div>
+</div>
+
+<script>
+const DQ_WELLS_KEY = 'dq_user_wells';
+function getWells() { try { return JSON.parse(localStorage.getItem(DQ_WELLS_KEY)) || []; } catch { return []; } }
+function saveWells(arr) { localStorage.setItem(DQ_WELLS_KEY, JSON.stringify(arr)); }
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+const wellId = new URLSearchParams(location.search).get('id');
+const well   = getWells().find(w => w.id === wellId);
+
+if (!well) {
+  document.getElementById('mainWrap').innerHTML = `
+    <div style="text-align:center;padding:80px 0">
+      <div style="font-size:48px;margin-bottom:16px">🔍</div>
+      <h2 style="font-size:22px;font-weight:700;margin-bottom:8px">Проект не найден</h2>
+      <p style="color:var(--text2);margin-bottom:24px">Возможно, данные были удалены.</p>
+      <a href="cabinet.html" style="display:inline-flex;padding:10px 20px;background:var(--blue);color:#fff;border-radius:var(--r-sm);text-decoration:none;font-weight:600">← Вернуться в кабинет</a>
+    </div>`;
+} else {
+  render(well);
+}
+
+function render(w) {
+  document.title = (w.field || w.wellName || 'Скважина') + ' — DRILL-Q';
+  const mud = w.mud || {};
+
+  /* ── Hero ── */
+  const eyebrow = [
+    '📋 Тендерная документация',
+    w.region ? '· ' + w.region : '',
+    w.operator ? '· ' + w.operator : ''
+  ].filter(Boolean).join(' ');
+
+  const heroDesc = buildHeroDesc(w);
+
+  const stats = [
+    { val: w.wellCount  || w.depth && (w.depth + ' м') || '—', label: w.wellCount ? 'скважин в программе' : 'текущий забой' },
+    { val: w.targetDepth ? w.targetDepth + ' м' : '—',          label: 'проектная глубина' },
+    { val: w.workPeriod || w.status || '—',                      label: w.workPeriod ? 'период работ' : 'статус' },
+    { val: w.fileCount || 0,                                      label: 'документов загружено' },
+  ];
+
+  /* ── What's in the project (from headings / file names) ── */
+  const summaryItems = buildSummaryItems(w);
+
+  /* ── Module cards ── */
+  const moduleCards = buildModuleCards(w, mud);
+
+  /* ── Mud params section ── */
+  const mudSection = buildMudSection(mud);
+
+  /* ── Key paragraphs ── */
+  const parasSection = buildParagraphsSection(w);
+
+  /* ── Documents list ── */
+  const docsSection = buildDocsSection(w);
+
+  /* ── Raw data table ── */
+  const rawSection = buildRawTable(w);
+
+  document.getElementById('mainWrap').innerHTML = `
+
+    <div class="breadcrumb">
+      <a href="index.html">DRILL-Q</a> <span>/</span>
+      <a href="cabinet.html">Мои проекты</a> <span>/</span>
+      <span style="color:var(--text)">${esc(w.field || w.wellName || 'Скважина')}</span>
+    </div>
+
+    <!-- HERO -->
+    <div class="hero">
+      <div class="hero-eyebrow">${esc(eyebrow)}</div>
+      <h1>${esc(w.field || w.wellName || 'Моё месторождение')}</h1>
+      <p>${esc(heroDesc)}</p>
+      <div class="stats-row">
+        ${stats.map(s=>`<div class="stat-card"><strong>${esc(String(s.val))}</strong><span>${esc(s.label)}</span></div>`).join('')}
+      </div>
+    </div>
+
+    <!-- SUMMARY -->
+    ${summaryItems.length ? `
+    <div class="block">
+      <h2>Содержимое загруженных документов</h2>
+      <p class="block-sub">Разделы и темы, обнаруженные в тендерной документации</p>
+      <div class="summary-list">${summaryItems.map(i=>`<div class="summary-item">${i}</div>`).join('')}</div>
+    </div>` : ''}
+
+    <!-- MODULE CARDS -->
+    <div class="block">
+      <h2>Модули проекта</h2>
+      <p class="block-sub">Разделы инженерного анализа по данным загруженных документов</p>
+      <div class="cards">${moduleCards}</div>
+    </div>
+
+    <!-- MUD PARAMS -->
+    ${mudSection}
+
+    <!-- KEY PARAGRAPHS -->
+    ${parasSection}
+
+    <!-- DOCUMENTS LIST -->
+    ${docsSection}
+
+    <!-- RAW TABLE -->
+    ${rawSection}
+
+    <!-- DWOP PROMO -->
+    <div class="promo" style="margin-bottom:24px">
+      <div>
+        <h3>DWOP — Планирование бурения</h3>
+        <p>Используйте демо-симулятор DWOP для отработки сценариев оптимизации и анализа рисков применительно к параметрам вашего месторождения.</p>
+      </div>
+      <div class="promo-actions">
+        <a class="promo-btn promo-btn-p" href="docs/vankor_dwop.html">Открыть DWOP симулятор</a>
+        <a class="promo-btn promo-btn-g" href="tools/vankor_command_center.html">Командный центр (демо)</a>
+      </div>
+    </div>
+
+    <!-- DELETE -->
+    <div style="display:flex;justify-content:flex-end;margin-top:8px">
+      <button class="btn-danger" onclick="deleteWell('${w.id}')">Удалить проект</button>
+    </div>
+
+    <div id="moreList" style="margin-top:12px;display:flex;flex-direction:column;gap:8px"></div>
+  `;
+}
+
+/* ════ Build helpers ════ */
+
+function buildHeroDesc(w) {
+  const parts = [];
+  if (w.wellName && w.field && w.wellName !== w.field) parts.push('Скважина: ' + w.wellName + '.');
+  if (w.wellTypes && w.wellTypes.length) parts.push('Типы скважин: ' + w.wellTypes.join(', ') + '.');
+  if (w.formations && w.formations.length) parts.push('Пласты: ' + w.formations.slice(0,4).join(', ') + '.');
+  if (w.mud && w.mud.mudType) parts.push('Тип раствора: ' + w.mud.mudType.slice(0,60) + '.');
+  if (w.fileCount) parts.push('Загружено документов: ' + w.fileCount + '.');
+  if (!parts.length) parts.push('Проект создан на основе загруженных тендерных документов. Заполните недостающие параметры через кнопку «+ Добавить файлы».');
+  return parts.join(' ');
+}
+
+function buildSummaryItems(w) {
+  const items = [];
+  const heads = (w.headings || []).filter(h => h.length > 8);
+
+  // From document names
+  if (w.fileNames && w.fileNames.length) {
+    w.fileNames.forEach((name, i) => {
+      const clean = name.replace(/\.[^.]+$/, '').replace(/[_\-]+/g,' ').trim();
+      const tag   = docTag(name);
+      items.push(`<strong>${tag}:</strong> ${esc(clean)}`);
+    });
+  }
+
+  // From extracted headings
+  if (heads.length > 0 && items.length < 12) {
+    const headItems = heads.slice(0, 8 - items.length);
+    headItems.forEach(h => {
+      if (!items.some(it => it.includes(h.slice(0,20)))) {
+        items.push(`<strong>Раздел:</strong> ${esc(h)}`);
+      }
+    });
+  }
+
+  return items.slice(0, 10);
+}
+
+function buildModuleCards(w, mud) {
+  const cards = [];
+  let num = 1;
+
+  // General info — always
+  cards.push(modCard(num++, '📋', 'Общая информация', [
+    w.field    ? 'Месторождение: ' + w.field : null,
+    w.operator ? 'Оператор: ' + w.operator : null,
+    w.region   ? 'Регион: ' + w.region : null,
+    w.wellCount ? 'Скважин: ' + w.wellCount : null,
+    w.workPeriod ? 'Период: ' + w.workPeriod : null,
+  ].filter(Boolean).join('. ') || 'Заполните данные по месторождению', ['паспорт', 'объект', 'логистика']));
+
+  // Well construction
+  if (w.wellTypes && w.wellTypes.length || w.targetDepth) {
+    cards.push(modCard(num++, '🏗', 'Конструкция скважин', [
+      w.wellTypes && w.wellTypes.length ? 'Типы: ' + w.wellTypes.join(', ') : null,
+      w.targetDepth ? 'Проектная глубина: ' + w.targetDepth + ' м MD' : null,
+    ].filter(Boolean).join('. ') || 'Данные по конструкции', ['конструкция', 'обсадные колонны']));
+  }
+
+  // Mud program
+  if (mud.mudType || mud.density || mud.viscosity) {
+    cards.push(modCard(num++, '🧪', 'Программа буровых растворов', [
+      mud.mudType  ? 'Тип: ' + mud.mudType.slice(0,50) : null,
+      mud.density  ? 'Плотность: ' + mud.density + ' г/см³' : null,
+      mud.viscosity ? 'УВ: ' + mud.viscosity + ' сек' : null,
+      mud.fl       ? 'Водоотдача: ' + mud.fl + ' мл/30мин' : null,
+    ].filter(Boolean).join('. ') || 'Параметры раствора', ['mud program', 'реагенты', 'параметры']));
+  }
+
+  // Geology / formations
+  if (w.formations && w.formations.length) {
+    cards.push(modCard(num++, '🪨', 'Геология и стратиграфия', [
+      'Пласты и горизонты: ' + w.formations.slice(0,5).join(', '),
+    ].join('. '), ['геология', 'пласты', 'стратиграфия']));
+  }
+
+  // Work schedule
+  if (w.wellCount || w.workPeriod) {
+    cards.push(modCard(num++, '📅', 'График работ', [
+      w.wellCount  ? 'Скважин в программе: ' + w.wellCount : null,
+      w.workPeriod ? 'Период: ' + w.workPeriod : null,
+    ].filter(Boolean).join('. ') || 'Программа бурения', ['график', 'программа', 'сроки']));
+  }
+
+  // Documents
+  if (w.fileCount) {
+    cards.push(modCard(num++, '📂', 'Исходные документы', w.fileCount + ' файл(ов) загружено и проанализировано', ['ТЗ', 'тендер', 'документация']));
+  }
+
+  return cards.join('');
+}
+
+function modCard(n, icon, title, desc, chips) {
+  return `
+    <div class="mod-card">
+      <div class="mod-num">${icon}</div>
+      <h3>${esc(title)}</h3>
+      <p>${esc(desc)}</p>
+      <div class="mod-chips">${chips.map(c=>`<span class="chip">${esc(c)}</span>`).join('')}</div>
+    </div>`;
+}
+
+function buildMudSection(mud) {
+  const rows = [
+    { name:'Тип раствора',            val:mud.mudType,    unit:'',         min:null,  max:null  },
+    { name:'Плотность',               val:mud.density,    unit:'г/см³',    min:0.99,  max:2.2   },
+    { name:'Условная вязкость',       val:mud.viscosity,  unit:'сек',      min:30,    max:80    },
+    { name:'Пластическая вязкость',   val:mud.pv,         unit:'мПа·с',    min:3,     max:35    },
+    { name:'ДНС / ПНС',              val:mud.yp,         unit:'Па',       min:2,     max:25    },
+    { name:'Водоотдача',              val:mud.fl,         unit:'мл/30мин', min:1,     max:10    },
+    { name:'pH',                      val:mud.ph,         unit:'',         min:8,     max:11    },
+    { name:'Хлориды',                 val:mud.chlorides,  unit:'мг/л',     min:null,  max:null  },
+    { name:'Объём раствора',          val:mud.mudVol,     unit:'м³',       min:null,  max:null  },
+  ].filter(r => r.val);
+
+  if (!rows.length) return '';
+
+  const trs = rows.map(r => {
+    const num = parseFloat(String(r.val).replace(',','.'));
+    let badge = `<span class="badge-na">—</span>`;
+    let bar   = '';
+    if (!isNaN(num) && r.min !== null && r.max !== null) {
+      const inRange = num >= r.min && num <= r.max;
+      badge = inRange ? `<span class="badge-ok">Норма</span>` : `<span class="badge-warn">Вне нормы</span>`;
+      const pct = Math.min(100, Math.max(0, ((num - r.min) / (r.max - r.min)) * 100));
+      bar = `<span class="prog-bar"><span class="prog-fill" style="width:${pct}%;background:${inRange?'var(--green)':'var(--amber)'}"></span></span>`;
+    }
+    return `<tr>
+      <td class="p-name">${esc(r.name)}</td>
+      <td class="p-val">${esc(String(r.val))}</td>
+      <td class="p-norm">${esc(r.unit)}</td>
+      <td>${r.min !== null ? `<span class="p-norm">${r.min}–${r.max}</span>` : ''}</td>
+      <td>${bar}${badge}</td>
+    </tr>`;
+  }).join('');
+
+  return `
+    <div class="block">
+      <h2>Параметры бурового раствора</h2>
+      <p class="block-sub">Последние значения из загруженных документов${well.mud?.mudType ? ' · ' + well.mud.mudType.slice(0,60) : ''}</p>
+      <table class="params">
+        <thead><tr><th>Параметр</th><th>Значение</th><th>Ед.изм.</th><th>Норма</th><th>Оценка</th></tr></thead>
+        <tbody>${trs}</tbody>
+      </table>
+    </div>`;
+}
+
+function buildParagraphsSection(w) {
+  const paras = (w.keyParagraphs || []).filter(p => p.length > 30);
+  if (!paras.length) return '';
+  return `
+    <div class="block">
+      <h2>Ключевые данные из документов</h2>
+      <p class="block-sub">Технические фрагменты, извлечённые системой при анализе</p>
+      <div class="para-list">
+        ${paras.map(p => `<div class="para-item">${esc(p)}</div>`).join('')}
+      </div>
+    </div>`;
+}
+
+function buildDocsSection(w) {
+  const names = w.fileNames || [];
+  if (!names.length) return '';
+  return `
+    <div class="block">
+      <h2>Загруженные документы</h2>
+      <p class="block-sub">${names.length} файл(ов) проанализировано</p>
+      <div class="doc-list">
+        ${names.map(n => `
+          <div class="doc-item">
+            <span class="doc-icon">${fileEmoji(n)}</span>
+            <span class="doc-name">${esc(n.replace(/\.[^.]+$/,''))}</span>
+            <span class="doc-tag">${docTag(n)}</span>
+          </div>`).join('')}
+      </div>
+    </div>`;
+}
+
+function buildRawTable(w) {
+  if (!w.rawRows || !w.rawRows.length || !w.headers || !w.headers.length) return '';
+  const hdrs = w.headers.slice(0,15);
+  const rows = w.rawRows.slice(0,200);
+  return `
+    <div class="block">
+      <h2>Табличные данные из файлов <span style="font-size:13px;font-weight:400;color:var(--text3)">${rows.length} строк</span></h2>
+      <p class="block-sub">Структурированные данные из Excel / CSV файлов</p>
+      <div class="raw-scroll">
+        <table class="raw">
+          <thead><tr>${hdrs.map(h=>`<th>${esc(h)}</th>`).join('')}</tr></thead>
+          <tbody>${rows.map(r=>`<tr>${(r._raw||[]).slice(0,15).map(c=>`<td>${esc(c)}</td>`).join('')}</tr>`).join('')}</tbody>
+        </table>
+      </div>
+    </div>`;
+}
+
+/* ── Utils ── */
+function fileEmoji(n) {
+  const e = (n||'').split('.').pop().toLowerCase();
+  return {xlsx:'📊',xls:'📊',csv:'📋',pdf:'📄',docx:'📝',doc:'📝',las:'🗃'}[e]||'📁';
+}
+function docTag(n) {
+  const e = (n||'').split('.').pop().toLowerCase();
+  return {xlsx:'Excel',xls:'Excel',csv:'CSV',pdf:'PDF',docx:'Word',doc:'Word',las:'LAS'}[e]||'Файл';
+}
+
+function deleteWell(id) {
+  if (!confirm('Удалить проект? Это действие нельзя отменить.')) return;
+  const wells = getWells().filter(w => w.id !== id);
+  saveWells(wells);
+  window.location.href = 'cabinet.html';
+}
+
+function addMoreFiles(files) {
+  if (!files || !files.length) return;
+  const list = document.getElementById('moreList');
+  Array.from(files).forEach(f => {
+    const row = document.createElement('div');
+    row.className = 'doc-item';
+    row.innerHTML = `<span class="doc-icon">${fileEmoji(f.name)}</span>
+      <span class="doc-name">${esc(f.name)}</span>
+      <span class="doc-tag" style="background:var(--amber-l);color:var(--amber)">Добавляется...</span>`;
+    list.appendChild(row);
+  });
+  // Note: full re-analysis would open cabinet's modal; here we just note the files
+  setTimeout(() => alert('Для полного повторного анализа вернитесь в кабинет и загрузите файлы через «Загрузить данные».'), 500);
+}
+</script>
+</body>
+</html>

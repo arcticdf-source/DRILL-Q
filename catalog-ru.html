@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DRILL-Q · Chemical Intelligence Library · Powered by Cloto</title>
+  <link rel="stylesheet" href="drill-q.css">
+  <style>
+    .approach-products { display:flex; align-items:center; gap:6px; flex-wrap:wrap; padding:8px 0 0; border-top:1px solid var(--b-01); margin-top:8px; font-size:10px; color:var(--t-04); font-family:var(--mono); }
+    .prod-chip { color:var(--cloto); font-weight:600; font-size:10px; font-family:var(--mono); }
+    .env-tags { display:flex; flex-wrap:wrap; gap:4px; margin-top:8px; }
+    .env-tag { padding:1px 6px; border-radius:999px; font-size:9px; font-weight:500; letter-spacing:0.05em; font-family:var(--mono); border:1px solid var(--b-02); color:var(--t-04); }
+    .challenge-section { margin-bottom:var(--s10); }
+    .challenge-header { font-size:10px; font-weight:600; color:var(--t-04); letter-spacing:0.14em; text-transform:uppercase; font-family:var(--mono); padding:var(--s4) 0; border-bottom:1px solid var(--b-01); display:flex; align-items:center; gap:8px; margin-bottom:var(--s5); }
+    .ch-dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
+    .ch-count { margin-left:auto; color:var(--t-04); font-size:9px; background:var(--b-01); padding:1px 6px; border-radius:var(--r1); }
+    .prod-card .prod-name { font-size:13.5px; font-weight:600; color:var(--t-01); margin-bottom:3px; letter-spacing:-0.02em; line-height:1.35; }
+    .prod-card .prod-chemical { font-size:10px; color:var(--t-03); margin-bottom:var(--s3); font-family:var(--mono); }
+    .prod-card .prod-desc { font-size:11.5px; color:var(--t-02); line-height:1.6; }
+    .hidden { display:none !important; }
+  </style>
+</head>
+<body>
+
+<!-- TICKER -->
+<div class="ticker-bar">
+  <div class="ticker-track">
+    <span class="ticker-item"><span class="lbl">DRILL-Q</span><span class="t-blue">Chemical Intelligence Library · 43 подхода</span></span>
+    <span class="ticker-item sep">·</span>
+    <span class="ticker-item"><span class="lbl">КЛОТО</span><span class="t-up">с 1991 г. · Архангельск</span></span>
+    <span class="ticker-item sep">·</span>
+    <span class="ticker-item"><span class="lbl">LUBRIMIX-K</span><span class="t-blue">Склад: 42 т · Архангельск</span></span>
+    <span class="ticker-item sep">·</span>
+    <span class="ticker-item"><span class="lbl">BRENT</span><span class="t-up">$82.14 ↑1.2%</span></span>
+    <span class="ticker-item sep">·</span>
+    <span class="ticker-item"><span class="lbl">AI ALERT</span><span class="t-warn">СКВ-НВ-042 · Прихват · Высокий риск</span></span>
+    <span class="ticker-item sep">·</span>
+    <span class="ticker-item"><span class="lbl">DRILL-Q</span><span class="t-blue">Chemical Intelligence Library · 43 подхода</span></span>
+    <span class="ticker-item sep">·</span>
+    <span class="ticker-item"><span class="lbl">КЛОТО</span><span class="t-up">с 1991 г. · Архангельск</span></span>
+    <span class="ticker-item sep">·</span>
+    <span class="ticker-item"><span class="lbl">LUBRIMIX-K</span><span class="t-blue">Склад: 42 т · Архангельск</span></span>
+    <span class="ticker-item sep">·</span>
+    <span class="ticker-item"><span class="lbl">BRENT</span><span class="t-up">$82.14 ↑1.2%</span></span>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="index-ru.html">
+    <div class="dq-mark">DQ</div>
+    <div class="dq-wordmark">
+      <div class="dq-name">DRILL-Q</div>
+      <div class="dq-powered">powered by <span>cloto</span></div>
+    </div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index-ru.html">Платформа</a></li>
+    <li><a href="catalog-ru.html" class="active">Химия</a></li>
+    <li><a href="proposal-ru.html">Тендеры</a></li>
+    <li><a href="tools-ru.html">Инструменты</a></li>
+  </ul>
+  <div class="nav-right">
+    <a class="lang-link" href="catalog-en.html">EN</a>
+    <a class="btn-primary" href="proposal-ru.html">Запросить доступ</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="catalog-hero">
+  <div class="catalog-hero-inner">
+    <div class="section-label"><span class="sl-dot"></span>Chemical Intelligence Library</div>
+    <h1>Подходы к операционным задачам.<br>Не каталог SKU.</h1>
+    <p>43 технологических подхода, организованных по операционной задаче. Каждый раздел — это вызов, с которым вы столкнётесь на скважине, и химическая архитектура его решения.</p>
+    <div class="catalog-toolbar">
+      <div class="search-box">
+        <span class="search-icon">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </span>
+        <input type="text" id="libSearch" placeholder="Поиск по задаче или химии..." oninput="filterLib()">
+      </div>
+      <div class="filter-group">
+        <button class="filter-btn active" onclick="setFilter('all',this)">Все задачи <span class="filter-count" id="cnt-all">43</span></button>
+        <button class="filter-btn" onclick="setFilter('shale',this)">Стабильность ствола <span class="filter-count">9</span></button>
+        <button class="filter-btn" onclick="setFilter('lubricity',this)">Смазочные <span class="filter-count">7</span></button>
+        <button class="filter-btn" onclick="setFilter('fluid-loss',this)">Фильтрация <span class="filter-count">5</span></button>
+        <button class="filter-btn" onclick="setFilter('lcm',this)">Поглощения <span class="filter-count">3</span></button>
+        <button class="filter-btn" onclick="setFilter('obm',this)">РУО-системы <span class="filter-count">14</span></button>
+        <button class="filter-btn" onclick="setFilter('completion',this)">Заканчивание <span class="filter-count">5</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BODY -->
+<div class="catalog-body">
+
+  <!-- ── SHALE STABILITY ── -->
+  <div class="challenge-section" data-section="shale">
+    <div class="challenge-header">
+      <span class="ch-dot" style="background:var(--blue);"></span>
+      Стабилизация ствола скважины · Реактивные глинистые интервалы
+      <span class="ch-count">9 подходов</span>
+    </div>
+    <div class="catalog-grid">
+
+      <div class="prod-card" data-challenge="shale">
+        <div class="prod-card-top">
+          <div class="prod-meta"><span class="prod-cat cat-flo">ИНГИБИРОВАНИЕ ГЛИН</span></div>
+          <div class="prod-name">Полиаминовое ингибирование 4-го поколения</div>
+          <div class="prod-chemical">Полиэфирамины · Замена KCl</div>
+          <div class="prod-desc">Предотвращает набухание и диспергирование глин в реактивных сланцах. Механизм — захват межслоевого пространства. Совместим с любой минерализацией. Основа высокоэффективных WBM-систем (HPWBM).</div>
+          <div class="approach-products"><span>Клото:</span><span class="prod-chip">ПОЛИТРОЛ®</span><span>·</span><span class="prod-chip">КЛА-ФРИ®</span></div>
+          <div class="env-tags"><span class="env-tag">WBM</span><span class="env-tag">Пресные / рассольные</span><span class="env-tag">До 180°С</span></div>
+        </div>
+        <div class="prod-card-footer">
+          <button class="btn-tds">Детали</button>
+          <button class="btn-quote">Запрос</button>
+          <button class="btn-ai">MudGPT</button>
+        </div>
+      </div>
+
+      <div class="prod-card" data-challenge="shale">
+        <div class="prod-card-top">
+          <div class="prod-meta"><span class="prod-cat cat-flo">БАРЬЕРНАЯ КОЛЬМАТАЦИЯ</span></div>
+          <div class="prod-name">Кольматация гильсонитом и асфальтенами</div>
+          <div class="prod-chemical">Битумная суспензия + сульфированный асфальтен</div>
+          <div class="prod-desc">Формирует непроницаемый барьер на стенке скважины. Закупоривает поры и микротрещины, предотвращает перенос порового давления. Исключительная стабильность ствола в глинистых сланцах.</div>
+          <div class="approach-products"><span>Клото:</span><span class="prod-chip">БЛЭКТРОЛ®</span><span>·</span><span class="prod-chip">СТАБИЛАЙТ® II</span></div>
+          <div class="env-tags"><span class="env-tag">WBM</span><span class="env-tag">Глинистые сланцы</span><span class="env-tag">Проблемные интервалы</span></div>
+        </div>
+        <div class="prod-card-footer">
+          <button class="btn-tds">Детали</button>
+          <button class="btn-quote">Запрос</button>
+          <button class="btn-ai">MudGPT</button>
+        </div>
+      </div>
+
+      <div class="prod-card" data-challenge="shale">
+        <div class="prod-card-top">
+          <div class="prod-meta"><span class="prod-cat cat-flo">ОСМОТИЧЕСКИЙ БАРЬЕР</span></div>
+          <div class="prod-name">Полигликолевый осмотический мембранный эффект</div>
+          <div class="prod-chemical">Полигликоль с высокой температурой помутнения</div>
+          <div class="prod-desc">Создаёт полупроницаемую мембрану на поверхности породы. Формирует нерастворимый осадок при контакте с пластовым флюидом. Защищает глинистые минералы от набухания и сохраняет целостность шлама.</div>
+          <div class="approach-products"><span>Клото:</span><span class="prod-chip">ДЖИ-ДРИЛЛ®</span></div>
+          <div class="env-tags"><span class="env-tag">WBM</span><span class="env-tag">Реактивные глины</span><span class="env-tag">Наклонно-направленные</span></div>
+        </div>
+        <div class="prod-card-footer">
+          <button class="btn-tds">Детали</button>
+          <button class="btn-quote">Запрос</button>
+          <button class="btn-ai">MudGPT</button>
+        </div>
+      </div>
+
+      <div class="prod-card" data-challenge="shale">
+        <div class="prod-card-top">
+          <div class="prod-meta"><span class="prod-cat cat-flo">ГИДРОФОБИЗАЦИЯ</span></div>
+          <div class="prod-name">Гидрофобизация поверхности породы метилсилоксанами</div>
+          <div class="prod-chemical">Водорастворимые метилсилоксаны · Жидкий ингибитор</div>
+          <div class="prod-desc">Снижает диспергирование и набухание глинистых частиц за счёт гидрофобной обработки поверхности. Действует в дополнение к стандартному ингибированию — особенно эффективен в сочетании с полиаминами.</div>
+          <div class="approach-products"><span>Клото:</span><span class="prod-chip">SHALE-X® Liquid</span></div>
+          <div class="env-tags"><span class="env-tag">WBM</span><span class="env-tag">Комплексные интервалы</span></div>
+        </div>
+        <div class="prod-card-footer">
+          <button class="btn-tds">Детали</button>
+          <button class="btn-quote">Запрос</button>
+          <button class="btn-ai">MudGPT</button>
+        </div>
+      </div>
+
+      <div class="prod-card" data-challenge="shale">
+        <div class="prod-card-top">
+          <div class="prod-meta"><span class="prod-cat cat-flo">КОМПЛЕКСНЫЙ ИНГИБИТОР</span></div>
+          <div class="prod-name">Гуматно-боросиликатный комплекс многомеханизменного действия</div>
+          <div class="prod-chemical">Гуматно-боросиликатный ингибитор · Сухой порошок</div>
+          <div class="prod-desc">Высокоэффективный многомеханизменный ингибитор: адсорбция, комплексообразование и осаждение в межслоевом пространстве. Особенно эффективен в жёстких рассолах, где стандартные полиамины теряют эффективность.</div>
+          <div class="approach-products"><span>Клото:</span><span class="prod-chip">SHALE-X® Dry</span></div>
+          <div class="env-tags"><span class="env-tag">WBM</span><span class="env-tag">Жёсткие рассолы</span><span class="env-tag">HPHT</span></div>
+        </div>
+        <div class="prod-card-footer">
+          <button class="btn-tds">Детали</button>
+          <button class="btn-quote">Запрос</button>
+          <button class="btn-ai">MudGPT</button>
+        </div>
+      </div>
+
+      <div class="prod-card" data-challenge="shale">
+        <div class="prod-card-top">
+          <div class="prod-meta"><span class="prod-cat cat-flo">ЛАТЕКСНАЯ МЕМБРАНА</span></div>
+          <div class="prod-name">Субмикронный латексный уплотнитель ствола скважины</div>
+          <div class="prod-chemical">Стирол-бутадиеновый латекс · Субмикронные частицы</div>
+          <div class="prod-desc">Формирует полупроницаемую мембрану на стенке скважины. Частицы субмикронного размера проникают в поры и блокируют гидратацию. Может заменить KCl-полимерный раствор в нестандартных условиях.</div>
+          <div class="approach-products"><span>Клото:</span><span class="prod-chip">МАКС-ФЛЕКС®</span></div>
+          <div class="env-tags"><span class="env-tag">WBM</span><span class="env-tag">Замена KCl-ПАВ систем</span></div>
+        </div>
+        <div class="prod-card-footer">
+          <button class="btn-tds">Детали</button>
+          <button class="btn-quote">Запрос</button>
+          <button class="btn-ai">MudGPT</button>
+        </div>
+      </div>
+
+      <div class="prod-card" data-challenge="shale">
+        <div class="prod-card-top">
+          <div class="prod-meta"><span class="prod-cat cat-flo">ИНКАПСУЛЯЦИЯ ШЛАМА</span></div>
+          <div class="prod-name">PHPA-инкапсуляция: защита шлама от диспергирования</div>
+          <div class="prod-chemical">ЧГПА · Частично гидролизованный полиакриламид</div>
+          <div class="prod-desc">Обволакивает частицы выбуренной породы, препятствует их диспергированию в растворе. Анионная природа обеспечивает адсорбцию на глинистых частицах и их инкапсуляцию — шлам выносится на поверхность в целом виде.</div>
+          <div class="approach-products"><span>Клото:</span><span class="prod-chip">ПОЛИКАП®</span></div>
+          <div class="env-tags"><span class="env-tag">WBM</span><span class="env-tag">Пресный и рассольный</span></div>
+        </div>
+        <div class="prod-card-footer">
+          <button class="btn-tds">Детали</button>
+          <button class="btn-quote">Запрос</button>
+          <button class="btn-ai">MudGPT</button>
+        </div>
+      </div>
+
+      <div class="prod-card" data-challenge="shale">
+        <div class="prod-card-top">
+          <div class="prod-meta"><span class="prod-cat cat-flo">КАТИОННАЯ ДЕСТАБИЛИЗАЦИЯ</span></div>
+          <div class="prod-name">Катионная нейтрализация поверхностного заряда глин</div>
+          <div class="prod-chemical">Высокомолекулярный катионный сополимер</div>
+          <div class="prod-desc">Нейтрализует отрицательный заряд поверхности глинистых минералов. Снижает гидрофильность и набухаемость. Работает в сочетании с инкапсулятором — уменьшает количество выбуренной породы, поступающей в раствор в дисперсном виде.</div>
+          <div class="approach-products"><span>Клото:</span><span class="prod-chip">КАТФЛО®</span></div>
+          <div class="env-tags"><span class="env-tag">WBM</span><span class="env-tag">Глинистые интервалы</span></div>
+        </div>
+        <div class="prod-card-footer">
+          <button class="btn-tds">Детали</button>
+          <button class="btn-quote">Запрос</button>
+          <button class="btn-ai">MudGPT</button>
+        </div>
+      </div>
+
+      <div class="prod-card" data-challenge="shale">
+        <div class="prod-card-top">
+          <div class="prod-meta"><span class="prod-cat cat-flo">ОРГАНИЧЕСКОЕ ИНГИБИРОВАНИЕ</span></div>
+          <div class="prod-name">Органический ингибитор аминного типа: экономичная защита</div>
+          <div class="prod-chemical">Органический амин · Жидкий концентрат</div>
+          <div class="prod-desc">Экономически эффективный ингибитор для стандартных задач по стабилизации сланцевых интервалов. Аминная группа обеспечивает адсорбцию на отрицательно заряженных глинистых поверхностях и блокирует гидратацию.</div>
+          <div class="approach-products"><span>Клото:</span><span class="prod-chip">ДРИЛАМИН®</span></div>
+          <div class="env-tags"><span class="env-tag">WBM</span><span class="env-tag">Стандартные условия</span><span class="env-tag">Экономичный</span></div>
+        </div>
+        <div class="prod-card-footer">
+          <button class="btn-tds">Детали</button>
+          <button class="btn-quote">Запрос</button>
+          <button class="btn-ai">MudGPT</button>
+        </div>
+      </div>
+
+    </div><!-- /catalog-grid shale -->
+  </div><!-- /challenge-section shale -->
+
+  <!-- ── LUBRICITY ── -->
+  <div class="challenge-section" data-section="lubricity">
+    <div class="challenge-header">
+      <span class="ch-dot" style="background:var(--green);"></span>
+      Смазочные свойства · Снижение трения и момента
+      <span class="ch-count">7 подходов</span>
+    </div>
+    <div class="catalog-grid">
+
+      <div class="prod-card" data-challenge="lubricity">
+        <div class="prod-card-top">
+          <div class="prod-meta"><span class="prod-cat cat-lub">СМАЗКА РВО</span></div>
+          <div class="prod-name">Базовая смазочная обработка WBM для ННС и наклонных скважин</div>
+          <div class="prod-chemical">Комплекс сложных эфиров жирных кислот</div>
+          <div class="prod-desc">Стандартная смазочная добавка для вертикальных, наклонно-направленных и горизонтальных скважин. Снижает коэффициент трения, предотвращает дифференциальный прихват. Применима в широком диапазоне WBM-систем.</div>
+          <div class="approach-products"><span>Клото:</span><span class="prod-chip">СУПЕРСЛАЙДЕР® ГОЛД</span></div>
+          <div class="env-tags"><span class="env-tag">WBM</span><span class="env-tag">Все pH-диапазоны</span><span class="env-tag">ННС / горизонтальные</span></div>
+        </div>
+        <div class="prod-card-footer">
+          <button class="btn-tds">Детали</button>
+          <button class="btn-quote">Запрос</button>
+          <button class="btn-ai">MudGPT</button>
+        </div>
+      </div>
+
+      <div class="prod-card" data-challenge="lubricity">
+        <div class="prod-card-top">
+          <div class="prod-meta"><span class="prod-cat cat-lub">ERD / ГОРИЗОНТАЛЬ</span></div>
+          <div class="prod-name">Смазка для протяжённых горизонталей с большим отходом</div>
+          <div class="prod-chemical">Комплексная смесь эфиров жирных кислот · ERD-формула</div>
+          <div class="prod-desc">Разработана специально для скважин с протяжённой горизонтальной секцией (ERD). Обеспечивает стабильное снижение момента в условиях высокой нагрузки на контакт бурильных труб со стенкой скважины.</div>
+          <div class="approach-products"><span>Клото:</span><span class="prod-chip">СУПЕРСЛАЙДЕР® ПЛАТИНУМ</span></div>
+          <div class="env-tags"><span class="env-tag">WBM</span><span class="env-tag">ERD · Горизонтальные</span><span class="env-tag">Высокая нагрузка</span></div>
+        </div>
+        <div class="prod-card-footer">
+          <button class="btn-tds">Детали</button>
+          <button class="btn-quote">Запрос</button>
+          <button class="btn-ai">MudGPT</button>
+        </div>
+      </div>
+
+      <div class="prod-card" data-challenge="lubricity">
+        <div class="prod-card-top">
+          <div class="prod-meta"><span class="prod-cat cat-lub">ПРЕМИУМ / ЭКО</span></div>
+          <div class="prod-name">Премиальная экологически безопасная смазочная система</div>
+          <div class="prod-chemical">Эфиры жирных кислот · Экологически безопасная основа</div>
+          <div class="prod-desc">Высшая линейка смазочных добавок Клото. Соответствует строгим экологическим нормам для чувствительных природных территорий. Максимальное снижение коэффициента трения при минимальной дозировке.</div>
+          <div class="approach-products"><span>Клото:</span><span class="prod-chip">СУПЕРСЛАЙДЕР® ТИТАН</span></div>
+          <div class="env-tags"><span class="env-tag">WBM</span><span class="env-tag">Экологически чувствительные зоны</span></div>
+        </div>
+        <div class="prod-card-footer">
+          <button class="btn-tds">Детали</button>
+          <button class="btn-quote">Запрос</button>
+          <button class="btn-ai">MudGPT</button>
+        </div>
+      </div>
+
+      <div class="prod-card" data-challenge="lubricity">
+        <div class="prod-card-top">
+          <div class="prod-meta"><span class="prod-cat cat-lub">ВЫСОКОЩЕЛОЧНЫЕ СИСТЕМЫ</span></div>
+          <div class="prod-name">Смазка для силикатных и высокощелочных буровых растворов</div>
+          <div class="prod-chemical">Специальный эфирный состав · Устойчив при высоком pH</div>
+          <div class="prod-desc">Оптимизирована для работы в силикатных буровых растворах и других системах с высоким pH. Сохраняет смазочную эффективность в щелочной среде, не снижает ингибирующих свойств силикатного раствора.</div>
+          <div class="approach-products"><span>Клото:</span><span class="prod-chip">СУПЕРСЛАЙДЕР® SL</span></div>
+          <div class="env-tags"><span class="env-tag">WBM · Силикат</span><span class="env-tag">Высокий pH</span></div>
+        </div>
+        <div class="prod-card-footer">
+          <button class="btn-tds">Детали</button>
+          <button class="btn-quote">Запрос</button>
+          <button class="btn-ai">MudGPT</button>
+        </div>
+      </div>
+
+      <div class="prod-card" data-challenge="lubricity">
+        <div class="prod-card-top">
+          <div class="prod-meta"><span class="prod-cat cat-lub">РАССОЛЬНЫЕ СИСТЕМЫ</span></div>
+          <div class="prod-name">Смазка для высокоминерализованных рассолов</div>
+          <div class="prod-chemical">Эфиры жирных кислот · Устойчивость к рассолам</div>
+          <div class="prod-desc">Специально разработана для рассольных систем: NaCl, KCl, CaCl₂, MgCl₂, бромиды, форматы. Сохраняет стабильность и смазочную эффективность при любой минерализации без расслоения или деэмульсации.</div>
+          <div class="approach-products"><span>Клото:</span><span class="prod-chip">СУПЕРСЛАЙДЕР® СОЛТ</span><span>·</span><span class="prod-chip">СУПЕРСЛАЙДЕР® СИЛЬВЕР</span></div>
+          <div class="env-tags"><span class="env-tag">WBM · Рассол</span><span class="env-tag">NaCl / KCl / CaCl₂</span><span class="env-tag">Форматы</span></div>
+        </div>
+        <div class="prod-card-footer">
+          <button class="btn-tds">Детали</button>
+          <button class="btn-quote">Запрос</button>
+          <button class="btn-ai">MudGPT</button>
+        </div>
+      </div>
+
+      <div class="prod-card" data-challenge="lubricity">
+        <div class="prod-card-top">
+          <div class="prod-meta"><span class="prod-cat cat-lub">СМАЗКА РУО</span></div>
+          <div class="prod-name">Смазочная обработка для буровых растворов на углеводородной основе</div>
+          <div class="prod-chemical">Полимеризованные сложные эфиры жирных кислот</div>
+          <div class="prod-desc">Модификатор трения для РУО: снижает момент, дифференциальный прихват и нагрузку на КПТ в скважинах со сложным профилем. Совместим с инвертными эмульсиями на дизельной, минеральной и синтетической основе.</div>
+          <div class="approach-products"><span>Клото:</span><span class="prod-chip">СУПЕРСЛАЙДЕР® РУО</span></div>
+          <div class="env-tags"><span class="env-tag">OBM · РУО</span><span class="env-tag">Дизель / Минмасло / Синтетика</span></div>
+        </div>
+        <div class="prod-card-footer">
+          <button class="btn-tds">Детали</button>
+          <button class="btn-quote">Запрос</button>
+          <button class="btn-ai">MudGPT</button>
+        </div>
+      </div>
+
+      <div class="prod-card" data-challenge="lubricity">
+        <div class="prod-card-top">
+          <div class="prod-meta"><span class="prod-cat cat-lub">ЭФИРНАЯ ОСНОВА</span></div>
+          <div class="prod-name">Эфирная основа для прямых эмульсий 1-го рода</div>
+          <div class="prod-chemical">Комплекс сложных эфиров жирных кислот</div>
+          <div class="prod-desc">Заменяет углеводородную базу в прямых эмульсиях. Одновременно выполняет роль смазочной добавки и базовой жидкости эмульсии типа «масло-в-воде». Снижает экологическую нагрузку при сохранении смазочных свойств.</div>
+          <div class="approach-products"><span>Клото:</span><span class="prod-chip">FOREST OIL</span></div>
+          <div class="env-tags"><span class="env-tag">WBM · Прямые эмульсии</span><span class="env-tag">Экологичный</span></div>
+        </div>
+        <div class="prod-card-footer">
+          <button class="btn-tds">Детали</button>
+          <button class="btn-quote">Запрос</button>
+          <button class="btn-ai">MudGPT</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── FLUID LOSS WBM ── -->
+  <div class="challenge-section" data-section="fluid-loss">
+    <div class="challenge-header">
+      <span class="ch-dot" style="background:var(--blue);"></span>
+      Управление фильтрацией · Буровые растворы на водной основе
+      <span class="ch-count">5 подходов</span>
+    </div>
+    <div class="catalog-grid">
+
+      <div class="prod-card" data-challenge="fluid-loss">
+        <div class="prod-card-top">
+          <div class="prod-meta"><span class="prod-cat cat-wbm">ПОНИЗИТЕЛЬ Ф. / КОЛЬМАТАНТ</span></div>
+          <div class="prod-name">Универсальный понизитель фильтрации с эффектом кольматации</div>
+          <div class="prod-chemical">Микрокольматант · Двойного действия</div>
+          <div class="prod-desc">Выполняет одновременно функции понизителя фильтрации и микрокольматанта. Универсален для всех типов WBM-систем — пресных, рассольных, гипсовых. Применяется также в РУО в качестве понизителя фильтрации.</div>
+          <div class="approach-products"><span>Клото:</span><span class="prod-chip">ОПТИТРОЛ®</span></div>
+          <div class="env-tags"><span class="env-tag">WBM / OBM</span><span class="env-tag">Универсальный</span></div>
+        </div>
+        <div class="prod-card-footer">
+          <button class="btn-tds">Детали</button>
+          <button class="btn-quote">Запрос</button>
+          <button class="btn-ai">MudGPT</button>
+        </div>
+      </div>
+
+      <div class="prod-card" data-challenge="fluid-loss">
+        <div class="prod-card-top">
+          <div class="prod-meta"><span class="prod-cat cat-wbm">ПОНИЗИТЕЛЬ Ф.</span></div>
+          <div class="prod-name">Полиакрилатный понизитель фильтрации WBM</div>
+          <div class="prod-chemical">Полиакрилат натрия · Акриловый полимер</div>
+          <div class="prod-desc">Стандартный понизитель фильтрации на основе полиакрилата натрия. Эффективен в пресных и слабоминерализованных системах. Отличается простотой применения и хорошей совместимостью с другими реагентами.</div>
+          <div class="approach-products"><span>Клото:</span><span class="prod-chip">ТЕРРАПАН®</span></div>
+          <div class="env-tags"><span class="env-tag">WBM</span><span class="env-tag">Пресный / Слабоминерализованный</span></div>
+        </div>
+        <div class="prod-card-footer">
+          <button class="btn-tds">Детали</button>
+          <button class="btn-quote">Запрос</button>
+          <button class="btn-ai">MudGPT</button>
+        </div>
+      </div>
+
+      <div class="prod-card" data-challenge="fluid-loss">
+        <div class="prod-card-top">
+          <div class="prod-meta"><span class="prod-cat cat-wbm">СТАБИЛИЗАТОР</span></div>
+          <div class="prod-name">Лигносульфонатная стабилизация: понизитель фильтрации + ингибитор</div>
+          <div class="prod-chemical">Карболигносульфонат Пековый (КЛСП)</div>
+          <div class="prod-desc">Многофункциональный реагент классической буровой химии: стабилизирует раствор, снижает фильтрацию и ингибирует глинистые интервалы. Применяется в широком диапазоне условий, включая сложные рассольные системы.</div>
+          <div class="approach-products"><span>Клото:</span><span class="prod-chip">КЛСП®</span></div>
+          <div class="env-tags"><span class="env-tag">WBM</span><span class="env-tag">Пресный / Рассол</span><span class="env-tag">Классическая химия</span></div>
+        </div>
+        <div class="prod-card-footer">
+          <button class="btn-tds">Детали</button>
+          <button class="btn-quote">Запрос</button>
+          <button class="btn-ai">MudGPT</button>
+        </div>
+      </div>
+
+      <div class="prod-card" data-challenge="fluid-loss">
+        <div class="prod-card-top">
+          <div class="prod-meta"><span class="prod-cat cat-wbm">ВЫСОКОТЕМПЕРАТУРНЫЙ</span></div>
+          <div class="prod-name">Термостойкое управление фильтрацией до 200°С</div>
+          <div class="prod-chemical">Сульфированный акриловый сополимер · Термостабильный</div>
+          <div class="prod-desc">Синтетический термостабильный сополимер для бурения «горячих» скважин с забойными температурами до 200°С. Белый сыпучий порошок, легко растворимый в воде. Сохраняет эффективность при высоких температурах и минерализации.</div>
+          <div class="approach-products"><span>Клото:</span><span class="prod-chip">ХАЙТЕМП®200</span></div>
+          <div class="env-tags"><span class="env-tag">WBM</span><span class="env-tag">До 200°С</span><span class="env-tag">Высокая минерализация</span></div>
+        </div>
+        <div class="prod-card-footer">
+          <button class="btn-tds">Детали</button>
+          <button class="btn-quote">Запрос</button>
+          <button class="btn-ai">MudGPT</button>
+        </div>
+      </div>
+
+      <div class="prod-card" data-challenge="fluid-loss">
+        <div class="prod-card-top">
+          <div class="prod-meta"><span class="prod-cat cat-wbm">УЛЬТРАВЫСОКОТЕМПЕРАТУРНЫЙ</span></div>
+          <div class="prod-name">Ультратермостойкая система фильтрации до 250°С с терполимером</div>
+          <div class="prod-chemical">Синтетический термостойкий терполимер + сополимер</div>
+          <div class="prod-desc">Максимальная термостойкость для экстремально «горячих» скважин — до 250°С. Специально разработан для применения в условиях высоких температур и высокой концентрации солей. Дополняется термостойким загустителем для комплексной обработки.</div>
+          <div class="approach-products"><span>Клото:</span><span class="prod-chip">ХАЙТЕМП®СУПРИМ</span><span>·</span><span class="prod-chip">GX-ПОЛИМЕР</span></div>
+          <div class="env-tags"><span class="env-tag">WBM</span><span class="env-tag">До 250°С</span><span class="env-tag">Рассолы / HPHT</span></div>
+        </div>
+        <div class="prod-card-footer">
+          <button class="btn-tds">Детали</button>
+          <button class="btn-quote">Запрос</button>
+          <button class="btn-ai">MudGPT</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── LCM ── -->
+  <div class="challenge-section" data-section="lcm">
+    <div class="challenge-header">
+      <span class="ch-dot" style="background:var(--amber);"></span>
+      Борьба с поглощениями · Lost Circulation Materials
+      <span class="ch-count">3 подхода</span>
+    </div>
+    <div class="catalog-grid">
+
+      <div class="prod-card" data-challenge="lcm">
+        <div class="prod-card-top">
+          <div class="prod-meta"><span class="prod-cat cat-lcm">УКРЕПЛЕНИЕ СТВОЛА</span></div>
+          <div class="prod-name">Укрепление ствола скважины: целлюлозный кольматант</div>
+          <div class="prod-chemical">Микрокристаллическая модифицированная целлюлоза</div>
+          <div class="prod-desc">Повышает градиент гидроразрыва породы и укрепляет стенки скважины при несовместимых условиях бурения. Предотвращает поглощение бурового раствора и снижает риск дифференциального прихвата в проницаемых интервалах.</div>
+          <div class="approach-products"><span>Клото:</span><span class="prod-chip">ЖИДКАЯ ОБСАДНАЯ КОЛОННА</span></div>
+          <div class="env-tags"><span class="env-tag">WBM / OBM</span><span class="env-tag">Проницаемые интервалы</span><span class="env-tag">Превентивный</span></div>
+        </div>
+        <div class="prod-card-footer">
+          <button class="btn-tds">Детали</button>
+          <button class="btn-quote">Запрос</button>
+          <button class="btn-ai">MudGPT</button>
+        </div>
+      </div>
+
+      <div class="prod-card" data-challenge="lcm">
+        <div class="prod-card-top">
+          <div class="prod-meta"><span class="prod-cat cat-lcm">КИСЛОТОРАСТВОРИМЫЙ</span></div>
+          <div class="prod-name">Кислоторастворимый кольматант для продуктивных пластов</div>
+          <div class="prod-chemical">Карбонат кальция хлопьевидный · Кислоторастворимый</div>
+          <div class="prod-desc">Хлопьевидный карбонат кальция — кислоторастворимый продукт для ликвидации поглощений в продуктивных пластах. Не наносит необратимого ущерба коллектору. Применяется самостоятельно или в комбинации с другими LCM-материалами.</div>
+          <div class="approach-products"><span>Клото:</span><span class="prod-chip">КАРБО-БЛОК</span></div>
+          <div class="env-tags"><span class="env-tag">WBM / OBM</span><span class="env-tag">Продуктивные пласты</span><span class="env-tag">Кислоторастворимый</span></div>
+        </div>
+        <div class="prod-card-footer">
+          <button class="btn-tds">Детали</button>
+          <button class="btn-quote">Запрос</button>
+          <button class="btn-ai">MudGPT</button>
+        </div>
+      </div>
+
+      <div class="prod-card" data-challenge="lcm">
+        <div class="prod-card-top">
+          <div class="prod-meta"><span class="prod-cat cat-lcm">ОТВЕРЖДАЕМАЯ СМОЛА</span></div>
+          <div class="prod-name">Отверждаемая смола для ликвидации поглощений в РУО</div>
+          <div class="prod-chemical">Органическая смола + отвердитель CaCl₂ · Двухкомпонентная система</div>
+          <div class="prod-desc">Двухкомпонентная система: органическая смола WELLBOND® и отвердитель — рассол хлористого кальция. Закачивается в зону поглощения, где отверждается и надёжно перекрывает трещины. Предназначена специально для РУО-систем.</div>
+          <div class="approach-products"><span>Клото:</span><span class="prod-chip">WELLBOND®</span></div>
+          <div class="env-tags"><span class="env-tag">OBM · РУО</span><span class="env-tag">Трещиноватые зоны</span><span class="env-tag">Надёжная закупорка</span></div>
+        </div>
+        <div class="prod-card-footer">
+          <button class="btn-tds">Детали</button>
+          <button class="btn-quote">Запрос</button>
+          <button class="btn-ai">MudGPT</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── OBM SYSTEMS ── -->
+  <div class="challenge-section" data-section="obm">
+    <div class="challenge-header">
+      <span class="ch-dot" style="background:var(--cloto);"></span>
+      РУО-системы · Эмульсия, фильтрация, реология
+      <span class="ch-count">14 подходов</span>
+    </div>
+    <div class="catalog-grid">
+
+      <div class="prod-card" data-challenge="obm">
+        <div class="prod-card-top">
+          <div class="prod-meta"><span class="prod-cat cat-obm">ПЕРВИЧНЫЙ ЭМУЛЬГАТОР</span></div>
+          <div class="prod-name">Первичная эмульсификация инвертной эмульсии РУО</div>
+          <div class="prod-chemical">Полиаминированная жирная кислота</div>
+          <div class="prod-desc">Стандартный первичный эмульгатор для буровых растворов на углеводородной основе. Обеспечивает стабильную инвертную эмульсию типа «вода-в-масле». Применяется на дизельной, минеральной и синтетической основах.</div>
+          <div class="approach-products"><span>Клото:</span><span class="prod-chip">ЭКСТРАМУЛ® 2000</span></div>
+          <div class="env-tags"><span class="env-tag">OBM</span><span class="env-tag">Дизель / Минмасло / Синтетика</span></div>
+        </div>
+        <div class="prod-card-footer">
+          <button class="btn-tds">Детали</button>
+          <button class="btn-quote">Запрос</button>
+          <button class="btn-ai">MudGPT</button>
+        </div>
+      </div>
+
+      <div class="prod-card" data-challenge="obm">
+        <div class="prod-card-top">
+          <div class="prod-meta"><span class="prod-cat cat-obm">ПЕРВИЧНЫЙ ЭМУЛЬГАТОР · HTHP</span></div>
+          <div class="prod-name">Термостойкий первичный эмульгатор для HTHP-условий</div>
+          <div class="prod-chemical">Маслорастворимый полиамид таллового масла · Термостойкий</div>
+          <div class="prod-desc">Высокоэффективный термостойкий первичный эмульгатор и смачивающий агент для РУО в экстремальных забойных условиях. Обеспечивает стабильность инвертной эмульсии при высоких температурах и давлениях.</div>
+          <div class="approach-products"><span>Клото:</span><span class="prod-chip">ЭКСТРАМУЛ® СУПРИМ</span></div>
+          <div class="env-tags"><span class="env-tag">OBM</span><span class="env-tag">HTHP</span><span class="env-tag">Высокие температуры</span></div>
+        </div>
+        <div class="prod-card-footer">
+          <button class="btn-tds">Детали</button>
+          <button class="btn-quote">Запрос</button>
+          <button class="btn-ai">MudGPT</button>
+        </div>
+      </div>
+
+      <div class="prod-card" data-challenge="obm">
+        <div class="prod-card-top">
+          <div class="prod-meta"><span class="prod-cat cat-obm">ВТОРИЧНЫЙ ЭМУЛЬГАТОР</span></div>
+          <div class="prod-name">Вторичная эмульсификация и гидрофобизация твёрдой фазы</div>
+          <div class="prod-chemical">Концентрированный вторичный эмульгатор + ПАВ-гидрофобизатор</div>
+          <div class="prod-desc">Комплексная обработка: ЭКСТРАМУЛ® C обеспечивает устойчивость эмульсии как вторичный эмульгатор, ВЕЛЛТРИТ® гидрофобизирует твёрдую фазу. Совместное применение повышает стабильность инвертной эмульсии.</div>
+          <div class="approach-products"><span>Клото:</span><span class="prod-chip">ЭКСТРАМУЛ® C</span><span>·</span><span class="prod-chip">ВЕЛЛТРИТ®</span></div>
+          <div class="env-tags"><span class="env-tag">OBM</span><span class="env-tag">Стандарт + HTHP</span></div>
+        </div>
+        <div class="prod-card-footer">
+          <button class="btn-tds">Детали</button>
+          <button class="btn-quote">Запрос</button>
+          <button class="btn-ai">MudGPT</button>
+        </div>
+      </div>
+
+      <div class="prod-card" data-challenge="obm">
+        <div class="prod-card-top">
+          <div class="prod-meta"><span class="prod-cat cat-obm">АРКТИЧЕСКИЙ ЭМУЛЬГАТОР</span></div>
+          <div class="prod-name">Порошковый эмульгатор РУО для арктических условий</div>
+          <div class="prod-chemical">Порошкообразный эмульгатор · Обратные эмульсии</div>
+          <div class="prod-desc">Сухой эмульгатор для создания инвертных эмульсий типа «вода-в-нефти» в условиях низких температур арктических регионов. Требует добавления извести для образования кальциевых мыл. Оптимален для Арктики и Сибири.</div>
+          <div class="approach-products"><span>Клото:</span><span class="prod-chip">КЛСП® РУО</span></div>
+          <div class="env-tags"><span class="env-tag">OBM</span><span class="env-tag">Арктика / Холодный климат</span></div>
+        </div>
+        <div class="prod-card-footer">
+          <button class="btn-tds">Детали</button>
+          <button class="btn-quote">Запрос</button>
+          <button class="btn-ai">MudGPT</button>
+        </div>
+      </div>
+
+      <div class="prod-card" data-challenge="obm">
+        <div class="prod-card-top">
+          <div class="prod-meta"><span class="prod-cat cat-obm">ПОНИЗИТЕЛЬ Ф. РУО</span></div>
+          <div class="prod-name">Кольматация органофильным лигнитом в сложных забойных условиях</div>
+          <div class="prod-chemical">Органофильный лигнит · Термостойкий</div>
+          <div class="prod-desc">Эффективный понизитель фильтрации для РУО на основе специально обработанного лигнита. Обеспечивает надёжное снижение ВФВТ в сложных условиях: высокие температуры, давления, нестандартный состав углеводородной основы.</div>
+          <div class="approach-products"><span>Клото:</span><span class="prod-chip">КЛОТОНЕКС®</span></div>
+          <div class="env-tags"><span class="env-tag">OBM</span><span class="env-tag">HTHP</span><span class="env-tag">Сложные условия</span></div>
+        </div>
+        <div class="prod-card-footer">
+          <button class="btn-tds">Детали</button>
+          <button class="btn-quote">Запрос</button>
+          <button class="btn-ai">MudGPT</button>
+        </div>
+      </div>
+
+      <div class="prod-card" data-challenge="obm">
+        <div class="prod-card-top">
+          <div class="prod-meta"><span class="prod-cat cat-obm">НУЛЕВАЯ ФИЛЬТРАЦИЯ</span></div>
+          <div class="prod-name">Достижение нулевого показателя фильтрации РУО</div>
+          <div class="prod-chemical">Жидкий латекс-понизитель фильтрации</div>
+          <div class="prod-desc">Высокоэффективный жидкий понизитель фильтрации: при использовании фильтрация по ВФВТ может достигать нуля, включая испытания на керамических дисках. Превосходит порошковые аналоги по эффективности при HTHP.</div>
+          <div class="approach-products"><span>Клото:</span><span class="prod-chip">АДВАНТА® Жидкая</span></div>
+          <div class="env-tags"><span class="env-tag">OBM</span><span class="env-tag">HTHP</span><span class="env-tag">Нулевая фильтрация</span></div>
+        </div>
+        <div class="prod-card-footer">
+          <button class="btn-tds">Детали</button>
+          <button class="btn-quote">Запрос</button>
+          <button class="btn-ai">MudGPT</button>
+        </div>
+      </div>
+
+      <div class="prod-card" data-challenge="obm">
+        <div class="prod-card-top">
+          <div class="prod-meta"><span class="prod-cat cat-obm">ПОНИЗИТЕЛЬ Ф. РУО</span></div>
+          <div class="prod-name">Экономичный понизитель фильтрации РУО: порошок и суспензия</div>
+          <div class="prod-chemical">Белый полимерный порошок + полимерная суспензия</div>
+          <div class="prod-desc">Двойной вариант применения: АДВАНТА® — сухой белый полимерный порошок, не нарушающий свойства коллектора; ЛИКВИТРОЛ® — жидкая полимерная суспензия для оперативного ввода. Обеспечивают сниженные значения ВФВТ.</div>
+          <div class="approach-products"><span>Клото:</span><span class="prod-chip">АДВАНТА®</span><span>·</span><span class="prod-chip">ЛИКВИТРОЛ®</span></div>
+          <div class="env-tags"><span class="env-tag">OBM</span><span class="env-tag">Дизель / Минмасло</span><span class="env-tag">Экономичный</span></div>
+        </div>
+        <div class="prod-card-footer">
+          <button class="btn-tds">Детали</button>
+          <button class="btn-quote">Запрос</button>
+          <button class="btn-ai">MudGPT</button>
+        </div>
+      </div>
+
+      <div class="prod-card" data-challenge="obm">
+        <div class="prod-card-top">
+          <div class="prod-meta"><span class="prod-cat cat-obm">ПОНИЗИТЕЛЬ Ф. + СТАБИЛИЗАТОР</span></div>
+          <div class="prod-name">Гильсонитовый понизитель фильтрации с кольматацией сланцев</div>
+          <div class="prod-chemical">Гильсонит / Асфальтит · Пористая кольматация</div>
+          <div class="prod-desc">Понизитель фильтрации на основе гильсонита/асфальтита для РУО. Препятствует осыпанию глинистых сланцев за счёт закупоривания пор и микротрещин. Двойной эффект: снижение фильтрации + стабилизация ствола в проблемных интервалах.</div>
+          <div class="approach-products"><span>Клото:</span><span class="prod-chip">СТАБИЛАЙТ® РУО</span></div>
+          <div class="env-tags"><span class="env-tag">OBM</span><span class="env-tag">Глинистые сланцы</span></div>
+        </div>
+        <div class="prod-card-footer">
+          <button class="btn-tds">Детали</button>
+          <button class="btn-quote">Запрос</button>
+          <button class="btn-ai">MudGPT</button>
+        </div>
+      </div>
+
+      <div class="prod-card" data-challenge="obm">
+        <div class="prod-card-top">
+          <div class="prod-meta"><span class="prod-cat cat-obm">ПОНИЗИТЕЛЬ Ф. РУО</span></div>
+          <div class="prod-name">Универсальный понизитель фильтрации для РУО всех типов</div>
+          <div class="prod-chemical">Микрокольматант + понизитель фильтрации · Двойного действия</div>
+          <div class="prod-desc">Универсальный вариант ОПТИТРОЛ® для РУО: совмещает функции понизителя фильтрации и микрокольматанта. Совместим с различными углеводородными основами без изменения реологических свойств.</div>
+          <div class="approach-products"><span>Клото:</span><span class="prod-chip">ОПТИТРОЛ® РУО</span></div>
+          <div class="env-tags"><span class="env-tag">OBM</span><span class="env-tag">Универсальный</span></div>
+        </div>
+        <div class="prod-card-footer">
+          <button class="btn-tds">Детали</button>
+          <button class="btn-quote">Запрос</button>
+          <button class="btn-ai">MudGPT</button>
+        </div>
+      </div>
+
+      <div class="prod-card" data-challenge="obm">
+        <div class="prod-card-top">
+          <div class="prod-meta"><span class="prod-cat cat-obm">РЕОЛОГИЯ · СНС / ДНС</span></div>
+          <div class="prod-name">Целевое повышение гелеобразования без роста пластической вязкости</div>
+          <div class="prod-chemical">Органофильный полимерный загуститель · РЕОМОД® Суприм</div>
+          <div class="prod-desc">Увеличивает значения статического и динамического напряжения сдвига (СНС/ДНС) при минимальном влиянии на пластическую вязкость. Позволяет тонко настроить реологический профиль инвертной эмульсии без общего загущения.</div>
+          <div class="approach-products"><span>Клото:</span><span class="prod-chip">РЕОМОД® СУПРИМ</span></div>
+          <div class="env-tags"><span class="env-tag">OBM</span><span class="env-tag">Реологическая настройка</span></div>
+        </div>
+        <div class="prod-card-footer">
+          <button class="btn-tds">Детали</button>
+          <button class="btn-quote">Запрос</button>
+          <button class="btn-ai">MudGPT</button>
+        </div>
+      </div>
+
+      <div class="prod-card" data-challenge="obm">
+        <div class="prod-card-top">
+          <div class="prod-meta"><span class="prod-cat cat-obm">РЕОЛОГИЯ · ЗАГУСТИТЕЛЬ</span></div>
+          <div class="prod-name">Органофильная глина: первичный загуститель РУО</div>
+          <div class="prod-chemical">Модифицированный бентонит · Органофильный</div>
+          <div class="prod-desc">Модифицированный органофильный бентонит — основной загуститель для формирования реологического профиля инвертной эмульсии. Обеспечивает стабильную структуру геля, несущую способность раствора и удерживание шлама при остановке циркуляции.</div>
+          <div class="approach-products"><span>Клото:</span><span class="prod-chip">ТЕРМАВИС® РУО</span></div>
+          <div class="env-tags"><span class="env-tag">OBM</span><span class="env-tag">Базовый загуститель</span></div>
+        </div>
+        <div class="prod-card-footer">
+          <button class="btn-tds">Детали</button>
+          <button class="btn-quote">Запрос</button>
+          <button class="btn-ai">MudGPT</button>
+        </div>
+      </div>
+
+      <div class="prod-card" data-challenge="obm">
+        <div class="prod-card-top">
+          <div class="prod-meta"><span class="prod-cat cat-obm">РЕОЛОГИЯ · ЖИДКИЙ</span></div>
+          <div class="prod-name">Жидкий модификатор реологии для гибкой настройки РУО</div>
+          <div class="prod-chemical">Полимеризованные жирные кислоты и их производные</div>
+          <div class="prod-desc">Жидкий реологический модификатор на основе полимеризованных жирных кислот. Удобен для точной дозировки и оперативной корректировки реологии на буровой. Особенно полезен при изменении состава и добавлении нового объёма раствора.</div>
+          <div class="approach-products"><span>Клото:</span><span class="prod-chip">РЕОМОД® Жидкий</span></div>
+          <div class="env-tags"><span class="env-tag">OBM</span><span class="env-tag">Оперативная корректировка</span></div>
+        </div>
+        <div class="prod-card-footer">
+          <button class="btn-tds">Детали</button>
+          <button class="btn-quote">Запрос</button>
+          <button class="btn-ai">MudGPT</button>
+        </div>
+      </div>
+
+      <div class="prod-card" data-challenge="obm">
+        <div class="prod-card-top">
+          <div class="prod-meta"><span class="prod-cat cat-obm">РАЗЖИЖЕНИЕ РУО</span></div>
+          <div class="prod-name">Снижение вязкости и разжижение перегущённого РУО</div>
+          <div class="prod-chemical">Высококонцентрированный разжижитель РУО</div>
+          <div class="prod-desc">Применяется при избыточном загущении инвертной эмульсии: снижает пластическую вязкость и напряжение сдвига без нарушения стабильности эмульсии и показателя фильтрации. Особенно полезен после утяжеления или набора шлама.</div>
+          <div class="approach-products"><span>Клото:</span><span class="prod-chip">ЭКСТРА-ДЕФ®</span><span>·</span><span class="prod-chip">РЕОМОД®</span></div>
+          <div class="env-tags"><span class="env-tag">OBM</span><span class="env-tag">Корректировка реологии</span></div>
+        </div>
+        <div class="prod-card-footer">
+          <button class="btn-tds">Детали</button>
+          <button class="btn-quote">Запрос</button>
+          <button class="btn-ai">MudGPT</button>
+        </div>
+      </div>
+
+      <div class="prod-card" data-challenge="obm">
+        <div class="prod-card-top">
+          <div class="prod-meta"><span class="prod-cat cat-obm">КОНТРОЛЬ ТВЁРДОЙ ФАЗЫ</span></div>
+          <div class="prod-name">Флокуляция и контроль твёрдой фазы в РУО</div>
+          <div class="prod-chemical">Смесь органических ПАВ · Флокулянт / коагулянт</div>
+          <div class="prod-desc">Мощный флокулянт/коагулянт для эффективного разделения твёрдой фазы от углеводородной основы при работе оборудования очистки (УМОШ). Снижает содержание сверхтонкой твёрдой фазы, продлевает жизнь раствора.</div>
+          <div class="approach-products"><span>Клото:</span><span class="prod-chip">ЭКСТРА-ФЛО®</span></div>
+          <div class="env-tags"><span class="env-tag">OBM</span><span class="env-tag">УМОШ / Очистка раствора</span></div>
+        </div>
+        <div class="prod-card-footer">
+          <button class="btn-tds">Детали</button>
+          <button class="btn-quote">Запрос</button>
+          <button class="btn-ai">MudGPT</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── COMPLETION ── -->
+  <div class="challenge-section" data-section="completion">
+    <div class="challenge-header">
+      <span class="ch-dot" style="background:var(--green);"></span>
+      Заканчивание скважин · Очистка ствола · Специализированные задачи
+      <span class="ch-count">5 подходов</span>
+    </div>
+    <div class="catalog-grid">
+
+      <div class="prod-card" data-challenge="completion">
+        <div class="prod-card-top">
+          <div class="prod-meta"><span class="prod-cat cat-wbm">СКОРОСТЬ БУРЕНИЯ</span></div>
+          <div class="prod-name">Ускоритель механической скорости бурения + детергент</div>
+          <div class="prod-chemical">Противосальниковая добавка + детергент · Многофункциональный</div>
+          <div class="prod-desc">Увеличивает МСП за счёт противосальникового эффекта и улучшения гидравлической очистки забоя. Снижает момент на КНБК. Детергентные свойства обеспечивают отмыв поверхности долота и забоя от выбуренной породы.</div>
+          <div class="approach-products"><span>Клото:</span><span class="prod-chip">ДРИЛФАСТ</span></div>
+          <div class="env-tags"><span class="env-tag">WBM</span><span class="env-tag">Скорость бурения</span><span class="env-tag">Очистка забоя</span></div>
+        </div>
+        <div class="prod-card-footer">
+          <button class="btn-tds">Детали</button>
+          <button class="btn-quote">Запрос</button>
+          <button class="btn-ai">MudGPT</button>
+        </div>
+      </div>
+
+      <div class="prod-card" data-challenge="completion">
+        <div class="prod-card-top">
+          <div class="prod-meta"><span class="prod-cat cat-lcm">БУФЕР ЦЕМЕНТИРОВАНИЯ</span></div>
+          <div class="prod-name">Буферный состав для отмыва ствола перед цементированием (после РУО)</div>
+          <div class="prod-chemical">Концентрат буферного спейсера · Отмыв РУО</div>
+          <div class="prod-desc">Специализированный буфер для качественной очистки ствола скважины от остатков РУО перед цементированием. Обеспечивает совместимость между РУО и цементным раствором, улучшает сцепление цементного камня со стенкой скважины.</div>
+          <div class="approach-products"><span>Клото:</span><span class="prod-chip">СПЕЙСЕР-55</span></div>
+          <div class="env-tags"><span class="env-tag">После РУО</span><span class="env-tag">Перед цементированием</span></div>
+        </div>
+        <div class="prod-card-footer">
+          <button class="btn-tds">Детали</button>
+          <button class="btn-quote">Запрос</button>
+          <button class="btn-ai">MudGPT</button>
+        </div>
+      </div>
+
+      <div class="prod-card" data-challenge="completion">
+        <div class="prod-card-top">
+          <div class="prod-meta"><span class="prod-cat cat-wbm">ВСКРЫТИЕ ПЛАСТА</span></div>
+          <div class="prod-name">ПАВ для первичного вскрытия продуктивного пласта</div>
+          <div class="prod-chemical">Экологически безопасный поверхностно-активный вещество</div>
+          <div class="prod-desc">Экологически безопасная добавка для буровых растворов при первичном вскрытии продуктивного пласта и жидкостей заканчивания. Активирует коллектор, снижает поверхностное натяжение, улучшает отдачу углеводородов. Не наносит ущерба пласту.</div>
+          <div class="approach-products"><span>Клото:</span><span class="prod-chip">АПП-490</span></div>
+          <div class="env-tags"><span class="env-tag">WBM</span><span class="env-tag">Продуктивный пласт</span><span class="env-tag">Экологичный</span></div>
+        </div>
+        <div class="prod-card-footer">
+          <button class="btn-tds">Детали</button>
+          <button class="btn-quote">Запрос</button>
+          <button class="btn-ai">MudGPT</button>
+        </div>
+      </div>
+
+      <div class="prod-card" data-challenge="completion">
+        <div class="prod-card-top">
+          <div class="prod-meta"><span class="prod-cat cat-wbm">ДЕФЛОКУЛЯЦИЯ</span></div>
+          <div class="prod-name">Таниновая дефлокуляция: разжижение загущённого WBM-раствора</div>
+          <div class="prod-chemical">Экстракт квебрахо / Синтетический таниновый разжижитель</div>
+          <div class="prod-desc">В 4–6 раз эффективнее лигносульфонатов как разжижитель. Выраженные анионные свойства — нейтрализует положительный заряд на торцах глинистых пластин, разрушает карточные домики. Применим как замедлитель гидратации цемента.</div>
+          <div class="approach-products"><span>Клото:</span><span class="prod-chip">ТАНАТИН®</span><span>·</span><span class="prod-chip">ТАНАТИН® Жидкий</span></div>
+          <div class="env-tags"><span class="env-tag">WBM</span><span class="env-tag">Пресный / Цементное загрязнение</span></div>
+        </div>
+        <div class="prod-card-footer">
+          <button class="btn-tds">Детали</button>
+          <button class="btn-quote">Запрос</button>
+          <button class="btn-ai">MudGPT</button>
+        </div>
+      </div>
+
+      <div class="prod-card" data-challenge="completion">
+        <div class="prod-card-top">
+          <div class="prod-meta"><span class="prod-cat cat-flo">ПРЯМАЯ ЭМУЛЬСИЯ</span></div>
+          <div class="prod-name">Создание прямой эмульсии типа «масло-в-воде»</div>
+          <div class="prod-chemical">Эмульгатор прямых эмульсий 1-го рода</div>
+          <div class="prod-desc">Специализированный эмульгатор для буровых растворов на основе прямой эмульсии (масло-в-воде). Применяется при бурении в условиях, где необходима смазка эмульсионного раствора без перехода на инвертную эмульсию.</div>
+          <div class="approach-products"><span>Клото:</span><span class="prod-chip">ЭКСТРАМУЛ® ДИРЕКТ</span></div>
+          <div class="env-tags"><span class="env-tag">WBM · Прямая эмульсия</span><span class="env-tag">O/W эмульсия</span></div>
+        </div>
+        <div class="prod-card-footer">
+          <button class="btn-tds">Детали</button>
+          <button class="btn-quote">Запрос</button>
+          <button class="btn-ai">MudGPT</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="no-results" id="noResults">Нет совпадений по заданным фильтрам</div>
+
+</div><!-- /catalog-body -->
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="cta-glow"></div>
+  <div class="section-label" style="justify-content:center;margin-bottom:var(--s4);"><span class="sl-dot"></span>MudGPT · AI-консультант</div>
+  <h2>Спросите <span class="c">MudGPT</span> о задаче</h2>
+  <p class="cta-sub">Опишите условия скважины и операционную задачу — MudGPT подберёт оптимальный подход и конкретные реагенты из базы Клото.</p>
+  <div class="cta-actions">
+    <a class="btn-large" href="docs/87_mudgpt_chemicals_materials.html">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      Открыть MudGPT
+    </a>
+    <a class="btn-outline" href="proposal-ru.html">Запросить коммерческое предложение</a>
+    <a class="btn-cloto" href="docs/93_mudgpt_stock_arkhangelsk.html">Склад Архангельск</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <a class="nav-logo" href="index-ru.html" style="margin-bottom:var(--s4);display:inline-flex;">
+        <div class="dq-mark">DQ</div>
+        <div class="dq-wordmark">
+          <div class="dq-name">DRILL-Q</div>
+          <div class="dq-powered">powered by <span>cloto</span></div>
+        </div>
+      </a>
+      <p class="footer-brand-desc">Chemical Intelligence Library — операционный справочник технологических подходов. 43 архитектуры решений на основе 33-летней экспертизы Клото.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Задачи</h4>
+      <ul>
+        <li><a href="#" onclick="setFilter('shale',null);return false;">Стабилизация ствола</a></li>
+        <li><a href="#" onclick="setFilter('lubricity',null);return false;">Смазочные свойства</a></li>
+        <li><a href="#" onclick="setFilter('fluid-loss',null);return false;">Управление фильтрацией</a></li>
+        <li><a href="#" onclick="setFilter('lcm',null);return false;">Борьба с поглощениями</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Платформа</h4>
+      <ul>
+        <li><a href="index-ru.html">DRILL-Q</a></li>
+        <li><a href="tools-ru.html">Инструменты</a></li>
+        <li><a href="proposal-ru.html">Тендеры</a></li>
+        <li><a href="docs/87_mudgpt_chemicals_materials.html">MudGPT</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Клото</h4>
+      <ul>
+        <li><a href="catalog-en.html">English</a></li>
+        <li><a href="docs/93_mudgpt_stock_arkhangelsk.html">Склад</a></li>
+        <li><a href="proposal-ru.html">Запрос</a></li>
+        <li><a href="mailto:arcticdf@gmail.com">arcticdf@gmail.com</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 ООО «КЛОТО» · DRILL-Q Chemical Intelligence Library</span>
+    <div class="footer-links">
+      <a href="catalog-en.html">EN</a>
+      <a href="index-ru.html">Платформа</a>
+      <a href="tools-ru.html">Инструменты</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+let currentFilter = 'all';
+
+function setFilter(filter, btn) {
+  currentFilter = filter;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  else {
+    document.querySelectorAll('.filter-btn').forEach(b => {
+      if (b.getAttribute('onclick') && b.getAttribute('onclick').includes("'" + filter + "'")) b.classList.add('active');
+    });
+  }
+  filterLib();
+}
+
+function filterLib() {
+  const query = (document.getElementById('libSearch').value || '').toLowerCase();
+  let visible = 0;
+
+  document.querySelectorAll('.prod-card').forEach(card => {
+    const challenge = card.getAttribute('data-challenge');
+    const text = card.textContent.toLowerCase();
+    const matchFilter = currentFilter === 'all' || challenge === currentFilter;
+    const matchSearch = !query || text.includes(query);
+    const show = matchFilter && matchSearch;
+    card.style.display = show ? '' : 'none';
+    if (show) visible++;
+  });
+
+  document.querySelectorAll('.challenge-section').forEach(sec => {
+    const cards = sec.querySelectorAll('.prod-card');
+    const anyVisible = Array.from(cards).some(c => c.style.display !== 'none');
+    sec.style.display = anyVisible ? '' : 'none';
+  });
+
+  document.getElementById('noResults').style.display = visible === 0 ? 'block' : 'none';
+  const cnt = document.getElementById('cnt-all');
+  if (cnt) cnt.textContent = visible;
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,671 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>135 · Северо-Ярудейское · Траектории скважин</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap");
+
+    :root {
+      --bg-0:#071018;
+      --bg-1:#102030;
+      --bg-2:#1b3041;
+      --panel:rgba(11,20,31,.84);
+      --line:rgba(227,238,255,.14);
+      --line-soft:rgba(227,238,255,.08);
+      --text:#edf5ff;
+      --muted:#a8bdd2;
+      --cyan:#22d7b4;
+      --amber:#f8bd5f;
+      --blue:#8db4ff;
+      --violet:#c6a6ff;
+      --rose:#ff8e8e;
+      --shadow:0 20px 48px rgba(0,0,0,.42);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      font-family: "Manrope", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(900px 460px at 0% -10%, rgba(34,215,180,.18), transparent),
+        radial-gradient(760px 420px at 100% 0%, rgba(141,180,255,.16), transparent),
+        linear-gradient(145deg, var(--bg-0), var(--bg-1) 46%, var(--bg-2));
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(to right, rgba(255,255,255,.02) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,.02) 1px, transparent 1px);
+      background-size: 38px 38px;
+      mask-image: radial-gradient(circle at 50% 18%, rgba(0,0,0,.95), transparent 72%);
+    }
+
+    .wrap {
+      position: relative;
+      z-index: 1;
+      width: min(1400px, 94vw);
+      margin: 0 auto;
+      padding: 24px 0 64px;
+    }
+
+    .top,
+    .hero,
+    .section {
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 12px 16px;
+      position: sticky;
+      top: 12px;
+      z-index: 20;
+      backdrop-filter: blur(10px);
+      background: rgba(8,15,24,.66);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: "Oswald", sans-serif;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      font-size: 20px;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 35% 35%, #d6fff7, var(--cyan));
+      box-shadow: 0 0 18px rgba(34,215,180,.45);
+    }
+
+    .nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .nav a {
+      text-decoration: none;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      font-weight: 800;
+      border-radius: 10px;
+      padding: 8px 12px;
+      color: #082922;
+      background: linear-gradient(130deg, #a0f9eb, #22d7b4);
+      border: 1px solid rgba(34,215,180,.75);
+    }
+
+    .hero,
+    .section {
+      margin-top: 18px;
+      padding: 22px;
+    }
+
+    .hero {
+      background:
+        radial-gradient(520px 220px at 6% 0%, rgba(34,215,180,.12), transparent),
+        radial-gradient(560px 240px at 100% 0%, rgba(141,180,255,.14), transparent),
+        var(--panel);
+    }
+
+    .eyebrow,
+    .tag,
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line-soft);
+      background: rgba(255,255,255,.04);
+      color: #d8e8f8;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    h1, h2, h3 {
+      margin: 0;
+      font-family: "Oswald", sans-serif;
+      letter-spacing: -.01em;
+    }
+
+    .hero h1 {
+      margin: 14px 0 10px;
+      font-size: clamp(34px, 5vw, 58px);
+      line-height: .95;
+      max-width: 980px;
+    }
+
+    p,
+    li {
+      color: #c9d9eb;
+      line-height: 1.65;
+      font-size: 14px;
+      margin: 0;
+    }
+
+    .hero-grid,
+    .summary-grid,
+    .trajectory-grid,
+    .legend-list,
+    .stats-row {
+      display: grid;
+      gap: 14px;
+    }
+
+    .hero-grid {
+      margin-top: 18px;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .hero-stat,
+    .summary-card,
+    .trajectory-card,
+    .legend-item {
+      border: 1px solid var(--line-soft);
+      border-radius: 18px;
+      background: rgba(255,255,255,.03);
+      padding: 16px;
+    }
+
+    .hero-stat strong,
+    .metric strong {
+      display: block;
+      font-size: 26px;
+      line-height: 1;
+    }
+
+    .hero-stat span,
+    .metric span,
+    .legend-meta,
+    .caption {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .summary-grid {
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      margin-top: 14px;
+    }
+
+    .summary-card p {
+      margin-top: 8px;
+    }
+
+    .trajectory-grid {
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      margin-top: 14px;
+    }
+
+    .trajectory-card {
+      display: grid;
+      gap: 14px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.02)),
+        rgba(255,255,255,.02);
+    }
+
+    .card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .card-head h3 {
+      font-size: 28px;
+    }
+
+    .profile-type {
+      white-space: nowrap;
+    }
+
+    .stats-row {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .metric {
+      border: 1px solid var(--line-soft);
+      border-radius: 14px;
+      padding: 12px;
+      background: rgba(255,255,255,.02);
+    }
+
+    .chart-shell {
+      border: 1px solid var(--line-soft);
+      border-radius: 18px;
+      padding: 10px;
+      background: linear-gradient(180deg, rgba(8,15,24,.72), rgba(13,24,36,.92));
+      overflow: hidden;
+    }
+
+    .chart-shell svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .meta-line {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .note {
+      margin-top: 14px;
+      border: 1px solid rgba(198,166,255,.25);
+      border-radius: 16px;
+      background: rgba(198,166,255,.08);
+      padding: 14px 16px;
+      color: #e2d8ff;
+      line-height: 1.62;
+      font-size: 14px;
+    }
+
+    .legend-list {
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      margin-top: 14px;
+    }
+
+    .legend-swatch {
+      width: 14px;
+      height: 14px;
+      border-radius: 999px;
+      display: inline-block;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+
+    .footer {
+      margin-top: 16px;
+      font-size: 12px;
+      color: #8ea2bc;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    @media (max-width: 980px) {
+      .top { position: static; }
+      .hero-grid,
+      .stats-row { grid-template-columns: 1fr; }
+    }
+  </style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+  <main class="wrap">
+    <header class="top">
+      <a class="brand" href="119_severo_yarudeyskoe_project_dashboard.html"><span class="dot" aria-hidden="true"></span><span>Северо-Ярудейское</span></a>
+      <nav class="nav">
+        <a href="119_severo_yarudeyskoe_project_dashboard.html">К дашборду проекта</a>
+        <a href="134_severo_yarudeyskoe_well_constructions.html">Конструкция</a>
+        <a href="56_fields_projects_dashboard.html">Мои месторождения</a>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <span class="eyebrow">Doc 135 · Траектории скважин</span>
+      <h1>Северо-Ярудейское · Траектории фонда 301-308</h1>
+      <p>Ниже собрана одна страница по траекториям всего фонда. Для каждой скважины показан отдельный мини-график профиля в проекции отход-TVD, а также ключевые показатели по финальной глубине, отходу и характеру набора зенитного угла. Графики построены по вручную оцифрованным survey-таблицам с предоставленных скринов.</p>
+
+      <div class="hero-grid">
+        <article class="hero-stat"><strong>8</strong><span>профилей на одной странице</span></article>
+        <article class="hero-stat"><strong>4301,8 м</strong><span>максимальный отход по фонду</span></article>
+        <article class="hero-stat"><strong>90,3°</strong><span>максимальный зенит</span></article>
+        <article class="hero-stat"><strong>245 / 178 / 114 мм</strong><span>опорные точки обсадки</span></article>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Сводка по траекториям</h2>
+      <div class="summary-grid">
+        <article class="summary-card">
+          <span class="tag">Типовой контур</span>
+          <p>Большинство скважин стартуют с вертикального или слабонаклонного участка, затем выходят на build-and-hold профиль с финальным горизонтальным участком.</p>
+        </article>
+        <article class="summary-card">
+          <span class="tag">Финальный TVD</span>
+          <p>По фонду финальные TVD сгруппированы около 2000-2250 м, что позволяет сравнивать профили между собой в единой шкале.</p>
+        </article>
+        <article class="summary-card">
+          <span class="tag">Разброс отхода</span>
+          <p>Есть компактные профили порядка 1700-2600 м отхода и длинные горизонтальные исполнения до 4300+ м по финальной точке.</p>
+        </article>
+        <article class="summary-card">
+          <span class="tag">Азимутальная развязка</span>
+          <p>Часть скважин ориентирована в сектор 5-55°, часть уходит в 220-330°. Это сразу видно по финальным меткам азимута в карточках.</p>
+        </article>
+      </div>
+      <div class="note">На этой странице графики сознательно сделаны рабочими и компактными. Они нужны не как презентационный плакат, а как быстрый инструмент: открыть фонд, сравнить форму профиля, увидеть финальный отход и понять, где ствол длинный, а где профиль более короткий и плотный.</div>
+    </section>
+
+    <section class="section">
+      <h2>Графики по каждой скважине</h2>
+      <div class="trajectory-grid" id="trajectoryGrid"></div>
+    </section>
+
+    <section class="section">
+      <h2>Как читать графики</h2>
+      <div class="legend-list">
+        <article class="legend-item">
+          <strong><span class="legend-swatch" style="background:#22d7b4"></span>Линия профиля</strong>
+          <p>Основная линия показывает траекторию в вертикальной проекции: по горизонтали отложен отход, по вертикали - TVD.</p>
+          <span class="legend-meta">ось X = departure · ось Y = TVD</span>
+        </article>
+        <article class="legend-item">
+          <strong><span class="legend-swatch" style="background:#f8bd5f"></span>Опорные точки</strong>
+          <p>Кружки соответствуют контрольным survey-точкам, которые удалось вручную оцифровать со скринов по каждой скважине.</p>
+          <span class="legend-meta">kickoff · build · hold · landing</span>
+        </article>
+        <article class="legend-item">
+          <strong><span class="legend-swatch" style="background:#8db4ff"></span>Финальная точка</strong>
+          <p>Конечная точка выделена отдельно и сопровождается подписью по отходу, TVD и целевому азимуту окончания ствола.</p>
+          <span class="legend-meta">конец траектории</span>
+        </article>
+      </div>
+    </section>
+
+    <p class="footer">Северо-Ярудейское · Траектории скважин · Doc 135</p>
+  </main>
+
+  <script>
+    const wells = [
+      {
+        well: '301',
+        color: '#22d7b4',
+        type: 'J-профиль с выходом в горизонталь',
+        finalTvd: 2003,
+        finalDeparture: 1712.12,
+        maxZenith: 90,
+        finalAzimuth: 89.43,
+        notes: ['OK 245 мм', 'OK 178 мм', 'OK 114 мм'],
+        points: [
+          { md: 0, tvd: 0, departure: 0 },
+          { md: 50, tvd: 50, departure: 0 },
+          { md: 552.45, tvd: 512.08, departure: 164.83 },
+          { md: 1029.09, tvd: 900, departure: 401.97 },
+          { md: 1193.1, tvd: 1039.43, departure: 539.9 },
+          { md: 1988.1, tvd: 1931.24, departure: 806.14 },
+          { md: 2360.31, tvd: 1969.15, departure: 1080.9 },
+          { md: 2588.31, tvd: 1983, departure: 1218.5 },
+          { md: 4294, tvd: 2003, departure: 1712.12 }
+        ]
+      },
+      {
+        well: '302',
+        color: '#8db4ff',
+        type: 'Ранний kickoff и длинный hold-участок',
+        finalTvd: 2012.2,
+        finalDeparture: 1908.88,
+        maxZenith: 90,
+        finalAzimuth: 44.8,
+        notes: ['OK 245 мм', 'OK 178 мм', 'OK 114 мм'],
+        points: [
+          { md: 0, tvd: 0, departure: 0 },
+          { md: 20, tvd: 20, departure: 0 },
+          { md: 47.18, tvd: 47.55, departure: 21.76 },
+          { md: 80, tvd: 80, departure: 92.79 },
+          { md: 1327.7, tvd: 1257, departure: 152.11 },
+          { md: 1837.9, tvd: 1892.24, departure: 483.4 },
+          { md: 2383.9, tvd: 1984.24, departure: 541.64 },
+          { md: 3033.5, tvd: 2002, departure: 1032.99 },
+          { md: 3916.54, tvd: 2012.2, departure: 1908.88 }
+        ]
+      },
+      {
+        well: '303',
+        color: '#c6a6ff',
+        type: 'Длинный горизонтальный профиль',
+        finalTvd: 2011.92,
+        finalDeparture: 3681.17,
+        maxZenith: 90.28,
+        finalAzimuth: 5.58,
+        notes: ['OK 245 мм', 'OK 178 мм', 'OK 114 мм'],
+        points: [
+          { md: 0, tvd: 0, departure: 0 },
+          { md: 20, tvd: 20, departure: 0 },
+          { md: 73.59, tvd: 67.2, departure: 11.41 },
+          { md: 1026.12, tvd: 900, departure: 213.19 },
+          { md: 1491.21, tvd: 1249.89, departure: 420.7 },
+          { md: 2445.52, tvd: 1943.14, departure: 472.24 },
+          { md: 2747.59, tvd: 1979, departure: 887.15 },
+          { md: 3655.97, tvd: 2015.29, departure: 1542.83 },
+          { md: 4865.38, tvd: 2011.92, departure: 3681.17 }
+        ]
+      },
+      {
+        well: '304',
+        color: '#ff8e8e',
+        type: 'Build-hold профиль средней протяженности',
+        finalTvd: 2251,
+        finalDeparture: 1974.3,
+        maxZenith: 89.7,
+        finalAzimuth: 5.57,
+        notes: ['OK 245 мм', 'OK 178 мм', 'OK 114 мм'],
+        points: [
+          { md: 0, tvd: 0, departure: 0 },
+          { md: 20, tvd: 20, departure: 0 },
+          { md: 700, tvd: 653.56, departure: 254 },
+          { md: 1022.13, tvd: 900, departure: 464.27 },
+          { md: 1234.4, tvd: 1057, departure: 522.7 },
+          { md: 2794.12, tvd: 1932.5, departure: 944.47 },
+          { md: 3891.01, tvd: 2222.4, departure: 1178.43 },
+          { md: 4012.25, tvd: 2230, departure: 1879.78 },
+          { md: 4069.49, tvd: 2251, departure: 1974.3 }
+        ]
+      },
+      {
+        well: '305',
+        color: '#20d9b4',
+        type: 'Наклонный профиль с увеличенным отходом',
+        finalTvd: 2009.5,
+        finalDeparture: 2048.02,
+        maxZenith: 90.22,
+        finalAzimuth: 54.81,
+        notes: ['OK 245 мм', 'OK 178 мм', 'OK 114 мм'],
+        points: [
+          { md: 0, tvd: 0, departure: 0 },
+          { md: 700, tvd: 653.56, departure: 254 },
+          { md: 1023.11, tvd: 900, departure: 523.7 },
+          { md: 1105.96, tvd: 1054.9, departure: 628.4 },
+          { md: 1570.21, tvd: 1447.2, departure: 759.4 },
+          { md: 1950.1, tvd: 1660.29, departure: 945.22 },
+          { md: 3368.5, tvd: 1983.3, departure: 1379.37 },
+          { md: 3733.78, tvd: 1997.1, departure: 1749.05 },
+          { md: 5100.85, tvd: 2009.5, departure: 2048.02 }
+        ]
+      },
+      {
+        well: '306',
+        color: '#f8bd5f',
+        type: 'Длинная горизонталь в восточный сектор',
+        finalTvd: 2019,
+        finalDeparture: 4301.8,
+        maxZenith: 89.71,
+        finalAzimuth: 54.77,
+        notes: ['OK 245 мм', 'OK 178 мм', 'OK 114 мм'],
+        points: [
+          { md: 0, tvd: 0, departure: 0 },
+          { md: 20, tvd: 20, departure: 0 },
+          { md: 700, tvd: 653.56, departure: 254 },
+          { md: 1022.13, tvd: 900, departure: 507.73 },
+          { md: 1757.57, tvd: 1772.1, departure: 783.77 },
+          { md: 3065.59, tvd: 1913.7, departure: 2019.51 },
+          { md: 3814.66, tvd: 1976.7, departure: 2631.33 },
+          { md: 4561.58, tvd: 2011.94, departure: 3558.4 },
+          { md: 5323.25, tvd: 2019, departure: 4301.8 }
+        ]
+      },
+      {
+        well: '307',
+        color: '#6de0ff',
+        type: 'Компактный профиль с выходом в северный сектор',
+        finalTvd: 2215,
+        finalDeparture: 1613.99,
+        maxZenith: 89.33,
+        finalAzimuth: 6.95,
+        notes: ['OK 245 мм', 'OK 178 мм', 'OK 114 мм'],
+        points: [
+          { md: 0, tvd: 0, departure: 0 },
+          { md: 20, tvd: 20, departure: 0 },
+          { md: 700, tvd: 653.56, departure: 254 },
+          { md: 1022.05, tvd: 900, departure: 314.9 },
+          { md: 1605.6, tvd: 1378.96, departure: 277.49 },
+          { md: 2883.51, tvd: 1909.19, departure: 716.16 },
+          { md: 2751.59, tvd: 2112, departure: 1323.79 },
+          { md: 3253.96, tvd: 1964.63, departure: 1302.5 },
+          { md: 4291.31, tvd: 2215, departure: 1613.99 }
+        ]
+      },
+      {
+        well: '308',
+        color: '#9fdc72',
+        type: 'Поздний набор и выход в горизонталь',
+        finalTvd: 2019,
+        finalDeparture: 2594.12,
+        maxZenith: 90,
+        finalAzimuth: 20.77,
+        notes: ['OK 245 мм', 'OK 178 мм', 'OK 114 мм'],
+        points: [
+          { md: 0, tvd: 0, departure: 0 },
+          { md: 30, tvd: 30, departure: 0 },
+          { md: 714.7, tvd: 711.8, departure: 6.5 },
+          { md: 1004.57, tvd: 885, departure: 116.1 },
+          { md: 1563.93, tvd: 1253.53, departure: 362 },
+          { md: 2416.23, tvd: 1974.24, departure: 613.25 },
+          { md: 3220, tvd: 1976.28, departure: 921.31 },
+          { md: 3726.23, tvd: 2019, departure: 927.65 },
+          { md: 4626.23, tvd: 2019, departure: 2594.12 }
+        ]
+      }
+    ];
+
+    const trajectoryGrid = document.getElementById('trajectoryGrid');
+
+    function formatNumber(value) {
+      const rounded = Math.abs(value - Math.round(value)) < 0.001 ? String(Math.round(value)) : value.toFixed(2);
+      return rounded.replace('.', ',');
+    }
+
+    function createChart(points, color) {
+      const width = 520;
+      const height = 320;
+      const pad = { top: 24, right: 26, bottom: 40, left: 54 };
+      const maxX = Math.max(...points.map((point) => point.departure), 1);
+      const maxY = Math.max(...points.map((point) => point.tvd), 1);
+      const minX = 0;
+      const minY = 0;
+      const innerWidth = width - pad.left - pad.right;
+      const innerHeight = height - pad.top - pad.bottom;
+
+      function mapX(value) {
+        return pad.left + ((value - minX) / (maxX - minX || 1)) * innerWidth;
+      }
+
+      function mapY(value) {
+        return pad.top + ((value - minY) / (maxY - minY || 1)) * innerHeight;
+      }
+
+      const gridX = Array.from({ length: 5 }, (_, index) => minX + ((maxX - minX) / 4) * index);
+      const gridY = Array.from({ length: 5 }, (_, index) => minY + ((maxY - minY) / 4) * index);
+      const linePath = points.map((point, index) => `${index === 0 ? 'M' : 'L'} ${mapX(point.departure).toFixed(2)} ${mapY(point.tvd).toFixed(2)}`).join(' ');
+      const finalPoint = points[points.length - 1];
+
+      return `
+        <svg viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Траектория скважины">
+          <defs>
+            <linearGradient id="area-${color.slice(1)}" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="${color}" stop-opacity="0.28" />
+              <stop offset="100%" stop-color="${color}" stop-opacity="0.02" />
+            </linearGradient>
+          </defs>
+          <rect x="0" y="0" width="${width}" height="${height}" rx="18" fill="#07111a" />
+          ${gridY.map((tick) => `<line x1="${pad.left}" y1="${mapY(tick)}" x2="${width - pad.right}" y2="${mapY(tick)}" stroke="rgba(255,255,255,.08)" stroke-dasharray="4 6" />`).join('')}
+          ${gridX.map((tick) => `<line x1="${mapX(tick)}" y1="${pad.top}" x2="${mapX(tick)}" y2="${height - pad.bottom}" stroke="rgba(255,255,255,.06)" stroke-dasharray="4 6" />`).join('')}
+          <line x1="${pad.left}" y1="${pad.top}" x2="${pad.left}" y2="${height - pad.bottom}" stroke="rgba(255,255,255,.28)" />
+          <line x1="${pad.left}" y1="${height - pad.bottom}" x2="${width - pad.right}" y2="${height - pad.bottom}" stroke="rgba(255,255,255,.28)" />
+          <path d="${linePath} L ${mapX(finalPoint.departure).toFixed(2)} ${height - pad.bottom} L ${pad.left} ${height - pad.bottom} Z" fill="url(#area-${color.slice(1)})" opacity="0.95" />
+          <path d="${linePath}" fill="none" stroke="${color}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+          ${points.map((point, index) => {
+            const radius = index === points.length - 1 ? 6.8 : 4.4;
+            const fill = index === points.length - 1 ? '#f8bd5f' : color;
+            const stroke = index === points.length - 1 ? '#fff1cf' : '#09131c';
+            return `<circle cx="${mapX(point.departure)}" cy="${mapY(point.tvd)}" r="${radius}" fill="${fill}" stroke="${stroke}" stroke-width="2" />`;
+          }).join('')}
+          <text x="${pad.left}" y="${pad.top - 8}" fill="#c6d5e8" font-size="11" font-family="Manrope, sans-serif">TVD, м</text>
+          <text x="${width - pad.right}" y="${height - 10}" fill="#c6d5e8" font-size="11" text-anchor="end" font-family="Manrope, sans-serif">Отход, м</text>
+          ${gridY.map((tick) => `<text x="${pad.left - 8}" y="${mapY(tick) + 4}" fill="#93a8bf" font-size="10" text-anchor="end" font-family="Manrope, sans-serif">${formatNumber(tick)}</text>`).join('')}
+          ${gridX.map((tick) => `<text x="${mapX(tick)}" y="${height - pad.bottom + 16}" fill="#93a8bf" font-size="10" text-anchor="middle" font-family="Manrope, sans-serif">${formatNumber(tick)}</text>`).join('')}
+        </svg>
+      `;
+    }
+
+    trajectoryGrid.innerHTML = wells.map((well) => `
+      <article class="trajectory-card">
+        <div class="card-head">
+          <div>
+            <h3>Скв. ${well.well}</h3>
+            <p>${well.type}</p>
+          </div>
+          <span class="chip profile-type">Az ${formatNumber(well.finalAzimuth)}°</span>
+        </div>
+
+        <div class="stats-row">
+          <div class="metric">
+            <strong>${formatNumber(well.finalDeparture)} м</strong>
+            <span>финальный отход</span>
+          </div>
+          <div class="metric">
+            <strong>${formatNumber(well.finalTvd)} м</strong>
+            <span>финальный TVD</span>
+          </div>
+          <div class="metric">
+            <strong>${formatNumber(well.maxZenith)}°</strong>
+            <span>максимальный зенит</span>
+          </div>
+        </div>
+
+        <div class="chart-shell">
+          ${createChart(well.points, well.color)}
+        </div>
+
+        <div class="meta-line">
+          ${well.notes.map((note) => `<span class="chip">${note}</span>`).join('')}
+        </div>
+
+        <span class="caption">Контрольные точки построены по survey-таблице из скрина для скважины ${well.well}. На графике сохранена инженерная форма профиля, а не декоративная схема.</span>
+      </article>
+    `).join('');
+  </script>
+</body>
+</html>

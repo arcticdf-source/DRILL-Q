@@ -1,0 +1,322 @@
+﻿
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Engineer · ChatGPT Clone</title>
+  <link rel="stylesheet" href="assets/css/chatgpt-clone.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+  <div class="gpt-app">
+    <aside class="gpt-sidebar">
+      <div style="font-weight:bold;font-size:22px;color:#19c37d;letter-spacing:0.04em;">AI Engineer</div>
+      <button class="gpt-send-btn" style="margin-bottom:8px;" onclick="newChat()">+ Новый чат</button>
+      <div style="font-size:13px;color:#ececf1;opacity:0.7;">Локальная RAG-консоль по базе знаний проекта. История хранится в браузере.</div>
+      <div style="margin:18px 0 0 0;">
+        <div style="font-size:13px;color:#ececf1;opacity:0.7;margin-bottom:6px;">Индексы знаний:</div>
+        <div id="status" style="font-size:13px;color:#19c37d;">Пробую подключить индексы…</div>
+        <div style="margin-top:10px;">
+          <input id="chunksFile" type="file" accept=".json" style="margin-bottom:4px;" />
+          <input id="catalogFile" type="file" accept=".json" style="margin-bottom:4px;" />
+          <button class="gpt-send-btn" style="padding:0 12px;font-size:14px;" onclick="loadManualIndexes()">Подключить индексы</button>
+        </div>
+      </div>
+      <div style="margin-top:24px;">
+        <div style="font-size:13px;color:#ececf1;opacity:0.7;margin-bottom:6px;">История:</div>
+        <div id="historyList"></div>
+      </div>
+      <a href="../index.html" class="gpt-send-btn" style="margin-top:auto;background:#40414f;color:#19c37d;border:1px solid #19c37d;">На главную</a>
+    </aside>
+    <main class="gpt-main">
+      <div class="gpt-chat" id="chat"></div>
+      <div class="gpt-composer">
+        <form class="gpt-composer-box" onsubmit="event.preventDefault();sendPrompt();">
+          <textarea id="prompt" placeholder="Введите ваш вопрос..." autocomplete="off"></textarea>
+          <button type="submit" class="gpt-send-btn">Отправить</button>
+        </form>
+      </div>
+    </main>
+  </div>
+
+  <script>
+  // --- ChatGPT Clone Logic ---
+  const CHAT_KEY = 'ai_engineer_chat_v2';
+  let chunks = [];
+  let catalog = [];
+  let profileIndex = [];
+  let profiles = [];
+  let messages = [];
+
+  function el(id) { return document.getElementById(id); }
+  function esc(s) { return (s || '').replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
+
+  async function tryAutoLoad() {
+    try {
+      const c1 = await fetch('../knowledge/index/search_chunks.json');
+      const c2 = await fetch('../knowledge/index/global_catalog.json');
+      const c3 = await fetch('../knowledge/field_profiles_index.json');
+      if (!c1.ok || !c2.ok) throw new Error('index fetch failed');
+      const d1 = await c1.json();
+      const d2 = await c2.json();
+      chunks = d1.chunks || [];
+      catalog = d2.items || [];
+      if (c3.ok) {
+        const d3 = await c3.json();
+        profileIndex = d3.profiles || [];
+        const loaded = [];
+        for (const p of profileIndex) {
+          try {
+            const res = await fetch('../' + p.profile_file);
+            if (!res.ok) continue;
+            loaded.push({ meta: p, profile: await res.json() });
+          } catch (e) {}
+        }
+        profiles = loaded;
+      }
+      el('status').textContent = 'Индексы подключены автоматически. Чанков: ' + chunks.length;
+    } catch (e) {
+      el('status').textContent = 'Автоподключение не сработало. Можно выбрать индексы вручную.';
+    }
+  }
+
+  async function loadManualIndexes() {
+    const cf = el('chunksFile').files[0];
+    const gf = el('catalogFile').files[0];
+    if (!cf || !gf) {
+      el('status').textContent = 'Выберите оба файла индекса.';
+      return;
+    }
+    try {
+      const d1 = JSON.parse(await cf.text());
+      const d2 = JSON.parse(await gf.text());
+      chunks = d1.chunks || [];
+      catalog = d2.items || [];
+      el('status').textContent = 'Индексы подключены вручную. Чанков: ' + chunks.length;
+    } catch (e) {
+      el('status').textContent = 'Ошибка чтения индексов.';
+    }
+  }
+
+  function tokenize(text) {
+    return (text || '').toLowerCase().replace(/[^a-zа-яё0-9\s]/gi, ' ').split(/\s+/).filter(x => x.length > 2);
+  }
+  function scoreChunk(promptTokens, chunk) {
+    const text = (chunk.text || '').toLowerCase();
+    let score = 0;
+    for (const t of promptTokens) {
+      if (text.includes(t)) score += t.length > 6 ? 3 : 2;
+    }
+    return score;
+  }
+  function selectTopChunks(promptText) {
+    const tokens = tokenize(promptText);
+    // --- FAQ/definition mode ---
+    const defQ = /^(что такое|определи|explain|define)\s+([\w\-®]+)/i;
+    const m = promptText.match(defQ);
+    if (m) {
+      const keyword = m[2].toLowerCase();
+      // ищем любой chunk, где встречается ключевое слово (без токенизации)
+      const found = chunks.filter(ch => (ch.text||'').toLowerCase().includes(keyword));
+      if (found.length) {
+        // возвращаем как будто это релевантные совпадения (score=100)
+        return found.map(ch => ({ ch, score: 100 })).slice(0, 3);
+      }
+    }
+    // обычный режим
+    return chunks
+      .map(ch => ({ ch, score: scoreChunk(tokens, ch) }))
+      .filter(x => x.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 6);
+  }
+  function selectTopProfiles(promptText) {
+    const q = promptText.toLowerCase();
+    return profiles
+      .map(p => {
+        const text = JSON.stringify(p.profile).toLowerCase();
+        let score = 0;
+        tokenize(promptText).forEach(t => { if (text.includes(t)) score += t.length > 6 ? 3 : 2; });
+        if ((p.meta.name || '').toLowerCase().includes(q)) score += 5;
+        return { p, score };
+      })
+      .filter(x => x.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 3);
+  }
+  function summarizeMatches(promptText, matches) {
+    const profileMatches = selectTopProfiles(promptText);
+    if (!matches.length) {
+      return {
+        text: 'В текущем индексе нет уверенных совпадений по запросу. Либо база еще не наполнена, либо нужно уточнить формулировку. Попробуйте указать месторождение, интервал, тип операции или конкретный технический термин.' + (profileMatches.length ? '\n\nНо найдены похожие профили: ' + profileMatches.map(x => x.p.meta.name).join('; ') : ''),
+        sources: profileMatches.map(x => x.p.meta.profile_file || x.p.meta.name)
+      };
+    }
+    // --- Улучшенный режим для FAQ/definition ---
+    const defQ = /^(что такое|определи|explain|define)\s+([\w\-®]+)/i;
+    const m = promptText.match(defQ);
+    let bullets = [];
+    const sources = [];
+    if (m) {
+      const keyword = m[2].toLowerCase();
+      for (const match of matches) {
+        const txt = (match.ch.text || '');
+        const idx = txt.toLowerCase().indexOf(keyword);
+        if (idx !== -1) {
+          // Вырезаем фрагмент вокруг найденного слова (±120 символов)
+          const start = Math.max(0, idx - 120);
+          const end = Math.min(txt.length, idx + keyword.length + 120);
+          let snippet = txt.slice(start, end).replace(/\s+/g, ' ').trim();
+          // Подсветим ключевое слово
+          snippet = snippet.replace(new RegExp('('+keyword+')','ig'), '<b>$1</b>');
+          bullets.push(snippet);
+          sources.push(match.ch.file);
+        }
+      }
+    }
+    if (!bullets.length) {
+      // fallback: обычный режим
+      for (const m of matches) {
+        const snippet = (m.ch.text || '').slice(0, 260).trim();
+        bullets.push('• ' + snippet);
+        sources.push(m.ch.file);
+      }
+    }
+    const uniqSources = [...new Set(sources)];
+    const answer = 'Найдено релевантное знание по запросу: ' + promptText + '\n\n'
+      + 'Что удалось поднять из базы:\n'
+      + bullets.join('\n\n')
+      + (profileMatches.length ? '\n\nБлижайшие профили-аналогии: ' + profileMatches.map(x => x.p.meta.name).join('; ') : '')
+      + '\n\nИнженерный вывод: используйте эти источники как базу для проектного решения; если вопрос по конкретной скважине/интервалу, лучше уточнить месторождение, интервал, осложнение или тип системы.';
+    return { text: answer, sources: [...new Set(uniqSources.concat(profileMatches.map(x => x.p.meta.profile_file || x.p.meta.name)))] };
+  }
+
+  function render() {
+    const chat = el('chat');
+    chat.innerHTML = messages.map(m => renderMsg(m)).join('');
+    chat.scrollTo({ top: chat.scrollHeight, behavior: 'smooth' });
+    renderHistory();
+  }
+
+  function renderMsg(m) {
+    const isUser = m.role === 'user';
+    const avatar = isUser
+      ? '<div class="gpt-avatar">🧑</div>'
+      : '<div class="gpt-avatar">🤖</div>';
+    let bubble = '<div class="gpt-bubble">' + esc(m.text) + '</div>';
+    if (m.sources && m.sources.length) {
+      bubble += '<div style="margin-top:10px;font-size:13px;opacity:0.7;">' + m.sources.map(s => 'Источник: ' + esc(s)).join('<br>') + '</div>';
+    }
+    return `<div class="gpt-msg ${isUser ? 'user' : 'assistant'}">${avatar}${bubble}</div>`;
+  }
+
+  function renderHistory() {
+    const list = el('historyList');
+    const turns = messages.filter(m => m.role === 'user');
+    list.innerHTML = turns.length ? turns.map((m, i) =>
+      `<div style="padding:7px 10px;border-radius:7px;background:#343541;color:#ececf1;cursor:pointer;margin-bottom:4px;font-size:13px;" onclick="jumpToTurn(${i})">${esc(m.text.slice(0, 60))}</div>`
+    ).join('') : '<div style="color:#ececf1;opacity:0.5;font-size:13px;">История пуста.</div>';
+  }
+
+  function jumpToTurn(i) {
+    const nodes = [...document.querySelectorAll('.gpt-msg.user')];
+    if (nodes[i]) nodes[i].scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function saveChat() {
+    localStorage.setItem(CHAT_KEY, JSON.stringify(messages));
+  }
+  function newChat() {
+    messages = [];
+    saveChat();
+    render();
+  }
+  async function sendPrompt() {
+      const prompt = el('prompt').value.trim();
+      if (!prompt) return;
+      messages.push({ role: 'user', text: prompt });
+
+      // --- ТЕСТОВЫЙ РЕЖИМ: если запрос содержит 'xanplex', показать все чанки с этим словом ---
+      if (prompt.toLowerCase().includes('xanplex')) {
+        const found = chunks.filter(ch => (ch.text||'').toLowerCase().includes('xanplex'));
+        if (found.length) {
+          messages.push({
+            role: 'assistant',
+            text: 'Тестовый режим: найдено ' + found.length + ' чанков с "xanplex":\n' + found.map(ch => ch.text).join('\n---\n'),
+            sources: found.map(ch => ch.file)
+          });
+          el('prompt').value = '';
+          autoResizePrompt();
+          saveChat();
+          render();
+          return;
+        }
+      }
+
+      // --- обычный режим с OpenAI ---
+      const matches = selectTopChunks(prompt);
+      const reply = summarizeMatches(prompt, matches);
+
+      // Попробуем получить умный ответ через OpenAI, если есть релевантные чанки
+      if (matches.length) {
+        try {
+          const chunkTexts = matches.map(m => m.ch.text || "");
+          const res = await fetch("http://127.0.0.1:7240/ask-gpt", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ question: prompt, chunks: chunkTexts })
+          });
+          const data = await res.json();
+          if (data && data.ok && data.answer) {
+            // Только ответ GPT и источники
+            messages.push({ role: 'assistant', text: data.answer, sources: matches.map(m => m.ch.file) });
+          } else {
+            messages.push({ role: 'assistant', text: reply.text, sources: reply.sources });
+          }
+        } catch (e) {
+          messages.push({ role: 'assistant', text: reply.text + "\n[Ошибка обращения к OpenAI: " + e + "]", sources: reply.sources });
+        }
+      } else {
+        messages.push({ role: 'assistant', text: reply.text, sources: reply.sources });
+      }
+      el('prompt').value = '';
+      autoResizePrompt();
+      saveChat();
+      render();
+  }
+  function autoResizePrompt() {
+    const p = el('prompt');
+    p.style.height = 'auto';
+    const h = Math.min(160, Math.max(48, p.scrollHeight));
+    p.style.height = h + 'px';
+  }
+
+  window.addEventListener('DOMContentLoaded', async () => {
+    try {
+      messages = JSON.parse(localStorage.getItem(CHAT_KEY) || '[]');
+    } catch (e) { messages = []; }
+    render();
+    await tryAutoLoad();
+    const promptEl = el('prompt');
+    promptEl.addEventListener('input', autoResizePrompt);
+    promptEl.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendPrompt();
+      }
+    });
+    autoResizePrompt();
+    if (!messages.length) {
+      messages.push({ role: 'assistant', text: 'AI Engineer готов. Это retrieval-first чат по вашей базе знаний проекта. Чем больше документов загружено и проиндексировано, тем полезнее ответы.' });
+      saveChat();
+      render();
+    }
+  });
+  </script>
+  <script src="assets/js/global-auth-widget.js"></script>
+</body>
+</html>

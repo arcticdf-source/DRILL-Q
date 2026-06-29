@@ -1,0 +1,594 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>35 · База знаний: Гидравлика и расчёты</title>
+<style>
+  :root{--bg:#0d1117;--surface:#161b22;--card:#1c2330;--accent:#1ad8b5;--accent2:#f0a500;--textprimary:#e6edf3;--textsec:#8b949e;--border:#30363d;--green:#3fb950;--orange:#f0a500;--red:#f85149;--blue:#79c0ff}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--textprimary);font-family:'Segoe UI',system-ui,sans-serif;font-size:14px;line-height:1.6}
+  header{background:linear-gradient(135deg,#0d2137 0%,#0d1117 60%);padding:28px 40px;border-bottom:1px solid var(--border)}
+  header h1{font-size:26px;font-weight:700;color:var(--accent);letter-spacing:1px}
+  header p{color:var(--textsec);margin-top:4px}
+  .badge{display:inline-block;background:rgba(26,216,181,0.15);color:var(--accent);border:1px solid var(--accent);border-radius:12px;padding:2px 10px;font-size:11px;font-weight:700;margin-left:10px;vertical-align:middle}
+  nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 40px;display:flex;gap:4px;overflow-x:auto}
+  nav button{background:none;border:none;color:var(--textsec);padding:12px 18px;cursor:pointer;font-size:13px;white-space:nowrap;border-bottom:3px solid transparent;transition:all .2s}
+  nav button.active,nav button:hover{color:var(--accent);border-bottom-color:var(--accent)}
+  main{padding:30px 40px;max-width:1400px;margin:0 auto}
+  section{display:none}
+  section.active{display:block}
+  h2{font-size:20px;color:var(--accent);margin-bottom:20px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+  h3{font-size:15px;color:var(--accent2);margin:20px 0 10px;font-weight:600}
+  h4{font-size:13px;color:var(--textprimary);margin:14px 0 6px;font-weight:600}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px}
+  .card.accent-border{border-left:3px solid var(--accent)}
+  .card.warn-border{border-left:3px solid var(--orange)}
+  .card.danger-border{border-left:3px solid var(--red)}
+  .card.green-border{border-left:3px solid var(--green)}
+  .formula-box{background:#0d2137;border:1px solid #1a3a5c;border-radius:6px;padding:12px 16px;margin:8px 0;font-family:'Courier New',monospace;font-size:13px;color:#79c0ff}
+  .formula-box .label{color:var(--textsec);font-family:'Segoe UI',sans-serif;font-size:11px;margin-bottom:4px}
+  .formula-us{background:#1a1510;border:1px solid #3a2e18;border-radius:4px;padding:7px 12px;margin:4px 0;font-family:'Courier New',monospace;font-size:11px;color:#a88a50}
+  .formula-us::before{content:'US: ';color:#7a6a3a;font-style:italic}
+  table{width:100%;border-collapse:collapse;margin:12px 0}
+  th{background:var(--surface);color:var(--accent);padding:8px 12px;text-align:left;border:1px solid var(--border);font-size:12px}
+  td{padding:8px 12px;border:1px solid var(--border);font-size:12px;vertical-align:top}
+  tr:nth-child(even) td{background:rgba(255,255,255,0.02)}
+  .tag{display:inline-block;border-radius:3px;padding:1px 6px;font-size:11px;font-weight:600;margin:2px}
+  .tag.i1{background:rgba(26,216,181,0.1);color:var(--accent);border:1px solid rgba(26,216,181,0.3)}
+  .tag.i2{background:rgba(121,192,255,0.1);color:#79c0ff;border:1px solid rgba(121,192,255,0.3)}
+  .tag.i3{background:rgba(240,165,0,0.1);color:var(--orange);border:1px solid rgba(240,165,0,0.3)}
+  .tag.i4{background:rgba(63,185,80,0.1);color:var(--green);border:1px solid rgba(63,185,80,0.3)}
+  .tag.i5{background:rgba(248,81,73,0.1);color:var(--red);border:1px solid rgba(248,81,73,0.3)}
+  .rule{border-left:3px solid var(--accent2);padding:8px 14px;margin:8px 0;background:rgba(240,165,0,0.05);border-radius:0 6px 6px 0}
+  .rule .if{color:var(--orange);font-weight:700}
+  .rule .then{color:var(--textprimary)}
+  .signal-row{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)}
+  .signal-name{color:var(--accent);font-family:monospace;font-size:13px;min-width:220px}
+  .signal-unit{color:var(--accent2);font-size:11px;min-width:90px}
+  .signal-desc{color:var(--textsec);font-size:12px}
+  .hse{background:rgba(248,81,73,0.08);border:1px solid rgba(248,81,73,0.3);border-radius:6px;padding:12px;margin:8px 0}
+  .hse .hse-label{color:var(--red);font-weight:700;font-size:11px;margin-bottom:4px}
+  .summary-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:20px;text-align:center}
+  .summary-card .num{font-size:32px;font-weight:700;color:var(--accent)}
+  .summary-card .lbl{font-size:12px;color:var(--textsec);margin-top:4px}
+  ul{padding-left:20px}
+  ul li{margin:4px 0;color:var(--textsec)}
+  ul li strong{color:var(--textprimary)}
+  p{color:var(--textsec);margin:6px 0}
+  .src{color:var(--textsec);font-size:11px;font-style:italic}
+  .tgood{color:var(--green)} .twarn{color:var(--orange)} .tbad{color:var(--red)}
+  .book-tag{display:inline-block;background:rgba(121,192,255,0.1);color:#79c0ff;padding:1px 8px;border-radius:3px;font-size:11px;border:1px solid rgba(121,192,255,0.2)}
+  .abbr-block{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+  .abbr{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:3px 10px;font-size:12px}
+  .abbr span{color:var(--accent);font-weight:700}
+</style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+<header>
+  <h1>БАЗА ЗНАНИЙ: ГИДРАВЛИКА И РАСЧЁТЫ <span class="badge">DOC 35</span></h1>
+  <p>Детальный анализ глав 5 и 9 руководства M-I SWACO · Система СИ · API RP 13D</p>
+</header>
+<nav>
+  <button class="active" onclick="show('overview',this)">📚 Обзор</button>
+  <button onclick="show('formulas',this)">📐 Формулы (СИ)</button>
+  <button onclick="show('rules',this)">⚡ Правила Если–То</button>
+  <button onclick="show('signals',this)">📡 Поля данных</button>
+  <button onclick="show('hse',this)">🔴 HSE-ограничения</button>
+  <button onclick="show('mapping',this)">🗺 Маппинг I1–I5</button>
+  <button onclick="show('tables',this)">📊 Справочник</button>
+</nav>
+<main>
+
+<!-- ===== OVERVIEW ===== -->
+<section id="overview" class="active">
+  <h2>Обзор источников</h2>
+  <div class="grid2">
+    <div class="card accent-border">
+      <h3>📘 Расчёты (Calculations.pdf)</h3>
+      <p><strong>Глава 9: Engineering Calculations</strong></p>
+      <p>44 стр. · Revision A-1, 2001 · M-I SWACO Drilling Fluids Manual</p><br>
+      <h4>Содержание:</h4>
+      <ul>
+        <li>Единицы измерения (СИ и американская)</li>
+        <li>Объёмы циркуляционных ёмкостей (амбары, резервуары)</li>
+        <li>Ёмкость ствола скважины и бурильной колонны</li>
+        <li>Объём затрубного пространства (ЗП)</li>
+        <li>Производительность буровых насосов (триплекс / дуплекс)</li>
+        <li>Скорость потока в ЗП; время промывки</li>
+        <li>Гидростатическое давление; расчёт глушащего раствора</li>
+        <li>Материальный баланс: утяжеление баритом, разбавление</li>
+        <li>Анализ твёрдой фазы (ТФ); плотности рассолов</li>
+      </ul>
+    </div>
+    <div class="card accent-border">
+      <h3>📗 Реология и гидравлика (Rheology&amp;Hydraulics.pdf)</h3>
+      <p><strong>Глава 5: Rheology and Hydraulics</strong></p>
+      <p>36 стр. · Revision A-1, 2001 · Стандарт API RP 13D (3-е изд., 1995)</p><br>
+      <h4>Содержание:</h4>
+      <ul>
+        <li>Условная вязкость (УВ), пластическая вязкость (ПВ), ДНС</li>
+        <li>Показания вискозиметра Fann VG → реологические параметры</li>
+        <li>СНС-1, СНС-10: прогрессивный / мгновенный характер геля</li>
+        <li>Влияние температуры и давления на реологию</li>
+        <li>Модели: Бингам, Степенная (Power Law), Хершель–Балкли</li>
+        <li>Режимы течения: пробковое → ламинарное → турбулентное</li>
+        <li>API RP 13D: скорость, Re, потери давления, ЭЦП</li>
+        <li>Гидравлика долота: ГМД, скорость форсунок, ГСУ, оптимизация</li>
+        <li>Свабирование / поршнёвание</li>
+        <li>Полностью решённый пример (3667 м, 2120 л/мин)</li>
+      </ul>
+    </div>
+  </div>
+
+  <br>
+  <h3>Сокращения и аббревиатуры</h3>
+  <div class="abbr-block">
+    <div class="abbr"><span>ЗП</span> — затрубное пространство</div>
+    <div class="abbr"><span>БТ</span> — бурильные трубы</div>
+    <div class="abbr"><span>УБТ</span> — утяжелённые бурильные трубы</div>
+    <div class="abbr"><span>КНБК</span> — компоновка низа бурильной колонны</div>
+    <div class="abbr"><span>ПВ</span> — пластическая вязкость</div>
+    <div class="abbr"><span>ДНС</span> — динамическое напряжение сдвига (YP)</div>
+    <div class="abbr"><span>УВ</span> — условная вязкость</div>
+    <div class="abbr"><span>СНС</span> — статическое напряжение сдвига (гели)</div>
+    <div class="abbr"><span>ЭЦП</span> — эквивалентная циркуляционная плотность</div>
+    <div class="abbr"><span>ИВГ</span> — истинная вертикальная глубина (TVD)</div>
+    <div class="abbr"><span>ГС</span> — глубина по стволу (MD)</div>
+    <div class="abbr"><span>ЦЕ</span> — циркуляционная ёмкость</div>
+    <div class="abbr"><span>ЦВ</span> — цилиндровая втулка (liner)</div>
+    <div class="abbr"><span>ГМД</span> — гидравлическая мощность долота (HHP)</div>
+    <div class="abbr"><span>УГМ</span> — удельная гидравлическая мощность (HSI)</div>
+    <div class="abbr"><span>ГСУ</span> — гидравлическая сила удара</div>
+    <div class="abbr"><span>СПН</span> — суммарная площадь насадок (TFA)</div>
+    <div class="abbr"><span>ГНВП</span> — газонефтеводопроявление</div>
+    <div class="abbr"><span>МДДУП</span> — макс. допустимое давление на устье</div>
+    <div class="abbr"><span>ДЗБТ</span> — давление закрытой скважины по БТ (SIDPP)</div>
+    <div class="abbr"><span>ТФ</span> — твёрдая фаза</div>
+    <div class="abbr"><span>НПТФ</span> — низкоплотная твёрдая фаза (LGS)</div>
+    <div class="abbr"><span>ВПТФ</span> — высокоплотная твёрдая фаза (HGS)</div>
+  </div>
+
+  <br>
+  <h3>📊 Итоги разбора</h3>
+  <div class="grid3">
+    <div class="summary-card"><div class="num">47</div><div class="lbl">Ключевых формул</div></div>
+    <div class="summary-card"><div class="num">28</div><div class="lbl">Правил Если–То</div></div>
+    <div class="summary-card"><div class="num">35</div><div class="lbl">Полей данных</div></div>
+    <div class="summary-card"><div class="num">12</div><div class="lbl">HSE-ограничений</div></div>
+    <div class="summary-card"><div class="num">18</div><div class="lbl">Справочных таблиц</div></div>
+    <div class="summary-card"><div class="num">5</div><div class="lbl">Реологических моделей</div></div>
+  </div>
+
+  <br>
+  <div class="card green-border">
+    <h3>🎯 Связь с I2 «Гидравлический цифровой двойник»</h3>
+    <ul>
+      <li><strong>Гл. 9</strong> → входные данные модели: геометрия ствола, объёмы, параметры насоса <span class="tag i2">I2</span> <span class="tag i1">I1</span></li>
+      <li><strong>Гл. 5, Power Law</strong> → эффективная вязкость по интервалам → ЭЦП по всей колонне <span class="tag i2">I2</span></li>
+      <li><strong>ЭЦП vs градиент ГРП</strong> → триггер поглощений и цементирования <span class="tag i3">I3</span> <span class="tag i4">I4</span></li>
+      <li><strong>Свабирование / поршнёвание</strong> → безопасная скорость СОТП <span class="tag i1">I1</span></li>
+      <li><strong>Материальный баланс</strong> → утяжеление и разбавление в реальном времени <span class="tag i2">I2</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===== FORMULAS ===== -->
+<section id="formulas">
+  <h2>📐 Каталог формул — система СИ</h2>
+  <p style="color:var(--blue);font-size:12px">Основные формулы в системе СИ. Серым показан американский эквивалент для справки.</p>
+
+  <h3>1. ОБЪЁМЫ ЁМКОСТЕЙ И СТВОЛА <span class="book-tag">Гл. 9</span></h3>
+  <div class="grid2">
+    <div class="card">
+      <h4>Прямоугольная циркуляционная ёмкость (амбар)</h4>
+      <div class="formula-box"><div class="label">Объём (м³)</div>V = L(м) × W(м) × H(м)</div>
+      <div class="formula-box"><div class="label">Объём (л)</div>V = L(м) × W(м) × H(м) × 1000</div>
+      <div class="formula-us">V(bbl) = L(ft) × W(ft) × H(ft) / 5.615</div>
+    </div>
+    <div class="card">
+      <h4>Вертикальный цилиндрический резервуар</h4>
+      <div class="formula-box"><div class="label">Ёмкость (л/м)</div>V = D²(мм) / 1273</div>
+      <div class="formula-box"><div class="label">Объём (м³)</div>V = D²(мм) × H(м) / 1 273 240</div>
+      <div class="formula-us">V(bbl/ft) = D²(in.) / 1029.4</div>
+    </div>
+    <div class="card">
+      <h4>Ёмкость ствола скважины</h4>
+      <div class="formula-box"><div class="label">Ёмкость (л/м)</div>V = D²_скв(мм) / 1273</div>
+      <div class="formula-us">V(bbl/ft) = D²_hole(in.) / 1029.4</div>
+    </div>
+    <div class="card">
+      <h4>Ёмкость бурильной колонны (внутри труб)</h4>
+      <div class="formula-box"><div class="label">Ёмкость (л/м)</div>V_БК = ВД²_трубы(мм) / 1273</div>
+      <div class="formula-us">V(bbl/ft) = ID²_pipe(in.) / 1029.4</div>
+    </div>
+    <div class="card">
+      <h4>Объём затрубного пространства (ЗП)</h4>
+      <div class="formula-box"><div class="label">ЗП (л/м)</div>V_ЗП = (D²_скв − НД²_трубы)(мм) / 1273</div>
+      <div class="formula-us">V(bbl/ft) = (ID²_hole − OD²_pipe)(in.) / 1029.4</div>
+    </div>
+    <div class="card">
+      <h4>Вытеснение колонной</h4>
+      <div class="formula-box"><div class="label">Вытеснение (л/м)</div>V_выт = (НД² − ВД²)(мм) / 1273</div>
+      <div class="formula-us">V(bbl/ft) = (OD² − ID²)(in.) / 1029.4</div>
+    </div>
+  </div>
+
+  <h3>2. ПРОИЗВОДИТЕЛЬНОСТЬ БУРОВОГО НАСОСА <span class="book-tag">Гл. 9</span></h3>
+  <div class="grid2">
+    <div class="card">
+      <h4>Трёхцилиндровый насос (триплекс)</h4>
+      <div class="formula-box"><div class="label">Производительность (л/ход)</div>V = D²_вт(мм) × L_ход(мм) × η / 424 225</div>
+      <div class="formula-box"><div class="label">Расход (л/мин)</div>Q = V_л_ход × n(ход/мин)</div>
+      <div class="formula-us">V(bbl/stk) = ID²_liner(in.) × L(in.) × Eff / 4116</div>
+      <p style="font-size:11px;color:var(--textsec);margin-top:6px">D_вт — диаметр цилиндровой втулки; η — объёмный КПД</p>
+    </div>
+    <div class="card">
+      <h4>Двухцилиндровый насос двойного действия (дуплекс)</h4>
+      <div class="formula-box"><div class="label">Производительность (л/ход)</div>V = (2·D²_вт − D²_шток)(мм) × L_ход(мм) × η / 636 715</div>
+      <div class="formula-us">V(bbl/stk) = (2·ID²_liner − OD²_rod)(in.) × L(in.) × Eff / 6174</div>
+    </div>
+    <div class="card">
+      <h4>Скорость потока в ЗП</h4>
+      <div class="formula-box"><div class="label">V_ЗП (м/мин)</div>V_ЗП = Q(л/мин) × 1273 / (D²_скв − НД²_трубы)(мм)</div>
+      <div class="formula-us">AV(ft/min) = Q(gpm) × 24.5 / (D²_hole − D²_pipe)(in.)</div>
+    </div>
+    <div class="card">
+      <h4>Время промывки</h4>
+      <div class="formula-box"><div class="label">До первого замера шлама (мин)</div>T_перв = V_ЗП(л) / Q(л/мин)</div>
+      <div class="formula-box"><div class="label">Полный цикл по системе (мин)</div>T_полн = V_системы(л) / Q(л/мин)</div>
+      <div class="formula-box"><div class="label">Цикл по стволу скважины (мин)</div>T_ствол = (V_ствол − V_выт_КНБК)(л) / Q(л/мин)</div>
+    </div>
+  </div>
+
+  <h3>3. ГИДРОСТАТИЧЕСКОЕ ДАВЛЕНИЕ <span class="book-tag">Гл. 9</span></h3>
+  <div class="grid2">
+    <div class="card">
+      <div class="formula-box"><div class="label">Гидростатическое давление (МПа)</div>P_гст = ρ(г/см³) × ИВГ(м) × 0.00981</div>
+      <div class="formula-box"><div class="label">Упрощённо (кгс/см²)</div>P_гст ≈ ρ(г/см³) × ИВГ(м) / 10</div>
+      <div class="formula-us">P(psi) = MW(lb/gal) × TVD(ft) × 0.052</div>
+      <p style="font-size:11px;color:var(--textsec);margin-top:6px">1 МПа ≈ 10.2 кгс/см²; 1 кгс/см² ≈ 0.098 МПа ≈ 14.22 psi</p>
+    </div>
+    <div class="card">
+      <h4>Глушащий раствор (буровой р-р для глушения ГНВП)</h4>
+      <div class="formula-box"><div class="label">Плотность глушащего р-ра (г/см³)</div>ρ_глуш = ρ_бр + P_ДЗБТ(МПа) / (ИВГ(м) × 0.00981)</div>
+      <div class="formula-box"><div class="label">МДДУП (МПа)</div>МДДУП = (ρ_ГРП − ρ_глуш) × ИВГ_башм × 0.00981</div>
+      <div class="formula-us">ρ_kill = ρ_mud + SIDPP(psi) / (0.052 × TVD(ft))</div>
+    </div>
+  </div>
+
+  <h3>4. МАТЕРИАЛЬНЫЙ БАЛАНС <span class="book-tag">Гл. 9</span></h3>
+  <div class="grid2">
+    <div class="card">
+      <h4>Утяжеление раствора баритом</h4>
+      <div class="formula-box"><div class="label">Количество барита (кг/м³ исходного р-ра)</div>m_бар = 4200 × (ρ₂ − ρ₁) / (4.20 − ρ₂)</div>
+      <div class="formula-box"><div class="label">Новый объём после утяжеления (м³)</div>V₂ = V₁ × (4.20 − ρ₁) / (4.20 − ρ₂)</div>
+      <div class="formula-us">Barite(lb/bbl) = 1470·(ρ₂−ρ₁)/(35−ρ₂)  [ppg units]</div>
+    </div>
+    <div class="card">
+      <h4>Разбавление и смешивание</h4>
+      <div class="formula-box"><div class="label">Объём разбавителя (м³)</div>V_разб = V_исх × (ρ₁ − ρ₂) / (ρ₂ − ρ_разб)</div>
+      <div class="formula-box"><div class="label">Плотность смеси</div>ρ_итог = (V₁·ρ₁ + V₂·ρ₂) / (V₁ + V₂)</div>
+    </div>
+    <div class="card">
+      <h4>Анализ твёрдой фазы</h4>
+      <div class="formula-box"><div class="label">% НПТФ (низкоплотная ТФ), об.</div>%НПТФ = 100 × (ρ_бр − ρ_вода) / (ρ_НПТФ − ρ_вода)</div>
+      <p style="font-size:11px;color:var(--textsec);margin-top:6px">ρ_НПТФ ≈ 2.60 г/см³ (шлам + бентонит по умолчанию)</p>
+    </div>
+    <div class="card">
+      <h4>Рассол NaCl</h4>
+      <div class="formula-box"><div class="label">Плотность (г/см³) через [Cl⁻] мг/л</div>ρ = 1 + 1.166e-6·[Cl⁻] − 8.375e-13·[Cl⁻]²</div>
+    </div>
+  </div>
+
+  <h3>5. РЕОЛОГИЧЕСКИЕ ПАРАМЕТРЫ — ВИСКОЗИМЕТР Fann VG <span class="book-tag">Гл. 5</span></h3>
+  <div class="grid2">
+    <div class="card">
+      <h4>Пересчёт показаний</h4>
+      <div class="formula-box"><div class="label">Скорость сдвига (с⁻¹)</div>γ = 1.703 × ω(об/мин)</div>
+      <div class="formula-box"><div class="label">Напряжение сдвига (Па)</div>τ = 0.5107 × Q_диал</div>
+      <div class="formula-box"><div class="label">Условная вязкость УВ (мПа·с)</div>УВ = Q₆₀₀ / 2</div>
+    </div>
+    <div class="card">
+      <h4>Модель Бингама</h4>
+      <div class="formula-box"><div class="label">Пластическая вязкость ПВ (мПа·с)</div>ПВ = Q₆₀₀ − Q₃₀₀</div>
+      <div class="formula-box"><div class="label">ДНС (динамическое напряжение сдвига, Па)</div>ДНС = 0.5107 × (2·Q₃₀₀ − Q₆₀₀)</div>
+      <div class="formula-box"><div class="label">ДНС (усл. единицы lb/100ft²)</div>ДНС = 2·Q₃₀₀ − Q₆₀₀</div>
+    </div>
+    <div class="card">
+      <h4>Степенная модель — по API RP 13D (труба)</h4>
+      <div class="formula-box"><div class="label">Индекс степени n_БК</div>n_БК = 3.32 × log(Q₆₀₀ / Q₃₀₀)</div>
+      <div class="formula-box"><div class="label">Коэффициент консистенции K_БК</div>K_БК = 5.11 × Q₆₀₀ / 1022^n_БК</div>
+    </div>
+    <div class="card">
+      <h4>Степенная модель — по API RP 13D (ЗП)</h4>
+      <div class="formula-box"><div class="label">Индекс степени n_ЗП</div>n_ЗП = 0.657 × log(Q₁₀₀ / Q₃)</div>
+      <div class="formula-box"><div class="label">Коэффициент консистенции K_ЗП</div>K_ЗП = 5.11 × Q₃ / 5.11^n_ЗП</div>
+      <p style="font-size:11px;color:var(--textsec);margin-top:6px">Q₁₀₀ при 2-скоростном вискозиметре: Q₁₀₀ = Q₃₀₀ − (Q₆₀₀−Q₃₀₀)×2/3</p>
+    </div>
+  </div>
+
+  <h3>6. ГИДРАВЛИКА ПО API RP 13D <span class="book-tag">Гл. 5</span></h3>
+  <p style="font-size:12px;color:var(--textsec)">API RP 13D использует американские единицы внутри модели. При расчёте: D(мм)/25.4→in; L(м)/0.3048→ft; Q(л/мин)/3.785→gpm; ρ(г/см³)×8.345→ppg. Результаты: P(psi)×0.006895→МПа; ppg/8.345→г/см³.</p>
+  <div class="grid2">
+    <div class="card">
+      <h4>Средняя скорость потока</h4>
+      <div class="formula-box"><div class="label">В БТ (ft/min) — US</div>V_БК = 24.48 × Q(gpm) / D²(in.)</div>
+      <div class="formula-box"><div class="label">В ЗП (м/мин) — прямая метрическая</div>V_ЗП = Q(л/мин) × 1273 / (D²_скв − НД²_БК)(мм)</div>
+    </div>
+    <div class="card">
+      <h4>Число Рейнольдса и режим течения</h4>
+      <div class="formula-box"><div class="label">В БТ (US)</div>Re = 15.467 × V_БК × D × ρ / µe_БК</div>
+      <div class="formula-box"><div class="label">В ЗП</div>Re = 15.467 × V_ЗП × (D_с−D_н) × ρ / µe_ЗП</div>
+      <div class="formula-box"><div class="label">Критерий</div>Re ≤ 2100 → ламинарный | Re > 2100 → турбулентный</div>
+    </div>
+    <div class="card">
+      <h4>ЭЦП — метрическая форма</h4>
+      <div class="formula-box"><div class="label">ЭЦП (г/см³)</div>ЭЦП = ρ_бр + ΔP_ЗП(МПа) / (ИВГ(м) × 0.00981)</div>
+      <div class="formula-box"><div class="label">Упрощённо (кгс/см²)</div>ЭЦП ≈ ρ_бр + ΔP_ЗП(кгс/см²) × 10 / ИВГ(м)</div>
+      <div class="formula-us">ECD(ppg) = ρ + ΔP_ann(psi) / (0.052 × TVD(ft))</div>
+    </div>
+    <div class="card">
+      <h4>Гидравлика долота</h4>
+      <div class="formula-box"><div class="label">ГМД, гидравлическая мощность долота (кВт)</div>ГМД = Q(л/мин)/60 × ΔP_дол(МПа) / 1000 × 1e6</div>
+      <div class="formula-box"><div class="label">УГМ, удельная ГМД (кВт/см²)</div>УГМ = ГМД / (π/4 × D²_дол(см))</div>
+      <div class="formula-box"><div class="label">Скорость форсунок (м/с)</div>V_ф = Q(л/мин) × 1000 / (60 × СПН(мм²))</div>
+      <div class="formula-box"><div class="label">ГСУ, гидравлическая сила удара (кН)</div>ГСУ = ρ(кг/м³) × V_ф(м/с) × Q(м³/с) / 1000</div>
+      <div class="formula-us">HSI(hhp/in²) × 0.1156 = УГМ(кВт/см²)</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== RULES ===== -->
+<section id="rules">
+  <h2>⚡ Правила «Если – То» / Диагностические пороги</h2>
+
+  <h3>РЕОЛОГИЯ</h3>
+  <div class="rule">
+    <div class="if">ЕСЛИ ПВ &gt; 17 × ρ_бр(г/см³) мПа·с</div>
+    <div class="then">ТО: избыток твёрдой фазы → усилить очистку (вибросита, центрифуги)</div>
+    <div class="src">Гл. 5 — «PV ≤ 2 × MW(ppg)»</div>
+  </div>
+  <div class="rule">
+    <div class="if">ЕСЛИ воронковая вязкость &gt; 33 × ρ_бр(г/см³) сек</div>
+    <div class="then">ТО: вязкость избыточна → обработать дефлокулянтом (SPERSENE, TACKLE)</div>
+    <div class="src">Гл. 5 — «FV ≤ 4 × MW(ppg)»</div>
+  </div>
+  <div class="rule">
+    <div class="if">ЕСЛИ СНС прогрессивный (СНС-10 значительно выше СНС-1)</div>
+    <div class="then">ТО: накопление ТФ → усилить solids control; добавить разбавитель</div>
+    <div class="src">Гл. 5 — прогрессивные гели</div>
+  </div>
+  <div class="rule">
+    <div class="if">ЕСЛИ обе СНС высокие и близкие (мгновенный гель)</div>
+    <div class="then">ТО: флокуляция от Ca²⁺ (гипс, цемент) → обработать SAPP или NaOH</div>
+    <div class="src">Гл. 5 — flash gels and flocculation</div>
+  </div>
+  <div class="rule">
+    <div class="if">ЕСЛИ нужно улучшить очистку ствола скважины</div>
+    <div class="then">ТО: повышать ДНС и низкоскоростные показания (Q₆, Q₃), а НЕ ПВ; применять биополимеры DUO-VIS для плоского профиля скоростей</div>
+    <div class="src">Гл. 5 — «raise yield point not PV»</div>
+  </div>
+
+  <h3>ГИДРАВЛИКА</h3>
+  <div class="rule">
+    <div class="if">ЕСЛИ Re_ЗП &gt; 2100 (турбулентный режим в необсаженном стволе)</div>
+    <div class="then">ТО: возможна эрозия стенок ствола → снизить расход ИЛИ повысить вязкость</div>
+    <div class="src">Гл. 5 — турбулентное течение в ЗП</div>
+  </div>
+  <div class="rule">
+    <div class="if">ЕСЛИ ЭЦП ≥ градиенту давления ГРП пласта</div>
+    <div class="then">ТО: немедленно снизить расход и/или ПВ → риск поглощения промывочной жидкости</div>
+    <div class="src">Гл. 5 — ECD vs. fracture gradient</div>
+  </div>
+  <div class="rule">
+    <div class="if">ЕСЛИ %ΔP_дол ≈ 65% от давления нагнетания</div>
+    <div class="then">ТО: режим максимальной ГМД → оптимален для твёрдых пород (PDC, шарошечные)</div>
+    <div class="src">Гл. 5 — HHP optimization</div>
+  </div>
+  <div class="rule">
+    <div class="if">ЕСЛИ %ΔP_дол ≈ 50% от давления нагнетания</div>
+    <div class="then">ТО: режим максимальной ГСУ → оптимален для мягких пород</div>
+    <div class="src">Гл. 5 — Impact Force optimization</div>
+  </div>
+  <div class="rule">
+    <div class="if">ЕСЛИ V_форсунок &gt; 137 м/с</div>
+    <div class="then">ТО: эрозия PDC-резцов и деталей долота → увеличить СПН (суммарную площадь насадок)</div>
+    <div class="src">Гл. 5 — нижний предел 450 ft/s</div>
+  </div>
+  <div class="rule">
+    <div class="if">ЕСЛИ V_форсунок &lt; 76 м/с</div>
+    <div class="then">ТО: недостаточная очистка забоя → уменьшить СПН</div>
+    <div class="src">Гл. 5 — верхний предел 250 ft/s</div>
+  </div>
+  <div class="rule">
+    <div class="if">ЕСЛИ УГМ &lt; 0.29 кВт/см²</div>
+    <div class="then">ТО: недостаточная гидравлика долота → увеличить расход или уменьшить СПН</div>
+    <div class="src">Гл. 5 — HSI ≥ 2.5 hhp/in²</div>
+  </div>
+
+  <h3>СВАБИРОВАНИЕ / ПОРШНЁВАНИЕ (СОТП)</h3>
+  <div class="rule">
+    <div class="if">ЕСЛИ (P_гст − ΔP_сваб) &lt; P_пластового</div>
+    <div class="then">ТО: скорость подъёма избыточна → замедлить СОТП; угроза ГНВП</div>
+    <div class="src">Гл. 5 — свабирование</div>
+  </div>
+  <div class="rule">
+    <div class="if">ЕСЛИ (P_гст + ΔP_поршн) &gt; P_ГРП у башмака</div>
+    <div class="then">ТО: скорость спуска избыточна → замедлить подачу; угроза поглощений</div>
+    <div class="src">Гл. 5 — поршнёвание</div>
+  </div>
+
+  <h3>МАТЕРИАЛЬНЫЙ БАЛАНС</h3>
+  <div class="rule">
+    <div class="if">ЕСЛИ объём разбавителя &gt; 50% от объёма раствора</div>
+    <div class="then">ТО: экономичнее приготовить новый раствор с нуля</div>
+    <div class="src">Гл. 9 — Example 6</div>
+  </div>
+  <div class="rule">
+    <div class="if">ЕСЛИ нужно снизить % ТФ при сохранении плотности</div>
+    <div class="then">ТО: разбавлять суспензией барит+вода, а не чистой водой</div>
+    <div class="src">Гл. 9 — комбинированная операция</div>
+  </div>
+</section>
+
+<!-- ===== SIGNALS ===== -->
+<section id="signals">
+  <h2>📡 Поля данных — Data Fields</h2>
+
+  <h3>ГЕОМЕТРИЯ СТВОЛА</h3>
+  <div class="signal-row"><span class="signal-name">диаметр_долота_мм</span><span class="signal-unit">мм</span><span class="signal-desc">Диаметр долота / открытого (необсаженного) ствола по интервалам</span></div>
+  <div class="signal-row"><span class="signal-name">вд_обсадной_мм</span><span class="signal-unit">мм</span><span class="signal-desc">Внутренний диаметр обсадной колонны по интервалам</span></div>
+  <div class="signal-row"><span class="signal-name">нд_бт_мм</span><span class="signal-unit">мм</span><span class="signal-desc">Наружный диаметр бурильных труб (БТ)</span></div>
+  <div class="signal-row"><span class="signal-name">вд_бт_мм</span><span class="signal-unit">мм</span><span class="signal-desc">Внутренний диаметр бурильных труб</span></div>
+  <div class="signal-row"><span class="signal-name">нд_убт_мм</span><span class="signal-unit">мм</span><span class="signal-desc">Наружный диаметр УБТ / КНБК</span></div>
+  <div class="signal-row"><span class="signal-name">ивг_м</span><span class="signal-unit">м</span><span class="signal-desc">Истинная вертикальная глубина (ИВГ / TVD)</span></div>
+  <div class="signal-row"><span class="signal-name">гс_м</span><span class="signal-unit">м</span><span class="signal-desc">Глубина по стволу (ГС / MD)</span></div>
+
+  <h3>НАСОС И ЦИРКУЛЯЦИЯ</h3>
+  <div class="signal-row"><span class="signal-name">диаметр_цв_мм</span><span class="signal-unit">мм</span><span class="signal-desc">Диаметр цилиндровой втулки (liner)</span></div>
+  <div class="signal-row"><span class="signal-name">ход_поршня_мм</span><span class="signal-unit">мм</span><span class="signal-desc">Длина хода поршня</span></div>
+  <div class="signal-row"><span class="signal-name">кпд_насоса_проц</span><span class="signal-unit">%</span><span class="signal-desc">Объёмный КПД бурового насоса</span></div>
+  <div class="signal-row"><span class="signal-name">скорость_насоса_ход_мин</span><span class="signal-unit">ход/мин</span><span class="signal-desc">Скорость насоса (ходов в минуту)</span></div>
+  <div class="signal-row"><span class="signal-name">расход_л_мин</span><span class="signal-unit">л/мин</span><span class="signal-desc">Расход промывочной жидкости</span></div>
+  <div class="signal-row"><span class="signal-name">давление_нагнетания_мпа</span><span class="signal-unit">МПа</span><span class="signal-desc">Давление нагнетания на стояке</span></div>
+
+  <h3>РЕОЛОГИЯ И СОСТАВ</h3>
+  <div class="signal-row"><span class="signal-name">плотность_г_см3</span><span class="signal-unit">г/см³</span><span class="signal-desc">Плотность бурового раствора — ключевой параметр для P_гст и ЭЦП</span></div>
+  <div class="signal-row"><span class="signal-name">пв_мпас</span><span class="signal-unit">мПа·с</span><span class="signal-desc">Пластическая вязкость ПВ = Q₆₀₀ − Q₃₀₀</span></div>
+  <div class="signal-row"><span class="signal-name">днс_па</span><span class="signal-unit">Па</span><span class="signal-desc">Динамическое напряжение сдвига (ДНС / YP)</span></div>
+  <div class="signal-row"><span class="signal-name">q600 q300 q200 q100 q6 q3</span><span class="signal-unit">усл. ед.</span><span class="signal-desc">Показания вискозиметра Fann 600/300/200/100/6/3 об/мин</span></div>
+  <div class="signal-row"><span class="signal-name">снс_1 / снс_10</span><span class="signal-unit">Па / lb/100ft²</span><span class="signal-desc">СНС через 1 и 10 минут покоя (статическое напряжение сдвига)</span></div>
+  <div class="signal-row"><span class="signal-name">вв_с</span><span class="signal-unit">сек</span><span class="signal-desc">Воронковая вязкость (Marsh funnel)</span></div>
+
+  <h3>ДОЛОТО</h3>
+  <div class="signal-row"><span class="signal-name">диаметры_насадок_мм</span><span class="signal-unit">мм, массив</span><span class="signal-desc">Диаметры промывочных насадок долота</span></div>
+  <div class="signal-row"><span class="signal-name">спн_мм2</span><span class="signal-unit">мм²</span><span class="signal-desc">Суммарная площадь насадок (TFA)</span></div>
+
+  <h3>РАСЧЁТНЫЕ ВЫХОДНЫЕ СИГНАЛЫ</h3>
+  <div class="signal-row"><span class="signal-name">эцп_г_см3</span><span class="signal-unit">г/см³</span><span class="signal-desc">ЭЦП у забоя и у башмака обсадной колонны</span></div>
+  <div class="signal-row"><span class="signal-name">скорость_зп_м_мин[]</span><span class="signal-unit">м/мин</span><span class="signal-desc">Скорость потока в ЗП по каждому интервалу</span></div>
+  <div class="signal-row"><span class="signal-name">re_по_интервалам[]</span><span class="signal-unit">—</span><span class="signal-desc">Число Рейнольдса; режим течения (лам./турб.) по интервалам</span></div>
+  <div class="signal-row"><span class="signal-name">dp_разбивка_мпа{}</span><span class="signal-unit">МПа</span><span class="signal-desc">ΔP по: наземному оборудованию, БК, ЗП, долоту</span></div>
+  <div class="signal-row"><span class="signal-name">угм_квт_см2</span><span class="signal-unit">кВт/см²</span><span class="signal-desc">Удельная гидравлическая мощность долота (УГМ / HSI)</span></div>
+  <div class="signal-row"><span class="signal-name">t_первого_замера_мин</span><span class="signal-unit">мин</span><span class="signal-desc">Расчётное время выхода первых признаков шлама (время первого замера)</span></div>
+  <div class="signal-row"><span class="signal-name">dp_сваб_поршн_мпа</span><span class="signal-unit">МПа</span><span class="signal-desc">ΔP свабирования/поршнёвания при текущей скорости СОТП</span></div>
+</section>
+
+<!-- ===== HSE ===== -->
+<section id="hse">
+  <h2>🔴 HSE-ограничения и критические пороги</h2>
+
+  <h3>ДАВЛЕНИЕ И ЭЦП</h3>
+  <div class="hse"><div class="hse-label">🔴 КРИТИЧНО — ПОГЛОЩЕНИЯ</div>ЭЦП ≥ градиенту давления ГРП пласта → угроза поглощения промывочной жидкости. Немедленно снизить расход и/или ПВ. Запас ЭЦП должен быть &gt; 0.04 г/см³.</div>
+  <div class="hse"><div class="hse-label">🔴 КРИТИЧНО — ГНВП (свабирование)</div>P_гст − ΔP_сваб &lt; P_пл → угроза газонефтеводопроявления. Остановить подъём. Контролировать долив. Закрыть ПВО.</div>
+  <div class="hse"><div class="hse-label">🟠 ПРЕДУПРЕЖДЕНИЕ — МАНИФОЛЬД</div>Давление нагнетания &gt; максимально допустимого для манифольда → снизить расход.</div>
+  <div class="hse"><div class="hse-label">🟠 ПРЕДУПРЕЖДЕНИЕ — ГРП ПРИ СПУСКЕ</div>P_поршн + P_гст &gt; P_ГРП башмака → замедлить спуск колонны.</div>
+
+  <h3>СКОРОСТИ ПОТОКА</h3>
+  <div class="hse"><div class="hse-label">🟠 ПРЕДУПРЕЖДЕНИЕ — ЭРОЗИЯ ДОЛОТА</div>Скорость форсунок &gt; 137 м/с (450 ft/s) → эрозия насадок и резцов PDC→ увеличить СПН.</div>
+  <div class="hse"><div class="hse-label">🟠 ПРЕДУПРЕЖДЕНИЕ — КАВЕРНО-ОБРАЗОВАНИЕ</div>Турбулентный режим в ЗП (Re &gt; 2100) в необсаженном стволе → размыв стенок → снизить расход или повысить вязкость.</div>
+
+  <h3>РЕОЛОГИЯ</h3>
+  <div class="hse"><div class="hse-label">🟠 ПРЕДУПРЕЖДЕНИЕ — ПУСКОВОЙ ГИДРОУДАР</div>СНС-10 &gt; 30 lb/100ft² без предварительной промывки → пусковое давление may превысить P_ман. Стартовать медленно, постепенно поднимая расход.</div>
+  <div class="hse"><div class="hse-label">🟠 ПРЕДУПРЕЖДЕНИЕ — ФЛОКУЛЯЦИЯ</div>Мгновенный гель + рост ДНС → флокуляция от Ca²⁺ (гипс, цемент). Обработать SAPP или NaOH.</div>
+  <div class="hse"><div class="hse-label">🟡 ИНФОРМАЦИЯ — ТВЁРДАЯ ФАЗА</div>ПВ &gt; 17 × ρ(г/см³) мПа·с → избыток ТФ → износ насосного оборудования, снижение МСП.</div>
+
+  <h3>КОНТРОЛЬ ОБЪЁМОВ</h3>
+  <div class="hse"><div class="hse-label">🔴 КРИТИЧНО — КОНТРОЛЬ СКВАЖИНЫ</div>Циркуляционные ёмкости не заполняются при подъёме КНБК (недостаточный долив) → возможный приток → контроль скважины, закрыть ПВО.</div>
+</section>
+
+<!-- ===== MAPPING ===== -->
+<section id="mapping">
+  <h2>🗺 Маппинг знаний на модули I1–I5</h2>
+  <table>
+    <tr><th>Знание / блок</th><th>Источник</th><th>Модуль</th><th>Применение</th><th>Приоритет</th></tr>
+    <tr><td>Расчёт ЭЦП по интервалам</td><td>Гл. 5</td><td><span class="tag i2">I2</span></td><td>Ядро Гидравлического ЦД — ЭЦП в реальном времени</td><td class="tbad">P1</td></tr>
+    <tr><td>Степенная модель (n и K для БТ и ЗП)</td><td>Гл. 5</td><td><span class="tag i2">I2</span></td><td>µe по интервалам → Re → режим течения → ΔP</td><td class="tbad">P1</td></tr>
+    <tr><td>Разбивка давления нагнетания</td><td>Гл. 5</td><td><span class="tag i2">I2</span></td><td>Верификация модели vs. реального давления на стояке</td><td class="tbad">P1</td></tr>
+    <tr><td>Оптимизация гидравлики долота</td><td>Гл. 5</td><td><span class="tag i2">I2</span> <span class="tag i1">I1</span></td><td>Рекомендатор насадок; связь гидравлики с МСП</td><td class="twarn">P2</td></tr>
+    <tr><td>Свабирование / поршнёвание</td><td>Гл. 5</td><td><span class="tag i1">I1</span> <span class="tag i2">I2</span></td><td>Безопасная скорость СОТП; расчёт ΔP_сваб по реологии</td><td class="twarn">P2</td></tr>
+    <tr><td>Тиксотропность, СНС</td><td>Гл. 5</td><td><span class="tag i2">I2</span> <span class="tag i1">I1</span></td><td>Пусковое давление; рекомендация по гелям перед СОТП</td><td class="twarn">P2</td></tr>
+    <tr><td>Материальный баланс (утяжеление, разбавление)</td><td>Гл. 9</td><td><span class="tag i2">I2</span> <span class="tag i4">I4</span></td><td>Расход барита; I4 — цементный раствор</td><td class="twarn">P2</td></tr>
+    <tr><td>Объёмы ствола и колонны</td><td>Гл. 9</td><td><span class="tag i1">I1</span> <span class="tag i2">I2</span> <span class="tag i4">I4</span></td><td>Время первого замера; объём активной системы; цементирование</td><td class="tbad">P1</td></tr>
+    <tr><td>Производительность насоса</td><td>Гл. 9</td><td><span class="tag i1">I1</span> <span class="tag i2">I2</span></td><td>Базовый параметр всех временных расчётов</td><td class="tbad">P1</td></tr>
+    <tr><td>Анализ твёрдой фазы (НПТФ, ВПТФ)</td><td>Гл. 9</td><td><span class="tag i2">I2</span> <span class="tag i3">I3</span></td><td>Контроль ПВ через ТФ; связь % НПТФ с поглощениями</td><td class="twarn">P2</td></tr>
+    <tr><td>Таблицы плотностей рассолов</td><td>Гл. 9</td><td><span class="tag i2">I2</span> <span class="tag i4">I4</span></td><td>Справочник систем заканчивания</td><td style="color:var(--green)">P3</td></tr>
+    <tr><td>Гидростатическое давление / глушащий р-р</td><td>Гл. 9</td><td><span class="tag i1">I1</span> <span class="tag i3">I3</span></td><td>Расчёты при ГНВП; баланс давлений при поглощениях</td><td class="tbad">P1</td></tr>
+  </table>
+</section>
+
+<!-- ===== TABLES ===== -->
+<section id="tables">
+  <h2>📊 Справочные таблицы</h2>
+
+  <h3>Пороги реологических параметров</h3>
+  <table>
+    <tr><th>Параметр</th><th class="tgood">Норма</th><th class="twarn">Предупреждение</th><th class="tbad">Критично</th></tr>
+    <tr><td>ПВ (мПа·с)</td><td class="tgood">&lt; 17 × ρ(г/см³)</td><td class="twarn">&gt; 17 × ρ</td><td class="tbad">&gt; 25 × ρ</td></tr>
+    <tr><td>Воронк. вязкость (с)</td><td class="tgood">≤ 33 × ρ(г/см³)</td><td class="twarn">&gt; 33 × ρ</td><td>—</td></tr>
+    <tr><td>УГМ (кВт/см²)</td><td class="tgood">0.29–0.58</td><td class="twarn">&lt; 0.29</td><td class="tbad">&gt; 0.58</td></tr>
+    <tr><td>%ΔP_долото</td><td class="tgood">50–65%</td><td class="twarn">&lt; 40%</td><td class="tbad">&gt; 75%</td></tr>
+    <tr><td>V_форсунок (м/с)</td><td class="tgood">76–137</td><td class="twarn">&lt; 76</td><td class="tbad">&gt; 137</td></tr>
+    <tr><td>Re_ЗП</td><td class="tgood">&lt; 2100</td><td class="twarn">2100–5000</td><td class="tbad">&gt; 5000</td></tr>
+    <tr><td>ЭЦП − ρ_бр (г/см³)</td><td class="tgood">&gt; 0.04</td><td class="twarn">0.01–0.04</td><td class="tbad">&lt; 0.01</td></tr>
+    <tr><td>СНС-10 (lb/100ft²)</td><td class="tgood">5–20</td><td class="twarn">20–30</td><td class="tbad">&gt; 30</td></tr>
+  </table>
+
+  <h3>Максимальная плотность рассолов</h3>
+  <table>
+    <tr><th>Рассол</th><th>Макс. плотность (г/см³)</th><th>Применение</th></tr>
+    <tr><td>NaCl</td><td>1.20</td><td>Ингибирование глин, низкая стоимость</td></tr>
+    <tr><td>KCl</td><td>1.16</td><td>K⁺-ингибирование чувствительных глин</td></tr>
+    <tr><td>CaCl₂</td><td>1.39</td><td>Глубокие горизонты</td></tr>
+    <tr><td>NaBr</td><td>1.51</td><td>Заканчивание скважин</td></tr>
+    <tr><td>CaBr₂</td><td>1.81</td><td>Высокоминерализованный рассол</td></tr>
+    <tr><td>ZnBr₂</td><td>2.30</td><td>Сверхглубокие высокодавленные пласты</td></tr>
+    <tr><td>KCOOH (формиат K)</td><td>1.56</td><td>Экологичная система (офшор)</td></tr>
+    <tr><td>CsCOOH (формиат Cs)</td><td>2.34</td><td>Максимальная плотность б/цинка</td></tr>
+  </table>
+
+  <h3>Плотности материалов</h3>
+  <table>
+    <tr><th>Материал</th><th>г/см³</th><th>Назначение</th></tr>
+    <tr><td>Пресная вода</td><td>1.000</td><td>Базовая жидкость WBM</td></tr>
+    <tr><td>Морская вода</td><td>1.026</td><td>Офшорный WBM</td></tr>
+    <tr><td>Дизельное топливо</td><td>0.84</td><td>Базовый флюид OBM</td></tr>
+    <tr><td>Барит (BaSO₄)</td><td>4.20</td><td>Стандартный утяжелитель</td></tr>
+    <tr><td>Гематит (Fe₂O₃)</td><td>5.05</td><td>Утяжелитель при ECD-ограничениях</td></tr>
+    <tr><td>Ильменит (FeTiO₃)</td><td>4.67</td><td>Альтернативный утяжелитель</td></tr>
+    <tr><td>Бентонит / шлам</td><td>2.60</td><td>НПТФ по умолчанию</td></tr>
+  </table>
+
+  <h3>Быстрый пересчёт единиц</h3>
+  <table>
+    <tr><th>Из</th><th>В</th><th>Коэффициент</th></tr>
+    <tr><td>1 lb/gal (ppg)</td><td>г/см³</td><td>× 0.1198</td></tr>
+    <tr><td>1 bbl</td><td>л</td><td>= 158.99</td></tr>
+    <tr><td>1 gpm</td><td>л/мин</td><td>= 3.785</td></tr>
+    <tr><td>1 psi</td><td>МПа</td><td>× 0.006895</td></tr>
+    <tr><td>1 psi</td><td>кгс/см²</td><td>× 0.0703</td></tr>
+    <tr><td>1 ft</td><td>м</td><td>× 0.3048</td></tr>
+    <tr><td>1 inch</td><td>мм</td><td>× 25.4</td></tr>
+    <tr><td>1 cP</td><td>мПа·с</td><td>= 1 (то же самое)</td></tr>
+    <tr><td>1 hhp</td><td>кВт</td><td>× 0.746</td></tr>
+    <tr><td>1 hhp/in²</td><td>кВт/см²</td><td>× 0.1156</td></tr>
+    <tr><td>1 ft/s</td><td>м/с</td><td>× 0.3048</td></tr>
+  </table>
+</section>
+
+</main>
+<script>
+function show(id, btn) {
+  document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+</script>
+  <script src="assets/js/global-auth-widget.js"></script>
+</body>
+</html>

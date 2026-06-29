@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Суточные рапорты — MudGPT-DMR</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Arial, sans-serif; background: #F5F5F7; color: #1D1D1F; font-size: 15px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+:root { --white:#FFFFFF; --bg:#F5F5F7; --text:#1D1D1F; --text2:#6E6E73; --text3:#AEAEB2; --blue:#2563EB; --blue-l:#EFF6FF; --border:rgba(0,0,0,0.08); --sh-sm:0 1px 4px rgba(0,0,0,0.06); --sh:0 4px 20px rgba(0,0,0,0.08); --r:16px; --r-sm:10px; --g:#16A34A; --g-l:#F0FDF4; }
+
+nav { position:sticky; top:0; z-index:100; background:rgba(255,255,255,0.88); backdrop-filter:saturate(180%) blur(20px); border-bottom:1px solid var(--border); height:56px; display:flex; align-items:center; padding:0 40px; justify-content:space-between; }
+.nav-logo { display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--text); }
+.nav-mark { width:28px; height:28px; border-radius:7px; background:var(--blue); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:#fff; }
+.nav-name { font-size:15px; font-weight:700; letter-spacing:-.4px; }
+.nav-right { display:flex; gap:10px; }
+.btn-ghost { padding:7px 16px; border-radius:var(--r-sm); border:1px solid var(--border); background:transparent; color:var(--text); font-size:13px; font-weight:500; text-decoration:none; cursor:pointer; font-family:inherit; }
+.btn-ghost:hover { background:var(--bg); }
+.btn-primary { padding:8px 20px; border-radius:var(--r-sm); background:var(--blue); color:#fff; font-size:13px; font-weight:600; text-decoration:none; border:none; cursor:pointer; font-family:inherit; }
+.btn-primary:hover { background:#1D4ED8; }
+.btn-green { padding:8px 20px; border-radius:var(--r-sm); background:var(--g); color:#fff; font-size:13px; font-weight:600; text-decoration:none; border:none; cursor:pointer; font-family:inherit; }
+.btn-green:hover { background:#15803D; }
+
+.wrap { width:min(1080px, 92vw); margin:0 auto; padding:48px 0 80px; }
+.breadcrumb { display:flex; align-items:center; gap:6px; font-size:13px; color:var(--text3); margin-bottom:32px; }
+.breadcrumb a { color:var(--text3); text-decoration:none; } .breadcrumb a:hover { color:var(--blue); }
+
+/* Well info card */
+.well-card { background:var(--white); border:1.5px solid var(--border); border-radius:var(--r); padding:28px 32px; box-shadow:var(--sh-sm); margin-bottom:32px; display:flex; align-items:flex-start; justify-content:space-between; gap:24px; flex-wrap:wrap; }
+.well-card-left h1 { font-size:26px; font-weight:800; letter-spacing:-.5px; margin-bottom:4px; }
+.well-meta { display:flex; flex-wrap:wrap; gap:10px; margin-top:12px; }
+.well-meta-item { display:flex; flex-direction:column; }
+.well-meta-label { font-size:10px; font-weight:700; color:var(--text3); text-transform:uppercase; letter-spacing:.06em; }
+.well-meta-val { font-size:14px; font-weight:600; color:var(--text); margin-top:2px; }
+.well-badge { display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:600; color:var(--g); background:var(--g-l); border:1px solid #BBF7D0; border-radius:99px; padding:4px 12px; }
+.well-card-actions { display:flex; flex-direction:column; gap:10px; align-items:flex-end; flex-shrink:0; }
+
+/* DMR list */
+.section-hd { display:flex; align-items:baseline; justify-content:space-between; margin-bottom:16px; }
+.section-hd h2 { font-size:20px; font-weight:700; letter-spacing:-.3px; }
+.section-hd span { font-size:13px; color:var(--text3); }
+
+.dmr-table { width:100%; border-collapse:collapse; background:var(--white); border:1.5px solid var(--border); border-radius:var(--r); overflow:hidden; box-shadow:var(--sh-sm); }
+.dmr-table thead th { background:#F9FAFB; font-size:11px; font-weight:700; color:var(--text3); text-transform:uppercase; letter-spacing:.06em; padding:10px 16px; text-align:left; border-bottom:1px solid var(--border); }
+.dmr-table tbody tr { border-bottom:1px solid var(--border); transition:background .12s; }
+.dmr-table tbody tr:last-child { border-bottom:none; }
+.dmr-table tbody tr:hover { background:var(--blue-l); }
+.dmr-table tbody td { padding:12px 16px; font-size:13px; color:var(--text); }
+.dmr-table tbody td.muted { color:var(--text2); }
+.status-chip { display:inline-flex; align-items:center; gap:5px; font-size:11px; font-weight:700; border-radius:99px; padding:3px 10px; }
+.status-chip.ok { color:var(--g); background:var(--g-l); border:1px solid #BBF7D0; }
+.status-chip.draft { color:#D97706; background:#FFFBEB; border:1px solid #FDE68A; }
+.dmr-open-btn { font-size:12px; font-weight:600; color:var(--blue); text-decoration:none; }
+.dmr-open-btn:hover { text-decoration:underline; }
+
+/* Empty state */
+.empty-state { text-align:center; padding:60px 24px; background:var(--white); border:1.5px solid var(--border); border-radius:var(--r); box-shadow:var(--sh-sm); }
+.empty-icon { font-size:48px; margin-bottom:16px; }
+.empty-state h3 { font-size:18px; font-weight:700; letter-spacing:-.3px; margin-bottom:6px; }
+.empty-state p { color:var(--text2); font-size:14px; max-width:380px; margin:0 auto 24px; }
+
+/* DMR Cards */
+.dmr-cards { display:grid; gap:12px; }
+.dmr-card { background:var(--white); border:1.5px solid var(--border); border-radius:var(--r-sm); padding:16px 20px; display:flex; align-items:center; justify-content:space-between; gap:16px; cursor:pointer; transition:all .15s; box-shadow:var(--sh-sm); }
+.dmr-card:hover { border-color:var(--blue); box-shadow:var(--sh), 0 0 0 3px rgba(37,99,235,.06); }
+.dmr-card-left { display:flex; align-items:center; gap:14px; }
+.dmr-card-icon { width:40px; height:40px; border-radius:10px; background:var(--blue-l); display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+.dmr-card-title { font-size:16px; font-weight:700; letter-spacing:-.02em; }
+.dmr-card-sub { font-size:12px; color:var(--text2); margin-top:2px; }
+.dmr-card-right { display:flex; align-items:center; gap:10px; flex-shrink:0; }
+.dmr-del-btn { display:inline-flex; align-items:center; justify-content:center; width:26px; height:26px; border-radius:6px; background:transparent; border:1px solid transparent; color:var(--text3); cursor:pointer; font-size:12px; font-family:inherit; transition:all .15s; }
+.dmr-del-btn:hover { background:#FEF2F2; border-color:#FECACA; color:#DC2626; }
+
+@media(max-width:640px){ nav{padding:0 20px;} .wrap{padding:32px 0 60px;} .well-card{padding:20px;} }
+</style>
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="../index.html"><div class="nav-mark">DQ</div><span class="nav-name">DRILL-Q</span></a>
+  <div class="nav-right">
+    <a class="btn-ghost" href="my_wells.html">← Мои скважины</a>
+    <a class="btn-ghost" href="mudgpt_dmr_new_well.html">+ Новая скважина</a>
+  </div>
+</nav>
+
+<div class="wrap">
+  <div class="breadcrumb">
+    <a href="../index.html">DRILL-Q</a> <span>/</span>
+    <a href="../tools.html">Инструменты</a> <span>/</span>
+    <a href="my_wells.html">Мои скважины</a> <span>/</span>
+    <span style="color:var(--text)" id="breadWell">—</span>
+  </div>
+
+  <!-- Well info -->
+  <div class="well-card">
+    <div class="well-card-left">
+      <div class="well-badge" id="wellBadge">MudGPT-DMR</div>
+      <h1 id="wellTitle" style="margin-top:8px">Загрузка…</h1>
+      <div class="well-meta" id="wellMeta"></div>
+    </div>
+    <div class="well-card-actions">
+      <button class="btn-green" id="btnCreateDMR1" onclick="openDMR1()">+ Создать новый DMR</button>
+      <button class="btn-ghost" id="btnOpenTool" onclick="openTool()">Открыть в MudGPT-DMR →</button>
+    </div>
+  </div>
+
+  <!-- DMR Reports list -->
+  <div class="section-hd">
+    <h2>Суточные рапорты</h2>
+    <span id="reportsCount">0 рапортов</span>
+  </div>
+  <div id="reportsContainer"></div>
+</div>
+
+<script>
+const DMR_FORM_URL = 'file:///C:/Users/Andrey/Desktop/%D0%A0%D0%B0%D0%B1%D0%BE%D1%87%D0%B8%D0%B9%20%D1%81%D1%82%D0%BE%D0%BB%20%D0%BC%D0%B0%D0%B9%202026/NEW/docs/project_well_dmr_entry.html';
+
+const urlParams = new URLSearchParams(window.location.search);
+const wellNameParam = urlParams.get('well') || '';
+let wellName = wellNameParam;
+let wellData = {};
+
+// ── Load well metadata from any saved DMR state ──────────────────────────────
+function loadWellData() {
+  const indexKey = 'dmr_reports_' + wellName;
+  const reports = safeJson(indexKey, []);
+  // Try to get well metadata from the most recent DMR state
+  if (reports.length > 0) {
+    const latest = reports[reports.length - 1];
+    if (latest.state_key) {
+      const state = safeJson(latest.state_key, null);
+      if (state) wellData = state;
+    }
+  }
+  renderWellCard();
+  renderReports();
+}
+
+function safeJson(key, fallback) {
+  try { return JSON.parse(localStorage.getItem(key) || 'null') ?? fallback; } catch { return fallback; }
+}
+
+function renderWellCard() {
+  document.getElementById('breadWell').textContent = wellName || '—';
+  document.getElementById('wellTitle').textContent = wellName || 'Скважина';
+  const meta = [
+    { label: 'Оператор',      val: wellData.well_operator   || '' },
+    { label: 'Подрядчик',     val: wellData.well_contractor || '' },
+    { label: 'Буровая',       val: wellData.well_rig        || '' },
+    { label: 'Месторождение', val: wellData.well_field      || '' },
+    { label: 'Регион',        val: wellData.well_region     || '' },
+    { label: 'Страна',        val: wellData.well_country    || '' },
+  ].filter(m => m.val);
+  document.getElementById('wellMeta').innerHTML = meta
+    .map(m => `<div class="well-meta-item"><div class="well-meta-label">${m.label}</div><div class="well-meta-val">${m.val}</div></div>`)
+    .join('');
+}
+
+// ── Render reports cards ──────────────────────────────────────────────────────
+function renderReports() {
+  const reports = safeJson('dmr_reports_' + wellName, []);
+  const container = document.getElementById('reportsContainer');
+  document.getElementById('reportsCount').textContent = reports.length + ' ' + plural(reports.length, 'рапорт', 'рапорта', 'рапортов');
+
+  if (reports.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">📋</div>
+        <h3>Рапортов пока нет</h3>
+        <p>Откройте MudGPT-DMR, заполните данные и нажмите «Сохранить DMR-1».</p>
+        <button class="btn-green" onclick="openNewDMR()">Открыть MudGPT-DMR →</button>
+      </div>`;
+    return;
+  }
+
+  container.innerHTML = `<div class="dmr-cards">${reports.map((r, i) => {
+    const no = r.dmr_no || (i + 1);
+    const dateStr = r.date || '—';
+    const depthStr = r.depth_md ? r.depth_md + ' м MD' : '—';
+    return `
+      <div class="dmr-card" onclick="openReport(${i})">
+        <div class="dmr-card-left">
+          <div class="dmr-card-icon">📋</div>
+          <div>
+            <div class="dmr-card-title">DMR-${no}_${dateStr}</div>
+            <div class="dmr-card-sub">Суточная сводка · Забой: ${depthStr} · ${r.fluid_type || '—'}</div>
+          </div>
+        </div>
+        <div class="dmr-card-right">
+          <span class="status-chip ${r.status === 'final' ? 'ok' : 'draft'}">${r.status === 'final' ? '✓ Финал' : '✏ Черновик'}</span>
+          <button class="btn-ghost" style="font-size:12px;padding:5px 12px" onclick="event.stopPropagation();viewReport(${i})">👁 PDF</button>
+          <button class="dmr-del-btn" onclick="event.stopPropagation();deleteReport(${i})" title="Удалить">✕</button>
+        </div>
+      </div>`;
+  }).join('')}</div>`;
+}
+
+// ── Actions ──────────────────────────────────────────────────────────────────
+function openReport(idx) {
+  const reports = safeJson('dmr_reports_' + wellName, []);
+  const r = reports[idx];
+  if (!r) return;
+  if (r.state_key) localStorage.setItem('ws2000_open_dmr_request', JSON.stringify({ state_key: r.state_key }));
+  const dmrNo = r.dmr_no || (idx + 1);
+  window.location.href = DMR_FORM_URL + '?well=' + encodeURIComponent(wellName) + '&dmr=DMR-' + dmrNo;
+}
+
+function openNewDMR() {
+  const reports = safeJson('dmr_reports_' + wellName, []);
+  const nextNo = reports.length > 0 ? Math.max(...reports.map(r => r.dmr_no || 1)) + 1 : 1;
+  window.location.href = DMR_FORM_URL + '?well=' + encodeURIComponent(wellName) + '&dmr=DMR-' + nextNo;
+}
+
+function editReport(idx) {
+  const reports = safeJson('dmr_reports_' + wellName, []);
+  const r = reports[idx];
+  if (!r) return;
+  // Write the open-request so the form knows which state to load
+  localStorage.setItem('ws2000_open_dmr_request', JSON.stringify({ state_key: r.state_key }));
+  window.open(DMR_FORM_URL + '?well=' + encodeURIComponent(wellName), '_blank');
+}
+
+function viewReport(idx) {
+  const reports = safeJson('dmr_reports_' + wellName, []);
+  const r = reports[idx];
+  if (!r) return;
+  const html = r.html_key ? localStorage.getItem(r.html_key) : null;
+  if (!html) { alert('HTML рапорт не найден. Откройте форму и нажмите «Сохранить DMR» ещё раз.'); return; }
+
+  // Open in new window
+  const w = window.open('', '_blank');
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8">
+    <title>DMR-${r.dmr_no || (idx+1)} · ${wellName}</title>
+    <style>
+      body{margin:0;padding:24px;font-family:Segoe UI,Arial,sans-serif;background:#f5f5f5}
+      .print-bar{display:flex;gap:10px;margin-bottom:16px}
+      .print-bar button{padding:8px 20px;border-radius:8px;border:none;cursor:pointer;font-size:13px;font-weight:600}
+      .btn-p{background:#1b3550;color:#fff} .btn-p:hover{background:#2563eb}
+      .btn-c{background:#e5e7eb;color:#374151} .btn-c:hover{background:#d1d5db}
+      @media print{.print-bar{display:none}body{padding:8px}@page{size:A4 portrait;margin:10mm}}
+    </style></head><body>
+    <div class="print-bar">
+      <button class="btn-p" onclick="window.print()">🖨 Печать / PDF</button>
+      <button class="btn-c" onclick="window.close()">Закрыть</button>
+      <span style="align-self:center;font-size:12px;color:#6b7280">DMR-${r.dmr_no || (idx+1)} · скв. ${wellName} · ${r.date||''}</span>
+    </div>
+    ${html}
+    </body></html>`);
+  w.document.close();
+}
+
+function deleteReport(idx) {
+  const reports = safeJson('dmr_reports_' + wellName, []);
+  const r = reports[idx];
+  if (!r) return;
+  if (!confirm(`Удалить DMR-${r.dmr_no || (idx+1)} от ${r.date}? Это действие необратимо.`)) return;
+  // Remove HTML and state from localStorage
+  if (r.html_key)  localStorage.removeItem(r.html_key);
+  if (r.state_key) localStorage.removeItem(r.state_key);
+  reports.splice(idx, 1);
+  localStorage.setItem('dmr_reports_' + wellName, JSON.stringify(reports));
+  renderReports();
+}
+
+// ── Helpers ──────────────────────────────────────────────────────────────────
+function openTool() {
+  window.open(DMR_FORM_URL + '?well=' + encodeURIComponent(wellName), '_blank');
+}
+
+function openDMR1() { openNewDMR(); }
+
+function plural(n, f1, f2, f5) {
+  const m = Math.abs(n) % 100, m1 = m % 10;
+  if (m > 10 && m < 20) return f5;
+  if (m1 > 1 && m1 < 5) return f2;
+  if (m1 === 1) return f1;
+  return f5;
+}
+
+loadWellData();
+</script>
+</body>
+</html>

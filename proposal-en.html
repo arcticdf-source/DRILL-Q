@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Technical Proposal Generator — CLOTO</title>
+<link rel="stylesheet" href="cloto.css">
+</head>
+<body>
+
+<div class="ticker-bar">
+  <div class="ticker-track">
+    <span class="ticker-item"><span class="lbl">AI ENGINE</span> <span class="up">LIVE</span> — Technical proposal generator active</span>
+    <span class="ticker-item"><span class="lbl">CLOTO</span> 65+ products · WBM · OBM · LCM</span>
+    <span class="ticker-item"><span class="lbl">OPTITROL®</span> up to 220°C · <span class="lbl">HITEMP®200</span> up to 200°C</span>
+    <span class="ticker-item"><span class="lbl">CLOTONEX®</span> OBM fluid loss to 200°C · <span class="lbl">EXTRAMUL® SUPREME</span> 204°C</span>
+    <span class="ticker-item"><span class="lbl">AI ENGINE</span> <span class="up">LIVE</span> — Technical proposal generator active</span>
+    <span class="ticker-item"><span class="lbl">CLOTO</span> 65+ products · WBM · OBM · LCM</span>
+    <span class="ticker-item"><span class="lbl">OPTITROL®</span> up to 220°C · <span class="lbl">HITEMP®200</span> up to 200°C</span>
+    <span class="ticker-item"><span class="lbl">CLOTONEX®</span> OBM fluid loss to 200°C · <span class="lbl">EXTRAMUL® SUPREME</span> 204°C</span>
+  </div>
+</div>
+
+<nav>
+  <a class="nav-logo" href="index-en.html">
+    <div class="logo-mark">CL</div>
+    <div>
+      <div class="logo-text">CLO<span>TO</span></div>
+      <div class="logo-sub">Oilfield Chemicals · Est. 1991</div>
+    </div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index-en.html">Platform</a></li>
+    <li><a href="catalog-en.html">Products</a></li>
+    <li><a href="proposal-en.html" class="active">AI Proposal</a></li>
+    <li><a href="tools-en.html">Tools</a></li>
+    <li><a href="index-en.html#tenders">Tenders</a></li>
+  </ul>
+  <div class="nav-right">
+    <a class="lang-link" href="proposal-ru.html">🇷🇺 RU</a>
+    <a class="btn-outline" href="catalog-en.html">Product Catalog</a>
+    <button class="btn-primary" onclick="window.location.href='mailto:info@cloto.ru'">Talk to Expert →</button>
+  </div>
+</nav>
+
+<!-- PROPOSAL HERO -->
+<div class="proposal-hero">
+  <div class="section-label">AI Technical Proposal Generator</div>
+  <h1>Describe Your Well. <span style="color:var(--cyan)">Get the Solution.</span></h1>
+  <p>Enter your well parameters and operational challenge. Our AI analyses the conditions, selects the right CLOTO products, calculates dosages, and generates a client-ready technical proposal with NPT cost savings — in under 30 seconds.</p>
+</div>
+
+<!-- PROPOSAL BODY -->
+<div class="proposal-body">
+
+  <!-- FORM -->
+  <div class="form-card">
+    <div class="form-card-header">
+      <h3>Well Parameters</h3>
+      <p>Fill in your well data for a precise AI analysis</p>
+    </div>
+    <div class="form-body">
+      <div class="form-group">
+        <label>Well Name / Number</label>
+        <input type="text" id="wellName" placeholder="e.g. TEN-218, K-142, Well #7">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Country / Basin</label>
+          <select id="basin">
+            <option value="">Select...</option>
+            <option>Kazakhstan — Tengiz</option>
+            <option>Kazakhstan — Caspian</option>
+            <option>Russia — Western Siberia</option>
+            <option>Russia — Eastern Siberia</option>
+            <option>Russia — Caspian</option>
+            <option>Russia — Arkhangelsk</option>
+            <option>Turkmenistan</option>
+            <option>Uzbekistan</option>
+            <option>Azerbaijan</option>
+            <option>Other CIS</option>
+            <option>Middle East</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Mud System</label>
+          <select id="mudType">
+            <option value="">Select...</option>
+            <option value="wbm">WBM — Water Based</option>
+            <option value="obm">OBM — Oil Based</option>
+            <option value="sbm">SBM — Synthetic Based</option>
+            <option value="unknown">Not determined</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Total Depth (m)</label>
+          <input type="number" id="depth" placeholder="e.g. 4500">
+        </div>
+        <div class="form-group">
+          <label>BHT (°C)</label>
+          <input type="number" id="bht" placeholder="e.g. 155">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Mud Weight (SG)</label>
+          <input type="number" step="0.01" id="mw" placeholder="e.g. 1.60">
+        </div>
+        <div class="form-group">
+          <label>Number of Wells</label>
+          <input type="number" id="wells" placeholder="e.g. 3" min="1">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Primary Problem</label>
+        <select id="problem">
+          <option value="">Select challenge...</option>
+          <option value="shale">Shale instability / borehole collapse</option>
+          <option value="loss">Lost circulation / fluid losses</option>
+          <option value="filtration_wbm">High WBM fluid loss / HTHP filtrate</option>
+          <option value="filtration_obm">High OBM HTHP filtrate</option>
+          <option value="torque">Torque & drag / stuck pipe</option>
+          <option value="rheology">Rheology failure / gel strength</option>
+          <option value="emulsion">OBM emulsion breakdown</option>
+          <option value="hpht">HPHT system design</option>
+          <option value="new_well">New well — full fluid system design</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Formation Type</label>
+        <select id="formation">
+          <option value="">Select...</option>
+          <option value="shale">Shale (reactive)</option>
+          <option value="carbonate">Carbonate / Limestone</option>
+          <option value="sandstone">Sandstone</option>
+          <option value="mixed">Mixed / Interbedded</option>
+          <option value="salt">Salt / Evaporite</option>
+          <option value="unknown">Unknown</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Additional Context (optional)</label>
+        <textarea id="context" placeholder="e.g. Current products in use, specific depth intervals, offset well experience, client technical requirements..."></textarea>
+      </div>
+      <button class="generate-btn" onclick="generateProposal()">🤖 Generate AI Technical Proposal →</button>
+    </div>
+  </div>
+
+  <!-- OUTPUT PANEL -->
+  <div class="output-panel" id="outputPanel">
+
+    <!-- EMPTY STATE -->
+    <div class="output-empty" id="emptyState">
+      <div class="icon">🤖</div>
+      <h3>Ready to Analyse</h3>
+      <p>Fill in the well parameters on the left and click <strong>"Generate AI Technical Proposal"</strong> to receive a CLOTO product recommendation with dosage tables and NPT cost savings.</p>
+    </div>
+
+    <!-- LOADING STATE (hidden) -->
+    <div class="output-empty hidden" id="loadingState">
+      <div class="icon" style="animation:pulse 1s infinite">⚙️</div>
+      <h3 style="color:var(--cyan)">AI Analysing Well Data...</h3>
+      <p>Cross-referencing formation data · Selecting CLOTO products · Calculating dosages · Estimating NPT savings</p>
+    </div>
+
+    <!-- RESULTS (hidden initially) -->
+    <div id="results" class="hidden">
+
+      <div class="output-section">
+        <div class="output-section-header">
+          <span style="font-size:18px">🔬</span>
+          <h4>Well Diagnosis</h4>
+          <span class="badge tag-cyan">AI Analysis</span>
+        </div>
+        <div class="output-section-body">
+          <div class="diagnosis-grid" id="diagGrid"></div>
+          <div id="diagText" style="margin-top:16px;font-size:13px;color:var(--text-secondary);line-height:1.7;padding:14px;background:rgba(0,0,0,.15);border-radius:10px;border:1px solid var(--border);"></div>
+        </div>
+      </div>
+
+      <div class="output-section">
+        <div class="output-section-header">
+          <span style="font-size:18px">🧪</span>
+          <h4>CLOTO Product Recommendations</h4>
+          <span class="badge tag-orange">Field-Matched</span>
+        </div>
+        <div class="output-section-body">
+          <div class="prod-rec-list" id="recList"></div>
+        </div>
+      </div>
+
+      <div class="output-section">
+        <div class="output-section-header">
+          <span style="font-size:18px">💰</span>
+          <h4>NPT Savings & ROI Analysis</h4>
+          <span class="badge tag-green">Quantified</span>
+        </div>
+        <div class="output-section-body">
+          <div class="roi-grid" id="roiGrid"></div>
+          <div id="roiText" style="margin-top:16px;font-size:12px;color:var(--text-muted);line-height:1.7;padding:12px;background:rgba(0,0,0,.1);border-radius:8px;border:1px solid var(--border);"></div>
+        </div>
+      </div>
+
+      <div class="output-section">
+        <div class="output-section-header">
+          <span style="font-size:18px">📄</span>
+          <h4>Export Technical Proposal</h4>
+          <span class="badge tag-yellow">Ready</span>
+        </div>
+        <div class="export-row">
+          <button class="export-btn" style="background:var(--cyan);color:#000;font-weight:800;" onclick="alert('PDF export ready — contact info@cloto.ru for the full formatted proposal document.')">📄 Export PDF</button>
+          <button class="export-btn" style="background:transparent;border:1px solid var(--border);color:var(--text-secondary);" onclick="alert('Word export ready — contact info@cloto.ru for the full formatted proposal document.')">📝 Export Word</button>
+          <button class="export-btn" style="background:transparent;border:1px solid var(--border-orange);color:var(--orange);" onclick="window.location.href='mailto:info@cloto.ru?subject=Technical Proposal Request'">✉️ Send to Expert</button>
+        </div>
+      </div>
+
+    </div><!-- /results -->
+  </div><!-- /output-panel -->
+</div><!-- /proposal-body -->
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="nav-logo">
+        <div class="logo-mark">CL</div>
+        <div><div class="logo-text">CLO<span>TO</span></div><div class="logo-sub">Oilfield Chemicals · Est. 1991</div></div>
+      </div>
+      <p>AI-powered drilling fluid recommendations backed by 35 years of oilfield chemistry manufacturing. info@cloto.ru · +7 (8182) 23-45-96</p>
+    </div>
+    <div class="footer-col">
+      <h4>Quick Links</h4>
+      <ul>
+        <li><a href="index-en.html">Platform Home</a></li>
+        <li><a href="catalog-en.html">Product Catalog</a></li>
+        <li><a href="proposal-ru.html">Russian Version</a></li>
+        <li><a href="https://cloto-oilfield-chemicals.com" target="_blank">Official Website</a></li>
+        <li><a href="mailto:info@cloto.ru">Contact Sales</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Key Products</h4>
+      <ul>
+        <li><a href="catalog-en.html">BLACKTROL® · OPTITROL®</a></li>
+        <li><a href="catalog-en.html">HITEMP®200 · TERRAPAN®</a></li>
+        <li><a href="catalog-en.html">CLOTONEX® · STABILITE® OBM</a></li>
+        <li><a href="catalog-en.html">EXTRAMUL® SUPREME</a></li>
+        <li><a href="catalog-en.html">SUPERSLIDER® PLATINUM</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Applications</h4>
+      <ul>
+        <li><a href="catalog-en.html">Shale Inhibition</a></li>
+        <li><a href="catalog-en.html">HPHT Fluid Loss</a></li>
+        <li><a href="catalog-en.html">OBM Emulsification</a></li>
+        <li><a href="catalog-en.html">ERD Lubrication</a></li>
+        <li><a href="catalog-en.html">Lost Circulation</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 CLOTO. All rights reserved.</span>
+    <div class="footer-links">
+      <a href="proposal-ru.html">Русская версия</a>
+      <a href="index-en.html">← Back to Platform</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+const CLOTO_PRODUCTS = {
+  shale: {
+    wbm: [
+      { name:'BLACKTROL®', chemical:'Liquid asphalt polyglycol dispersion', dosage:'8–12 kg/m³', why:'Dual-action: seals micro-fractures AND inhibits clay swelling. Primary shale stabiliser in WBM.', color:'var(--cyan)' },
+      { name:'G-DRILL®', chemical:'Cloud-point polyglycol', dosage:'20–28 kg/m³', why:'Cloud-point mechanism releases inhibitor at BHT — targets clay platelets precisely at downhole conditions.', color:'var(--orange)' },
+      { name:'SHALE-X® Liquid', chemical:'Methylsiloxane hydrophobizer', dosage:'2–3 kg/m³', why:'Hydrophobises clay surfaces. Enhances thermal stability of polymers by 20–30°C. Synergistic with BLACKTROL®.', color:'var(--green)' }
+    ],
+    obm: [
+      { name:'CLOTONEX®', chemical:'Modified organophilic lignite', dosage:'10–15 kg/m³', why:'OBM fluid loss control reduces pore pressure transmission that drives shale instability.', color:'var(--cyan)' },
+      { name:'STABILITE® OBM', chemical:'Gilsonite / asphaltite powder', dosage:'15–25 kg/m³', why:'Broad particle-size asphaltite seals pores of all sizes, preventing filtrate invasion into shale.', color:'var(--orange)' }
+    ]
+  },
+  filtration_wbm: {
+    wbm: [
+      { name:'HITEMP®200', chemical:'Synthetic AA/AMPS copolymer', dosage:'8–15 kg/m³', why:'Primary high-temperature fluid loss agent. Thermally stable to 200°C, brine-tolerant, non-fermenting.', color:'var(--cyan)' },
+      { name:'OPTITROL®', chemical:'Modified tall oil pitch', dosage:'5–10 kg/m³', why:'Highest temperature WBM product at 220°C. Seals and bridges, reduces filtrate in extreme HPHT conditions.', color:'var(--orange)' },
+      { name:'TERRAPAN®', chemical:'Sodium polyacrylate copolymer', dosage:'1–2 kg/m³', why:'Low-dosage fluid loss aid. Builds thin, tight filter cake. Use HITEMP®200 in brine systems above 7% KCl/NaCl.', color:'var(--green)' }
+    ]
+  },
+  filtration_obm: {
+    obm: [
+      { name:'CLOTONEX®', chemical:'Modified organophilic lignite', dosage:'10–20 kg/m³', why:'Core OBM fluid loss product. 200°C rated. Compatible with all diesel, mineral oil, and SBM systems.', color:'var(--cyan)' },
+      { name:'STABILITE® OBM', chemical:'Gilsonite powder', dosage:'15–30 kg/m³', why:'Asphaltite plugs pores and fractures — works synergistically with CLOTONEX® for extreme HTHP conditions.', color:'var(--orange)' },
+      { name:'LIQUITROL®', chemical:'Liquid polymeric fluid loss reducer', dosage:'14–22 kg/m³', why:'Direct addition, no preprocessing. Minimal rheology impact. Adds electrical stability simultaneously.', color:'var(--green)' }
+    ]
+  },
+  torque: {
+    wbm: [
+      { name:'SUPERSLIDER® PLATINUM', chemical:'Premium ester-based lubricant', dosage:'1.5–3% by volume', why:'Maximum torque & drag reduction for ERD and horizontal wells. Non-damaging, non-foaming, biodegradable.', color:'var(--cyan)' },
+      { name:'SUPERSLIDER® GOLD', chemical:'Ester-based lubricant', dosage:'1–2.5% by volume', why:'Standard ester lubricant for deviated wells. Reduces metal-to-metal and formation-to-metal friction.', color:'var(--orange)' }
+    ],
+    obm: [
+      { name:'WELLTREAT®', chemical:'Resinic acid surfactant', dosage:'5–15 kg/m³', why:'Converts solids oil-wet, reducing balling and friction. Minimises screen blinding at surface.', color:'var(--cyan)' }
+    ]
+  },
+  rheology: {
+    wbm: [
+      { name:'DEFLONATE®', chemical:'Chrome lignosulfonate', dosage:'5–15 kg/m³', why:'Classic deflocculant for WBM gel strength and plastic viscosity control. Up to 176°C. pH 9–11.', color:'var(--cyan)' },
+      { name:'HITEMP®200', chemical:'Synthetic AA/AMPS copolymer', dosage:'5–10 kg/m³', why:'Provides beneficial viscosity contribution and suspension — reduces separate thickener requirement.', color:'var(--orange)' }
+    ]
+  },
+  emulsion: {
+    obm: [
+      { name:'EXTRAMUL® SUPREME', chemical:'TOFA polyamide (2-in-1)', dosage:'14–28 kg/m³', why:'2-in-1: restores emulsion AND wets solids in a single product. 204°C rated. 100% bio-based.', color:'var(--cyan)' },
+      { name:'EXTRAMUL®S', chemical:'Polyaminated fatty acids', dosage:'7–14 kg/m³', why:'Secondary emulsifier — restores electrical stability, prevents water-phase separation.', color:'var(--orange)' },
+      { name:'WELLTREAT®', chemical:'Resinic acid surfactant', dosage:'6–12 kg/m³', why:'Converts all solids oil-wet — critical for emulsion restoration after water contamination.', color:'var(--green)' }
+    ]
+  },
+  hpht: {
+    wbm: [
+      { name:'OPTITROL®', chemical:'Modified tall oil pitch', dosage:'8–15 kg/m³', why:'220°C rated — highest WBM temperature product in CLOTO portfolio. Works in 2.2 SG muds.', color:'var(--cyan)' },
+      { name:'HITEMP®200', chemical:'Synthetic AA/AMPS copolymer', dosage:'10–18 kg/m³', why:'200°C synthetic copolymer — fluid loss and suspension in extreme temperature wells.', color:'var(--orange)' },
+      { name:'BLACKTROL®', chemical:'Liquid asphalt polyglycol', dosage:'10–15 kg/m³', why:'Seals micro-fractures and pores under HPHT conditions. Reduces HTHP filtration significantly.', color:'var(--green)' }
+    ],
+    obm: [
+      { name:'EXTRAMUL® SUPREME', chemical:'TOFA polyamide', dosage:'20–28 kg/m³', why:'204°C emulsifier — maintains electrical stability in extreme HPHT OBM.', color:'var(--cyan)' },
+      { name:'CLOTONEX®', chemical:'Organophilic lignite', dosage:'15–25 kg/m³', why:'200°C OBM fluid loss — thermally stable organophilic lignite for HPHT wells.', color:'var(--orange)' },
+      { name:'STABILITE® OBM', chemical:'Gilsonite powder', dosage:'20–40 kg/m³', why:'HTHP pore plugging — asphaltite particles resistant to thermal breakdown at depth.', color:'var(--green)' }
+    ]
+  },
+  new_well: {
+    wbm: [
+      { name:'BLACKTROL®', chemical:'Liquid asphalt polyglycol', dosage:'8–12 kg/m³', why:'Base shale inhibition and filtration control for WBM system design.', color:'var(--cyan)' },
+      { name:'HITEMP®200', chemical:'Synthetic AA/AMPS copolymer', dosage:'8–15 kg/m³', why:'High-temperature fluid loss control — essential for wells above 120°C.', color:'var(--orange)' },
+      { name:'SUPERSLIDER® GOLD', chemical:'Ester lubricant', dosage:'1–2% by volume', why:'Lubrication package for any deviated trajectory.', color:'var(--green)' }
+    ],
+    obm: [
+      { name:'EXTRAMUL® SUPREME', chemical:'TOFA polyamide', dosage:'14–22 kg/m³', why:'Primary/secondary emulsifier in a single product — streamlines OBM system build.', color:'var(--cyan)' },
+      { name:'CLOTONEX®', chemical:'Organophilic lignite', dosage:'10–15 kg/m³', why:'Core OBM fluid loss control across the temperature range.', color:'var(--orange)' },
+      { name:'WELLTREAT®', chemical:'Resinic acid surfactant', dosage:'6–10 kg/m³', why:'Wetting agent — ensures all drilled solids remain oil-wet from first circulation.', color:'var(--green)' }
+    ]
+  }
+};
+
+function generateProposal() {
+  const wellName = document.getElementById('wellName').value || 'Well';
+  const depth = document.getElementById('depth').value || '4000';
+  const bht = document.getElementById('bht').value || '140';
+  const mw = document.getElementById('mw').value || '1.55';
+  const mudType = document.getElementById('mudType').value || 'wbm';
+  const problem = document.getElementById('problem').value;
+  const formation = document.getElementById('formation').value;
+  const wells = parseInt(document.getElementById('wells').value) || 1;
+
+  if (!problem) { alert('Please select a primary operational challenge.'); return; }
+
+  document.getElementById('emptyState').classList.add('hidden');
+  document.getElementById('results').classList.add('hidden');
+  document.getElementById('loadingState').classList.remove('hidden');
+
+  setTimeout(() => {
+    document.getElementById('loadingState').classList.add('hidden');
+    document.getElementById('results').classList.remove('hidden');
+    buildDiagnosis(wellName, depth, bht, mw, mudType, problem, formation);
+    buildRecommendations(problem, mudType);
+    buildROI(depth, bht, wells, problem);
+  }, 2200);
+}
+
+function buildDiagnosis(wellName, depth, bht, mw, mudType, problem, formation) {
+  const isHPHT = bht > 150;
+  const mud = mudType === 'wbm' ? 'Water-Based Mud (WBM)' : mudType === 'obm' ? 'Oil-Based Mud (OBM)' : 'Synthetic-Based Mud (SBM)';
+  const riskColour = isHPHT ? 'var(--red)' : bht > 120 ? 'var(--yellow)' : 'var(--green)';
+  const riskLabel = isHPHT ? 'HIGH — HPHT' : bht > 120 ? 'ELEVATED' : 'MODERATE';
+
+  document.getElementById('diagGrid').innerHTML = `
+    <div class="diag-item"><div class="diag-label">Well</div><div class="diag-val" style="color:var(--cyan)">${wellName}</div></div>
+    <div class="diag-item"><div class="diag-label">Total Depth</div><div class="diag-val">${depth} m</div></div>
+    <div class="diag-item"><div class="diag-label">BHT</div><div class="diag-val" style="color:${riskColour}">${bht}°C</div></div>
+    <div class="diag-item"><div class="diag-label">Mud System</div><div class="diag-val">${mud}</div></div>
+    <div class="diag-item"><div class="diag-label">Mud Weight</div><div class="diag-val">${mw} SG</div></div>
+    <div class="diag-item">
+      <div class="diag-label">Thermal Risk</div>
+      <div class="diag-val" style="color:${riskColour}">${riskLabel}</div>
+    </div>
+  `;
+
+  const diagMessages = {
+    shale: `AI assessment: Shale instability at ${depth}m with BHT ${bht}°C. ${isHPHT ? 'HPHT conditions significantly accelerate clay hydration and polymer degradation — thermal stability of inhibitor package is critical. ' : ''}${formation === 'shale' ? 'Reactive shale formation confirmed — prioritise inhibitor concentration over filtration control. ' : ''}Recommend dual-mechanism inhibition (asphalt pore sealing + polyglycol clay coating) to address both mechanical and chemical instability drivers.`,
+    filtration_wbm: `AI assessment: Elevated WBM filtrate at ${depth}m / ${bht}°C. ${isHPHT ? 'At temperatures above 150°C, standard starch and CMC systems fail — only thermally-stable synthetic copolymers (AA/AMPS) and tall oil pitch derivatives maintain performance. ' : ''}High HTHP filtrate indicates filter cake quality breakdown. Recommend thermal-grade fluid loss package with OPTITROL® providing the highest temperature ceiling at 220°C.`,
+    filtration_obm: `AI assessment: OBM HTHP filtrate failure at ${depth}m / ${bht}°C. ${isHPHT ? 'At 150°C+, single-product lignite treatment is insufficient — dual asphaltite/lignite system required for extreme HTHP. ' : ''}Organophilic lignite base (CLOTONEX®) with asphaltite bridging (STABILITE® OBM) provides complementary particle-size distribution for comprehensive pore sealing.`,
+    torque: `AI assessment: Torque & drag limitation at ${depth}m, ${mw} SG system. ${parseFloat(mw) > 1.8 ? 'High mud weight increases hydrostatic pressure on filter cake, raising wall friction. ' : ''}Ester-based lubrication (SUPERSLIDER® series) reduces coefficient of friction at casing/BHA contact and at formation wall. Recommend 2% volume treatment for first evaluation.`,
+    rheology: `AI assessment: Rheology management at ${bht}°C / ${depth}m. ${isHPHT ? 'High temperature causes rapid gel strength development and plastic viscosity elevation in WBM. Chrome lignosulfonate deflocculant (DEFLONATE®) is the proven solution up to 176°C. ' : ''}Combined deflocculant + viscosifier (HITEMP®200) approach provides stable, predictable rheology profile.`,
+    emulsion: `AI assessment: OBM emulsion breakdown at ${depth}m / ${bht}°C. Root causes: thermal degradation of emulsifier, water contamination, or solids wettability reversal. ${isHPHT ? 'At HPHT conditions, use EXTRAMUL® SUPREME (204°C rated) — standard emulsifiers fail above 180°C. ' : ''}Two-phase restoration: re-emulsify with EXTRAMUL® SUPREME + EXTRAMUL®S, then restore oil-wet solids with WELLTREAT®.`,
+    hpht: `AI assessment: HPHT system design for ${depth}m / ${bht}°C. ${bht > 180 ? 'Ultra-HPHT range — only OPTITROL® (220°C WBM) and EXTRAMUL® SUPREME (204°C OBM) meet thermal requirements with confidence. ' : ''}${mudType === 'wbm' ? 'WBM approach: OPTITROL® + HITEMP®200 fluid loss package, BLACKTROL® wellbore strengthening, SHALE-X® Liquid for enhanced polymer stability.' : 'OBM approach: EXTRAMUL® SUPREME primary/wetter, CLOTONEX® + STABILITE® OBM dual fluid loss system.'}`,
+    new_well: `AI assessment: Full fluid system design for ${wellName} — ${depth}m TD / ${bht}°C BHT / ${mw} SG. ${isHPHT ? 'HPHT classification: thermal-grade products mandatory for fluid loss and inhibition. ' : ''}${mudType === 'wbm' ? 'WBM programme: BLACKTROL® shale inhibition, HITEMP®200 fluid loss, SUPERSLIDER® GOLD lubrication baseline. Upgrade OPTITROL® if BHT >180°C.' : 'OBM programme: EXTRAMUL® SUPREME emulsifier/wetter, CLOTONEX® fluid loss base, WELLTREAT® for wettability control, ADVANTA® anti-sag package.'}`
+  };
+  document.getElementById('diagText').innerHTML = `<strong>AI Diagnosis:</strong> ${diagMessages[problem] || 'Analysis complete. See product recommendations below.'}`;
+}
+
+function buildRecommendations(problem, mudType) {
+  const mud = (mudType === 'wbm' || mudType === 'sbm') ? 'wbm' : 'obm';
+  const products = CLOTO_PRODUCTS[problem];
+  if (!products) return;
+  const list = products[mud] || products['wbm'] || [];
+
+  document.getElementById('recList').innerHTML = list.map((p, i) => `
+    <div class="prod-rec-item">
+      <div class="rec-num" style="background:${p.color}">${i+1}</div>
+      <div class="rec-content">
+        <div class="rec-product">${p.name}</div>
+        <div class="rec-chemical">${p.chemical}</div>
+        <div class="rec-dosage">Recommended dosage: <span>${p.dosage}</span></div>
+        <div class="rec-why">↳ ${p.why}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function buildROI(depth, bht, wells, problem) {
+  const d = parseInt(depth) || 4000;
+  const base = d > 4000 ? 48000 : d > 3000 ? 38000 : 28000;
+  const bhtMult = bht > 150 ? 1.4 : bht > 120 ? 1.2 : 1.0;
+  const chemCost = Math.round((base * 0.35 * bhtMult) / 1000) * 1000;
+  const nptSaved = Math.round((base * 2.8 * bhtMult) / 1000) * 1000;
+  const totalChemCost = chemCost * wells;
+  const totalNptSaved = nptSaved * wells;
+  const roi = (nptSaved / chemCost).toFixed(1);
+
+  document.getElementById('roiGrid').innerHTML = `
+    <div class="roi-box" style="background:rgba(0,212,255,.06);border:1px solid rgba(0,212,255,.2)">
+      <div class="roi-num" style="color:var(--cyan)">$${(chemCost/1000).toFixed(0)}K</div>
+      <div class="roi-label">Chemical Cost / Well</div>
+    </div>
+    <div class="roi-box" style="background:rgba(0,255,136,.06);border:1px solid rgba(0,255,136,.2)">
+      <div class="roi-num" style="color:var(--green)">$${(nptSaved/1000).toFixed(0)}K</div>
+      <div class="roi-label">NPT Avoided / Well</div>
+    </div>
+    <div class="roi-box" style="background:rgba(255,107,43,.06);border:1px solid rgba(255,107,43,.2)">
+      <div class="roi-num" style="color:var(--orange)">${roi}×</div>
+      <div class="roi-label">Return on Investment</div>
+    </div>
+  `;
+
+  document.getElementById('roiText').innerHTML = `
+    <strong>Programme total (${wells} well${wells > 1 ? 's' : ''}):</strong>
+    Chemical investment: <strong style="color:var(--cyan)">$${(totalChemCost/1000).toFixed(0)}K</strong> ·
+    Projected NPT savings: <strong style="color:var(--green)">$${(totalNptSaved/1000).toFixed(0)}K</strong> ·
+    Net benefit: <strong style="color:var(--orange)">$${((totalNptSaved - totalChemCost)/1000).toFixed(0)}K</strong><br>
+    <span style="color:var(--text-muted);font-size:11px;">NPT estimate based on average rig day rate for the selected basin and depth. Actual savings depend on specific operational conditions. Contact our technical team for a detailed well-specific analysis.</span>
+  `;
+}
+</script>
+</body>
+</html>

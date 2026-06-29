@@ -1,0 +1,1110 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>36 · Интерактивный калькулятор гидравлики (СИ)</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--card:#1c2330;--accent:#1ad8b5;--accent2:#f0a500;--text:#e6edf3;--textsec:#8b949e;--border:#30363d;--green:#3fb950;--orange:#f0a500;--red:#f85149;--blue:#79c0ff;--inp-bg:#010409}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:14px;line-height:1.6}
+header{background:linear-gradient(135deg,#0d2137 0%,#0d1117 60%);padding:24px 36px;border-bottom:1px solid var(--border)}
+header h1{font-size:24px;font-weight:700;color:var(--accent)}
+header p{color:var(--textsec);margin-top:3px;font-size:13px}
+.badge{display:inline-block;background:rgba(26,216,181,0.15);color:var(--accent);border:1px solid var(--accent);border-radius:12px;padding:2px 10px;font-size:11px;font-weight:700;margin-left:10px;vertical-align:middle}
+nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 36px;display:flex;gap:4px;overflow-x:auto}
+nav button{background:none;border:none;color:var(--textsec);padding:11px 17px;cursor:pointer;font-size:13px;white-space:nowrap;border-bottom:3px solid transparent;transition:all .2s}
+nav button.active,nav button:hover{color:var(--accent);border-bottom-color:var(--accent)}
+main{padding:28px 36px;max-width:1280px;margin:0 auto}
+section{display:none}
+section.active{display:block}
+h2{font-size:19px;color:var(--accent);margin-bottom:18px;padding-bottom:7px;border-bottom:1px solid var(--border)}
+h3{font-size:14px;color:var(--accent2);margin:18px 0 9px;font-weight:600}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px}
+label{display:block;font-size:12px;color:var(--textsec);margin-bottom:3px;margin-top:9px}
+label:first-child{margin-top:0}
+input[type=number],select{width:100%;background:var(--inp-bg);border:1px solid var(--border);border-radius:5px;padding:7px 10px;color:var(--text);font-size:13px;outline:none;transition:border .2s}
+input[type=number]:focus,select:focus{border-color:var(--accent)}
+.unit{font-size:11px;color:var(--blue);margin-left:4px}
+.row{display:flex;align-items:center;gap:8px}
+.row input{flex:1}
+.row .unit-badge{background:rgba(121,192,255,0.1);color:var(--blue);border:1px solid rgba(121,192,255,0.3);border-radius:4px;padding:3px 7px;font-size:11px;white-space:nowrap}
+button.calc-btn{background:var(--accent);color:#0d1117;border:none;border-radius:6px;padding:10px 22px;font-size:13px;font-weight:700;cursor:pointer;margin-top:14px;transition:all .2s}
+button.calc-btn:hover{background:#15c8a8}
+button.calc-btn.secondary{background:var(--surface);color:var(--accent);border:1px solid var(--accent)}
+.results{background:#0a1929;border:1px solid #1a3a5c;border-radius:8px;padding:14px;margin-top:14px}
+.result-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px dotted #1a3a5c}
+.result-row:last-child{border-bottom:none}
+.result-label{color:var(--textsec);font-size:12px}
+.result-value{font-size:15px;font-weight:700;color:var(--accent);font-family:'Courier New',monospace}
+.result-value.warn{color:var(--orange)}
+.result-value.bad{color:var(--red)}
+.result-value.good{color:var(--green)}
+.result-unit{font-size:11px;color:var(--blue);margin-left:4px}
+.alert-box{border-radius:6px;padding:10px 14px;margin:8px 0;font-size:12px}
+.alert-box.info{background:rgba(121,192,255,0.08);border:1px solid rgba(121,192,255,0.3);color:var(--blue)}
+.alert-box.good{background:rgba(63,185,80,0.08);border:1px solid rgba(63,185,80,0.3);color:var(--green)}
+.alert-box.warn{background:rgba(240,165,0,0.08);border:1px solid rgba(240,165,0,0.3);color:var(--orange)}
+.alert-box.bad{background:rgba(248,81,73,0.08);border:1px solid rgba(248,81,73,0.3);color:var(--red)}
+.breakdown-table{width:100%;border-collapse:collapse;margin-top:8px;font-size:12px}
+.breakdown-table th{background:var(--surface);color:var(--textsec);padding:5px 8px;border:1px solid var(--border);font-weight:600}
+.breakdown-table td{padding:5px 8px;border:1px solid var(--border)}
+.breakdown-table tr.highlight td{color:var(--accent);font-weight:700}
+.progress-bar{background:#1a2a3a;border-radius:4px;height:10px;overflow:hidden;margin:4px 0}
+.progress-fill{height:100%;background:var(--accent);border-radius:4px;transition:width .3s}
+.progress-fill.warn{background:var(--orange)}
+.progress-fill.bad{background:var(--red)}
+small{color:var(--textsec);font-size:11px}
+p{color:var(--textsec);font-size:12px;margin:5px 0}
+hr{border:none;border-top:1px solid var(--border);margin:14px 0}
+.inline-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.formula-note{margin-top:10px;padding:10px 12px;border-radius:8px;background:#101c2c;border:1px solid #24405f;color:#d7e7f6;font-size:12px;line-height:1.55}
+.preset-meta{display:none;margin-top:10px;padding:10px 12px;border-radius:8px;background:#0a1929;border:1px solid #1a3a5c}
+.preset-meta.visible{display:block}
+.preset-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:8px}
+.preset-chip{padding:8px 10px;border-radius:6px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06)}
+.preset-chip strong{display:block;color:var(--textsec);font-size:11px;font-weight:600;margin-bottom:4px}
+.preset-chip span{font-size:13px;font-weight:700;color:var(--text)}
+.runtime-bar{margin:18px 36px 0;border:1px solid rgba(121,192,255,.18);border-radius:10px;background:rgba(26,36,52,.82);padding:14px 16px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.runtime-bar strong{display:block;font-size:13px;color:var(--text)}
+.runtime-bar p{margin-top:6px;color:#b8cadf;font-size:12px;max-width:820px}
+.runtime-pill{display:inline-flex;align-items:center;border-radius:999px;padding:7px 12px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;border:1px solid var(--border);background:rgba(255,255,255,.04);color:#d9e8f5}
+.runtime-pill.ready{color:var(--green);border-color:rgba(63,185,80,.35);background:rgba(63,185,80,.12)}
+.runtime-pill.active{color:var(--orange);border-color:rgba(240,165,0,.35);background:rgba(240,165,0,.12)}
+.runtime-pill.at_risk{color:var(--red);border-color:rgba(248,81,73,.35);background:rgba(248,81,73,.12)}
+</style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+<header>
+  <h1>ИНТЕРАКТИВНЫЙ КАЛЬКУЛЯТОР ГИДРАВЛИКИ <span class="badge">DOC 36</span></h1>
+  <p>Система СИ · API RP 13D · Входные данные в метрических единицах</p>
+</header>
+<nav>
+  <button class="active" data-tab="vol" onclick="show('vol',this)">📐 Объёмы</button>
+  <button data-tab="pump" onclick="show('pump',this)">🔧 Насос</button>
+  <button data-tab="hydro" onclick="show('hydro',this)">🌊 Реология → ЭЦП</button>
+  <button data-tab="bit" onclick="show('bit',this)">⛏ Гидравлика долота</button>
+  <button data-tab="balance" onclick="show('balance',this)">⚗ Материальный баланс</button>
+</nav>
+<div class="runtime-bar">
+  <div>
+    <strong>I2 Runtime Sync</strong>
+    <p id="i2RuntimeSummary">Hydraulics twin is waiting for a stable ECD window and nozzle regime before it can be treated as a reliable runtime guardrail.</p>
+  </div>
+  <div class="runtime-pill active" id="i2RuntimePill">Active</div>
+</div>
+<main>
+
+<!-- ===== TAB 1: ОБЪЁМЫ ===== -->
+<section id="vol" class="active">
+  <h2>📐 Объёмы ёмкостей, ствола и колонн</h2>
+  <div class="grid2">
+    <!-- Циркуляционная ёмкость -->
+    <div class="card">
+      <h3>Циркуляционная ёмкость (амбар/резервуар)</h3>
+      <label>Тип ёмкости</label>
+      <select id="pit_type">
+        <option value="rect">Прямоугольная (амбар)</option>
+        <option value="cyl">Цилиндрическая вертикальная</option>
+      </select>
+      <div id="pit_rect">
+        <label>Длина <span class="unit">(м)</span></label>
+        <input type="number" id="pit_l" value="12" step="0.1">
+        <label>Ширина <span class="unit">(м)</span></label>
+        <input type="number" id="pit_w" value="3" step="0.1">
+        <label>Высота заполнения <span class="unit">(м)</span></label>
+        <input type="number" id="pit_h" value="1.5" step="0.1">
+      </div>
+      <div id="pit_cyl" style="display:none">
+        <label>Внутренний диаметр <span class="unit">(мм)</span></label>
+        <input type="number" id="pit_d" value="3000" step="10">
+        <label>Высота заполнения <span class="unit">(м)</span></label>
+        <input type="number" id="pit_h2" value="2.0" step="0.1">
+      </div>
+      <button class="calc-btn secondary" onclick="calcPit()">Рассчитать</button>
+      <div id="pit_result" class="results" style="display:none"></div>
+    </div>
+
+    <!-- Ствол скважины и ЗП -->
+    <div class="card" id="well-volumes">
+      <h3>Ствол скважины / Затрубное пространство (ЗП)</h3>
+      <label>Длина интервала <span class="unit">(м)</span></label>
+      <input type="number" id="wbv_l" value="1000" step="10">
+      <label>Диаметр ствола / обсадной колонны (ВД) <span class="unit">(мм)</span></label>
+      <input type="number" id="wbv_dhole" value="215.9" step="0.1">
+      <label>НД бурильных труб <span class="unit">(мм)</span></label>
+      <input type="number" id="wbv_dod" value="127" step="0.1">
+      <label>ВД бурильных труб <span class="unit">(мм)</span></label>
+      <input type="number" id="wbv_did" value="108.6" step="0.1">
+      <button class="calc-btn secondary" onclick="calcWBV()">Рассчитать</button>
+      <div id="wbv_result" class="results" style="display:none"></div>
+    </div>
+
+    <!-- Вся система -->
+    <div class="card" id="annular-velocity">
+      <h3>Полный объём циркуляционной системы</h3>
+      <p>Введите объём каждого участка для расчёта общего объёма и времён промывки.</p>
+      <label>Расход насоса <span class="unit">(л/мин)</span></label>
+      <input type="number" id="sys_q" value="2000" step="10">
+      <label>Объём бурильных труб (БТ) — внутри <span class="unit">(м³)</span></label>
+      <input type="number" id="sys_vbt" value="8.5" step="0.1">
+      <label>Объём КНБК (УБТ + ТБТ и пр.) — внутри <span class="unit">(м³)</span></label>
+      <input type="number" id="sys_vkn" value="1.2" step="0.1">
+      <label>Объём ЗП у открытого ствола <span class="unit">(м³)</span></label>
+      <input type="number" id="sys_vann_oh" value="14.0" step="0.1">
+      <label>Объём ЗП у обсадных колонн <span class="unit">(м³)</span></label>
+      <input type="number" id="sys_vann_cs" value="6.5" step="0.1">
+      <label>Объём наземного оборудования (манифольд, АВД) <span class="unit">(м³)</span></label>
+      <input type="number" id="sys_vsurf" value="0.8" step="0.1">
+      <label>Суммарный объём циркуляц. ёмкостей <span class="unit">(м³)</span></label>
+      <input type="number" id="sys_vpits" value="60" step="1">
+      <button class="calc-btn" onclick="calcSystem()">Рассчитать времена промывки</button>
+      <div id="sys_result" class="results" style="display:none"></div>
+    </div>
+
+    <!-- Вытеснение КНБК -->
+    <div class="card">
+      <h3>Вытеснение бурильной колонной</h3>
+      <label>НД трубы / УБТ <span class="unit">(мм)</span></label>
+      <input type="number" id="disp_od" value="127" step="0.1">
+      <label>ВД трубы / УБТ <span class="unit">(мм)</span></label>
+      <input type="number" id="disp_id" value="108.6" step="0.1">
+      <label>Длина секции <span class="unit">(м)</span></label>
+      <input type="number" id="disp_l" value="1000" step="10">
+      <label>Тип (бурильные трубы — полые; УБТ — указать разные ВД)</label>
+      <hr>
+      <p style="color:var(--accent2);font-size:12px">Справочник типоразмеров</p>
+      <label>Семейство труб</label>
+      <select id="disp_family">
+        <option value="manual">Ручной ввод</option>
+        <option value="casing">Casing</option>
+        <option value="drillpipe">Drill pipe</option>
+        <option value="hwdp">Heavy-weight drill pipe</option>
+        <option value="drillcollar">Drill collars</option>
+        <option value="tubing">API tubing</option>
+      </select>
+      <label>Размер из таблицы</label>
+      <select id="disp_preset">
+        <option value="">Сначала выберите семейство</option>
+      </select>
+      <div class="inline-actions">
+        <button class="calc-btn secondary" type="button" onclick="applyDispPreset()" style="margin-top:0">Подставить размер</button>
+      </div>
+      <div class="formula-note">
+        Формула в метрической системе: <b>V<sub>disp</sub> (л/м) = (OD² − ID²) / 1273</b>.<br>
+        Для перевода в м³ делите литры на 1000. Ниже можно быстро подтянуть стандартный размер трубы из справочных таблиц.
+      </div>
+      <div id="disp_preset_meta" class="preset-meta"></div>
+      <button class="calc-btn secondary" onclick="calcDisp()">Рассчитать</button>
+      <div id="disp_result" class="results" style="display:none"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TAB 2: НАСОС ===== -->
+<section id="pump">
+  <h2>🔧 Производительность бурового насоса</h2>
+  <div class="grid2">
+    <div class="card" id="pump-performance">
+      <h3>Параметры насоса</h3>
+      <label>Тип насоса</label>
+      <select id="pump_type">
+        <option value="triplex">Трёхцилиндровый (триплекс)</option>
+        <option value="duplex">Двухцилиндровый двойного действия (дуплекс)</option>
+      </select>
+      <label>Диаметр цилиндровой втулки <span class="unit">(мм)</span></label>
+      <input type="number" id="pump_d" value="160" step="0.5">
+      <div id="pump_rod_row" style="display:none">
+        <label>Диаметр штока поршня <span class="unit">(мм)</span></label>
+        <input type="number" id="pump_rod" value="57" step="0.5">
+      </div>
+      <label>Длина хода поршня <span class="unit">(мм)</span></label>
+      <input type="number" id="pump_stroke" value="305" step="1">
+      <label>КПД насоса <span class="unit">(%)</span></label>
+      <input type="number" id="pump_eff" value="95" min="50" max="100" step="1">
+      <label>Скорость насоса <span class="unit">(ход/мин)</span></label>
+      <input type="number" id="pump_spm" value="120" step="1">
+      <button class="calc-btn" onclick="calcPump()">Рассчитать</button>
+      <div id="pump_result" class="results" style="display:none"></div>
+    </div>
+
+    <div class="card">
+      <h3>Время промывки при данной производительности</h3>
+      <p>После расчёта насоса укажите объёмы для расчёта времён.</p>
+      <label>Объём затрубного пространства (ЗП) — для первого замера <span class="unit">(м³)</span></label>
+      <input type="number" id="pt_vann" value="20.5" step="0.1">
+      <label>Объём внутри бурильной колонны + КНБК <span class="unit">(м³)</span></label>
+      <input type="number" id="pt_vpipe" value="9.7" step="0.1">
+      <label>Объём наземного оборудования <span class="unit">(м³)</span></label>
+      <input type="number" id="pt_vsurf" value="0.8" step="0.1">
+      <label>Объём циркуляционных ёмкостей <span class="unit">(м³)</span></label>
+      <input type="number" id="pt_vpits" value="60" step="1">
+      <button class="calc-btn secondary" onclick="calcPumpTime()">Рассчитать времена</button>
+      <div id="pump_time_result" class="results" style="display:none"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TAB 3: РЕОЛОГИЯ → ЭЦП ===== -->
+<section id="hydro">
+  <h2>🌊 Реология + Гидравлика по API RP 13D → ЭЦП</h2>
+  <div id="well-rheology"></div>
+  <div class="grid3">
+    <!-- Показания вискозиметра -->
+    <div class="card" id="fann-rheology">
+      <h3>Показания вискозиметра Fann VG</h3>
+      <label>Q₆₀₀ (600 об/мин)</label>
+      <input type="number" id="r600" value="72" step="1">
+      <label>Q₃₀₀ (300 об/мин)</label>
+      <input type="number" id="r300" value="42" step="1">
+      <label>Q₂₀₀ (200 об/мин)</label>
+      <input type="number" id="r200" value="34" step="1">
+      <label>Q₁₀₀ (100 об/мин)</label>
+      <input type="number" id="r100" value="24" step="1">
+      <label>Q₆ (6 об/мин)</label>
+      <input type="number" id="r6" value="8" step="1">
+      <label>Q₃ (3 об/мин)</label>
+      <input type="number" id="r3" value="6" step="1">
+      <hr>
+      <label>Плотность бурового раствора <span class="unit">(г/см³)</span></label>
+      <input type="number" id="rho" value="1.42" step="0.01">
+      <label>Расход насоса <span class="unit">(л/мин)</span></label>
+      <input type="number" id="hyd_q" value="2000" step="10">
+    </div>
+
+    <!-- Геометрия скважины -->
+    <div class="card">
+      <h3>Геометрия ствола скважины</h3>
+      <p>Укажите один линейный интервал (упрощённая модель).</p>
+      <label>ИВГ (истинная вертикальная глубина) <span class="unit">(м)</span></label>
+      <input type="number" id="hyd_tvd" value="3600" step="10">
+      <label>Глубина по стволу (для потерь на трение) <span class="unit">(м)</span></label>
+      <input type="number" id="hyd_md" value="3667" step="10">
+      <hr>
+      <p style="color:var(--accent2);font-size:12px">Бурильные трубы (БТ)</p>
+      <label>ВД БТ <span class="unit">(мм)</span></label>
+      <input type="number" id="hyd_dpid" value="108.6" step="0.1">
+      <label>Длина БТ <span class="unit">(м)</span></label>
+      <input type="number" id="hyd_dplen" value="3500" step="10">
+      <hr>
+      <p style="color:var(--accent2);font-size:12px">Затрубное пространство (ЗП)</p>
+      <label>Диаметр открытого ствола <span class="unit">(мм)</span></label>
+      <input type="number" id="hyd_dhole" value="215.9" step="0.1">
+      <label>НД бурильных труб <span class="unit">(мм)</span></label>
+      <input type="number" id="hyd_dpod" value="127" step="0.1">
+      <label>Длина ЗП у открытого ствола <span class="unit">(м)</span></label>
+      <input type="number" id="hyd_annlen" value="3500" step="10">
+      <hr>
+      <label>Потери на наземное оборудование <span class="unit">(МПа)</span></label>
+      <input type="number" id="hyd_psurf" value="3.0" step="0.1">
+    </div>
+
+    <!-- Кнопка и результаты -->
+    <div class="card" id="hydraulics-system">
+      <h3>Результаты расчёта</h3>
+      <button class="calc-btn" onclick="calcHydro()" style="width:100%;margin-bottom:10px">Рассчитать ЭЦП</button>
+      <div id="hydro_result"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TAB 4: ГИДРАВЛИКА ДОЛОТА ===== -->
+<section id="bit">
+  <h2>⛏ Гидравлика долота</h2>
+  <div class="grid2">
+    <div class="card">
+      <h3>Параметры долота и режим</h3>
+      <label>Диаметр долота <span class="unit">(мм)</span></label>
+      <input type="number" id="bit_d" value="215.9" step="0.1">
+      <hr>
+      <p style="color:var(--accent2);font-size:12px">Насадки долота — диаметры (мм)</p>
+      <label>Насадка 1 — диаметр <span class="unit">(мм)</span></label>
+      <input type="number" id="nz1" value="10.3" step="0.1">
+      <label>Насадка 2 — диаметр <span class="unit">(мм)</span></label>
+      <input type="number" id="nz2" value="10.3" step="0.1">
+      <label>Насадка 3 — диаметр <span class="unit">(мм)</span></label>
+      <input type="number" id="nz3" value="10.3" step="0.1">
+      <label>Насадка 4 — диаметр (0 = отсутствует) <span class="unit">(мм)</span></label>
+      <input type="number" id="nz4" value="0" step="0.1">
+      <hr>
+      <label>Расход насоса <span class="unit">(л/мин)</span></label>
+      <input type="number" id="bit_q" value="2000" step="10">
+      <label>Плотность бурового раствора <span class="unit">(г/см³)</span></label>
+      <input type="number" id="bit_rho" value="1.42" step="0.01">
+      <label>Давление нагнетания (общее) <span class="unit">(МПа)</span></label>
+      <input type="number" id="bit_pt" value="18.0" step="0.1">
+      <label>Суммарные потери давления (кроме долота) <span class="unit">(МПа)</span></label>
+      <input type="number" id="bit_psys" value="10.5" step="0.1">
+      <button class="calc-btn" onclick="calcBit()">Рассчитать</button>
+    </div>
+    <div class="card">
+      <h3>Результаты — гидравлика долота</h3>
+      <div id="bit_result">
+        <p>Нажмите «Рассчитать» для получения результатов.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TAB 5: МАТЕРИАЛЬНЫЙ БАЛАНС ===== -->
+<section id="balance">
+  <h2>⚗ Материальный баланс бурового раствора</h2>
+  <div class="grid2">
+    <!-- Утяжеление -->
+    <div class="card" id="weight-up">
+      <h3>Утяжеление баритом (BaSO₄)</h3>
+      <p>ρ_барита = 4.20 г/см³ (стандартный API барит)</p>
+      <label>Начальная плотность раствора ρ₁ <span class="unit">(г/см³)</span></label>
+      <input type="number" id="wu_rho1" value="1.25" step="0.01">
+      <label>Требуемая плотность ρ₂ <span class="unit">(г/см³)</span></label>
+      <input type="number" id="wu_rho2" value="1.65" step="0.01">
+      <label>Объём раствора <span class="unit">(м³)</span></label>
+      <input type="number" id="wu_vol" value="100" step="1">
+      <button class="calc-btn" onclick="calcWeightUp()">Рассчитать</button>
+      <div id="wu_result" class="results" style="display:none"></div>
+    </div>
+
+    <!-- Разбавление -->
+    <div class="card">
+      <h3>Разбавление раствора</h3>
+      <label>Начальная плотность ρ₁ <span class="unit">(г/см³)</span></label>
+      <input type="number" id="dil_rho1" value="1.65" step="0.01">
+      <label>Требуемая плотность ρ₂ <span class="unit">(г/см³)</span></label>
+      <input type="number" id="dil_rho2" value="1.45" step="0.01">
+      <label>Плотность разбавителя <span class="unit">(г/см³)</span></label>
+      <input type="number" id="dil_rhow" value="1.02" step="0.01">
+      <label>Объём исходного раствора <span class="unit">(м³)</span></label>
+      <input type="number" id="dil_vol" value="100" step="1">
+      <button class="calc-btn" onclick="calcDilution()">Рассчитать</button>
+      <div id="dil_result" class="results" style="display:none"></div>
+    </div>
+
+    <!-- Глушащий раствор -->
+    <div class="card">
+      <h3>Буровой раствор для глушения скважины (ГНВП)</h3>
+      <label>Текущая плотность бурового раствора <span class="unit">(г/см³)</span></label>
+      <input type="number" id="km_rho" value="1.42" step="0.01">
+      <label>ДЗБТ (давление закрытой скв. по БТ) <span class="unit">(МПа)</span></label>
+      <input type="number" id="km_sidpp" value="3.5" step="0.1">
+      <label>ИВГ (истинная вертикальная глубина) <span class="unit">(м)</span></label>
+      <input type="number" id="km_tvd" value="3600" step="10">
+      <label>Давление ГРП у башмака обсадной (для расчёта МДДУП) <span class="unit">(МПа)</span></label>
+      <input type="number" id="km_pfrac" value="52" step="0.5">
+      <label>ИВГ до башмака обсадной колонны <span class="unit">(м)</span></label>
+      <input type="number" id="km_chotvd" value="1800" step="10">
+      <button class="calc-btn" onclick="calcKillMud()">Рассчитать</button>
+      <div id="km_result" class="results" style="display:none"></div>
+    </div>
+
+    <!-- Смешивание двух жидкостей -->
+    <div class="card" id="blend-mix">
+      <h3>Смешивание двух жидкостей</h3>
+      <label>Плотность жидкости 1 <span class="unit">(г/см³)</span></label>
+      <input type="number" id="bl_rho1" value="1.20" step="0.01">
+      <label>Объём жидкости 1 <span class="unit">(м³)</span></label>
+      <input type="number" id="bl_v1" value="80" step="1">
+      <label>Плотность жидкости 2 <span class="unit">(г/см³)</span></label>
+      <input type="number" id="bl_rho2" value="1.92" step="0.01">
+      <label>Объём жидкости 2 <span class="unit">(м³)</span></label>
+      <input type="number" id="bl_v2" value="40" step="1">
+      <button class="calc-btn secondary" onclick="calcBlend()">Рассчитать смесь</button>
+      <div id="bl_result" class="results" style="display:none"></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<script>
+const I2_RUNTIME_KEY = 'nexus_i2_hydraulics_runtime_v1';
+
+// ─────────────────────────────────────────────
+// UTILITY FUNCTIONS
+// ─────────────────────────────────────────────
+function fmtN(v,d=2){if(v===null||v===undefined||isNaN(v))return '—';return Number(v).toFixed(d);}
+function fmtNS(v,d=1){if(!isFinite(v))return '—';return fmtN(v,d);}
+
+function resRow(label,val,unit,cssClass=''){
+  return `<div class="result-row">
+    <span class="result-label">${label}</span>
+    <span class="result-value ${cssClass}">${val}<span class="result-unit">${unit}</span></span>
+  </div>`;
+}
+function alertBox(type,msg){return `<div class="alert-box ${type}">${msg}</div>`;}
+function progressBar(pct,cls=''){
+  const w=Math.min(100,Math.max(0,pct));
+  return `<div class="progress-bar"><div class="progress-fill ${cls}" style="width:${w}%"></div></div>`;
+}
+
+// Conversions: metric → US (for API RP 13D internal)
+const mmToIn = mm => mm / 25.4;
+const mToFt  = m  => m  / 0.3048;
+const lpmToGpm = q => q / 3.7854;
+const gccToPpg = r => r * 8.345;
+// US → metric output
+const psiToMpa = p => p * 0.006895;
+const ppgToGcc = p => p / 8.345;
+const fpmToMpm = v => v * 0.3048;
+const bblToL   = b => b * 158.987;
+const l_p_ft_to_l_p_m = v => v * 3.28084;
+
+// Capacity: liters per meter
+function Cap_lpm(D_mm){ return D_mm*D_mm / 1273.24; }
+function AnnCap_lpm(Dhole_mm,Dpipe_mm){ return (Dhole_mm*Dhole_mm - Dpipe_mm*Dpipe_mm) / 1273.24; }
+function dispCap_lpm(OD_mm,ID_mm){ return (OD_mm*OD_mm - ID_mm*ID_mm) / 1273.24; }
+
+// ─────────────────────────────────────────────
+// TAB 1: VOLUMES
+// ─────────────────────────────────────────────
+document.getElementById('pit_type').addEventListener('change',function(){
+  document.getElementById('pit_rect').style.display = this.value==='rect' ? '' : 'none';
+  document.getElementById('pit_cyl').style.display  = this.value==='cyl'  ? '' : 'none';
+});
+
+function calcPit(){
+  const t = document.getElementById('pit_type').value;
+  let vol_m3, vol_l;
+  if(t==='rect'){
+    const L=+document.getElementById('pit_l').value;
+    const W=+document.getElementById('pit_w').value;
+    const H=+document.getElementById('pit_h').value;
+    vol_m3 = L*W*H;
+  } else {
+    const D=+document.getElementById('pit_d').value;
+    const H=+document.getElementById('pit_h2').value;
+    vol_m3 = Math.PI/4 * (D/1000)*(D/1000) * H;
+  }
+  vol_l = vol_m3 * 1000;
+  const el = document.getElementById('pit_result');
+  el.style.display='';
+  el.innerHTML = resRow('Объём',fmtN(vol_m3,3),'м³') +
+                 resRow('Объём',fmtN(vol_l,1),'л') +
+                 resRow('Объём',fmtN(vol_m3/0.159,1),'bbl (справка)');
+}
+
+function calcWBV(){
+  const L    = +document.getElementById('wbv_l').value;
+  const Dh   = +document.getElementById('wbv_dhole').value;
+  const Dod  = +document.getElementById('wbv_dod').value;
+  const Did  = +document.getElementById('wbv_did').value;
+
+  const cap_hole = Cap_lpm(Dh);        // л/м
+  const cap_pipe = Cap_lpm(Did);       // л/м
+  const cap_ann  = AnnCap_lpm(Dh,Dod);// л/м
+  const cap_disp = dispCap_lpm(Dod,Did);
+
+  const vol_hole = cap_hole * L / 1000;  // м³
+  const vol_pipe = cap_pipe * L / 1000;
+  const vol_ann  = cap_ann  * L / 1000;
+  const vol_disp = cap_disp * L / 1000;
+
+  const el = document.getElementById('wbv_result');
+  el.style.display='';
+  el.innerHTML =
+    resRow('Ёмкость ствола (открытый)',`${fmtN(cap_hole,2)} л/м = `,`${fmtN(vol_hole,3)} м³`) +
+    resRow('Ёмкость колонны (внутри)',`${fmtN(cap_pipe,2)} л/м = `,`${fmtN(vol_pipe,3)} м³`) +
+    resRow('Ёмкость ЗП',`${fmtN(cap_ann,2)} л/м = `,`${fmtN(vol_ann,3)} м³`) +
+    resRow('Вытеснение колонной',`${fmtN(cap_disp,2)} л/м = `,`${fmtN(vol_disp,3)} м³`);
+}
+
+function calcSystem(){
+  const Q    = +document.getElementById('sys_q').value;   // л/мин
+  const Vbt  = +document.getElementById('sys_vbt').value;
+  const Vkn  = +document.getElementById('sys_vkn').value;
+  const Vann_oh = +document.getElementById('sys_vann_oh').value;
+  const Vann_cs = +document.getElementById('sys_vann_cs').value;
+  const Vsurf   = +document.getElementById('sys_vsurf').value;
+  const Vpits   = +document.getElementById('sys_vpits').value;
+
+  const Vpipe = (Vbt + Vkn) * 1000;          // л
+  const Vann  = (Vann_oh + Vann_cs) * 1000;  // л
+  const Q_lpm = Q;
+
+  const t_first = Vann / Q_lpm;
+  const t_btup  = Vpipe / Q_lpm;
+  const Vsys    = (Vbt + Vkn + Vann_oh + Vann_cs + Vsurf + Vpits) * 1000; // л
+  const t_full  = Vsys / Q_lpm;
+  const t_hole_cycle = (Vann_oh + Vann_cs) * 1000 / Q_lpm;
+
+  const el = document.getElementById('sys_result');
+  el.style.display='';
+  el.innerHTML =
+    resRow('Объём внутри колонны (БТ + КНБК)',fmtN((Vbt+Vkn),2),'м³') +
+    resRow('Объём ЗП (ОС + ОК)',fmtN((Vann_oh+Vann_cs),2),'м³') +
+    resRow('Суммарный объём системы',fmtN(Vsys/1000,1),'м³') + '<hr>' +
+    resRow('До первого замера шлама (время выхода шлама)',fmtN(t_first,1),'мин') +
+    resRow('Промывка колонны (подача ПЖ до забоя)',fmtN(t_btup,1),'мин') +
+    resRow('Цикл по стволу скважины',fmtN(t_hole_cycle,1),'мин') +
+    resRow('Полный цикл промывки системы',fmtN(t_full,1),'мин');
+}
+
+function calcDisp(){
+  const OD = +document.getElementById('disp_od').value;
+  const ID = +document.getElementById('disp_id').value;
+  const L  = +document.getElementById('disp_l').value;
+  const dc = dispCap_lpm(OD,ID);
+  const el = document.getElementById('disp_result');
+  el.style.display='';
+  el.innerHTML =
+    resRow('Вытеснение',fmtN(dc,3),'л/м') +
+    resRow('Вытеснение (общее)',fmtN(dc*L/1000,3),'м³') +
+    resRow('Вытеснение (общее)',fmtN(dc*L,1),'л');
+}
+
+const DISP_PRESETS = {
+  casing: [
+    { id:'csg_4_5_13_5', label:'4 1/2 in · 114 mm · 13.50 lb/ft', od:114, idMm:100, weight:'20.12 kg/m', capacity:'0.0078 m³/m', displacement:'0.0025 m³/m' },
+    { id:'csg_5_15', label:'5 in · 127 mm · 15.00 lb/ft', od:127, idMm:112, weight:'22.35 kg/m', capacity:'0.0099 m³/m', displacement:'0.0028 m³/m' },
+    { id:'csg_7_38', label:'7 in · 178 mm · 38.00 lb/ft', od:178, idMm:150, weight:'56.62 kg/m', capacity:'0.0177 m³/m', displacement:'0.0071 m³/m' },
+    { id:'csg_9_5_47', label:'9 5/8 in · 244 mm · 47.00 lb/ft', od:244, idMm:220, weight:'70.03 kg/m', capacity:'0.0382 m³/m', displacement:'0.0088 m³/m' },
+    { id:'csg_10_75_51', label:'10 3/4 in · 273 mm · 51.00 lb/ft', od:273, idMm:250, weight:'75.99 kg/m', capacity:'0.0491 m³/m', displacement:'0.0094 m³/m' },
+    { id:'csg_13_375_54_5', label:'13 3/8 in · 340 mm · 54.50 lb/ft', od:340, idMm:320, weight:'81.21 kg/m', capacity:'0.0806 m³/m', displacement:'0.0100 m³/m' },
+    { id:'csg_16_65', label:'16 in · 406 mm · 65.00 lb/ft', od:406, idMm:387, weight:'96.85 kg/m', capacity:'0.1178 m³/m', displacement:'0.0119 m³/m' },
+    { id:'csg_20_94', label:'20 in · 508 mm · 94.00 lb/ft', od:508, idMm:486, weight:'140.06 kg/m', capacity:'0.1853 m³/m', displacement:'0.0174 m³/m' }
+  ],
+  drillpipe: [
+    { id:'dp_3_5', label:'3 1/2 in · 89 mm · 13.30 lb/ft', od:89, idMm:70, weight:'19.82 kg/m', capacity:'0.0039 m³/m', displacement:'0.0023 m³/m' },
+    { id:'dp_4_5_16_6', label:'4 1/2 in · 114 mm · 16.60 lb/ft', od:114, idMm:97, weight:'24.73 kg/m', capacity:'0.0074 m³/m', displacement:'0.0029 m³/m' },
+    { id:'dp_5_19_5', label:'5 in · 127 mm · 19.50 lb/ft', od:127, idMm:109, weight:'29.06 kg/m', capacity:'0.0093 m³/m', displacement:'0.0034 m³/m' },
+    { id:'dp_5_5_21_9', label:'5 1/2 in · 140 mm · 21.90 lb/ft', od:140, idMm:121, weight:'32.63 kg/m', capacity:'0.0116 m³/m', displacement:'0.0038 m³/m' },
+    { id:'dp_6_625_31_9', label:'6 5/8 in · 168 mm · 31.90 lb/ft', od:168, idMm:146, weight:'47.53 kg/m', capacity:'0.0168 m³/m', displacement:'0.0054 m³/m' },
+    { id:'dp_7_625_29_25', label:'7 5/8 in · 194 mm · 29.25 lb/ft', od:194, idMm:177, weight:'43.36 kg/m', capacity:'0.0246 m³/m', displacement:'0.0049 m³/m' }
+  ],
+  hwdp: [
+    { id:'hwdp_3_5', label:'3 1/2 in · 89 mm · ID 52 mm', od:89, idMm:52, weight:'37.70 kg/m', capacity:'0.0022 m³/m', displacement:'0.0048 m³/m' },
+    { id:'hwdp_4_5', label:'4 1/2 in · 114 mm · ID 70 mm', od:114, idMm:70, weight:'61.09 kg/m', capacity:'0.0039 m³/m', displacement:'0.0078 m³/m' },
+    { id:'hwdp_5', label:'5 in · 127 mm · ID 76 mm', od:127, idMm:76, weight:'73.46 kg/m', capacity:'0.0046 m³/m', displacement:'0.0094 m³/m' },
+    { id:'hwdp_5_5', label:'5 1/2 in · 140 mm · ID 86 mm', od:140, idMm:86, weight:'84.93 kg/m', capacity:'0.0058 m³/m', displacement:'0.0110 m³/m' },
+    { id:'hwdp_6_625', label:'6 5/8 in · 168 mm · ID 114 mm', od:168, idMm:114, weight:'105.49 kg/m', capacity:'0.0103 m³/m', displacement:'0.0136 m³/m' }
+  ],
+  drillcollar: [
+    { id:'dc_3_5', label:'3 1/2 in · 89 mm · ID 38 mm', od:89, idMm:38, weight:'39.69 kg/m', capacity:'0.0011 m³/m', displacement:'0.0051 m³/m' },
+    { id:'dc_4_75', label:'4 1/8 in · 105 mm · ID 51 mm', od:105, idMm:51, weight:'51.67 kg/m', capacity:'0.0020 m³/m', displacement:'0.0066 m³/m' },
+    { id:'dc_6', label:'6 in · 152 mm · ID 57 mm', od:152, idMm:57, weight:'122.93 kg/m', capacity:'0.0026 m³/m', displacement:'0.0157 m³/m' },
+    { id:'dc_6_5', label:'6 1/2 in · 165 mm · ID 71 mm', od:165, idMm:71, weight:'136.42 kg/m', capacity:'0.0040 m³/m', displacement:'0.0174 m³/m' },
+    { id:'dc_8', label:'8 in · 203 mm · ID 71 mm', od:203, idMm:71, weight:'224.24 kg/m', capacity:'0.0040 m³/m', displacement:'0.0284 m³/m' },
+    { id:'dc_9_5', label:'9 1/2 in · 241 mm · ID 76 mm', od:241, idMm:76, weight:'323.36 kg/m', capacity:'0.0046 m³/m', displacement:'0.0412 m³/m' },
+    { id:'dc_10', label:'10 in · 254 mm · ID 76 mm', od:254, idMm:76, weight:'362.04 kg/m', capacity:'0.0046 m³/m', displacement:'0.0461 m³/m' },
+    { id:'dc_11_25', label:'11 1/4 in · 286 mm · ID 76 mm', od:286, idMm:76, weight:'468.16 kg/m', capacity:'0.0046 m³/m', displacement:'0.0596 m³/m' }
+  ],
+  tubing: [
+    { id:'tbg_1_5', label:'1 1/2 nominal · OD 1.9/16 in', od:39.7, idMm:40.9, weight:'2.75 lb/ft', capacity:'0.0025 bbl/ft', displacement:'—' },
+    { id:'tbg_2_375', label:'2 3/8 nominal · OD 2 3/8 in', od:60.3, idMm:50.7, weight:'4.60 lb/ft', capacity:'0.0039 bbl/ft', displacement:'—' },
+    { id:'tbg_2_875', label:'2 7/8 nominal · OD 2 7/8 in', od:73.0, idMm:62.0, weight:'6.40 lb/ft', capacity:'0.0058 bbl/ft', displacement:'—' },
+    { id:'tbg_3_5', label:'3 1/2 nominal · OD 3 1/2 in', od:88.9, idMm:76.0, weight:'10.20 lb/ft', capacity:'0.0087 bbl/ft', displacement:'—' },
+    { id:'tbg_4_5', label:'4 nominal · OD 4 1/2 in', od:114.3, idMm:100.5, weight:'12.60 lb/ft', capacity:'0.0152 bbl/ft', displacement:'—' }
+  ]
+};
+
+function updateDispPresetOptions(){
+  const family = document.getElementById('disp_family').value;
+  const presetSelect = document.getElementById('disp_preset');
+  const options = family === 'manual' ? [] : (DISP_PRESETS[family] || []);
+  presetSelect.innerHTML = '';
+  if(!options.length){
+    presetSelect.innerHTML = '<option value="">Ручной ввод без справочника</option>';
+    renderDispPresetMeta(null);
+    return;
+  }
+  presetSelect.innerHTML = '<option value="">Выберите размер</option>' + options.map((item,index)=>`<option value="${index}">${item.label}</option>`).join('');
+  renderDispPresetMeta(null);
+}
+
+function renderDispPresetMeta(item){
+  const meta = document.getElementById('disp_preset_meta');
+  if(!item){
+    meta.classList.remove('visible');
+    meta.innerHTML = '';
+    return;
+  }
+  meta.classList.add('visible');
+  meta.innerHTML = `
+    <strong style="display:block;color:var(--accent2);font-size:12px;margin-bottom:6px">Справочные данные</strong>
+    <div class="preset-grid">
+      <div class="preset-chip"><strong>OD / ID</strong><span>${fmtN(item.od,1)} / ${fmtN(item.idMm,1)} мм</span></div>
+      <div class="preset-chip"><strong>Вес</strong><span>${item.weight}</span></div>
+      <div class="preset-chip"><strong>Capacity</strong><span>${item.capacity}</span></div>
+      <div class="preset-chip"><strong>Displacement</strong><span>${item.displacement}</span></div>
+    </div>`;
+}
+
+function applyDispPreset(){
+  const family = document.getElementById('disp_family').value;
+  const presetIndex = document.getElementById('disp_preset').value;
+  if(family === 'manual' || presetIndex === '') return;
+  const item = (DISP_PRESETS[family] || [])[Number(presetIndex)];
+  if(!item) return;
+  document.getElementById('disp_od').value = item.od;
+  document.getElementById('disp_id').value = item.idMm;
+  renderDispPresetMeta(item);
+  calcDisp();
+}
+
+document.getElementById('disp_family').addEventListener('change', updateDispPresetOptions);
+document.getElementById('disp_preset').addEventListener('change', function(){
+  const family = document.getElementById('disp_family').value;
+  const presetIndex = this.value;
+  if(family === 'manual' || presetIndex === ''){
+    renderDispPresetMeta(null);
+    return;
+  }
+  renderDispPresetMeta((DISP_PRESETS[family] || [])[Number(presetIndex)] || null);
+});
+updateDispPresetOptions();
+
+// ─────────────────────────────────────────────
+// TAB 2: PUMP
+// ─────────────────────────────────────────────
+document.getElementById('pump_type').addEventListener('change',function(){
+  document.getElementById('pump_rod_row').style.display = this.value==='duplex' ? '' : 'none';
+});
+
+function calcPump(){
+  const t   = document.getElementById('pump_type').value;
+  const D   = +document.getElementById('pump_d').value;
+  const L   = +document.getElementById('pump_stroke').value;
+  const eff = +document.getElementById('pump_eff').value / 100;
+  const spm = +document.getElementById('pump_spm').value;
+
+  let V_lps; // л/ход
+  if(t==='triplex'){
+    V_lps = D*D * L * eff / 424225;
+  } else {
+    const rod = +document.getElementById('pump_rod').value;
+    V_lps = (2*D*D - rod*rod) * L * eff / 636715;
+  }
+  const Q_lpm  = V_lps * spm;
+  const Q_m3s  = Q_lpm / 60000;
+
+  const el = document.getElementById('pump_result');
+  el.style.display='';
+  el.innerHTML =
+    resRow('Производительность',fmtN(V_lps,3),'л/ход') +
+    resRow(`Расход при ${spm} ход/мин`,fmtN(Q_lpm,1),'л/мин') +
+    resRow('Расход',fmtN(Q_lpm/1000*60,4),'м³/мин');
+  // save for time calc
+  window._pump_q = Q_lpm;
+}
+
+function calcPumpTime(){
+  const Q = window._pump_q || +document.getElementById('pump_spm').value * 
+    (() => {
+      const D=+document.getElementById('pump_d').value;
+      const L=+document.getElementById('pump_stroke').value;
+      const eff=+document.getElementById('pump_eff').value/100;
+      const t=document.getElementById('pump_type').value;
+      if(t==='triplex') return D*D*L*eff/424225;
+      const rod=+document.getElementById('pump_rod').value;
+      return (2*D*D-rod*rod)*L*eff/636715;
+    })();
+  const Va   = +document.getElementById('pt_vann').value * 1000;   // л
+  const Vp   = +document.getElementById('pt_vpipe').value * 1000;  // л
+  const Vs   = +document.getElementById('pt_vsurf').value * 1000;  // л
+  const Vpit = +document.getElementById('pt_vpits').value * 1000;  // л
+  const Vtot = Va + Vp + Vs + Vpit;
+
+  const el = document.getElementById('pump_time_result');
+  el.style.display='';
+  el.innerHTML =
+    resRow('Время до первого замера шлама',fmtN(Va/Q,1),'мин') +
+    resRow('Время подачи ПЖ вниз по колонне',fmtN(Vp/Q,1),'мин') +
+    resRow('Полный цикл промывки системы',fmtN(Vtot/Q,1),'мин') +
+    resRow('Используемый расход',fmtN(Q,1),'л/мин');
+}
+
+// ─────────────────────────────────────────────
+// TAB 3: RHEOLOGY → ECD (API RP 13D)
+// Internal: US units. Display: metric.
+// ─────────────────────────────────────────────
+function calcHydro(){
+  // Inputs
+  const R600 = +document.getElementById('r600').value;
+  const R300 = +document.getElementById('r300').value;
+  const R200 = +document.getElementById('r200').value;
+  const R100 = +document.getElementById('r100').value;
+  const R6   = +document.getElementById('r6').value;
+  const R3   = +document.getElementById('r3').value;
+  const rho_gcc = +document.getElementById('rho').value;
+  const Q_lpm   = +document.getElementById('hyd_q').value;
+
+  const TVD_m  = +document.getElementById('hyd_tvd').value;
+  const dpID_mm   = +document.getElementById('hyd_dpid').value;
+  const dpLen_m   = +document.getElementById('hyd_dplen').value;
+  const dHole_mm  = +document.getElementById('hyd_dhole').value;
+  const dpOD_mm   = +document.getElementById('hyd_dpod').value;
+  const annLen_m  = +document.getElementById('hyd_annlen').value;
+  const Psurf_mpa = +document.getElementById('hyd_psurf').value;
+
+  // Convert to US
+  const rho  = gccToPpg(rho_gcc);
+  const Q    = lpmToGpm(Q_lpm);
+  const dpID = mmToIn(dpID_mm);
+  const dpLen= mToFt(dpLen_m);
+  const dHole= mmToIn(dHole_mm);
+  const dpOD = mmToIn(dpOD_mm);
+  const annL = mToFt(annLen_m);
+
+  // Rheology (Bingham)
+  const PV = R600 - R300;
+  const YP = 2*R300 - R600;
+  const AV = R600 / 2;
+
+  // Power Law pipe
+  const np = 3.32 * Math.log10(R600/R300);
+  const Kp = 5.11 * R600 / Math.pow(1022, np);
+
+  // Power Law annulus
+  const R100_calc = R100 > 0 ? R100 : R300 - (R600-R300)*2/3;
+  const na = 0.657 * Math.log10(R100_calc / R3);
+  const Ka = 5.11 * R3 / Math.pow(5.11, na);
+
+  // Bulk velocity
+  const Vp  = 24.48 * Q / (dpID*dpID);               // ft/min, in pipe
+  const Va  = 24.48 * Q / (dHole*dHole - dpOD*dpOD); // ft/min, in annulus
+
+  // Effective viscosity (Power Law, API RP 13D)
+  const mue_p = 100 * Kp * Math.pow(1.6*Vp/dpID, np-1) * Math.pow((3*np+1)/(4*np), np);
+  const mue_a = 100 * Ka * Math.pow(2.4*Va/(dHole-dpOD), na-1) * Math.pow((2*na+1)/(3*na), na);
+
+  // Reynolds number
+  const Re_p = 15.467 * Vp * dpID * rho / mue_p;
+  const Re_a = 15.467 * Va * (dHole-dpOD) * rho / mue_a;
+
+  // Friction factor (Fanning)
+  function ff(Re, n){
+    if(Re <= 2100) return (n===np ? 16/Re : 24/Re);
+    const a = (Math.log10(n)+3.93)/50;
+    const b = 1.75 - Math.log10(n);
+    return a / Math.pow(Re, 1/b);
+  }
+  const f_p = ff(Re_p, np);
+  const f_a = ff(Re_a, na);
+
+  // Pressure loss (psi)
+  const dPp = f_p * Vp*Vp * rho * dpLen / (92916 * dpID);
+  const dPa = f_a * Va*Va * rho * annL  / (92916 * (dHole-dpOD));
+
+  // Convert to metric
+  const dPp_mpa = psiToMpa(dPp);
+  const dPa_mpa = psiToMpa(dPa);
+  const Phydro  = rho_gcc * TVD_m * 0.00981;
+  const ECD     = rho_gcc + dPa_mpa / (TVD_m * 0.00981);
+  const dECD    = ECD - rho_gcc;
+
+  const Pnag_total = dPp_mpa + dPa_mpa + Psurf_mpa; // approximate
+
+  // Mode
+  const mode_p = Re_p <= 2100 ? 'ламинарный' : 'турбулентный';
+  const mode_a = Re_a <= 2100 ? 'ламинарный' : 'турбулентный';
+
+  // ECD risk
+  let ecdClass = 'good', ecdAlert = '';
+  if(dECD > 0.04) ecdClass = 'warn', ecdAlert = alertBox('warn',`⚠ ΔЭЦ = +${fmtN(dECD,3)} г/см³ — контролируйте запас до давления ГРП`);
+  if(dECD > 0.08) ecdClass = 'bad',  ecdAlert = alertBox('bad',`⛔ ΔЭЦ = +${fmtN(dECD,3)} г/см³ — высокий риск поглощения!`);
+
+  // AV in m/min
+  const Vp_mpm = fpmToMpm(Vp);
+  const Va_mpm = fpmToMpm(Va);
+
+  const el = document.getElementById('hydro_result');
+  el.innerHTML = `
+    ${alertBox('info','Модель: Степенная (Power Law) по API RP 13D')}
+    <b style="color:var(--accent2)">Реологические параметры</b>
+    ${resRow('ПВ (пластич. вязкость)',fmtN(PV),'мПа·с')}
+    ${resRow('ДНС (дин. напряж. сдвига)',`${fmtN(YP)} усл.ед. / ${fmtN(YP*0.511,2)}`,'Па')}
+    ${resRow('УВ (условная вязкость)',fmtN(AV,1),'мПа·с')}
+    ${resRow('n_БТ / K_БТ',`${fmtN(np,3)} / ${fmtN(Kp,3)}`,'')}
+    ${resRow('n_ЗП / K_ЗП',`${fmtN(na,3)} / ${fmtN(Ka,3)}`,'')}
+    <b style="color:var(--accent2)">Скорости течения</b>
+    ${resRow('Скорость в БТ',fmtN(Vp_mpm,1),'м/мин')}
+    ${resRow('Скорость в ЗП',fmtN(Va_mpm,1),'м/мин')}
+    ${resRow('Режим в БТ',mode_p,` | Re = ${fmtN(Re_p,0)}`)}
+    ${resRow('Режим в ЗП',mode_a,` | Re = ${fmtN(Re_a,0)}`)}
+    <b style="color:var(--accent2)">Потери давления</b>
+    ${resRow('ΔP в бурильных трубах',fmtN(dPp_mpa,2),'МПа')}
+    ${resRow('ΔP в ЗП',fmtN(dPa_mpa,2),'МПа')}
+    ${resRow('P_наземн. обор.',fmtN(Psurf_mpa,1),'МПа')}
+    ${resRow('Прибл. давл. нагнетания',fmtN(Pnag_total,2),'МПа')}
+    <b style="color:var(--accent2)">Гидростатика</b>
+    ${resRow('P_гост (ИВГ)',fmtN(Phydro,2),'МПа')}
+    <b style="color:var(--accent2)">ЭЦП</b>
+    ${resRow('ЭЦП у забоя',fmtN(ECD,4),'г/см³',ecdClass)}
+    ${resRow('Прирост ЭЦП (ΔЭЦП)',fmtN(dECD,4),'г/см³',ecdClass)}
+    ${ecdAlert}
+    ${PV > 17*rho_gcc ? alertBox('warn',`⚠ ПВ = ${PV} мПа·с > ${fmtN(17*rho_gcc,1)} норм. предела (17×ρ) — возможен избыток ТФ`) : ''}
+    ${Re_a > 2100 ? alertBox('warn',`⚠ Турбулентный поток в ЗП (Re=${fmtN(Re_a,0)}) — риск эрозии ствола`) : alertBox('good','✓ Ламинарный режим в ЗП')}
+  `;
+  saveI2Runtime({ dECD:dECD, source:'hydro' });
+}
+
+// ─────────────────────────────────────────────
+// TAB 4: BIT HYDRAULICS
+// ─────────────────────────────────────────────
+function calcBit(){
+  const Dbit_mm = +document.getElementById('bit_d').value;
+  const Q_lpm   = +document.getElementById('bit_q').value;
+  const rho_gcc = +document.getElementById('bit_rho').value;
+  const Ptot_mpa= +document.getElementById('bit_pt').value;
+  const Psys_mpa= +document.getElementById('bit_psys').value;
+
+  const nzd = [
+    +document.getElementById('nz1').value,
+    +document.getElementById('nz2').value,
+    +document.getElementById('nz3').value,
+    +document.getElementById('nz4').value
+  ].filter(d=>d>0);
+
+  if(nzd.length===0){ document.getElementById('bit_result').innerHTML=alertBox('bad','Введите диаметр хотя бы одной насадки!'); return; }
+
+  // TFA in mm²
+  const TFA_mm2 = nzd.reduce((s,d) => s + Math.PI/4*d*d, 0);
+  const TFA_in2 = TFA_mm2 / 645.16;
+
+  // Pressure through nozzles (hydraulic formula)
+  // ΔP_bit(psi) = ρ(ppg) × Q(gpm)² / (10858 × TFA²(in²))
+  const rho_ppg = gccToPpg(rho_gcc);
+  const Q_gpm   = lpmToGpm(Q_lpm);
+  const dP_bit_psi = rho_ppg * Q_gpm*Q_gpm / (10858 * TFA_in2*TFA_in2);
+  const dP_bit_mpa = psiToMpa(dP_bit_psi);
+
+  // Nozzle velocity (m/s)
+  // V = Q(l/s) / TFA(mm²) * 1e6 / 1000 → m/s = Q_ls * 1000 / TFA_mm2
+  const Q_ls = Q_lpm / 60;   // л/с
+  const Vn_ms = Q_ls * 1000 / TFA_mm2 * 1000; // = Q_ls * 1e6 / TFA_mm2 / 1000
+  // Actually: Q in m³/s = Q_ls/1000; TFA in m² = TFA_mm2/1e6; V = Q/A
+  const Vn_ms_correct = (Q_ls / 1000) / (TFA_mm2 / 1e6); // m/s
+
+  // Bit hydraulic power (kW)
+  // P_kW = Q(m³/s) × ΔP(Pa) = (Q_ls/1000) × (dP_bit_mpa × 1e6)
+  const HHP_kw = (Q_ls/1000) * (dP_bit_mpa * 1e6) / 1000;
+
+  // HSI = HHP / bit area (kW/cm²)
+  const Dbit_cm = Dbit_mm / 10;
+  const Abit_cm2 = Math.PI/4 * Dbit_cm*Dbit_cm;
+  const HSI = HHP_kw / Abit_cm2;
+
+  // Impact force (kN)
+  // F = ρ × Q × V = rho_kg_m3 × Q_m3s × Vn = rho_gcc*1000 × Q_ls/1000 × Vn
+  const IF_kn = rho_gcc * 1000 * (Q_ls/1000) * Vn_ms_correct / 1000;
+
+  // % of total P at bit
+  const pct_bit = (dP_bit_mpa / Ptot_mpa * 100);
+  const pct_sys = (Psys_mpa  / Ptot_mpa * 100);
+
+  // Assessment
+  const vnClass  = Vn_ms_correct >= 76 && Vn_ms_correct <= 137 ? 'good' : (Vn_ms_correct < 76 ? 'warn' : 'bad');
+  const hsiClass = HSI >= 0.29 && HSI <= 0.58 ? 'good' : (HSI < 0.29 ? 'warn' : 'bad');
+  const pctClass = pct_bit >= 47 && pct_bit <= 68 ? 'good' : (pct_bit < 40 ? 'warn' : 'bad');
+
+  document.getElementById('bit_result').innerHTML = `
+    <b style="color:var(--accent2)">Насадки долота</b>
+    ${resRow('Кол-во насадок',nzd.length,'шт')}
+    ${resRow('Диаметры насадок',nzd.map(d=>fmtN(d,1)).join(' / '),'мм')}
+    ${resRow('СПН (суммарная площадь насадок)',fmtN(TFA_mm2,1),'мм²')}
+    <b style="color:var(--accent2)">Гидравлика</b>
+    ${resRow('ΔP_дол (потери давл. на долоте)',fmtN(dP_bit_mpa,2),'МПа')}
+    ${resRow('% P_дол от давления нагнетания',fmtN(pct_bit,1),'%',pctClass)}
+    ${progressBar(pct_bit, pctClass)}
+    ${resRow('Скорость истечения через насадки',fmtN(Vn_ms_correct,1),'м/с',vnClass)}
+    ${resRow('ГМД (гидравлическая мощность долота)',fmtN(HHP_kw,1),'кВт')}
+    ${resRow('УГМ (удельная ГМД / HSI)',fmtN(HSI,3),'кВт/см²',hsiClass)}
+    ${resRow('ГСУ (гидравлическая сила удара)',fmtN(IF_kn,2),'кН')}
+    <b style="color:var(--accent2)">Диагностика</b>
+    ${Vn_ms_correct < 76  ? alertBox('warn',`⚠ Скорость форсунок ${fmtN(Vn_ms_correct,1)} м/с < 76 м/с — недостаточная очистка забоя, уменьшите СПН`) : ''}
+    ${Vn_ms_correct > 137 ? alertBox('bad', `⛔ Скорость форсунок ${fmtN(Vn_ms_correct,1)} м/с > 137 м/с — эрозия насадок! Увеличьте СПН`) : ''}
+    ${HSI < 0.29 ? alertBox('warn',`⚠ УГМ = ${fmtN(HSI,3)} кВт/см² — ниже минимума 0.29 → снизьте МСП или увеличьте Q`) : ''}
+    ${HSI > 0.58 ? alertBox('bad', `⛔ УГМ = ${fmtN(HSI,3)} кВт/см² — выше максимума 0.58 кВт/см²`) : ''}
+    ${Vn_ms_correct >= 76 && Vn_ms_correct <= 137 && HSI >= 0.29 && HSI <= 0.58 ? alertBox('good','✓ Гидравлика долота — в диапазоне рекомендуемых значений') : ''}
+    ${pct_bit >= 60 && pct_bit <= 68 ? alertBox('info','Режим макс. ГМД (≈65%): оптимально для твёрдых пород') : ''}
+    ${pct_bit >= 47 && pct_bit < 60  ? alertBox('info','Режим макс. ГСУ (≈50%): оптимально для мягких пород') : ''}
+  `;
+  saveI2Runtime({ nozzleVelocity:Vn_ms_correct, source:'bit' });
+}
+
+// ─────────────────────────────────────────────
+// TAB 5: MATERIAL BALANCE
+// ─────────────────────────────────────────────
+function calcWeightUp(){
+  const r1  = +document.getElementById('wu_rho1').value;
+  const r2  = +document.getElementById('wu_rho2').value;
+  const vol = +document.getElementById('wu_vol').value;
+  const rbar = 4.20;
+
+  if(r2 >= rbar){ document.getElementById('wu_result').innerHTML=alertBox('bad','Требуемая плотность ≥ 4.20 г/см³ — невозможно достичь баритом!'); return; }
+  if(r2 <= r1)  { document.getElementById('wu_result').innerHTML=alertBox('warn','Требуемая плотность ≤ начальной — достаточно разбавления.'); return; }
+
+  const m_kg_m3 = rbar * 1000 * (r2-r1) / (rbar-r2); // кг на м³ исходного
+  const m_total = m_kg_m3 * vol;                       // кг
+  const V_add   = m_total / (rbar * 1000);             // м³ барита
+  const V_new   = vol + V_add;                         // м³ нового р-ра
+
+  const el = document.getElementById('wu_result');
+  el.style.display='';
+  el.innerHTML =
+    resRow('Расход барита',fmtN(m_kg_m3,1),'кг/м³ исходн. р-ра') +
+    resRow('Всего барита',fmtN(m_total,0),'кг') +
+    resRow('Объём барита',fmtN(V_add,3),'м³') +
+    resRow('Новый объём раствора',fmtN(V_new,2),'м³') +
+    resRow('Исходный объём',fmtN(vol,1),'м³') +
+    resRow('Прирост объёма',fmtN(V_new-vol,3),'м³') +
+    alertBox('info',`Формула: m_бар = 4200 × (${r2}−${r1}) / (4.20−${r2}) = ${fmtN(m_kg_m3,1)} кг/м³`);
+}
+
+function calcDilution(){
+  const r1  = +document.getElementById('dil_rho1').value;
+  const r2  = +document.getElementById('dil_rho2').value;
+  const rw  = +document.getElementById('dil_rhow').value;
+  const vol = +document.getElementById('dil_vol').value;
+
+  if(r2 >= r1){ document.getElementById('dil_result').innerHTML=alertBox('warn','Требуемая плотность ≥ исходной — нужно утяжеление.'); return; }
+  if(r2 <= rw){ document.getElementById('dil_result').innerHTML=alertBox('bad','Требуемая плотность ≤ плотности разбавителя — невозможно!'); return; }
+
+  const Vdil = vol * (r1-r2) / (r2-rw);
+  const Vnew = vol + Vdil;
+
+  const el = document.getElementById('dil_result');
+  el.style.display='';
+  el.innerHTML =
+    resRow('Объём разбавителя',fmtN(Vdil,2),'м³') +
+    resRow('Новый суммарный объём',fmtN(Vnew,2),'м³') +
+    resRow('% разбавления',fmtN(Vdil/Vnew*100,1),'% от нового объёма') +
+    (Vdil/Vnew > 0.5 ? alertBox('warn','⚠ Разбавление >50% — экономичнее приготовить новый раствор') : alertBox('good','✓ Разбавление в разумных пределах'));
+}
+
+function calcKillMud(){
+  const rho    = +document.getElementById('km_rho').value;
+  const SIDPP  = +document.getElementById('km_sidpp').value;   // МПа
+  const TVD    = +document.getElementById('km_tvd').value;     // м
+  const Pfrac  = +document.getElementById('km_pfrac').value;   // МПа
+  const choTVD = +document.getElementById('km_chotvd').value;  // м
+
+  const rho_kill = rho + SIDPP / (TVD * 0.00981);
+  const Phyd_kill = rho_kill * choTVD * 0.00981;
+  const MAASP = Pfrac - Phyd_kill;
+
+  const el = document.getElementById('km_result');
+  el.style.display='';
+  el.innerHTML =
+    resRow('Плотность глушащего р-ра',fmtN(rho_kill,3),'г/см³', rho_kill > rho+0.5 ? 'warn' : '') +
+    resRow('Прирост плотности',fmtN(rho_kill-rho,3),'г/см³') +
+    resRow('P_гст у башмака ОК (глушащим р-ром)',fmtN(Phyd_kill,2),'МПа') +
+    resRow('МДДУП (макс. допуст. давл. на устье)',fmtN(MAASP,2),'МПа') +
+    (rho_kill > rho+0.5 ? alertBox('warn',`⚠ Требуется утяжеление на ${fmtN(rho_kill-rho,3)} г/см³ — рассчитайте расход барита`) : alertBox('good','✓ Плотность глушащего р-ра в норме')) +
+    alertBox('info',`Формула: ρ_глуш = ${rho} + ${SIDPP}/(${TVD}×0.00981) = ${fmtN(rho_kill,3)} г/см³`);
+}
+
+function calcBlend(){
+  const r1 = +document.getElementById('bl_rho1').value;
+  const v1 = +document.getElementById('bl_v1').value;
+  const r2 = +document.getElementById('bl_rho2').value;
+  const v2 = +document.getElementById('bl_v2').value;
+  const mix = (v1*r1 + v2*r2) / (v1+v2);
+
+  const el = document.getElementById('bl_result');
+  el.style.display='';
+  el.innerHTML =
+    resRow('Плотность смеси',fmtN(mix,4),'г/см³') +
+    resRow('Суммарный объём',fmtN(v1+v2,2),'м³');
+}
+
+// ─────────────────────────────────────────────
+// NAVIGATION
+// ─────────────────────────────────────────────
+function activateTab(id){
+  document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  const section = document.getElementById(id);
+  const button = document.querySelector(`nav button[data-tab="${id}"]`);
+  if(section) section.classList.add('active');
+  if(button) button.classList.add('active');
+}
+
+function show(id, btn){
+  activateTab(id);
+  if(btn) btn.classList.add('active');
+  if (history && history.replaceState) {
+    history.replaceState(null, '', `#${id}`);
+  }
+}
+
+function applyHashNavigation(){
+  const rawHash = window.location.hash;
+  if(!rawHash) return;
+  const targetId = rawHash.slice(1);
+  const target = document.getElementById(targetId);
+  if(!target) return;
+  const section = target.closest('section');
+  if(section) activateTab(section.id);
+  target.scrollIntoView({ block:'start', behavior:'auto' });
+}
+
+function saveI2Runtime(payload){
+  const getNumericValue = function(id, fallback){
+    const node = document.getElementById(id);
+    if(!node) return fallback;
+    const value = +node.value;
+    return Number.isFinite(value) ? value : fallback;
+  };
+  const fallbackDECD = getNumericValue('h_dp', 0) / (Math.max(getNumericValue('h_tvd', 1), 1) * 0.00981);
+  const dECD = payload && Number.isFinite(payload.dECD) ? payload.dECD : fallbackDECD;
+  const nozzleVelocity = payload && Number.isFinite(payload.nozzleVelocity) ? payload.nozzleVelocity : getNumericValue('h_vn', 0);
+  const flowRate = getNumericValue('hyd_q', getNumericValue('h_q', 0));
+  let status = 'active';
+  let pill = 'Active';
+  let health = 68;
+  const blockers = [];
+  const actions = [];
+
+  if (dECD > 0.08 || nozzleVelocity < 65 || nozzleVelocity > 145) {
+    status = 'at_risk';
+    pill = 'At risk';
+    health = 35;
+    blockers.push('ECD or nozzle regime is outside the operational guardrail.');
+    actions.push('Re-run hydro and bit calculations before field execution.');
+  } else if (dECD <= 0.04 && nozzleVelocity >= 76 && nozzleVelocity <= 137) {
+    status = 'ready';
+    pill = 'Ready';
+    health = 88;
+    actions.push('Hydraulics window is stable enough for runtime guidance.');
+  } else {
+    blockers.push('Hydraulics window is usable but still needs tuning.');
+    actions.push('Tighten ECD delta and bring nozzle velocity into the recommended band.');
+  }
+
+  const summary = status === 'ready'
+    ? 'Hydraulics twin is in a reliable range: ECD delta and nozzle regime support daily runtime decisions.'
+    : status === 'at_risk'
+      ? 'Hydraulics twin is at risk: current ECD delta or nozzle velocity can break drilling guardrails.'
+      : 'Hydraulics twin is active but still needs adjustment before it becomes a dependable runtime advisory layer.';
+
+  localStorage.setItem(I2_RUNTIME_KEY, JSON.stringify({
+    status: status,
+    pill: pill,
+    health: health,
+    summary: summary,
+    blockers: blockers,
+    actions: actions.slice(0,5),
+    dECD: Number(dECD.toFixed(4)),
+    nozzleVelocity: Number(nozzleVelocity.toFixed(1)),
+    flowRate: flowRate,
+    source: payload && payload.source ? payload.source : 'hydro',
+    updatedAt: new Date().toISOString()
+  }));
+
+  var pillNode = document.getElementById('i2RuntimePill');
+  var summaryNode = document.getElementById('i2RuntimeSummary');
+  pillNode.className = 'runtime-pill ' + status;
+  pillNode.textContent = pill;
+  summaryNode.textContent = summary;
+}
+
+saveI2Runtime({ source:'default' });
+applyHashNavigation();
+window.addEventListener('hashchange', applyHashNavigation);
+</script>
+  <script src="assets/js/global-auth-widget.js"></script>
+</body>
+</html>

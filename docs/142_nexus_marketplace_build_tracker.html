@@ -1,0 +1,941 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>142 · Nexus Marketplace · Control Tower</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Condensed:wght@500;600;700&display=swap");
+
+    :root {
+      --panel: rgba(255,255,255,0.96);
+      --surface: #f8fbfd;
+      --line: rgba(18,48,71,0.12);
+      --text: #17324a;
+      --muted: #617487;
+      --mint: #0e7490;
+      --gold: #ba7a1f;
+      --danger: #c0563c;
+      --success: #1f7a4f;
+      --warning: #b7791f;
+      --shadow: 0 22px 56px rgba(28,51,84,0.1);
+    }
+
+    * { box-sizing: border-box; }
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+      font-family: "IBM Plex Sans", sans-serif;
+      background:
+        radial-gradient(820px 420px at 0% 0%, rgba(14,116,144,0.08), transparent 70%),
+        radial-gradient(780px 420px at 100% 0%, rgba(186,122,31,0.1), transparent 72%),
+        linear-gradient(180deg, #f7fafc 0%, #eef3f6 54%, #e9eef2 100%);
+      color: var(--text);
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        linear-gradient(to right, rgba(23,50,74,0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(23,50,74,0.04) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none;
+      opacity: 0.45;
+    }
+
+    .page {
+      position: relative;
+      z-index: 1;
+      width: min(1480px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 20px 0 42px;
+    }
+
+    .topbar,
+    .hero,
+    .panel,
+    .side-panel,
+    .metric-card,
+    .queue-row,
+    .decision-row,
+    .blocker-row,
+    .cadence-row,
+    .alert-row {
+      border: 1px solid var(--line);
+      border-radius: 26px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      padding: 14px 18px;
+      margin-bottom: 16px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .brand-mark {
+      width: 14px;
+      height: 14px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #ebaf54 0%, #d1811d 100%);
+      box-shadow: 0 0 0 6px rgba(209,129,29,0.12);
+    }
+
+    .button,
+    .button-secondary,
+    .toggle,
+    .mini-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      padding: 0 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(18,48,71,0.12);
+      background: rgba(255,255,255,0.92);
+      color: var(--text);
+      font: inherit;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .button {
+      color: #ffffff;
+      background: linear-gradient(135deg, #d38b28 0%, #b56f16 100%);
+      border-color: rgba(181,111,22,0.45);
+    }
+
+    .toggle.active {
+      background: rgba(14,116,144,0.1);
+      border-color: rgba(14,116,144,0.3);
+      color: var(--mint);
+    }
+
+    .mini-button {
+      min-height: 34px;
+      padding: 0 12px;
+      font-size: 11px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0,1.44fr) minmax(320px,0.56fr);
+      gap: 18px;
+      padding: 26px;
+      margin-bottom: 16px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      right: -80px;
+      bottom: -80px;
+      width: 320px;
+      height: 320px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(47,111,163,0.12), transparent 72%);
+      pointer-events: none;
+    }
+
+    .eyebrow,
+    .tag,
+    .status-pill,
+    .status-badge,
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      padding: 0 12px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow,
+    .tag,
+    .chip {
+      background: rgba(14,116,144,0.1);
+      color: var(--mint);
+    }
+
+    .status-pill,
+    .status-badge.ok {
+      background: rgba(31,122,79,0.1);
+      color: var(--success);
+    }
+
+    .status-badge.warn {
+      background: rgba(183,121,31,0.1);
+      color: var(--warning);
+    }
+
+    .status-badge.risk {
+      background: rgba(192,86,60,0.1);
+      color: var(--danger);
+    }
+
+    h1,
+    h2 {
+      margin: 0;
+      font-family: "IBM Plex Sans Condensed", sans-serif;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin-top: 14px;
+      font-size: clamp(38px,4.8vw,66px);
+      line-height: 0.94;
+      max-width: 860px;
+    }
+
+    .copy,
+    .muted,
+    .queue-copy,
+    .decision-copy,
+    .blocker-copy,
+    .cadence-copy,
+    .alert-copy {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .copy {
+      margin-top: 14px;
+      max-width: 760px;
+    }
+
+    .hero-actions,
+    .hero-tags,
+    .toggle-row,
+    .panel-actions,
+    .metric-grid,
+    .queue-list,
+    .decision-list,
+    .blocker-list,
+    .cadence-list,
+    .alert-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .hero-actions {
+      margin-top: 18px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .hero-tags {
+      margin-top: 14px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .metric-grid {
+      grid-template-columns: repeat(4,minmax(0,1fr));
+      margin-top: 20px;
+    }
+
+    .metric-card {
+      padding: 16px;
+      border-radius: 22px;
+      background: var(--surface);
+      border: 1px solid rgba(18,48,71,0.08);
+    }
+
+    .metric-value {
+      margin-top: 8px;
+      font-family: "IBM Plex Sans Condensed", sans-serif;
+      font-size: 34px;
+      line-height: 1;
+      color: var(--gold);
+    }
+
+    .metric-label {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-top: 6px;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(0,1fr) 340px;
+      gap: 16px;
+    }
+
+    .main-col,
+    .side-col {
+      display: grid;
+      gap: 16px;
+      align-content: start;
+    }
+
+    .panel,
+    .side-panel {
+      padding: 20px;
+      background: var(--surface);
+    }
+
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+
+    .panel-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .queue-head,
+    .queue-row-grid {
+      display: grid;
+      grid-template-columns: minmax(0,1.5fr) 130px 110px 130px 130px;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .queue-head {
+      margin-bottom: 10px;
+    }
+
+    .col-label {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .queue-row {
+      padding: 14px 16px;
+      background: #ffffff;
+    }
+
+    .queue-title {
+      font-weight: 700;
+      color: var(--text);
+      font-size: 14px;
+    }
+
+    .queue-copy {
+      margin-top: 4px;
+      font-size: 12px;
+    }
+
+    .cell {
+      display: grid;
+      gap: 2px;
+    }
+
+    .cell strong {
+      color: var(--text);
+      font-size: 13px;
+    }
+
+    .cell span {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .decision-row,
+    .blocker-row,
+    .cadence-row,
+    .alert-row {
+      padding: 14px 16px;
+      background: #ffffff;
+      display: grid;
+      grid-template-columns: minmax(0,1fr) auto;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .decision-title,
+    .blocker-title,
+    .cadence-title,
+    .alert-title {
+      font-weight: 700;
+      color: var(--text);
+      font-size: 14px;
+    }
+
+    .decision-copy,
+    .blocker-copy,
+    .cadence-copy,
+    .alert-copy {
+      margin-top: 4px;
+      font-size: 12px;
+    }
+
+    .timeline-time {
+      font-family: "IBM Plex Sans Condensed", sans-serif;
+      font-size: 26px;
+      color: var(--gold);
+      line-height: 1;
+    }
+
+    .summary-grid {
+      display: grid;
+      gap: 8px;
+    }
+
+    .summary-row {
+      display: grid;
+      grid-template-columns: 130px minmax(0,1fr);
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(18,48,71,0.07);
+    }
+
+    .summary-row:last-child {
+      border-bottom: none;
+    }
+
+    @media (max-width: 1220px) {
+      .workspace {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 980px) {
+      .hero {
+        grid-template-columns: 1fr;
+      }
+
+      .metric-grid {
+        grid-template-columns: repeat(2,minmax(0,1fr));
+      }
+
+      .queue-head,
+      .queue-row-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 680px) {
+      .metric-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+  <main class="page">
+    <section class="topbar" aria-label="Control Tower topbar">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span id="brandLabel">Nexus Control Tower</span>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <a class="button-secondary" href="../index.html">Nexus</a>
+        <a class="button-secondary" href="143_nexus_marketplace_hub.html" id="hubLink">Marketplace Hub</a>
+        <a class="button-secondary" href="144_nexus_catalog_workbench.html" id="catalogLink">Catalog</a>
+        <a class="button" href="146_nexus_rfq_command.html" id="rfqLink">RFQ</a>
+      </div>
+    </section>
+
+    <section class="hero">
+      <article>
+        <span class="eyebrow" id="heroEyebrow"></span>
+        <h1 id="heroTitle"></h1>
+        <p class="copy" id="heroCopy"></p>
+        <div class="hero-tags" id="heroTags"></div>
+        <div class="hero-actions">
+          <a class="button" href="146_nexus_rfq_command.html" id="heroCtaMain"></a>
+          <a class="button-secondary" href="143_nexus_marketplace_hub.html" id="heroCtaSecondary"></a>
+        </div>
+        <div class="metric-grid" id="metricGrid"></div>
+      </article>
+
+      <aside class="side-panel">
+        <div class="panel-head">
+          <div>
+            <div class="tag" id="langTag"></div>
+            <h2 id="langTitle"></h2>
+            <p class="copy" id="langCopy"></p>
+          </div>
+          <span class="status-pill" id="langStatus"></span>
+        </div>
+        <div class="toggle-row" style="display:flex;gap:10px;">
+          <button class="toggle active" data-lang="ru" type="button">RU</button>
+          <button class="toggle" data-lang="en" type="button">EN</button>
+        </div>
+
+        <div class="panel-head" style="margin-top:10px;">
+          <div>
+            <div class="tag" id="unitTag"></div>
+            <h2 id="unitTitle"></h2>
+            <p class="copy" id="unitCopy"></p>
+          </div>
+          <span class="status-pill" id="unitStatus"></span>
+        </div>
+        <div class="toggle-row" style="display:flex;gap:10px;">
+          <button class="toggle active" data-unit="si" type="button">SI</button>
+          <button class="toggle" data-unit="field" type="button">Field</button>
+        </div>
+      </aside>
+    </section>
+
+    <section class="workspace">
+      <div class="main-col">
+
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <div class="tag" id="queueTag"></div>
+              <h2 id="queueTitle"></h2>
+              <p class="copy" id="queueCopy"></p>
+            </div>
+            <span class="status-badge ok" id="queueStatus"></span>
+          </div>
+          <div class="queue-head" id="queueHead"></div>
+          <div class="queue-list" id="queueList"></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <div class="tag" id="decisionTag"></div>
+              <h2 id="decisionTitle"></h2>
+              <p class="copy" id="decisionCopy"></p>
+            </div>
+          </div>
+          <div class="decision-list" id="decisionList"></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <div class="tag" id="cadenceTag"></div>
+              <h2 id="cadenceTitle"></h2>
+              <p class="copy" id="cadenceCopy"></p>
+            </div>
+          </div>
+          <div class="cadence-list" id="cadenceList"></div>
+        </section>
+
+      </div>
+
+      <div class="side-col">
+
+        <section class="side-panel">
+          <div class="panel-head">
+            <div>
+              <div class="tag" id="blockerTag"></div>
+              <h2 id="blockerTitle"></h2>
+              <p class="copy" id="blockerCopy"></p>
+            </div>
+            <span class="status-badge risk" id="blockerStatus"></span>
+          </div>
+          <div class="blocker-list" id="blockerList"></div>
+        </section>
+
+        <section class="side-panel">
+          <div class="panel-head">
+            <div>
+              <div class="tag" id="alertTag"></div>
+              <h2 id="alertTitle"></h2>
+              <p class="copy" id="alertCopy"></p>
+            </div>
+          </div>
+          <div class="alert-list" id="alertList"></div>
+        </section>
+
+        <section class="side-panel">
+          <div class="panel-head">
+            <div>
+              <div class="tag" id="summaryTag"></div>
+              <h2 id="summaryTitle"></h2>
+            </div>
+          </div>
+          <div class="summary-grid" id="summaryGrid"></div>
+        </section>
+
+      </div>
+    </section>
+  </main>
+
+  <script src="assets/js/global-auth-widget.js"></script>
+  <script>
+    (function () {
+      var CONTEXT_STORAGE_KEY = 'nexus-marketplace-context';
+      var TOWER_STATE_STORAGE_KEY = 'nexus-control-tower-state';
+      var context = {};
+      var towerState = {};
+
+      try {
+        context = JSON.parse(localStorage.getItem(CONTEXT_STORAGE_KEY) || '{}') || {};
+      } catch (error) {
+        context = {};
+      }
+
+      try {
+        towerState = JSON.parse(localStorage.getItem(TOWER_STATE_STORAGE_KEY) || '{}') || {};
+      } catch (error) {
+        towerState = {};
+      }
+
+      var state = {
+        lang: context.lang === 'en' ? 'en' : 'ru',
+        unit: context.unit === 'field' ? 'field' : 'si'
+      };
+
+      if (!Array.isArray(towerState.blockers)) {
+        towerState.blockers = [];
+      }
+      if (!Array.isArray(towerState.decisions)) {
+        towerState.decisions = [];
+      }
+
+      var dictionary = {
+        ru: {
+          brandLabel: 'Nexus Control Tower',
+          heroEyebrow: 'Marketplace command center',
+          heroTitle: 'Ежедневный Центр Управления Закупочной Воронкой',
+          heroCopy: 'Операторская поверхность для day-by-day работы: очередь RFQ, решения на смену, блокеры, cadence событий и срочные сигналы. Здесь принимаются действия, а не читаются слайды.',
+          heroTags: ['Shift 07:00-19:00', 'North Sea + GCC desk', '3 hot RFQ today'],
+          heroCtaMain: 'Открыть RFQ Command',
+          heroCtaSecondary: 'В Marketplace Hub',
+          metricCards: [
+            { label: 'Активные RFQ', value: '12', copy: 'Из них 3 в критической зоне по сроку.' },
+            { label: 'Сделки на смену', value: '$218k', copy: 'Ожидаемая сумма при закрытии текущих решений.' },
+            { label: 'Открытые блокеры', value: '4', copy: '2 документальных и 2 коммерческих.' },
+            { label: 'SLA ответа', value: '6h', copy: 'Среднее по qualified supplier трафику.' }
+          ],
+          langTag: 'Interface',
+          langTitle: 'Язык',
+          langCopy: 'Один command center без дублирования логики.',
+          langStatus: 'RU active',
+          unitTag: 'Units',
+          unitTitle: 'Система единиц',
+          unitCopy: 'Поля объема и дозировок переключаются без смены ядра.',
+          queueTag: 'Action queue',
+          queueTitle: 'Очередь На Действие',
+          queueCopy: 'Каждая строка требует конкретного шага: unlock, review, award или escalation.',
+          queueStatus: '12 active',
+          queueHeaders: ['RFQ / Scope', 'Supplier', 'Stage', 'Deadline', 'Owner'],
+          queueRows: [
+            { title: 'RFQ-2026-041 / Drilling fluids package', copy: '6 lines, Houston + EU route', supplier: 'MI-SWACO', stage: 'Quoted', deadline: '30 Apr', owner: 'Buyer desk' },
+            { title: 'RFQ-2026-044 / Completion brines', copy: '4 lines, offshore delivery', supplier: 'TETRA', stage: 'Unlocked', deadline: '29 Apr', owner: 'Ops shift A' },
+            { title: 'RFQ-2026-047 / Lubricity lane', copy: '3 lines, analog match', supplier: 'Nouryon', stage: 'Qualified', deadline: '01 May', owner: 'Chem lead' },
+            { title: 'RFQ-2026-049 / Solids control rush', copy: '2 lines, emergency stock', supplier: 'NOV Brandt', stage: 'Draft', deadline: 'Today 18:00', owner: 'Rig support' }
+          ],
+          decisionTag: 'Decision board',
+          decisionTitle: 'Решения На Эту Смену',
+          decisionCopy: 'То, что должно быть принято до конца дня.',
+          decisionRows: [
+            { title: 'Award RFQ-2026-041', copy: 'MI-SWACO vs Nouryon — принять winner до 16:00.', action: 'Award', status: 'warn' },
+            { title: 'Unlock RFQ-2026-044', copy: 'Подтвердить экспортный коридор и открыть supplier доступ.', action: 'Unlock', status: 'ok' },
+            { title: 'Escalate RFQ-2026-049', copy: 'Риск остановки из-за shortage screen panels.', action: 'Escalate', status: 'risk' }
+          ],
+          cadenceTag: 'Cadence',
+          cadenceTitle: 'Дневной Ритм Команды',
+          cadenceCopy: 'Фиксированные точки управления в течение смены.',
+          cadenceRows: [
+            { time: '08:00', title: 'Shift handover', copy: 'Передача открытых RFQ и blocker списка.' },
+            { time: '10:30', title: 'Supplier pulse call', copy: 'Проверка SLA и статуса документов по горячим сделкам.' },
+            { time: '13:00', title: 'Quote compare block', copy: 'Разбор котировок и shortlist приоритетов.' },
+            { time: '16:30', title: 'Award window', copy: 'Принятие award решений по qualified пакетам.' },
+            { time: '18:30', title: 'Close shift report', copy: 'Фиксация выполненных действий и перенос рисков.' }
+          ],
+          blockerTag: 'Blockers',
+          blockerTitle: 'Критические Блокеры',
+          blockerCopy: 'То, что останавливает движение к PO.',
+          blockerStatus: '4 open',
+          blockerRows: [
+            { title: 'COA pending for RFQ-2026-041', copy: 'Нет подтвержденного сертификата партии от supplier.', status: 'risk' },
+            { title: 'Budget gap on RFQ-2026-044', copy: 'Котировка выше target на 8%.', status: 'warn' },
+            { title: 'Export document mismatch', copy: 'Несоответствие документа по MENA коридору.', status: 'risk' },
+            { title: 'Lead time drift', copy: 'Сдвиг на 2 дня по emergency solids lane.', status: 'warn' }
+          ],
+          alertTag: 'Live alerts',
+          alertTitle: 'Сигналы В Реальном Времени',
+          alertCopy: 'Короткие события, требующие внимания прямо сейчас.',
+          alertRows: [
+            { title: 'MI-SWACO uploaded revised quote', copy: 'RFQ-2026-041 · 09:42', status: 'ok' },
+            { title: 'TETRA requested deadline extension', copy: 'RFQ-2026-044 · 10:15', status: 'warn' },
+            { title: 'Halliburton doc packet incomplete', copy: 'RFQ-2026-052 · 11:03', status: 'risk' }
+          ],
+          summaryTag: 'Shift summary',
+          summaryTitle: 'Сводка Смены',
+          summaryRows: [
+            ['Открыто RFQ', '12'],
+            ['Закрыто за смену', '5'],
+            ['Award сегодня', '2'],
+            ['Блокеров закрыто', '3'],
+            ['PO выдано', '1']
+          ],
+          stageLabel: { Draft: 'Черновик', Qualified: 'Квалификация', Unlocked: 'Открыт', Quoted: 'Котировки' },
+          actionLabels: { Award: 'Award', Unlock: 'Unlock', Escalate: 'Escalate' }
+        },
+        en: {
+          brandLabel: 'Nexus Control Tower',
+          heroEyebrow: 'Marketplace command center',
+          heroTitle: 'Daily Command Center For Procurement Funnel Control',
+          heroCopy: 'An operator workspace for day-to-day execution: RFQ queue, shift decisions, blockers, cadence events, and urgent signals. This is where actions are made, not slides reviewed.',
+          heroTags: ['Shift 07:00-19:00', 'North Sea + GCC desk', '3 hot RFQ today'],
+          heroCtaMain: 'Open RFQ Command',
+          heroCtaSecondary: 'Go To Marketplace Hub',
+          metricCards: [
+            { label: 'Active RFQ', value: '12', copy: '3 are already in critical deadline zone.' },
+            { label: 'Shift deal value', value: '$218k', copy: 'Expected close value if current decisions land.' },
+            { label: 'Open blockers', value: '4', copy: '2 documentation and 2 commercial blockers.' },
+            { label: 'Response SLA', value: '6h', copy: 'Average over qualified supplier traffic.' }
+          ],
+          langTag: 'Interface',
+          langTitle: 'Language',
+          langCopy: 'One command center without duplicated logic.',
+          langStatus: 'EN active',
+          unitTag: 'Units',
+          unitTitle: 'Unit system',
+          unitCopy: 'Volume and dosage fields switch without changing the core model.',
+          queueTag: 'Action queue',
+          queueTitle: 'Queue Requiring Action',
+          queueCopy: 'Each row needs a concrete move: unlock, review, award, or escalation.',
+          queueStatus: '12 active',
+          queueHeaders: ['RFQ / Scope', 'Supplier', 'Stage', 'Deadline', 'Owner'],
+          queueRows: [
+            { title: 'RFQ-2026-041 / Drilling fluids package', copy: '6 lines, Houston + EU route', supplier: 'MI-SWACO', stage: 'Quoted', deadline: '30 Apr', owner: 'Buyer desk' },
+            { title: 'RFQ-2026-044 / Completion brines', copy: '4 lines, offshore delivery', supplier: 'TETRA', stage: 'Unlocked', deadline: '29 Apr', owner: 'Ops shift A' },
+            { title: 'RFQ-2026-047 / Lubricity lane', copy: '3 lines, analog match', supplier: 'Nouryon', stage: 'Qualified', deadline: '01 May', owner: 'Chem lead' },
+            { title: 'RFQ-2026-049 / Solids control rush', copy: '2 lines, emergency stock', supplier: 'NOV Brandt', stage: 'Draft', deadline: 'Today 18:00', owner: 'Rig support' }
+          ],
+          decisionTag: 'Decision board',
+          decisionTitle: 'Decisions For This Shift',
+          decisionCopy: 'Items that must be decided before end of day.',
+          decisionRows: [
+            { title: 'Award RFQ-2026-041', copy: 'MI-SWACO vs Nouryon — confirm winner by 16:00.', action: 'Award', status: 'warn' },
+            { title: 'Unlock RFQ-2026-044', copy: 'Confirm export corridor and open supplier access.', action: 'Unlock', status: 'ok' },
+            { title: 'Escalate RFQ-2026-049', copy: 'Stop-risk due to screen panel shortage.', action: 'Escalate', status: 'risk' }
+          ],
+          cadenceTag: 'Cadence',
+          cadenceTitle: 'Team Daily Cadence',
+          cadenceCopy: 'Fixed control points across the shift.',
+          cadenceRows: [
+            { time: '08:00', title: 'Shift handover', copy: 'Transfer open RFQ and blocker list.' },
+            { time: '10:30', title: 'Supplier pulse call', copy: 'Check SLA and docs status for hot deals.' },
+            { time: '13:00', title: 'Quote compare block', copy: 'Review quotes and shortlist priorities.' },
+            { time: '16:30', title: 'Award window', copy: 'Issue award decisions for qualified packages.' },
+            { time: '18:30', title: 'Close shift report', copy: 'Capture completed actions and rollover risks.' }
+          ],
+          blockerTag: 'Blockers',
+          blockerTitle: 'Critical Blockers',
+          blockerCopy: 'Items blocking movement toward PO.',
+          blockerStatus: '4 open',
+          blockerRows: [
+            { title: 'COA pending for RFQ-2026-041', copy: 'No signed batch certificate from supplier yet.', status: 'risk' },
+            { title: 'Budget gap on RFQ-2026-044', copy: 'Quote is 8% above target.', status: 'warn' },
+            { title: 'Export document mismatch', copy: 'Mismatch in MENA corridor document set.', status: 'risk' },
+            { title: 'Lead time drift', copy: '2-day slip on emergency solids lane.', status: 'warn' }
+          ],
+          alertTag: 'Live alerts',
+          alertTitle: 'Real-Time Signals',
+          alertCopy: 'Short events requiring immediate attention.',
+          alertRows: [
+            { title: 'MI-SWACO uploaded revised quote', copy: 'RFQ-2026-041 · 09:42', status: 'ok' },
+            { title: 'TETRA requested deadline extension', copy: 'RFQ-2026-044 · 10:15', status: 'warn' },
+            { title: 'Halliburton doc packet incomplete', copy: 'RFQ-2026-052 · 11:03', status: 'risk' }
+          ],
+          summaryTag: 'Shift summary',
+          summaryTitle: 'Shift Snapshot',
+          summaryRows: [
+            ['Open RFQ', '12'],
+            ['Closed this shift', '5'],
+            ['Award today', '2'],
+            ['Blockers resolved', '3'],
+            ['PO issued', '1']
+          ],
+          stageLabel: { Draft: 'Draft', Qualified: 'Qualified', Unlocked: 'Unlocked', Quoted: 'Quoted' },
+          actionLabels: { Award: 'Award', Unlock: 'Unlock', Escalate: 'Escalate' }
+        }
+      };
+
+      function persist() {
+        context.lang = state.lang;
+        context.unit = state.unit;
+        localStorage.setItem(CONTEXT_STORAGE_KEY, JSON.stringify(context));
+      }
+
+      function persistTowerState() {
+        localStorage.setItem(TOWER_STATE_STORAGE_KEY, JSON.stringify(towerState));
+      }
+
+      function render() {
+        var copy = dictionary[state.lang];
+
+        document.getElementById('brandLabel').textContent = copy.brandLabel;
+        document.getElementById('heroEyebrow').textContent = copy.heroEyebrow;
+        document.getElementById('heroTitle').textContent = copy.heroTitle;
+        document.getElementById('heroCopy').textContent = copy.heroCopy;
+        document.getElementById('heroCtaMain').textContent = copy.heroCtaMain;
+        document.getElementById('heroCtaSecondary').textContent = copy.heroCtaSecondary;
+
+        document.getElementById('langTag').textContent = copy.langTag;
+        document.getElementById('langTitle').textContent = copy.langTitle;
+        document.getElementById('langCopy').textContent = copy.langCopy;
+        document.getElementById('langStatus').textContent = copy.langStatus;
+
+        document.getElementById('unitTag').textContent = copy.unitTag;
+        document.getElementById('unitTitle').textContent = copy.unitTitle;
+        document.getElementById('unitCopy').textContent = copy.unitCopy;
+        document.getElementById('unitStatus').textContent = state.unit === 'si' ? 'SI' : 'Field';
+
+        document.getElementById('heroTags').innerHTML = copy.heroTags.map(function (item) {
+          return '<span class="chip">' + item + '</span>';
+        }).join('');
+
+        document.getElementById('metricGrid').innerHTML = copy.metricCards.map(function (item) {
+          return '<article class="metric-card"><div class="tag">' + item.label + '</div><div class="metric-value">' + item.value + '</div><div class="muted">' + item.copy + '</div></article>';
+        }).join('');
+
+        document.getElementById('queueTag').textContent = copy.queueTag;
+        document.getElementById('queueTitle').textContent = copy.queueTitle;
+        document.getElementById('queueCopy').textContent = copy.queueCopy;
+        document.getElementById('queueStatus').textContent = copy.queueStatus;
+        document.getElementById('queueHead').innerHTML = copy.queueHeaders.map(function (header) {
+          return '<div class="col-label">' + header + '</div>';
+        }).join('');
+
+        document.getElementById('queueList').innerHTML = copy.queueRows.map(function (row) {
+          var stageLabel = copy.stageLabel[row.stage] || row.stage;
+          return '<article class="queue-row"><div class="queue-row-grid"><div><div class="queue-title">' + row.title + '</div><div class="queue-copy">' + row.copy + '</div></div><div class="cell"><strong>' + row.supplier + '</strong><span>supplier</span></div><div class="cell"><strong>' + stageLabel + '</strong><span>stage</span></div><div class="cell"><strong>' + row.deadline + '</strong><span>deadline</span></div><div class="cell"><strong>' + row.owner + '</strong><span>owner</span></div></div></article>';
+        }).join('');
+
+        document.getElementById('decisionTag').textContent = copy.decisionTag;
+        document.getElementById('decisionTitle').textContent = copy.decisionTitle;
+        document.getElementById('decisionCopy').textContent = copy.decisionCopy;
+        document.getElementById('decisionList').innerHTML = copy.decisionRows.map(function (row, index) {
+          var effectiveStatus = towerState.decisions[index] ? 'ok' : row.status;
+          var actionText = towerState.decisions[index] ? (state.lang === 'ru' ? 'Готово' : 'Done') : copy.actionLabels[row.action];
+          var buttonText = towerState.decisions[index] ? (state.lang === 'ru' ? 'Снять' : 'Undo') : (state.lang === 'ru' ? 'Отметить' : 'Mark done');
+          return '<article class="decision-row"><div><div class="decision-title">' + row.title + '</div><div class="decision-copy">' + row.copy + '</div></div><div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;"><span class="status-badge ' + effectiveStatus + '">' + actionText + '</span><button class="mini-button" type="button" data-decision="' + index + '">' + buttonText + '</button></div></article>';
+        }).join('');
+
+        document.getElementById('cadenceTag').textContent = copy.cadenceTag;
+        document.getElementById('cadenceTitle').textContent = copy.cadenceTitle;
+        document.getElementById('cadenceCopy').textContent = copy.cadenceCopy;
+        document.getElementById('cadenceList').innerHTML = copy.cadenceRows.map(function (row) {
+          return '<article class="cadence-row"><div><div class="cadence-title">' + row.title + '</div><div class="cadence-copy">' + row.copy + '</div></div><div class="timeline-time">' + row.time + '</div></article>';
+        }).join('');
+
+        document.getElementById('blockerTag').textContent = copy.blockerTag;
+        document.getElementById('blockerTitle').textContent = copy.blockerTitle;
+        document.getElementById('blockerCopy').textContent = copy.blockerCopy;
+        var openBlockers = copy.blockerRows.filter(function (row, index) {
+          var effectiveStatus = towerState.blockers[index] || row.status;
+          return effectiveStatus !== 'ok';
+        }).length;
+        document.getElementById('blockerStatus').textContent = String(openBlockers) + ' open';
+        document.getElementById('blockerStatus').className = 'status-badge ' + (openBlockers > 0 ? 'risk' : 'ok');
+        document.getElementById('blockerList').innerHTML = copy.blockerRows.map(function (row, index) {
+          var effectiveStatus = towerState.blockers[index] || row.status;
+          var statusText = effectiveStatus === 'risk' ? 'Risk' : effectiveStatus === 'warn' ? 'Warn' : (state.lang === 'ru' ? 'Закрыт' : 'Resolved');
+          var buttonText = effectiveStatus === 'ok' ? (state.lang === 'ru' ? 'Открыть' : 'Reopen') : (state.lang === 'ru' ? 'Закрыть' : 'Resolve');
+          return '<article class="blocker-row"><div><div class="blocker-title">' + row.title + '</div><div class="blocker-copy">' + row.copy + '</div></div><div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;"><span class="status-badge ' + effectiveStatus + '">' + statusText + '</span><button class="mini-button" type="button" data-blocker="' + index + '">' + buttonText + '</button></div></article>';
+        }).join('');
+
+        document.getElementById('alertTag').textContent = copy.alertTag;
+        document.getElementById('alertTitle').textContent = copy.alertTitle;
+        document.getElementById('alertCopy').textContent = copy.alertCopy;
+        document.getElementById('alertList').innerHTML = copy.alertRows.map(function (row) {
+          return '<article class="alert-row"><div><div class="alert-title">' + row.title + '</div><div class="alert-copy">' + row.copy + '</div></div><span class="status-badge ' + row.status + '">' + row.status.toUpperCase() + '</span></article>';
+        }).join('');
+
+        document.getElementById('summaryTag').textContent = copy.summaryTag;
+        document.getElementById('summaryTitle').textContent = copy.summaryTitle;
+        document.getElementById('summaryGrid').innerHTML = copy.summaryRows.map(function (row) {
+          return '<div class="summary-row"><div class="col-label">' + row[0] + '</div><div style="font-weight:700;font-size:13px;">' + row[1] + '</div></div>';
+        }).join('');
+
+        document.querySelectorAll('[data-lang]').forEach(function (button) {
+          button.classList.toggle('active', button.getAttribute('data-lang') === state.lang);
+        });
+
+        document.querySelectorAll('[data-unit]').forEach(function (button) {
+          button.classList.toggle('active', button.getAttribute('data-unit') === state.unit);
+        });
+
+        persist();
+      }
+
+      document.addEventListener('click', function (event) {
+        var lang = event.target.getAttribute('data-lang');
+        var unit = event.target.getAttribute('data-unit');
+        var blocker = event.target.getAttribute('data-blocker');
+        var decision = event.target.getAttribute('data-decision');
+
+        if (lang) {
+          state.lang = lang;
+          render();
+          return;
+        }
+
+        if (unit) {
+          state.unit = unit;
+          render();
+          return;
+        }
+
+        if (blocker !== null) {
+          var blockerIndex = parseInt(blocker, 10);
+          if (!isNaN(blockerIndex)) {
+            var currentStatus = towerState.blockers[blockerIndex] || dictionary.en.blockerRows[blockerIndex].status;
+            towerState.blockers[blockerIndex] = currentStatus === 'ok' ? dictionary.en.blockerRows[blockerIndex].status : 'ok';
+            persistTowerState();
+          }
+          render();
+          return;
+        }
+
+        if (decision !== null) {
+          var decisionIndex = parseInt(decision, 10);
+          if (!isNaN(decisionIndex)) {
+            towerState.decisions[decisionIndex] = !towerState.decisions[decisionIndex];
+            persistTowerState();
+          }
+          render();
+        }
+      });
+
+      render();
+    })();
+  </script>
+</body>
+</html>

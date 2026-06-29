@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Новая скважина — MudGPT-DMR</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Arial, sans-serif; background: #F5F5F7; color: #1D1D1F; font-size: 15px; line-height: 1.6; -webkit-font-smoothing: antialiased; min-height: 100vh; }
+:root { --white:#FFFFFF; --bg:#F5F5F7; --text:#1D1D1F; --text2:#6E6E73; --text3:#AEAEB2; --blue:#2563EB; --blue-l:#EFF6FF; --border:rgba(0,0,0,0.08); --sh-sm:0 1px 4px rgba(0,0,0,0.06); --sh:0 4px 20px rgba(0,0,0,0.08); --r:16px; --r-sm:10px; }
+
+nav { position:sticky; top:0; z-index:100; background:rgba(255,255,255,0.88); backdrop-filter:saturate(180%) blur(20px); border-bottom:1px solid var(--border); height:56px; display:flex; align-items:center; padding:0 40px; justify-content:space-between; }
+.nav-logo { display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--text); }
+.nav-mark { width:28px; height:28px; border-radius:7px; background:var(--blue); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:#fff; }
+.nav-name { font-size:15px; font-weight:700; letter-spacing:-.4px; }
+.btn-ghost { padding:7px 16px; border-radius:var(--r-sm); border:1px solid var(--border); background:transparent; color:var(--text); font-size:13px; font-weight:500; text-decoration:none; } .btn-ghost:hover { background:var(--bg); }
+.nav-right { display:flex; gap:10px; }
+
+.page { display:flex; align-items:flex-start; justify-content:center; padding:60px 20px 80px; gap:40px; }
+.form-col { width:100%; max-width:560px; }
+.info-col { width:280px; flex-shrink:0; padding-top:8px; }
+
+.breadcrumb { display:flex; align-items:center; gap:6px; font-size:13px; color:var(--text3); margin-bottom:32px; flex-wrap:wrap; }
+.breadcrumb a { color:var(--text3); text-decoration:none; } .breadcrumb a:hover { color:var(--blue); }
+
+.eyebrow { display:inline-flex; align-items:center; gap:8px; background:var(--blue-l); color:var(--blue); border-radius:99px; padding:4px 14px; font-size:12px; font-weight:600; margin-bottom:16px; }
+.page-title { font-size:clamp(26px, 4vw, 36px); font-weight:700; letter-spacing:-.6px; margin-bottom:8px; }
+.page-desc { color:var(--text2); font-size:14px; margin-bottom:32px; }
+
+.form-card { background:var(--white); border:1.5px solid var(--border); border-radius:var(--r); padding:32px; box-shadow:var(--sh-sm); }
+.form-section { margin-bottom:28px; }
+.form-section:last-child { margin-bottom:0; }
+.section-label { font-size:11px; font-weight:700; color:var(--text3); text-transform:uppercase; letter-spacing:.08em; margin-bottom:14px; }
+.field { margin-bottom:16px; }
+.field:last-child { margin-bottom:0; }
+.field label { display:block; font-size:12px; font-weight:600; color:var(--text2); margin-bottom:6px; }
+.field label .req { color:var(--blue); margin-left:2px; }
+.field input, .field select { width:100%; padding:10px 14px; border:1.5px solid var(--border); border-radius:var(--r-sm); font-size:14px; font-family:inherit; color:var(--text); background:var(--white); outline:none; transition:border-color .15s, box-shadow .15s; }
+.field input:focus, .field select:focus { border-color:var(--blue); box-shadow:0 0 0 3px rgba(37,99,235,0.1); }
+.field input.error { border-color:#DC2626; box-shadow:0 0 0 3px rgba(220,38,38,0.08); }
+.field-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.field-hint { font-size:11px; color:var(--text3); margin-top:4px; }
+
+.submit-row { margin-top:28px; padding-top:24px; border-top:1px solid var(--border); display:flex; align-items:center; gap:12px; }
+.btn-create { padding:12px 28px; border-radius:var(--r-sm); background:var(--blue); color:#fff; font-size:15px; font-weight:700; border:none; cursor:pointer; letter-spacing:-.2px; transition:background .15s; }
+.btn-create:hover { background:#1D4ED8; }
+.btn-create:disabled { background:var(--text3); cursor:not-allowed; }
+.error-msg { font-size:13px; color:#DC2626; display:none; }
+
+.info-card { background:var(--white); border:1.5px solid var(--border); border-radius:var(--r); padding:24px; box-shadow:var(--sh-sm); margin-bottom:16px; }
+.info-card h3 { font-size:14px; font-weight:700; margin-bottom:12px; }
+.info-step { display:flex; gap:10px; margin-bottom:10px; font-size:13px; color:var(--text2); }
+.info-step:last-child { margin-bottom:0; }
+.step-num { width:22px; height:22px; border-radius:50%; background:var(--blue-l); color:var(--blue); font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; }
+.info-note { background:var(--bg); border:1px solid var(--border); border-radius:var(--r-sm); padding:14px; font-size:13px; color:var(--text2); }
+
+@media(max-width:860px) { .page { flex-direction:column; align-items:center; } .info-col { width:100%; max-width:560px; } }
+@media(max-width:480px) { nav { padding:0 16px; } .form-card { padding:20px; } .field-row { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="../index.html"><div class="nav-mark">DQ</div><span class="nav-name">DRILL-Q</span></a>
+  <div class="nav-right">
+    <a class="btn-ghost" href="../tools.html">← Инструменты</a>
+    <a class="btn-ghost" href="my_wells.html">Мои скважины</a>
+  </div>
+</nav>
+
+<div class="page">
+  <div class="form-col">
+    <div class="breadcrumb">
+      <a href="../index.html">DRILL-Q</a> <span>/</span>
+      <a href="../tools.html">Инструменты</a> <span>/</span>
+      <a href="40_wellsite_program_site_edition.html">MudGPT-DMR</a> <span>/</span>
+      <span style="color:var(--text)">Новая скважина</span>
+    </div>
+
+    <div class="eyebrow">📋 MudGPT-DMR</div>
+    <h1 class="page-title">Создать новую скважину</h1>
+    <p class="page-desc">Заполните паспорт скважины — данные подставятся в рабочий стол автоматически.</p>
+
+    <div class="form-card">
+      <div class="form-section">
+        <div class="section-label">Идентификация скважины</div>
+        <div class="field">
+          <label>Название скважины <span class="req">*</span></label>
+          <input id="f_well_name" type="text" placeholder="Например: Скважина 5101" autocomplete="off">
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>API / PCN</label>
+            <input id="f_well_api" type="text" placeholder="Например: 42-501-XXXXX">
+          </div>
+          <div class="field">
+            <label>Тип скважины</label>
+            <select id="f_well_func">
+              <option value="Development">Добывающая</option>
+              <option value="Exploration">Поисковая</option>
+              <option value="Appraisal">Оценочная</option>
+              <option value="Workover">Капитальный ремонт</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="section-label">Участники</div>
+        <div class="field-row">
+          <div class="field">
+            <label>Оператор <span class="req">*</span></label>
+            <input id="f_well_operator" type="text" placeholder="Название компании">
+          </div>
+          <div class="field">
+            <label>Подрядчик</label>
+            <input id="f_well_contractor" type="text" placeholder="Буровой подрядчик">
+          </div>
+        </div>
+        <div class="field">
+          <label>Буровая установка</label>
+          <input id="f_well_rig" type="text" placeholder="Например: БУ-5000">
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="section-label">Расположение</div>
+        <div class="field-row">
+          <div class="field">
+            <label>Месторождение</label>
+            <input id="f_well_field" type="text" placeholder="Название месторождения">
+          </div>
+          <div class="field">
+            <label>Регион</label>
+            <input id="f_well_region" type="text" placeholder="ЯНАО, Томск...">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="section-label">Параметры</div>
+        <div class="field-row">
+          <div class="field">
+            <label>Проектная глубина MD (м)</label>
+            <input id="f_well_md" type="number" placeholder="3500">
+          </div>
+          <div class="field">
+            <label>Проектная глубина TVD (м)</label>
+            <input id="f_well_tvd" type="number" placeholder="3200">
+          </div>
+        </div>
+        <div class="field">
+          <label>Профиль</label>
+          <select id="f_well_profile">
+            <option value="Deviated">Наклонно-направленная</option>
+            <option value="Vertical">Вертикальная</option>
+            <option value="Horizontal">Горизонтальная</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="submit-row">
+        <button class="btn-create" id="createBtn" onclick="createWell()">Создать скважину →</button>
+        <span class="error-msg" id="errMsg">Заполните обязательные поля</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-col">
+    <div class="info-card">
+      <h3>Как это работает</h3>
+      <div class="info-step">
+        <span class="step-num">1</span>
+        <span>Заполните паспорт скважины — название, оператора и глубины</span>
+      </div>
+      <div class="info-step">
+        <span class="step-num">2</span>
+        <span>Нажмите «Создать скважину» — данные сохранятся автоматически</span>
+      </div>
+      <div class="info-step">
+        <span class="step-num">3</span>
+        <span>Попадёте в рабочий стол MudGPT-DMR с уже заполненным разделом Well Data</span>
+      </div>
+      <div class="info-step">
+        <span class="step-num">4</span>
+        <span>Заполняйте модули по очереди и генерируйте суточный рапорт</span>
+      </div>
+    </div>
+    <div class="info-note">
+      Данные хранятся локально в браузере. Можно вернуться к скважине в любой момент через кнопку «Загрузить» в инструменте.
+    </div>
+  </div>
+</div>
+
+<script>
+const STORAGE_KEY = 'ws2000SiteEditionStateV1';
+
+function createWell() {
+  const name = document.getElementById('f_well_name').value.trim();
+  const api  = document.getElementById('f_well_api').value.trim();
+  const op   = document.getElementById('f_well_operator').value.trim();
+
+  // validation
+  let hasError = false;
+  ['f_well_name','f_well_operator'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el.value.trim()) { el.classList.add('error'); hasError = true; }
+    else el.classList.remove('error');
+  });
+  if (hasError) {
+    document.getElementById('errMsg').style.display = 'inline';
+    return;
+  }
+  document.getElementById('errMsg').style.display = 'none';
+
+  // Build state object matching the tool's field IDs
+  const existing = (() => {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch { return {}; }
+  })();
+
+  const patch = {
+    well_name:       name,
+    well_api:        api,
+    well_operator:   op,
+    well_contractor: document.getElementById('f_well_contractor').value.trim(),
+    well_rig:        document.getElementById('f_well_rig').value.trim(),
+    well_field:      document.getElementById('f_well_field').value.trim(),
+    well_region:     document.getElementById('f_well_region').value.trim(),
+    well_md:         document.getElementById('f_well_md').value || '',
+    well_tvd:        document.getElementById('f_well_tvd').value || '',
+    well_func:       document.getElementById('f_well_func').value,
+    well_profile:    document.getElementById('f_well_profile').value,
+    _meta: { savedAt: new Date().toISOString(), state: existing._meta?.state || {} }
+  };
+
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...existing, ...patch }));
+
+  // Save to wells list for "Мои скважины"
+  const wellsList = (() => { try { return JSON.parse(localStorage.getItem('dmr_wells_list') || '[]'); } catch { return []; } })();
+  const existingIdx = wellsList.findIndex(w => w.well_name === name);
+  const wellEntry = { well_name: name, well_operator: op, well_field: patch.well_field, well_region: patch.well_region, well_md: patch.well_md, well_func: patch.well_func, savedAt: new Date().toISOString() };
+  if (existingIdx >= 0) wellsList[existingIdx] = wellEntry;
+  else wellsList.unshift(wellEntry);
+  localStorage.setItem('dmr_wells_list', JSON.stringify(wellsList));
+  localStorage.setItem('dmr_active_well', name);
+
+  window.location.href = 'well_reports.html?well=' + encodeURIComponent(name);
+}
+
+// Remove error highlight on input
+document.querySelectorAll('input').forEach(el => {
+  el.addEventListener('input', () => el.classList.remove('error'));
+});
+// Allow Enter to submit
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') createWell();
+});
+</script>
+</body>
+</html>

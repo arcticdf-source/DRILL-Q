@@ -1,0 +1,525 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>116 · Южно-Киринское · Общая информация</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap");
+
+    :root {
+      --bg-0:#081018;
+      --bg-1:#122233;
+      --bg-2:#173845;
+      --panel:rgba(11,20,31,.84);
+      --panel-soft:rgba(255,255,255,.035);
+      --line:rgba(227,238,255,.14);
+      --line-soft:rgba(227,238,255,.08);
+      --text:#edf5ff;
+      --muted:#a8bdd2;
+      --cyan:#22d7b4;
+      --amber:#f8bd5f;
+      --blue:#8db4ff;
+      --violet:#c6a6ff;
+      --green:#87e2aa;
+      --shadow:0 20px 48px rgba(0,0,0,.42);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      font-family: "Manrope", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(900px 460px at 0% -10%, rgba(34,215,180,.18), transparent),
+        radial-gradient(760px 420px at 100% 0%, rgba(248,189,95,.16), transparent),
+        linear-gradient(145deg, var(--bg-0), var(--bg-1) 46%, var(--bg-2));
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(to right, rgba(255,255,255,.02) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,.02) 1px, transparent 1px);
+      background-size: 34px 34px;
+      mask-image: radial-gradient(circle at 50% 18%, rgba(0,0,0,.94), transparent 72%);
+    }
+
+    .wrap {
+      position: relative;
+      z-index: 1;
+      width: min(1380px, 94vw);
+      margin: 0 auto;
+      padding: 24px 0 64px;
+    }
+
+    .top,
+    .hero,
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+
+    .top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 14px;
+      position: sticky;
+      top: 12px;
+      z-index: 20;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: "Oswald", sans-serif;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      font-size: 20px;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 35% 35%, #cffff7, var(--cyan));
+    }
+
+    .nav { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    .nav a {
+      text-decoration: none;
+      color: #06231f;
+      background: linear-gradient(130deg, #8df7e7, #1ad8b5);
+      border: 1px solid rgba(26,216,181,.8);
+      border-radius: 10px;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      font-weight: 800;
+      padding: 8px 12px;
+    }
+
+    .hero,
+    .panel {
+      margin-top: 18px;
+      padding: 24px;
+    }
+
+    .hero {
+      background:
+        radial-gradient(520px 220px at 6% 0%, rgba(34,215,180,.12), transparent),
+        radial-gradient(560px 240px at 100% 0%, rgba(248,189,95,.1), transparent),
+        var(--panel);
+    }
+
+    .eyebrow,
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      border: 1px solid var(--line-soft);
+      border-radius: 999px;
+      background: rgba(255,255,255,.04);
+      color: #d8e8f8;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    h1, h2, h3, h4 {
+      margin: 0;
+      font-family: "Oswald", sans-serif;
+      letter-spacing: -.01em;
+    }
+
+    h1 {
+      margin-top: 14px;
+      font-size: clamp(34px, 5vw, 58px);
+      line-height: .98;
+    }
+
+    p, li, td, th {
+      color: #c7d7ec;
+      line-height: 1.68;
+      font-size: 14px;
+      margin: 0;
+    }
+
+    .hero-grid,
+    .grid-2,
+    .grid-3,
+    .stats-grid,
+    .table-wrap {
+      display: grid;
+      gap: 14px;
+    }
+
+    .hero-grid {
+      margin-top: 18px;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+
+    .grid-2 {
+      grid-template-columns: 1.05fr .95fr;
+      margin-top: 18px;
+    }
+
+    .grid-3,
+    .stats-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .hero-stat,
+    .card,
+    .table-card,
+    .svg-card {
+      border: 1px solid var(--line-soft);
+      border-radius: 18px;
+      background: var(--panel-soft);
+      padding: 16px;
+    }
+
+    .hero-stat strong {
+      display: block;
+      font-size: 24px;
+      line-height: 1;
+    }
+
+    .hero-stat span {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .card h3,
+    .table-card h3,
+    .svg-card h3 {
+      font-size: 22px;
+      margin-bottom: 10px;
+    }
+
+    .list {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .list-item {
+      border-top: 1px solid var(--line-soft);
+      padding-top: 10px;
+    }
+
+    .accent {
+      color: var(--amber);
+      font-weight: 800;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 12px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    .section-note {
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .svg-card svg {
+      width: 100%;
+      height: auto;
+      display: block;
+      margin-top: 10px;
+    }
+
+    .caption {
+      margin-top: 12px;
+      color: #d8e6f5;
+      font-size: 13px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+    }
+
+    th,
+    td {
+      text-align: left;
+      vertical-align: top;
+      padding: 10px 12px;
+      border-top: 1px solid var(--line-soft);
+    }
+
+    th {
+      color: #eff6ff;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .subhead td {
+      color: #f3f7ff;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      background: rgba(255,255,255,.04);
+    }
+
+    .footer {
+      margin-top: 16px;
+      font-size: 12px;
+      color: #8ea2bc;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    @media (max-width: 1080px) {
+      .top { position: static; }
+      .hero-grid,
+      .grid-2,
+      .grid-3,
+      .stats-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+  <main class="wrap">
+    <header class="top">
+      <a class="brand" href="115_yuzhno_kirinskoe_project_dashboard.html"><span class="dot" aria-hidden="true"></span><span>Южно-Киринское</span></a>
+      <nav class="nav">
+        <a href="115_yuzhno_kirinskoe_project_dashboard.html">К дашборду проекта</a>
+        <a href="56_fields_projects_dashboard.html">Мои месторождения</a>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <span class="eyebrow">Doc 116 · ППБУ и буровое оборудование</span>
+      <h1>Буровая установка и оборудование</h1>
+      <p>Для проектной документации по Южно-Киринскому месторождению в качестве буровой единицы рассматривается ППБУ «Полярная звезда» / «Северное сияние». Ниже собран технический паспорт установки, складские емкости и ключевой комплект бурового оборудования в форме рабочего engineering screen.</p>
+
+      <div class="hero-grid">
+        <article class="hero-stat"><strong>ППБУ</strong><span>тип установки</span></article>
+        <article class="hero-stat"><strong>2010</strong><span>год постройки</span></article>
+        <article class="hero-stat"><strong>51,82 м</strong><span>высота вышки</span></article>
+        <article class="hero-stat"><strong>4</strong><span>буровых насоса</span></article>
+        <article class="hero-stat"><strong>30 833 м3</strong><span>балластная система</span></article>
+      </div>
+
+      <div class="grid-2">
+        <article class="card">
+          <h3>Паспорт буровой установки</h3>
+          <div class="list">
+            <div class="list-item"><span class="accent">Район работ:</span> северо-восточный континентальный шельф Охотского моря, о. Сахалин.</div>
+            <div class="list-item"><span class="accent">Месторождение / участок:</span> Южно-Киринское месторождение / Киринский перспективный участок.</div>
+            <div class="list-item"><span class="accent">Категория скважин:</span> эксплуатационные.</div>
+            <div class="list-item"><span class="accent">Проектный горизонт:</span> неогеновая система, миоцен, дагинский горизонт, пласты Dg I и Dg II.</div>
+            <div class="list-item"><span class="accent">Тип флюида:</span> газ, конденсат.</div>
+            <div class="list-item"><span class="accent">Тип профиля:</span> наклонно-направленный с условно горизонтальным окончанием.</div>
+            <div class="list-item"><span class="accent">Альтитуда стола ротора:</span> 31 м.</div>
+          </div>
+        </article>
+
+        <article class="card">
+          <h3>Базовая спецификация ППБУ</h3>
+          <div class="list">
+            <div class="list-item"><span class="accent">Регистровое название:</span> ППБУ «Полярная звезда» / ППБУ «Северное сияние».</div>
+            <div class="list-item"><span class="accent">Флаг установки:</span> Россия.</div>
+            <div class="list-item"><span class="accent">Судостроительная верфь:</span> ВСЗ (Россия), SHI (Южная Корея).</div>
+            <div class="list-item"><span class="accent">Тип установки:</span> плавучая полупогружная буровая установка.</div>
+            <div class="list-item"><span class="accent">Производитель вышки:</span> NATIONAL OILWELL VARCO / SDBN.</div>
+            <div class="list-item"><span class="accent">Размер основания:</span> 15,0 × 16,0 м.</div>
+            <div class="list-item"><span class="accent">Размеры кронблока:</span> 6,096 × 6,096 м.</div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="section-head">
+        <h2>Графическая схема ППБУ</h2>
+        <div class="section-note">Semi-submersible rig overview</div>
+      </div>
+      <article class="svg-card">
+        <h3>Компоновка бурового комплекса</h3>
+        <svg viewBox="0 0 1180 520" role="img" aria-label="Схема ППБУ и оборудования">
+          <defs>
+            <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#1c4661" />
+              <stop offset="100%" stop-color="#0d2233" />
+            </linearGradient>
+            <linearGradient id="deck" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#1f3a52" />
+              <stop offset="100%" stop-color="#122333" />
+            </linearGradient>
+            <linearGradient id="derrick" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#9fd7ff" />
+              <stop offset="100%" stop-color="#5d8de0" />
+            </linearGradient>
+          </defs>
+          <rect x="0" y="0" width="1180" height="520" rx="24" fill="rgba(255,255,255,.02)" stroke="rgba(227,238,255,.08)"/>
+          <rect x="0" y="350" width="1180" height="170" fill="url(#sea)" opacity=".95"/>
+          <rect x="180" y="250" width="820" height="74" rx="20" fill="url(#deck)" stroke="rgba(227,238,255,.12)"/>
+          <rect x="220" y="324" width="86" height="96" rx="18" fill="#163145" stroke="rgba(227,238,255,.12)"/>
+          <rect x="874" y="324" width="86" height="96" rx="18" fill="#163145" stroke="rgba(227,238,255,.12)"/>
+          <rect x="384" y="324" width="86" height="96" rx="18" fill="#163145" stroke="rgba(227,238,255,.12)"/>
+          <rect x="710" y="324" width="86" height="96" rx="18" fill="#163145" stroke="rgba(227,238,255,.12)"/>
+          <rect x="538" y="74" width="102" height="250" rx="10" fill="url(#derrick)" stroke="rgba(227,238,255,.18)"/>
+          <path d="M538 324 L589 74 L640 324" fill="none" stroke="#d8efff" stroke-width="3" opacity=".9"/>
+          <path d="M538 260 L640 260 M548 210 L630 210 M558 160 L620 160 M568 110 L610 110" fill="none" stroke="#d8efff" stroke-width="2" opacity=".75"/>
+          <rect x="500" y="222" width="178" height="34" rx="10" fill="#20384d" stroke="rgba(227,238,255,.12)"/>
+          <rect x="500" y="186" width="178" height="20" rx="8" fill="#192e41" stroke="rgba(227,238,255,.12)"/>
+          <rect x="320" y="210" width="112" height="50" rx="14" fill="#173246" stroke="rgba(227,238,255,.12)"/>
+          <rect x="748" y="210" width="112" height="50" rx="14" fill="#173246" stroke="rgba(227,238,255,.12)"/>
+          <rect x="330" y="182" width="92" height="18" rx="9" fill="#28516c"/>
+          <rect x="758" y="182" width="92" height="18" rx="9" fill="#28516c"/>
+          <rect x="454" y="270" width="270" height="18" rx="9" fill="#0f2434" stroke="rgba(227,238,255,.12)"/>
+          <circle cx="588" cy="280" r="16" fill="#ffbf66" stroke="rgba(255,255,255,.3)"/>
+          <rect x="120" y="68" width="250" height="56" rx="16" fill="rgba(255,255,255,.04)" stroke="rgba(227,238,255,.1)"/>
+          <text x="146" y="93" fill="#eef6ff" font-size="15" font-weight="800">Вышка 51,82 м</text>
+          <text x="146" y="114" fill="#c9dbee" font-size="13">NATIONAL OILWELL VARCO / SDBN</text>
+          <line x1="370" y1="96" x2="538" y2="120" stroke="#8dd7ff" stroke-width="2"/>
+          <rect x="120" y="156" width="250" height="66" rx="16" fill="rgba(255,255,255,.04)" stroke="rgba(227,238,255,.1)"/>
+          <text x="146" y="184" fill="#eef6ff" font-size="15" font-weight="800">Верхний привод</text>
+          <text x="146" y="205" fill="#c9dbee" font-size="13">HPS-03 750 2AC KT RD</text>
+          <line x1="370" y1="189" x2="500" y2="196" stroke="#8dd7ff" stroke-width="2"/>
+          <rect x="790" y="74" width="276" height="58" rx="16" fill="rgba(255,255,255,.04)" stroke="rgba(227,238,255,.1)"/>
+          <text x="816" y="98" fill="#eef6ff" font-size="15" font-weight="800">Буровые насосы · 4 шт.</text>
+          <text x="816" y="119" fill="#c9dbee" font-size="13">14-P-220 Triplex, 9"×14"</text>
+          <line x1="790" y1="106" x2="804" y2="210" stroke="#ffd38d" stroke-width="2"/>
+          <rect x="790" y="156" width="276" height="58" rx="16" fill="rgba(255,255,255,.04)" stroke="rgba(227,238,255,.1)"/>
+          <text x="816" y="180" fill="#eef6ff" font-size="15" font-weight="800">Талевый и кронблок</text>
+          <text x="816" y="201" fill="#c9dbee" font-size="13">NOV 750-8-72-13/4 и 750t 7×72 13/4</text>
+          <line x1="790" y1="185" x2="640" y2="126" stroke="#ffd38d" stroke-width="2"/>
+          <rect x="120" y="260" width="250" height="72" rx="16" fill="rgba(255,255,255,.04)" stroke="rgba(227,238,255,.1)"/>
+          <text x="146" y="288" fill="#eef6ff" font-size="15" font-weight="800">Запас по емкостям</text>
+          <text x="146" y="309" fill="#c9dbee" font-size="13">Топливо 3 937 м3 · вода 1 729 м3</text>
+          <text x="146" y="328" fill="#c9dbee" font-size="13">балластная система 30 833 м3</text>
+          <line x1="370" y1="294" x2="432" y2="250" stroke="#8dd7ff" stroke-width="2"/>
+          <rect x="790" y="256" width="276" height="72" rx="16" fill="rgba(255,255,255,.04)" stroke="rgba(227,238,255,.1)"/>
+          <text x="816" y="284" fill="#eef6ff" font-size="15" font-weight="800">Ротор и лебедка</text>
+          <text x="816" y="305" fill="#c9dbee" font-size="13">RST 605-2G · D3000AC · CMC</text>
+          <line x1="790" y1="292" x2="604" y2="282" stroke="#ffd38d" stroke-width="2"/>
+        </svg>
+        <p class="caption">Схема не претендует на заводской чертеж, но быстро показывает главный контур ППБУ: полупогружная база, рабочая палуба, вышка, роторный узел, насосный контур и ключевые складские емкости установки.</p>
+      </article>
+    </section>
+
+    <section class="panel">
+      <div class="section-head">
+        <h2>Палуба И Емкости</h2>
+        <div class="section-note">Storage and deck capacities</div>
+      </div>
+      <div class="stats-grid">
+        <article class="hero-stat"><strong>926 м3</strong><span>питьевая вода</span></article>
+        <article class="hero-stat"><strong>1 087 м3</strong><span>емкость под приготовление раствора</span></article>
+        <article class="hero-stat"><strong>203,56 м2</strong><span>место хранения мешков</span></article>
+        <article class="hero-stat"><strong>370 м3</strong><span>цемент насыпью</span></article>
+        <article class="hero-stat"><strong>370 м3</strong><span>барит / бентонит насыпью</span></article>
+        <article class="hero-stat"><strong>553 м2</strong><span>площадка под стеллажи для труб</span></article>
+      </div>
+
+      <div class="table-wrap" style="margin-top:14px">
+        <article class="table-card">
+          <h3>Складские и вспомогательные параметры</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Параметр</th>
+                <th>Значение</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Топливо</td><td>3 937,00 м3</td></tr>
+              <tr><td>Промывочная вода</td><td>1 729,00 м3</td></tr>
+              <tr><td>Питьевая вода</td><td>926,00 м3</td></tr>
+              <tr><td>Танк для переработки бурового раствора</td><td>1 087,00 м3</td></tr>
+              <tr><td>Место для хранения мешков</td><td>203,56 м2</td></tr>
+              <tr><td>Цемент насыпью</td><td>370,00 м3</td></tr>
+              <tr><td>Барит / бентонит насыпью</td><td>370,00 м3</td></tr>
+              <tr><td>Площадка под стеллажи для труб</td><td>553,00 м2</td></tr>
+              <tr><td>Площадка опоры райзера</td><td>337,00 м2</td></tr>
+              <tr><td>Хранилище для рассола</td><td>1 100,00 м3</td></tr>
+              <tr><td>Хранилище базового масла / раствора на нефтяной основе</td><td>1 100,00 м3</td></tr>
+              <tr><td>Балластная система</td><td>30 833,00 м3</td></tr>
+            </tbody>
+          </table>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="section-head">
+        <h2>Буровое Оснащение</h2>
+        <div class="section-note">Rig equipment matrix</div>
+      </div>
+      <div class="table-wrap">
+        <article class="table-card">
+          <h3>Технический комплект ППБУ</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Узел</th>
+                <th>Спецификация</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="subhead"><td colspan="2">Параметры вышки</td></tr>
+              <tr><td>Производитель</td><td>NATIONAL OILWELL VARCO / SDBN</td></tr>
+              <tr><td>Высота</td><td>51,82 м</td></tr>
+              <tr><td>Размеры основания</td><td>15,0 × 16,0 м</td></tr>
+              <tr><td>Размеры кронблока</td><td>6,096 × 6,096 м</td></tr>
+              <tr><td>Трапы с корзинами безопасности и суппортами</td><td>есть</td></tr>
+              <tr><td>Взрывобезопасная система освещения</td><td>есть</td></tr>
+              <tr><td>Лестницы с защитным ограждением и опорами</td><td>есть</td></tr>
+              <tr><td>Противовес, система трубных захватов / трубный ключ</td><td>есть</td></tr>
+
+              <tr class="subhead"><td colspan="2">Буровое оборудование</td></tr>
+              <tr><td>Кронблок</td><td>NATIONAL OILWELL VARCO / 750-8-72-13/4</td></tr>
+              <tr><td>Талевый блок</td><td>NATIONAL OILWELL VARCO 750t 7×72 13/4</td></tr>
+              <tr><td>Механизм крепления неподвижного конца талевого каната</td><td>NATIONAL OILWELL VARCO / Rotary Slip Deadline Anchor FRH 160CHR</td></tr>
+              <tr><td>Стол ротора</td><td>NATIONAL OILWELL VARCO RST 605-2G</td></tr>
+              <tr><td>Верхний привод</td><td>NATIONAL OILWELL VARCO / HPS-03 750 2AC KT RD</td></tr>
+              <tr><td>Гидравлический расстановщик свечей</td><td>NATIONAL OILWELL VARCO / Hydraracker III</td></tr>
+              <tr><td>Направляющий трубный манипулятор</td><td>NATIONAL OILWELL VARCO / Stabbing Guide Arm</td></tr>
+              <tr><td>Гидравлический распределитель (двойная система)</td><td>NATIONAL OILWELL VARCO</td></tr>
+              <tr><td>Буровая лебедка</td><td>NATIONAL OILWELL VARCO D3000AC</td></tr>
+              <tr><td>Компенсатор перемещения буровой колонны</td><td>NATIONAL OILWELL VARCO / CMC</td></tr>
+              <tr><td>Буровые насосы</td><td>NATIONAL OILWELL 14-P-220 Triplex, 9"×14" (4 шт.)</td></tr>
+              <tr><td>Центробежные насосы</td><td>Halliburton / HCS-25E Advantage (2 шт.)</td></tr>
+            </tbody>
+          </table>
+        </article>
+      </div>
+    </section>
+
+    <p class="footer">Южно-Киринское · ППБУ и оборудование · Doc 116</p>
+  </main>
+  <script src="assets/js/global-auth-widget.js"></script>
+</body>
+</html>

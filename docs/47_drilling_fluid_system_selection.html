@@ -1,0 +1,940 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>47 · Подбор системы бурового раствора</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Manrope:wght@400;500;700;800&display=swap");
+
+    :root {
+      --bg-0: #060b12;
+      --bg-1: #0f1a2a;
+      --bg-2: #182840;
+      --panel: rgba(10, 19, 31, 0.78);
+      --text: #edf4ff;
+      --muted: #98abc4;
+      --line: rgba(229, 238, 255, 0.15);
+      --line-soft: rgba(229, 238, 255, 0.08);
+      --cyan: #1ad8b5;
+      --amber: #ffbc4c;
+      --ok: #3fb950;
+      --warn: #d29922;
+      --bad: #f85149;
+      --shadow: 0 20px 48px rgba(0, 0, 0, 0.45);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      font-family: "Manrope", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(860px 420px at 0% -10%, rgba(26, 216, 181, 0.2), rgba(26, 216, 181, 0)),
+        radial-gradient(760px 380px at 100% 0%, rgba(255, 188, 76, 0.18), rgba(255, 188, 76, 0)),
+        linear-gradient(145deg, var(--bg-0), var(--bg-1) 42%, var(--bg-2));
+    }
+
+    .wrap {
+      width: min(1360px, 94vw);
+      margin: 0 auto;
+      padding: 20px 0 56px;
+    }
+
+    .top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border: 1px solid var(--line-soft);
+      border-radius: 14px;
+      background: rgba(9, 15, 24, 0.65);
+      backdrop-filter: blur(8px);
+      padding: 12px 14px;
+      position: sticky;
+      top: 10px;
+      z-index: 20;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: "Oswald", sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-size: 20px;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 35% 35%, #cffff7, var(--cyan));
+    }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      text-decoration: none;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 8px 11px;
+      color: #d8e6ff;
+      background: rgba(16, 27, 46, 0.85);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      border-color: var(--cyan);
+      background: rgba(26, 216, 181, 0.1);
+    }
+
+    .btn.main {
+      color: #06231f;
+      background: linear-gradient(130deg, #8df7e7, #1ad8b5);
+      border-color: rgba(26, 216, 181, 0.8);
+    }
+
+    .hero {
+      margin-top: 14px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: linear-gradient(150deg, rgba(26, 216, 181, 0.12), rgba(14, 24, 38, 0.9) 40%, rgba(255, 188, 76, 0.1));
+      box-shadow: var(--shadow);
+      padding: 20px;
+    }
+
+    .hero h1 {
+      margin: 0 0 6px;
+      color: var(--cyan);
+      font-size: clamp(24px, 3.6vw, 36px);
+      font-family: "Oswald", sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .hero p {
+      margin: 0;
+      color: #dbe9ff;
+      line-height: 1.55;
+      font-size: 14px;
+    }
+
+    .section {
+      margin-top: 12px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(9, 15, 24, 0.62);
+      padding: 12px;
+    }
+
+    h2 {
+      margin: 0 0 10px;
+      font-family: "Oswald", sans-serif;
+      font-size: 20px;
+      color: var(--amber);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    h3 {
+      margin: 0 0 8px;
+      font-size: 14px;
+      color: var(--cyan);
+    }
+
+    .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--panel);
+      padding: 10px;
+    }
+
+    label {
+      display: block;
+      font-size: 11px;
+      color: var(--muted);
+      margin: 6px 0 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    input, select {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #0b1527;
+      color: var(--text);
+      padding: 7px 8px;
+      font-size: 13px;
+    }
+
+    input:focus, select:focus { outline: none; border-color: var(--cyan); }
+
+    .out {
+      border: 1px solid #26537f;
+      border-radius: 10px;
+      background: #0b1a2e;
+      padding: 8px;
+    }
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 3px 0;
+      border-bottom: 1px dotted #21456f;
+      font-size: 12px;
+    }
+
+    .row:last-child { border-bottom: none; }
+
+    .mono { font-family: Consolas, monospace; color: var(--cyan); font-weight: 700; }
+    .ok { color: var(--ok); }
+    .warn { color: var(--warn); }
+    .bad { color: var(--bad); }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+    }
+
+    th, td {
+      border: 1px solid var(--line);
+      padding: 6px;
+      text-align: left;
+      vertical-align: top;
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    th { background: rgba(22, 34, 56, 0.7); color: var(--cyan); font-weight: 700; }
+
+    .hint { color: #b5c9e5; font-size: 12px; line-height: 1.45; margin-top: 6px; }
+
+    @media (max-width: 1120px) {
+      .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+    }
+  </style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+  <main class="wrap">
+    <div class="top">
+      <div class="brand"><span class="dot"></span>47 · Подбор системы бурового раствора</div>
+      <div class="actions">
+        <button class="btn" onclick="saveState()">Сохранить</button>
+        <button class="btn" onclick="loadState()">Загрузить</button>
+        <a class="btn main" href="46_drilling_fluids_system_designer.html">К конструктору 46</a>
+        <a class="btn" href="42_drilling_fluids_dashboard.html">К дашборду</a>
+      </div>
+    </div>
+
+    <section class="hero">
+      <h1>Сначала выбор системы, потом рецептура</h1>
+      <p>
+        Модуль подбирает базовую систему бурового раствора для каждого интервала бурения
+        с учетом геологии, экологии, бюджета и логистики. Затем вы переходите в конструктор 46 для детальной рецептуры.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>Глобальные критерии проекта</h2>
+      <div class="grid-4">
+        <div class="card">
+          <h3>Геология</h3>
+          <label>Реактивность глин (0-100)</label>
+          <input id="g_reactive" type="number" min="0" max="100" value="70" oninput="runAll()" onchange="runAll()" />
+          <label>Риск потерь (0-100)</label>
+          <input id="g_losses" type="number" min="0" max="100" value="65" oninput="runAll()" onchange="runAll()" />
+          <label>Узость pressure window (0-100)</label>
+          <input id="g_window" type="number" min="0" max="100" value="58" oninput="runAll()" onchange="runAll()" />
+        </div>
+
+        <div class="card">
+          <h3>Экология</h3>
+          <label>Экочувствительность района (0-100)</label>
+          <input id="e_sensitivity" type="number" min="0" max="100" value="82" oninput="runAll()" onchange="runAll()" />
+          <label>Жесткость ограничений на сброс (0-100)</label>
+          <input id="e_discharge" type="number" min="0" max="100" value="78" oninput="runAll()" onchange="runAll()" />
+          <label>Приоритет низкой токсичности (0-100)</label>
+          <input id="e_toxicity" type="number" min="0" max="100" value="85" oninput="runAll()" onchange="runAll()" />
+        </div>
+
+        <div class="card">
+          <h3>Бюджет</h3>
+          <label>Ограничение CAPEX/OPEX (0-100)</label>
+          <input id="b_limit" type="number" min="0" max="100" value="64" oninput="runAll()" onchange="runAll()" />
+          <label>Цена NPT-критична (0-100)</label>
+          <input id="b_npt" type="number" min="0" max="100" value="88" oninput="runAll()" onchange="runAll()" />
+          <label>Приоритет low-cost системы (0-100)</label>
+          <input id="b_lowcost" type="number" min="0" max="100" value="60" oninput="runAll()" onchange="runAll()" />
+        </div>
+
+        <div class="card">
+          <h3>Логистика</h3>
+          <label>Сложность снабжения (0-100)</label>
+          <input id="l_supply" type="number" min="0" max="100" value="55" oninput="runAll()" onchange="runAll()" />
+          <label>Ограничение складов (0-100)</label>
+          <input id="l_storage" type="number" min="0" max="100" value="52" oninput="runAll()" onchange="runAll()" />
+          <label>Надежность цепочки поставок (0-100)</label>
+          <input id="l_reliability" type="number" min="0" max="100" value="68" oninput="runAll()" onchange="runAll()" />
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Интервалы бурения</h2>
+      <div class="grid-4">
+        <div class="card">
+          <h3>Кондуктор</h3>
+          <label>Глубина, м</label>
+          <input id="i1_depth" type="number" value="350" oninput="runAll()" onchange="runAll()" />
+          <label>Температура, C</label>
+          <input id="i1_temp" type="number" value="28" oninput="runAll()" onchange="runAll()" />
+          <label>Инклинация, град</label>
+          <input id="i1_inc" type="number" value="5" oninput="runAll()" onchange="runAll()" />
+          <label>Сложность (0-100)</label>
+          <input id="i1_complex" type="number" value="22" oninput="runAll()" onchange="runAll()" />
+          <label>Геопризнаки (через запятую)</label>
+          <input id="i1_geo" type="text" value="песчаники, суглинки, алевролиты" oninput="runAll()" onchange="runAll()" />
+        </div>
+
+        <div class="card">
+          <h3>Техническая / Surface</h3>
+          <label>Глубина, м</label>
+          <input id="i2_depth" type="number" value="1200" oninput="runAll()" onchange="runAll()" />
+          <label>Температура, C</label>
+          <input id="i2_temp" type="number" value="52" oninput="runAll()" onchange="runAll()" />
+          <label>Инклинация, град</label>
+          <input id="i2_inc" type="number" value="18" oninput="runAll()" onchange="runAll()" />
+          <label>Сложность (0-100)</label>
+          <input id="i2_complex" type="number" value="44" oninput="runAll()" onchange="runAll()" />
+          <label>Геопризнаки (через запятую)</label>
+          <input id="i2_geo" type="text" value="аргиллиты, алевролиты, песчаники" oninput="runAll()" onchange="runAll()" />
+        </div>
+
+        <div class="card">
+          <h3>Промежуточная</h3>
+          <label>Глубина, м</label>
+          <input id="i3_depth" type="number" value="2800" oninput="runAll()" onchange="runAll()" />
+          <label>Температура, C</label>
+          <input id="i3_temp" type="number" value="92" oninput="runAll()" onchange="runAll()" />
+          <label>Инклинация, град</label>
+          <input id="i3_inc" type="number" value="44" oninput="runAll()" onchange="runAll()" />
+          <label>Сложность (0-100)</label>
+          <input id="i3_complex" type="number" value="68" oninput="runAll()" onchange="runAll()" />
+          <label>Геопризнаки (через запятую)</label>
+          <input id="i3_geo" type="text" value="доломиты, гипсы, ангидриты, каменная соль" oninput="runAll()" onchange="runAll()" />
+        </div>
+
+        <div class="card">
+          <h3>Эксплуатационная / Reservoir</h3>
+          <label>Глубина, м</label>
+          <input id="i4_depth" type="number" value="3900" oninput="runAll()" onchange="runAll()" />
+          <label>Температура, C</label>
+          <input id="i4_temp" type="number" value="128" oninput="runAll()" onchange="runAll()" />
+          <label>Инклинация, град</label>
+          <input id="i4_inc" type="number" value="62" oninput="runAll()" onchange="runAll()" />
+          <label>Сложность (0-100)</label>
+          <input id="i4_complex" type="number" value="82" oninput="runAll()" onchange="runAll()" />
+          <label>Геопризнаки (через запятую)</label>
+          <input id="i4_geo" type="text" value="высокопроницаемые песчаники, угли, CO2, H2S" oninput="runAll()" onchange="runAll()" />
+        </div>
+      </div>
+      <div class="hint">
+        Логика построена на кросс-анализе MI Manual и Baker Hughes reference (дополнительно учтены разделы grey darley как тематические главы по стволу, фильтрации, гидравлике, проблемам и компонентам).
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Загрузка техданных (JSON)</h2>
+      <div class="grid-2">
+        <div class="card">
+          <h3>Импорт профиля</h3>
+          <label>JSON профиль месторождения/скважины</label>
+          <input id="geo_json" type="text" value='{"intervals":{"i1":{"depth":350,"temp":28,"inc":5,"complex":22,"geo":"песчаники, алевролиты"}}}' />
+          <div style="display:flex; gap:8px; margin-top:8px; flex-wrap:wrap;">
+            <button class="btn" onclick="applyGeoJson()">Применить JSON</button>
+            <button class="btn" onclick="exportProfile()">Экспорт профиля</button>
+          </div>
+          <div class="hint">Поддерживаются поля intervals.i1..i4: depth, temp, inc, complex, geo.</div>
+        </div>
+        <div class="card">
+          <h3>Подсказка по признакам</h3>
+          <div class="hint">
+            Для автоматической оценки используйте ключи: соли, каменная соль, гипс, ангидрит,
+            CO2, H2S, высокопроницаемые песчаники, аргиллиты, алевролиты, угли, трещиноватость,
+            кавернозность, reactive shale.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Загрузка ГТН, стратиграфии и литологии</h2>
+      <div class="grid-2">
+        <div class="card">
+          <h3>Файлы проекта</h3>
+          <label>ГТН (pdf/xls/xlsx/json/csv/txt)</label>
+          <input id="file_gtn" type="file" accept=".pdf,.xls,.xlsx,.json,.csv,.txt" />
+
+          <label>Стратиграфия (json/csv/txt/xlsx/xls/pdf)</label>
+          <input id="file_strat" type="file" accept=".json,.csv,.txt,.xlsx,.xls,.pdf" />
+
+          <label>Литология (json/csv/txt/xlsx/xls/pdf)</label>
+          <input id="file_lith" type="file" accept=".json,.csv,.txt,.xlsx,.xls,.pdf" />
+
+          <div style="display:flex; gap:8px; margin-top:10px; flex-wrap:wrap;">
+            <button class="btn" onclick="processUploadedData()">Обработать загруженные</button>
+            <button class="btn" onclick="loadStoredProfile('east_tarko_601')">Профиль East Tarko 601</button>
+            <button class="btn" onclick="loadStoredProfile('bukhan_136')">Профиль Bukhan 136</button>
+          </div>
+          <div class="hint">
+            JSON/CSV/TXT разбираются автоматически. XLS/XLSX/PDF фиксируются как источник и требуют ETL-конвертацию
+            в JSON (это уже поддержано в backend-скриптах workspace).
+          </div>
+        </div>
+        <div class="card">
+          <h3>Статус загрузки</h3>
+          <div class="out" id="upload_status"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Рекомендации по интервалам</h2>
+      <div class="card">
+        <div class="out" id="summary_out"></div>
+        <table id="selection_table"></table>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Ближайшие аналоги месторождений / скважин</h2>
+      <div class="grid-2">
+        <div class="card">
+          <h3>Сравнение с хранилищем</h3>
+          <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px;">
+            <button class="btn main" onclick="findAnalogs()">Найти аналоги</button>
+            <button class="btn" onclick="loadProfilesIndex()">Обновить список профилей</button>
+          </div>
+          <div class="hint">Сравнение идет по интервалам, геопризнакам и рекомендуемым семействам систем. Это стартовая инженерная аналогия, а не окончательное решение.</div>
+        </div>
+        <div class="card">
+          <div class="out" id="analog_status"></div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:10px;">
+        <table id="analogs_table"></table>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>План перехода между интервалами</h2>
+      <div class="card">
+        <table>
+          <tr><th>Когда переключаться</th><th>Триггеры</th><th>Что менять</th></tr>
+          <tr><td>Кондуктор → Тех. колонна</td><td>Рост ROP-нестабильности, рост дисперсии шлама, начало набора солености</td><td>Переход к ингибированному полимер-глинистому WBM</td></tr>
+          <tr><td>Тех. → Промежуточная</td><td>Сужение окна давлений, рост инклинации, риск потерь/прихватов</td><td>Усиление ингибирования, фильтрации, LCM; при необходимости high-performance WBM/Synthetic</td></tr>
+          <tr><td>Промежуточная → Эксплуатационная</td><td>Высокая T/P, реактивные сланцы, жесткие требования к качеству ствола</td><td>Система с максимальной стабильностью ствола и управлением ECD (Synthetic/NAF или HPWBM по экологии)</td></tr>
+        </table>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Пакеты химической природы (без брендов)</h2>
+      <div class="grid-3">
+        <div class="card">
+          <h3>Глинистый WBM (спуд/кондуктор)</h3>
+          <div class="hint">Бентонит + щелочной буфер + минимальный контроль фильтрации. Низкая стоимость, высокая операционная простота.</div>
+        </div>
+        <div class="card">
+          <h3>Полимер-глинистый ингибированный WBM</h3>
+          <div class="hint">Соли K/Na/Ca + полимер-вязкостник (ксантан/целлюлозный) + фильтрационный агент (крахмал/полимер) + лубрикант + LCM при необходимости.</div>
+        </div>
+        <div class="card">
+          <h3>Synthetic/NAF класс</h3>
+          <div class="hint">Инвертная/синтетическая база + эмульсионный пакет + утяжелитель + контроль фильтрации и реологии для сложных интервалов и узких окон.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Хранилище техданных (для AI-агентов)</h2>
+      <div class="card">
+        <div class="hint">
+          База профилей месторождений хранится в JSON-структуре workspace:
+          knowledge/field_profiles_index.json,
+          knowledge/field_profiles/*.json,
+          knowledge/fluid_system_templates.json,
+          knowledge/similarity_rules.json.
+          Это позволяет агентам быстро находить аналогичные месторождения и использовать типовые семейства растворов как стартовую точку.
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const KEY = "df_system_select_v1";
+    let storedProfilesIndex = [];
+    let storedProfiles = [];
+
+    function el(id) { return document.getElementById(id); }
+    function fn(id) { return parseFloat(el(id).value) || 0; }
+
+    function classify(v) {
+      if (v >= 70) return "bad";
+      if (v >= 45) return "warn";
+      return "ok";
+    }
+
+    function parseSimpleCsv(text) {
+      const lines = (text || "").split(/\r?\n/).map(x => x.trim()).filter(Boolean);
+      if (lines.length < 2) return [];
+      const headers = lines[0].split(/[;,\t]/).map(h => h.trim().toLowerCase());
+      const rows = [];
+      for (let i = 1; i < lines.length; i++) {
+        const cells = lines[i].split(/[;,\t]/);
+        const row = {};
+        headers.forEach((h, idx) => row[h] = (cells[idx] || "").trim());
+        rows.push(row);
+      }
+      return rows;
+    }
+
+    function normalizeIntervalsFromRows(rows) {
+      const out = {};
+      const keyMap = ["i1", "i2", "i3", "i4"];
+      rows.slice(0, 4).forEach((r, i) => {
+        const k = keyMap[i];
+        const depth = parseFloat(r.depth || r.base || r.to || r["до"] || "0") || fn(k + "_depth");
+        const temp = parseFloat(r.temp || r.temperature || r["температура"] || "0") || fn(k + "_temp");
+        const inc = parseFloat(r.inc || r.inclination || r["инклинация"] || "0") || fn(k + "_inc");
+        const complex = parseFloat(r.complex || r.complexity || r["сложность"] || "0") || fn(k + "_complex");
+        const geo = r.geo || r.lithology || r["литология"] || r["геология"] || "";
+        out[k] = { depth, temp, inc, complex, geo };
+      });
+      return out;
+    }
+
+    function applyIntervalsMap(map) {
+      ["i1", "i2", "i3", "i4"].forEach(k => {
+        if (!map[k]) return;
+        if (map[k].depth !== undefined) el(k + "_depth").value = map[k].depth;
+        if (map[k].temp !== undefined) el(k + "_temp").value = map[k].temp;
+        if (map[k].inc !== undefined) el(k + "_inc").value = map[k].inc;
+        if (map[k].complex !== undefined) el(k + "_complex").value = map[k].complex;
+        if (map[k].geo !== undefined) el(k + "_geo").value = map[k].geo;
+      });
+    }
+
+    async function readTextFile(file) {
+      return await file.text();
+    }
+
+    async function processOneFile(file, label) {
+      const low = file.name.toLowerCase();
+      if (low.endsWith('.json') || low.endsWith('.csv') || low.endsWith('.txt')) {
+        const txt = await readTextFile(file);
+        if (low.endsWith('.json')) {
+          const obj = JSON.parse(txt);
+          if (obj.intervals) {
+            applyIntervalsMap(obj.intervals);
+            return label + ': применен JSON профиль';
+          }
+          return label + ': JSON загружен (без блока intervals)';
+        }
+        const rows = parseSimpleCsv(txt);
+        if (rows.length) {
+          const map = normalizeIntervalsFromRows(rows);
+          applyIntervalsMap(map);
+          return label + ': применен CSV/TXT профиль';
+        }
+        return label + ': файл прочитан, но структурных строк не найдено';
+      }
+      if (low.endsWith('.xls') || low.endsWith('.xlsx') || low.endsWith('.pdf')) {
+        return label + ': ' + file.name + ' зарегистрирован. Для авторазбора конвертируйте в JSON через ETL-скрипт.';
+      }
+      return label + ': формат не поддержан';
+    }
+
+    async function processUploadedData() {
+      const status = [];
+      const files = [
+        { id: 'file_gtn', label: 'ГТН' },
+        { id: 'file_strat', label: 'Стратиграфия' },
+        { id: 'file_lith', label: 'Литология' }
+      ];
+
+      for (const it of files) {
+        const input = el(it.id);
+        const f = input && input.files && input.files[0];
+        if (!f) {
+          status.push(it.label + ': файл не выбран');
+          continue;
+        }
+        try {
+          status.push(await processOneFile(f, it.label));
+        } catch (e) {
+          status.push(it.label + ': ошибка обработки (' + e.message + ')');
+        }
+      }
+
+      el('upload_status').innerHTML = status.map(s => '<div class="row"><span>' + s + '</span><span class="mono">OK</span></div>').join('');
+      runAll();
+    }
+
+    async function loadStoredProfile(profileId) {
+      const map = {
+        east_tarko_601: '../knowledge/field_profiles/east_tarko_601_profile.json',
+        bukhan_136: '../knowledge/field_profiles/bukhan_136_profile.json'
+      };
+      const p = map[profileId];
+      if (!p) return;
+      try {
+        const res = await fetch(p);
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const obj = await res.json();
+        if (Array.isArray(obj.intervals)) {
+          const m = {};
+          obj.intervals.slice(0, 4).forEach((x, i) => {
+            const k = ['i1', 'i2', 'i3', 'i4'][i];
+            m[k] = {
+              depth: x.base_m || x.depth || fn(k + '_depth'),
+              temp: x.temp_c || fn(k + '_temp'),
+              inc: x.inc_deg || fn(k + '_inc'),
+              complex: x.complex || fn(k + '_complex'),
+              geo: (x.geology_tags || x.default_geo_tags || []).join(', ')
+            };
+          });
+          applyIntervalsMap(m);
+          el('upload_status').innerHTML = '<div class="row"><span>Профиль ' + profileId + ' загружен из хранилища</span><span class="mono">OK</span></div>';
+          runAll();
+          return;
+        }
+        el('upload_status').innerHTML = '<div class="row"><span>Профиль ' + profileId + ' не содержит интервалов в ожидаемом формате</span><span class="mono warn">CHECK</span></div>';
+      } catch (e) {
+        el('upload_status').innerHTML = '<div class="row"><span>Не удалось загрузить профиль ' + profileId + ' (' + e.message + ')</span><span class="mono warn">CHECK</span></div>';
+      }
+    }
+
+    function geoFlags(interval) {
+      const txt = (el(interval + "_geo").value || "").toLowerCase();
+      const has = (arr) => arr.some(k => txt.includes(k));
+      return {
+        salts: has(["соль", "соли", "каменная соль"]),
+        gypsum: has(["гипс", "гипсы"]),
+        anhydrite: has(["ангидрит", "ангидриты"]),
+        co2: has(["co2", "углекисл", "кислые газы"]),
+        h2s: has(["h2s", "сероводород"]),
+        highPermSand: has(["высокопроница", "high perm", "песчаник", "песчаники"]),
+        argillite: has(["аргиллит", "аргиллиты"]),
+        siltstone: has(["алевролит", "алевролиты"]),
+        coal: has(["уголь", "угли"]),
+        fractured: has(["трещиноват", "fracture", "каверноз"])
+      };
+    }
+
+    function currentIntervalFamilies() {
+      return ['i1', 'i2', 'i3', 'i4'].map(k => familyRecommendation(k).top.key);
+    }
+
+    function currentTagsSet() {
+      const tags = [];
+      ['i1', 'i2', 'i3', 'i4'].forEach(k => {
+        const gf = geoFlags(k);
+        Object.keys(gf).forEach(name => { if (gf[name]) tags.push(name); });
+      });
+      return [...new Set(tags)];
+    }
+
+    async function loadProfilesIndex() {
+      try {
+        const idxRes = await fetch('../knowledge/field_profiles_index.json');
+        const idx = await idxRes.json();
+        storedProfilesIndex = idx.profiles || [];
+        const loaded = [];
+        for (const p of storedProfilesIndex) {
+          try {
+            const res = await fetch('../' + p.profile_file);
+            if (!res.ok) continue;
+            const obj = await res.json();
+            loaded.push({ meta: p, profile: obj });
+          } catch (e) {
+          }
+        }
+        storedProfiles = loaded;
+        el('analog_status').innerHTML = '<div class="row"><span>Профилей в хранилище</span><span class="mono">' + storedProfiles.length + '</span></div>';
+      } catch (e) {
+        el('analog_status').innerHTML = '<div class="row"><span>Не удалось загрузить профили</span><span class="mono warn">CHECK</span></div>';
+      }
+    }
+
+    function scoreAnalog(profile) {
+      const currentFamilies = currentIntervalFamilies();
+      const currentTags = currentTagsSet();
+      const pIntervals = Array.isArray(profile.intervals) ? profile.intervals : [];
+      const pFamilies = pIntervals.map(x => String(x.recommended_family || '')).join(' ').toUpperCase();
+      const pTags = [...new Set(pIntervals.flatMap(x => x.geology_tags || x.default_geo_tags || []))].map(x => String(x).toLowerCase());
+
+      let familyScore = 0;
+      currentFamilies.forEach(f => { if (pFamilies.includes(f)) familyScore += 0.18; });
+
+      const tagMap = {
+        salts: ['salts','gypsum','anhydrite','rock salt'],
+        gypsum: ['gypsum'],
+        anhydrite: ['anhydrite'],
+        co2: ['co2'],
+        h2s: ['h2s'],
+        highPermSand: ['high_perm','sandstones'],
+        argillite: ['argillites'],
+        siltstone: ['siltstones'],
+        coal: ['coal'],
+        fractured: ['losses']
+      };
+      let geoScore = 0;
+      currentTags.forEach(t => {
+        const variants = tagMap[t] || [t.toLowerCase()];
+        if (variants.some(v => pTags.includes(v))) geoScore += 0.08;
+      });
+
+      const score = Math.min(1, familyScore + geoScore);
+      return score;
+    }
+
+    function findAnalogs() {
+      if (!storedProfiles.length) {
+        el('analog_status').innerHTML = '<div class="row"><span>Сначала загрузите профили из хранилища</span><span class="mono warn">WAIT</span></div>';
+        return;
+      }
+      const ranked = storedProfiles
+        .map(x => ({ ...x, score: scoreAnalog(x.profile) }))
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 5);
+
+      let tbl = '<tr><th>Профиль</th><th>Регион</th><th>Similarity</th><th>Что можно взять как старт</th></tr>';
+      ranked.forEach(r => {
+        const topFamilies = (r.profile.intervals || []).map(i => i.recommended_family).filter(Boolean).join(' / ');
+        tbl += '<tr><td>' + (r.meta.name || r.profile.field || r.profile.id) + '</td><td>' + (r.meta.region || '-') + '</td><td>' + r.score.toFixed(2) + '</td><td>' + topFamilies + '</td></tr>';
+      });
+      el('analogs_table').innerHTML = tbl;
+      el('analog_status').innerHTML = '<div class="row"><span>Ближайший аналог</span><span class="mono">' + (ranked[0] ? (ranked[0].meta.name || ranked[0].profile.id) : 'не найден') + '</span></div>';
+    }
+
+    function familyRecommendation(interval) {
+      const gReactive = fn("g_reactive");
+      const gLosses = fn("g_losses");
+      const gWindow = fn("g_window");
+
+      const eco = (fn("e_sensitivity") + fn("e_discharge") + fn("e_toxicity")) / 3;
+      const budget = (fn("b_limit") + fn("b_npt") + fn("b_lowcost")) / 3;
+      const logistics = (fn("l_supply") + fn("l_storage") + (100 - fn("l_reliability"))) / 3;
+
+      const depth = fn(interval + "_depth");
+      const temp = fn(interval + "_temp");
+      const inc = fn(interval + "_inc");
+      const complex = fn(interval + "_complex");
+      const gf = geoFlags(interval);
+
+      const severity = 0.28 * gReactive + 0.24 * gLosses + 0.25 * gWindow + 0.23 * complex
+        + (temp > 110 ? 15 : temp > 85 ? 8 : 0)
+        + (inc > 45 ? 8 : 0)
+        + (depth > 3200 ? 8 : 0)
+        + (gf.salts ? 9 : 0)
+        + (gf.gypsum ? 7 : 0)
+        + (gf.anhydrite ? 7 : 0)
+        + (gf.co2 ? 8 : 0)
+        + (gf.h2s ? 10 : 0)
+        + (gf.highPermSand ? 10 : 0)
+        + (gf.argillite ? 8 : 0)
+        + (gf.siltstone ? 5 : 0)
+        + (gf.coal ? 8 : 0)
+        + (gf.fractured ? 10 : 0);
+
+      let wbm = 64 + 0.45 * eco + 0.40 * budget + 0.30 * logistics - 0.55 * severity;
+      let hpwbm = 58 + 0.30 * eco + 0.18 * budget + 0.15 * logistics + 0.35 * severity;
+      let synth = 46 + 0.18 * eco - 0.32 * budget - 0.20 * logistics + 0.62 * severity;
+      let naf = 40 - 0.55 * eco - 0.38 * budget - 0.25 * logistics + 0.74 * severity;
+
+      if (gf.co2 || gf.h2s) {
+        wbm -= 6;
+        hpwbm += 3;
+        synth += 5;
+        naf += 4;
+      }
+      if (gf.salts || gf.gypsum || gf.anhydrite) {
+        wbm -= 5;
+        hpwbm += 7;
+        synth += 4;
+      }
+      if (gf.highPermSand || gf.fractured) {
+        wbm -= 4;
+        hpwbm += 5;
+      }
+      if (gf.argillite || gf.siltstone) {
+        hpwbm += 6;
+        synth += 3;
+      }
+
+      if (eco > 75) naf -= 18;
+      if (logistics > 70) {
+        synth -= 7;
+        naf -= 9;
+      }
+
+      const scores = [
+        { key: "WBM", score: wbm, pkg: "Глинистый/полимер-глинистый пакет" },
+        { key: "HPWBM", score: hpwbm, pkg: "Ингибированный high-performance WBM" },
+        { key: "SYNTH", score: synth, pkg: "Синтетическая система" },
+        { key: "NAF", score: naf, pkg: "Неводная инвертная система" }
+      ].sort((a, b) => b.score - a.score);
+
+      const top = scores[0];
+      const second = scores[1];
+
+      const riskBand = classify(severity);
+      const severityText = severity >= 70 ? "HIGH" : severity >= 45 ? "MED" : "LOW";
+
+      let chemistry = "";
+      if (top.key === "WBM") {
+        chemistry = "Бентонит + щелочной буфер + базовый фильтрационный контроль";
+      } else if (top.key === "HPWBM") {
+        chemistry = "Солевой ингибитор + полимер-вязкостник + полимер/крахмал для FL + лубрикант + LCM";
+      } else if (top.key === "SYNTH") {
+        chemistry = "Синтетическая база + эмульсионный пакет + утяжелитель + реология/фильтрация";
+      } else {
+        chemistry = "Инвертная неводная база + эмульсионный пакет + утяжелитель + блок стабильности";
+      }
+
+      const factors = [];
+      if (gf.salts || gf.gypsum || gf.anhydrite) factors.push("соли/гипсы/ангидриты");
+      if (gf.co2 || gf.h2s) factors.push("кислые газы");
+      if (gf.highPermSand) factors.push("высокопроницаемые песчаники");
+      if (gf.argillite || gf.siltstone) factors.push("аргиллиты/алевролиты");
+      if (gf.coal) factors.push("угли");
+      if (gf.fractured) factors.push("трещиноватость/кавернозность");
+      const factorsText = factors.length ? factors.join(", ") : "базовые условия";
+
+      return {
+        severity,
+        severityText,
+        riskBand,
+        top,
+        second,
+        chemistry,
+        factorsText,
+        scores
+      };
+    }
+
+    function runAll() {
+      const names = [
+        { id: "i1", label: "Кондуктор" },
+        { id: "i2", label: "Техническая/Surface" },
+        { id: "i3", label: "Промежуточная" },
+        { id: "i4", label: "Эксплуатационная/Reservoir" }
+      ];
+
+      let table = "<tr><th>Интервал</th><th>Сложность</th><th>1-й выбор</th><th>2-й выбор</th><th>Ключевые факторы</th><th>Рекомендуемый химпакет</th></tr>";
+      let summary = "";
+
+      names.forEach(n => {
+        const r = familyRecommendation(n.id);
+        table += "<tr>"
+          + "<td>" + n.label + "</td>"
+          + "<td class='" + r.riskBand + "'>" + r.severity.toFixed(0) + " (" + r.severityText + ")</td>"
+          + "<td><b>" + r.top.key + "</b> · " + r.top.score.toFixed(1) + "</td>"
+          + "<td>" + r.second.key + " · " + r.second.score.toFixed(1) + "</td>"
+          + "<td>" + r.factorsText + "</td>"
+          + "<td>" + r.chemistry + "</td>"
+          + "</tr>";
+
+        summary += "<div class='row'><span>" + n.label + "</span><span class='mono " + r.riskBand + "'>" + r.top.key + "</span></div>";
+      });
+
+      el("selection_table").innerHTML = table;
+      el("summary_out").innerHTML = summary;
+    }
+
+    function applyGeoJson() {
+      try {
+        const payload = JSON.parse(el("geo_json").value || "{}");
+        const map = payload.intervals || {};
+        applyIntervalsMap(map);
+        runAll();
+        alert("Профиль применен");
+      } catch (e) {
+        alert("Ошибка JSON: проверьте формат");
+      }
+    }
+
+    function exportProfile() {
+      const payload = {
+        intervals: {
+          i1: { depth: fn("i1_depth"), temp: fn("i1_temp"), inc: fn("i1_inc"), complex: fn("i1_complex"), geo: el("i1_geo").value },
+          i2: { depth: fn("i2_depth"), temp: fn("i2_temp"), inc: fn("i2_inc"), complex: fn("i2_complex"), geo: el("i2_geo").value },
+          i3: { depth: fn("i3_depth"), temp: fn("i3_temp"), inc: fn("i3_inc"), complex: fn("i3_complex"), geo: el("i3_geo").value },
+          i4: { depth: fn("i4_depth"), temp: fn("i4_temp"), inc: fn("i4_inc"), complex: fn("i4_complex"), geo: el("i4_geo").value }
+        },
+        global: {
+          geology: { reactive: fn("g_reactive"), losses: fn("g_losses"), window: fn("g_window") },
+          ecology: { sensitivity: fn("e_sensitivity"), discharge: fn("e_discharge"), toxicity: fn("e_toxicity") },
+          budget: { limit: fn("b_limit"), npt: fn("b_npt"), lowcost: fn("b_lowcost") },
+          logistics: { supply: fn("l_supply"), storage: fn("l_storage"), reliability: fn("l_reliability") }
+        }
+      };
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "drilling_fluid_system_profile.json";
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }
+
+    function saveState() {
+      const nodes = Array.from(document.querySelectorAll("input,select"));
+      const payload = {};
+      nodes.forEach(n => payload[n.id] = n.value);
+      localStorage.setItem(KEY, JSON.stringify(payload));
+      alert("Состояние сохранено");
+    }
+
+    function loadState() {
+      const raw = localStorage.getItem(KEY);
+      if (!raw) {
+        alert("Сохранение не найдено");
+        return;
+      }
+      try {
+        const payload = JSON.parse(raw);
+        Object.keys(payload).forEach(k => {
+          if (el(k)) el(k).value = payload[k];
+        });
+        runAll();
+        alert("Состояние загружено");
+      } catch (e) {
+        alert("Ошибка загрузки");
+      }
+    }
+
+    window.addEventListener("DOMContentLoaded", runAll);
+    window.addEventListener("DOMContentLoaded", loadProfilesIndex);
+  </script>
+  <script src="assets/js/global-auth-widget.js"></script>
+</body>
+</html>

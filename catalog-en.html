@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Product Catalog — CLOTO Oilfield Chemicals</title>
+<link rel="stylesheet" href="cloto.css">
+</head>
+<body>
+
+<div class="ticker-bar">
+  <div class="ticker-track">
+    <span class="ticker-item"><span class="lbl">CLOTO</span> 65+ Registered Products · WBM · OBM · LCM</span>
+    <span class="ticker-item"><span class="lbl">OPTITROL®</span> Max temp: <span class="up">220°C</span> — highest in WBM portfolio</span>
+    <span class="ticker-item"><span class="lbl">EXTRAMUL® SUPREME</span> Bio-based 204°C OBM emulsifier</span>
+    <span class="ticker-item"><span class="lbl">PRODUCTION</span> 20,000 MT/yr powder · 45,000 MT/yr liquid</span>
+    <span class="ticker-item"><span class="lbl">AI</span> <span class="up">LIVE</span> Product recommendation engine active</span>
+    <span class="ticker-item"><span class="lbl">CLOTO</span> 65+ Registered Products · WBM · OBM · LCM</span>
+    <span class="ticker-item"><span class="lbl">OPTITROL®</span> Max temp: <span class="up">220°C</span> — highest in WBM portfolio</span>
+    <span class="ticker-item"><span class="lbl">EXTRAMUL® SUPREME</span> Bio-based 204°C OBM emulsifier</span>
+    <span class="ticker-item"><span class="lbl">PRODUCTION</span> 20,000 MT/yr powder · 45,000 MT/yr liquid</span>
+    <span class="ticker-item"><span class="lbl">AI</span> <span class="up">LIVE</span> Product recommendation engine active</span>
+  </div>
+</div>
+
+<nav>
+  <a class="nav-logo" href="index-en.html">
+    <div class="logo-mark">CL</div>
+    <div>
+      <div class="logo-text">CLO<span>TO</span></div>
+      <div class="logo-sub">Oilfield Chemicals · Est. 1991</div>
+    </div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index-en.html">Platform</a></li>
+    <li><a href="catalog-en.html" class="active">Products</a></li>
+    <li><a href="proposal-en.html">AI Proposal</a></li>
+    <li><a href="tools-en.html">Tools</a></li>
+    <li><a href="index-en.html#tenders">Tenders</a></li>
+    <li><a href="index-en.html#contact">Contact</a></li>
+  </ul>
+  <div class="nav-right">
+    <a class="lang-link" href="catalog-ru.html">🇷🇺 RU</a>
+    <a class="btn-outline" href="proposal-en.html">AI Proposal Generator</a>
+    <button class="btn-primary" onclick="window.location.href='mailto:info@cloto.ru'">Request Quote →</button>
+  </div>
+</nav>
+
+<!-- CATALOG HERO -->
+<div class="catalog-hero">
+  <div class="section-label">Full Product Portfolio</div>
+  <h1>CLOTO Chemical <span style="color:var(--cyan)">Catalog</span></h1>
+  <p>65+ registered drilling fluid additives — WBM, OBM, and LCM systems. Each product backed by HPHT lab data and AI-powered application intelligence. Founded 1991, Arkhangelsk.</p>
+  <div class="catalog-toolbar">
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="search" placeholder="Search products..." oninput="filterProducts()">
+    </div>
+    <div class="filter-group">
+      <button class="filter-btn active" onclick="setFilter('all',this)">All <span class="filter-count" id="cnt-all">17</span></button>
+      <button class="filter-btn" onclick="setFilter('wbm',this)">WBM <span class="filter-count">9</span></button>
+      <button class="filter-btn" onclick="setFilter('obm',this)">OBM <span class="filter-count">8</span></button>
+    </div>
+    <a href="proposal-en.html" style="margin-left:auto;"><button class="btn-primary">🤖 AI Recommendation →</button></a>
+  </div>
+</div>
+
+<!-- CATALOG BODY -->
+<div class="catalog-body">
+  <div class="catalog-grid" id="productGrid">
+
+    <!-- WBM SHALE INHIBITORS -->
+    <div class="prod-card" data-cat="wbm" data-name="blacktrol shale inhibitor asphalt">
+      <div class="prod-card-top">
+        <div class="prod-meta">
+          <span class="product-cat cat-wbm">WBM · SHALE INHIBITOR</span>
+        </div>
+        <div class="prod-name">BLACKTROL®</div>
+        <div class="prod-chemical">Liquid asphalt polyglycol dispersion (asphaltenes, leonardite, polyols, surfactants)</div>
+        <div class="prod-desc">Dual-function: shale inhibitor and filtration control agent. Seals micro-fractures and pores, stabilises reactive shales, reduces HTHP filtration. Improves ROP and reduces NPT trips.</div>
+      </div>
+      <div class="prod-card-specs">
+        <div class="prod-spec-row"><span class="prod-spec-key">Form</span><span class="prod-spec-val">Dark brown liquid</span></div>
+        <div class="prod-spec-row"><span class="prod-spec-key">Density</span><span class="prod-spec-val">0.8–1.12 g/cm³</span></div>
+        <div class="prod-spec-row"><span class="prod-spec-key">Dosage</span><span class="prod-spec-val" style="color:var(--cyan)">8–28 kg/m³ (3–10 ppb)</span></div>
+        <div class="prod-spec-row"><span class="prod-spec-key">Packaging</span><span class="prod-spec-val">200 L drums</span></div>
+      </div>
+      <div class="prod-card-footer">
+        <button class="btn-tds" onclick="window.open('https://cloto-oilfield-chemicals.com/production/burovye-rastvory-na-vodnoy-osnove-brvo/shale-inhibitors/blacktrol/')">TDS</button>
+        <button class="btn-ai" onclick="location.href='proposal-en.html'">🤖 AI Match</button>
+        <button class="btn-quote" onclick="window.location.href='mailto:info@cloto.ru?subject=Quote Request: BLACKTROL'">Quote →</button>
+      </div>
+    </div>
+
+    <div class="prod-card" data-cat="wbm" data-name="g-drill polyglycol clay inhibitor">
+      <div class="prod-card-top">
+        <div class="prod-meta">
+          <span class="product-cat cat-wbm">WBM · SHALE INHIBITOR</span>
+        </div>
+        <div class="prod-name">G-DRILL®</div>
+        <div class="prod-chemical">Cloud-point polyglycol — dark brown to black liquid</div>
+        <div class="prod-desc">Cloud-point chemistry: separates at high downhole temperature to coat and inhibit clays, recombines when returned to surface. Anti-balling, prevents fluid invasion, improves cuttings integrity and lubricity.</div>
+      </div>
+      <div class="prod-card-specs">
+        <div class="prod-spec-row"><span class="prod-spec-key">Mechanism</span><span class="prod-spec-val">Cloud point</span></div>
+        <div class="prod-spec-row"><span class="prod-spec-key">Dosage</span><span class="prod-spec-val" style="color:var(--cyan)">20–30 kg/m³ (7–11 ppb)</span></div>
+        <div class="prod-spec-row"><span class="prod-spec-key">Form</span><span class="prod-spec-val">Dark brown liquid</span></div>
+        <div class="prod-spec-row"><span class="prod-spec-key">Packaging</span><span class="prod-spec-val">200 L drums</span></div>
+      </div>
+      <div class="prod-card-footer">
+        <button class="btn-tds" onclick="window.open('https://cloto-oilfield-chemicals.com/production/burovye-rastvory-na-vodnoy-osnove-brvo/shale-inhibitors/g-drill-polyglycol-shale-inhibitor-/')">TDS</button>
+        <button class="btn-ai" onclick="location.href='proposal-en.html'">🤖 AI Match</button>
+        <button class="btn-quote" onclick="window.location.href='mailto:info@cloto.ru?subject=Quote Request: G-DRILL'">Quote →</button>
+      </div>
+    </div>
+
+    <div class="prod-card" data-cat="wbm" data-name="stabilite sodium asphalt sulfonate shale inhibitor">
+      <div class="prod-card-top">
+        <div class="prod-meta">
+          <span class="product-cat cat-wbm">WBM · SHALE INHIBITOR</span>
+        </div>
+        <div class="prod-name">STABILITE® II</div>
+        <div class="prod-chemical">Sodium asphalt sulfonate — dark brown to black powder</div>
+        <div class="prod-desc">Anionic asphaltene-based shale inhibitor. Seals pores and micro-fractures, prevents filtrate invasion into formation. Large particle-size distribution. Prevents gelation. Compatible with all WBM systems.</div>
+      </div>
+      <div class="prod-card-specs">
+        <div class="prod-spec-row"><span class="prod-spec-key">Form</span><span class="prod-spec-val">Dark brown powder</span></div>
+        <div class="prod-spec-row"><span class="prod-spec-key">Dosage</span><span class="prod-spec-val" style="color:var(--cyan)">5–20 kg/m³ (2–7 ppb)</span></div>
+        <div class="prod-spec-row"><span class="prod-spec-key">Ion type</span><span class="prod-spec-val">Anionic</span></div>
+        <div class="prod-spec-row"><span class="prod-spec-key">Packaging</span><span class="prod-spec-val">22.68 kg bags</span></div>
+      </div>
+      <div class="prod-card-footer">
+        <button class="btn-tds" onclick="window.open('https://cloto-oilfield-chemicals.com/production/burovye-rastvory-na-vodnoy-osnove-brvo/shale-inhibitors/stabilite-ii/')">TDS</button>
+        <button class="btn-ai" onclick="location.href='proposal-en.html'">🤖 AI Match</button>
+        <button class="btn-quote" onclick="window.location.href='mailto:info@cloto.ru?subject=Quote Request: STABILITE II'">Quote →</button>
+      </div>
+    </div>
+
+    <div class="prod-card" data-cat="wbm" data-name="shale-x siloxane hydrophobizer clay">
+      <div class="prod-card-top">
+        <div class="prod-meta">
+          <span class="product-cat cat-wbm">WBM · SHALE INHIBITOR</span>
+        </div>
+        <div class="prod-name">SHALE-X® Liquid</div>
+        <div class="prod-chemical">Methyltrimethoxysilane / polydimethylsiloxane hydrophobizer</div>
+        <div class="prod-desc">Suppresses shale hydration by hydrophobising clay surfaces. Enhances polymer thermal stability by 20–30°C. Reduces low-gravity solids 3–4×. Successfully applied in 2,300m sections with MBT only 28 kg/m³.</div>
+      </div>
+      <div class="prod-card-specs">
+        <div class="prod-spec-row"><span class="prod-spec-key">Form</span><span class="prod-spec-val">Dark brown liquid</span></div>
+        <div class="prod-spec-row"><span class="prod-spec-key">Dosage</span><span class="prod-spec-val" style="color:var(--cyan)">2–3 kg/m³ (5–8 ppb)</span></div>
+        <div class="prod-spec-row"><span class="prod-spec-key">Polymer stability</span><span class="prod-spec-val" style="color:var(--green)">+20–30°C</span></div>
+        <div class="prod-spec-row"><span class="prod-spec-key">Packaging</span><span class="prod-spec-val">200 L drums</span></div>
+      </div>
+      <div class="prod-card-footer">
+        <button class="btn-tds" onclick="window.open('https://cloto-oilfield-chemicals.com/production/burovye-rastvory-na-vodnoy-osnove-brvo/shale-inhibitors/shale-x-shale%20inhibitor/')">TDS</button>
+        <button class="btn-ai" onclick="location.href='proposal-en.html'">🤖 AI Match</button>
+        <button class="btn-quote" onclick="window.location.href='mailto:info@cloto.ru?subject=Quote Request: SHALE-X'">Quote →</button>
+      </div>
+    </div>
+
+    <!-- WBM FLUID LOSS -->
+    <div class="prod-card" data-cat="wbm" data-name="optitrol tall oil pitch fluid loss filtration hpht 220">
+      <div class="prod-card-top">
+        <div class="prod-meta">
+          <span class="product-cat cat-flo">WBM · FLUID LOSS · HPHT</span>
+        </div>
+        <div class="prod-name">OPTITROL®</div>
+        <div class="prod-chemical">Modified tall oil pitch — 100% renewable raw material (granules or liquid)</div>
+        <div class="prod-desc">Outstanding thermal stability — highest temperature rating in our WBM portfolio at 220°C. Works in high-density fluids up to 2.2 SG. Seals wellbore, improves ROP, preserves cuttings. Green chemistry advantage.</div>
+      </div>
+      <div class="prod-card-specs">
+        <div class="prod-spec-row"><span class="prod-spec-key">Max. Temperature</span><span class="prod-spec-val" style="color:var(--orange)">220°C ★ Highest</span></div>
+        <div class="prod-spec-row"><span class="prod-spec-key">Max. Mud Density</span><span class="prod-spec-val" style="color:var(--cyan)">2.2 SG</span></div>
+        <div class="prod-spec-row"><span class="prod-spec-key">Dosage</span><span class="prod-spec-val">5.6–28 kg/m³ (2–10 ppb)</span></div>
+        <div class="prod-spec-row"><span class="prod-spec-key">Raw material</span><span class="prod-spec-val" style="color:var(--green)">100% Renewable</span></div>
+      </div>
+      <div class="prod-card-footer">
+        <button class="btn-tds" onclick="window.open('https://cloto-oilfield-chemicals.com/production/burovye-rastvory-na-vodnoy-osnove-brvo/shale-inhibitors/optitrol/')">TDS</button>
+        <button class="btn-ai" onclick="location.href='proposal-en.html'">🤖 AI Match</button>
+        <button class="btn-quote" onclick="window.location.href='mailto:info@cloto.ru?subject=Quote Request: OPTITROL'">Quote →</button>
+      </div>
+    </div>
+
+    <div class="prod-card" data-cat="wbm" data-name="hitemp 200 amps copolymer fluid loss high temperature">
+      <div class="prod-card-top">
+        <div class="prod-meta">
+          <span class="product-cat cat-flo">WBM · FLUID LOSS · HT</span>
+        </div>
+        <div class="prod-name">HITEMP®200</div>
+        <div class="prod-chemical">Synthetic AA/AMPS copolymer — white to yellow free-flowing powder</div>
+        <div class="prod-desc">High-temperature fluid loss control and barite suspension agent. Non-fermenting, brine-tolerant, adds beneficial viscosity without separate thickener. Prevents shale sloughing in deep, hot wells.</div>
+      </div>
+      <div class="prod-card-specs">
+        <div class="prod-spec-row"><span class="prod-spec-key">Max. Temperature</span><span class="prod-spec-val" style="color:var(--orange)">200°C</span></div>
+        <div class="prod-spec-row"><span class="prod-spec-key">Dosage</span><span class="prod-spec-val" style="color:var(--cyan)">5–20 kg/m³ (1.8–7 ppb)</span></div>
+        <div class="prod-spec-row"><span class="prod-spec-key">Brine tolerance</span><span class="prod-spec-val" style="color:var(--green)">High</span></div>
+        <div class="prod-spec-row"><span class="prod-spec-key">Packaging</span><span class="prod-spec-val">22.7 kg bags</span></div>
+      </div>
+      <div class="prod-card-footer">
+        <button class="btn-tds" onclick="window.open('https://cloto-oilfield-chemicals.com/production/burovye-rastvory-na-vodnoy-osnove-brvo/fluid-loss-control/hitemp-200-synthetic-co-polymer-high-temperature-fluid-loss-and-suspension-agent-for-drilling-fluids/')">TDS</button>
+        <button class="btn-ai" onclick="location.href='proposal-en.html'">🤖 AI Match</button>
+        <button class="btn-quote" onclick="window.location.href='mailto:info@cloto.ru?subject=Quote Request: HITEMP200'">Quote →</button>
+      </div>
+    </div>
+
+    <div class="prod-card" data-cat="wbm" data-name="terrapan sodium polyacrylate fluid loss filtration">
+      <div class="prod-card-top">
+        <div class="prod-meta">
+          <span class="product-cat cat-flo">WBM · FLUID LOSS</span>
+        </div>
+        <div class="prod-name">TERRAPAN®</div>
+        <div class="prod-chemical">Sodium polyacrylate copolymer — white to yellow powder</div>
+        <div class="prod-desc">Effective fluid loss control agent and clay inhibitor. Builds thin, tough, low-permeability filter cake. Thermally stable to 200°C. Note: efficiency reduces in high-salinity systems above 7% NaCl/KCl — use HITEMP®200 in brines.</div>
+      </div>
+      <div class="prod-card-specs">
+        <div class="prod-spec-row"><span class="prod-spec-key">Max. Temperature</span><span class="prod-spec-val" style="color:var(--orange)">200°C</span></div>
+        <div class="prod-spec-row"><span class="prod-spec-key">Dosage</span><span class="prod-spec-val" style="color:var(--cyan)">1–3 kg/m³ (0.35–1 ppb)</span></div>
+        <div class="prod-spec-row"><span class="prod-spec-key">Form</span><span class="prod-spec-val">White / yellow powder</span></div>
+        <div class="prod-spec-row"><span class="prod-spec-key">Salinity limit</span><span class="prod-spec-val">&lt; 7% NaCl/KCl</span></div>
+      </div>
+      <div class="prod-card-footer">
+        <button class="btn-tds" onclick="window.open('https://cloto-oilfield-chemicals.com/production/burovye-rastvory-na-vodnoy-osnove-brvo/fluid-loss-control/terrapan-sodium-polyacrylate-copolymer-fluid-loss-control-agent/')">TDS</button>
+        <button class="btn-ai" onclick="location.href='proposal-en.html'">🤖 AI Match</button>
+        <button class="btn-quote" onclick="window.location.href='mailto:info@cloto.ru?subject=Quote Request: TERRAPAN'">Quote →</button>
+      </div>
+    </div>
+
+    <!-- WBM LUBRICANTS -->
+    <div class="prod-card" data-cat="wbm" data-name="superslider gold lubricant ester wbm friction">
+      <div class="prod-card-top">
+        <div class="prod-meta">
+          <span class="product-cat cat-lub">WBM · LUBRICANT</span>
+        </div>
+        <div class="prod-name">SUPERSLIDER® GOLD</div>
+        <div class="prod-chemical">Ester-based friction modifier / lubricant — viscous brown liquid</div>
+        <div class="prod-desc">Ester-based WBM lubricant for highly deviated and directional wells. Reduces metal-to-metal and formation-to-metal friction. Anti-balling properties prevent bit and BHA balling. Non-damaging to reservoir.</div>
+      </div>
+      <div class="prod-card-specs">
+        <div class="prod-spec-row"><span class="prod-spec-key">Base</span><span class="prod-spec-val">Ester</span></div>
+        <div class="prod-spec-row"><span class="prod-spec-key">Dosage</span><span class="prod-spec-val" style="color:var(--cyan)">0.5–3% by volume</span></div>
+        <div class="prod-spec-row"><span class="prod-spec-key">Packaging</span><span class="prod-spec-val">200 L drums (~180 kg)</span></div>
+        <div class="prod-spec-row"><span class="prod-spec-key">Biodegradable</span><span class="prod-spec-val" style="color:var(--green)">Yes</span></div>
+      </div>
+      <div class="prod-card-footer">
+        <button class="btn-tds" onclick="window.open('https://cloto-oilfield-chemicals.com/production/burovye-rastvory-na-vodnoy-osnove-brvo/lubricants/superslider-gold-ester-based-wbm-lubricant-friction-modifier/')">TDS</button>
+        <button class="btn-ai" onclick="location.href='proposal-en.html'">🤖 AI Match</button>
+        <button class="btn-quote" onclick="window.location.href='mailto:info@cloto.ru?subject=Quote Request: SUPERSLIDER GOLD'">Quote →</button>
+      </div>
+    </div>
+
+    <div class="prod-card" data-cat="wbm" data-name="superslider platinum premium lubricant ester erd horizontal">
+      <div class="prod-card-top">
+        <div class="prod-meta">
+          <span class="product-cat cat-lub">WBM · LUBRICANT · PREMIUM</span>
+        </div>
+        <div class="prod-name">SUPERSLIDER® PLATINUM</div>
+        <div class="prod-chemical">Premium ester-based WBM lubricant and friction modifier</div>
+        <div class="prod-desc">Premium grade lubricant engineered for ERD wells and long horizontal sections. Non-foaming, non-greasing. Effective across all BHT ranges. Maintains reservoir integrity — no formation damage. Maximum torque & drag reduction.</div>
+      </div>
+      <div class="prod-card-specs">
+        <div class="prod-spec-row"><span class="prod-spec-key">Grade</span><span class="prod-spec-val">Premium</span></div>
+        <div class="prod-spec-row"><span class="prod-spec-key">Dosage</span><span class="prod-spec-val" style="color:var(--cyan)">0.5–3% by volume</span></div>
+        <div class="prod-spec-row"><span class="prod-spec-key">Application</span><span class="prod-spec-val">ERD / Horizontal</span></div>
+        <div class="prod-spec-row"><span class="prod-spec-key">Non-damaging</span><span class="prod-spec-val" style="color:var(--green)">Yes</span></div>
+      </div>
+      <div class="prod-card-footer">
+        <button class="btn-tds" onclick="window.open('https://cloto-oilfield-chemicals.com/production/burovye-rastvory-na-vodnoy-osnove-brvo/lubricants/superslider-platinum-ester-based-wbm-lubricant-friction-modifier/')">TDS</button>
+        <button class="btn-ai" onclick="location.href='proposal-en.html'">🤖 AI Match</button>
+        <button class="btn-quote" onclick="window.location.href='mailto:info@cloto.ru?subject=Quote Request: SUPERSLIDER PLATINUM'">Quote →</button>
+      </div>
+    </div>
+
+    <!-- WBM THINNERS -->
+    <div class="prod-card" data-cat="wbm" data-name="deflonate chrome lignosulfonate thinner deflocculant rheology">
+      <div class="prod-card-top">
+        <div class="prod-meta">
+          <span class="product-cat cat-wbm">WBM · THINNER</span>
+        </div>
+        <div class="prod-name">DEFLONATE®</div>
+        <div class="prod-chemical">Chrome lignosulfonate deflocculant / gel-strength reducer — brown powder</div>
+        <div class="prod-desc">Classic chrome lignosulfonate deflocculant for WBM rheology and gel strength control. Effective across all WBM systems. Optimal pH range 9–11. Requires caustic soda supplementation (1:4 ratio). Up to 176°C.</div>
+      </div>
+      <div class="prod-card-specs">
+        <div class="prod-spec-row"><span class="prod-spec-key">Max. Temperature</span><span class="prod-spec-val" style="color:var(--orange)">176°C (350°F)</span></div>
+        <div class="prod-spec-row"><span class="prod-spec-key">Dosage</span><span class="prod-spec-val" style="color:var(--cyan)">2.85–34 kg/m³</span></div>
+        <div class="prod-spec-row"><span class="prod-spec-key">Optimal pH</span><span class="prod-spec-val">9–11</span></div>
+        <div class="prod-spec-row"><span class="prod-spec-key">Packaging</span><span class="prod-spec-val">22.7 kg bags</span></div>
+      </div>
+      <div class="prod-card-footer">
+        <button class="btn-tds" onclick="window.open('https://cloto-oilfield-chemicals.com/production/burovye-rastvory-na-vodnoy-osnove-brvo/thinners/deflonate-chrome-lignosulfonate/')">TDS</button>
+        <button class="btn-ai" onclick="location.href='proposal-en.html'">🤖 AI Match</button>
+        <button class="btn-quote" onclick="window.location.href='mailto:info@cloto.ru?subject=Quote Request: DEFLONATE'">Quote →</button>
+      </div>
+    </div>
+
+    <!-- OBM EMULSIFIERS -->
+    <div class="prod-card" data-cat="obm" data-name="extramul supreme tofa polyamide emulsifier obm 204">
+      <div class="prod-card-top">
+        <div class="prod-meta">
+          <span class="product-cat cat-obm">OBM · EMULSIFIER · 2-IN-1</span>
+        </div>
+        <div class="prod-name">EXTRAMUL® SUPREME</div>
+        <div class="prod-chemical">TOFA polyamide — 2-in-1 emulsifier and wetting agent (100% bio-based)</div>
+        <div class="prod-desc">Single product replaces primary emulsifier + wetting agent in OBM. Thermally stable to 204°C. Rapidly establishes water-in-oil emulsion, coats solids oil-wet, and maintains electrical stability at extreme temperatures.</div>
+      </div>
+      <div class="prod-card-specs">
+        <div class="prod-spec-row"><span class="prod-spec-key">Max. Temperature</span><span class="prod-spec-val" style="color:var(--orange)">204°C (400°F)</span></div>
+        <div class="prod-spec-row"><span class="prod-spec-key">Dosage</span><span class="prod-spec-val" style="color:var(--cyan)">14–28 kg/m³ (5–10 ppb)</span></div>
+        <div class="prod-spec-row"><span class="prod-spec-key">Bio-based</span><span class="prod-spec-val" style="color:var(--green)">100% TOFA</span></div>
+        <div class="prod-spec-row"><span class="prod-spec-key">Function</span><span class="prod-spec-val">Emulsifier + Wetter</span></div>
+      </div>
+      <div class="prod-card-footer">
+        <button class="btn-tds" onclick="window.open('https://cloto-oilfield-chemicals.com/production/burovye-rastvory-na-uglevodorodnoy-osnove-ruo/emulsifiers/extramul-supreme-2-in-1-obm-emulsifier-tofa-polyamide-/')">TDS</button>
+        <button class="btn-ai" onclick="location.href='proposal-en.html'">🤖 AI Match</button>
+        <button class="btn-quote" onclick="window.location.href='mailto:info@cloto.ru?subject=Quote Request: EXTRAMUL SUPREME'">Quote →</button>
+      </div>
+    </div>
+
+    <div class="prod-card" data-cat="obm" data-name="extramul s polyaminated fatty acids secondary emulsifier obm">
+      <div class="prod-card-top">
+        <div class="prod-meta">
+          <span class="product-cat cat-obm">OBM · EMULSIFIER</span>
+        </div>
+        <div class="prod-name">EXTRAMUL®S</div>
+        <div class="prod-chemical">Polyaminated fatty acids secondary OBM emulsifier — 100% active, amber liquid</div>
+        <div class="prod-desc">Secondary OBM emulsifier that significantly enhances electrical stability and HTHP fluid loss control. Prevents water phase appearance. Coats solids hydrophobically. Compatible with all invert emulsion OBM systems.</div>
+      </div>
+      <div class="prod-card-specs">
+        <div class="prod-spec-row"><span class="prod-spec-key">Activity</span><span class="prod-spec-val">100% active</span></div>
+        <div class="prod-spec-row"><span class="prod-spec-key">Dosage</span><span class="prod-spec-val" style="color:var(--cyan)">7–14 kg/m³ (2.5–5 ppb)</span></div>
+        <div class="prod-spec-row"><span class="prod-spec-key">Form</span><span class="prod-spec-val">Amber viscous liquid</span></div>
+        <div class="prod-spec-row"><span class="prod-spec-key">Role</span><span class="prod-spec-val">Secondary emulsifier</span></div>
+      </div>
+      <div class="prod-card-footer">
+        <button class="btn-tds" onclick="window.open('https://cloto-oilfield-chemicals.com/production/burovye-rastvory-na-uglevodorodnoy-osnove-ruo/emulsifiers/extramul-s-polyaminated-fatty-acids-secondary-obm-emulsifier/')">TDS</button>
+        <button class="btn-ai" onclick="location.href='proposal-en.html'">🤖 AI Match</button>
+        <button class="btn-quote" onclick="window.location.href='mailto:info@cloto.ru?subject=Quote Request: EXTRAMUL S'">Quote →</button>
+      </div>
+    </div>
+
+    <div class="prod-card" data-cat="obm" data-name="welltreat wetting agent secondary emulsifier obm resinic">
+      <div class="prod-card-top">
+        <div class="prod-meta">
+          <span class="product-cat cat-obm">OBM · WETTING AGENT</span>
+        </div>
+        <div class="prod-name">WELLTREAT®</div>
+        <div class="prod-chemical">Resinic acid-based organic surfactant — dark brown viscous liquid</div>
+        <div class="prod-desc">OBM wetting agent and secondary emulsifier. Converts drilled solids from water-wet to oil-wet, preventing agglomeration. Reduces water in filtrate, minimises shaker screen blinding. Minimum 200°C thermal stability.</div>
+      </div>
+      <div class="prod-card-specs">
+        <div class="prod-spec-row"><span class="prod-spec-key">Min. Temperature</span><span class="prod-spec-val" style="color:var(--orange)">200°C+</span></div>
+        <div class="prod-spec-row"><span class="prod-spec-key">Dosage</span><span class="prod-spec-val" style="color:var(--cyan)">5–30 kg/m³ (2–4 ppb)</span></div>
+        <div class="prod-spec-row"><span class="prod-spec-key">Form</span><span class="prod-spec-val">Dark brown viscous liquid</span></div>
+        <div class="prod-spec-row"><span class="prod-spec-key">Packaging</span><span class="prod-spec-val">200 L drums / IBCs</span></div>
+      </div>
+      <div class="prod-card-footer">
+        <button class="btn-tds" onclick="window.open('https://cloto-oilfield-chemicals.com/production/burovye-rastvory-na-uglevodorodnoy-osnove-ruo/emulsifiers/welltreat-obm-wetting-agent-secondary-emulsifier/')">TDS</button>
+        <button class="btn-ai" onclick="location.href='proposal-en.html'">🤖 AI Match</button>
+        <button class="btn-quote" onclick="window.location.href='mailto:info@cloto.ru?subject=Quote Request: WELLTREAT'">Quote →</button>
+      </div>
+    </div>
+
+    <!-- OBM FLUID LOSS -->
+    <div class="prod-card" data-cat="obm" data-name="clotonex organophilic lignite obm fluid loss 200">
+      <div class="prod-card-top">
+        <div class="prod-meta">
+          <span class="product-cat cat-obm">OBM · FLUID LOSS</span>
+        </div>
+        <div class="prod-name">CLOTONEX®</div>
+        <div class="prod-chemical">Modified organophilic lignite — grey to black powder</div>
+        <div class="prod-desc">Core OBM fluid loss control product. Thermally stable to 200°C. Compatible with all OBM formulations — diesel, mineral oil, and synthetic base. Reduces HTHP filtrate and simultaneously enhances emulsion stability.</div>
+      </div>
+      <div class="prod-card-specs">
+        <div class="prod-spec-row"><span class="prod-spec-key">Max. Temperature</span><span class="prod-spec-val" style="color:var(--orange)">200°C</span></div>
+        <div class="prod-spec-row"><span class="prod-spec-key">Dosage</span><span class="prod-spec-val" style="color:var(--cyan)">5.7–57 kg/m³ (2–20 ppb)</span></div>
+        <div class="prod-spec-row"><span class="prod-spec-key">Form</span><span class="prod-spec-val">Grey-black powder</span></div>
+        <div class="prod-spec-row"><span class="prod-spec-key">Packaging</span><span class="prod-spec-val">22.68 kg / 25 kg bags</span></div>
+      </div>
+      <div class="prod-card-footer">
+        <button class="btn-tds" onclick="window.open('https://cloto-oilfield-chemicals.com/production/burovye-rastvory-na-uglevodorodnoy-osnove-ruo/fluid-loss-control-obm/klotoneks/')">TDS</button>
+        <button class="btn-ai" onclick="location.href='proposal-en.html'">🤖 AI Match</button>
+        <button class="btn-quote" onclick="window.location.href='mailto:info@cloto.ru?subject=Quote Request: CLOTONEX'">Quote →</button>
+      </div>
+    </div>
+
+    <div class="prod-card" data-cat="obm" data-name="stabilite obm gilsonite asphaltite fluid loss hpht">
+      <div class="prod-card-top">
+        <div class="prod-meta">
+          <span class="product-cat cat-obm">OBM · FLUID LOSS · HPHT</span>
+        </div>
+        <div class="prod-name">STABILITE® OBM</div>
+        <div class="prod-chemical">Gilsonite / asphaltite — black powder, broad particle-size distribution</div>
+        <div class="prod-desc">Asphaltite-based HTHP fluid loss additive. Broad particle size distribution seals pores and fractures of all sizes, forming a tough, slick, low-permeability filter cake. Reduces washout. Works alongside CLOTONEX® for extreme conditions.</div>
+      </div>
+      <div class="prod-card-specs">
+        <div class="prod-spec-row"><span class="prod-spec-key">Type</span><span class="prod-spec-val">Gilsonite / Asphaltite</span></div>
+        <div class="prod-spec-row"><span class="prod-spec-key">Dosage</span><span class="prod-spec-val" style="color:var(--cyan)">14–100 kg/m³ (5–35 ppb)</span></div>
+        <div class="prod-spec-row"><span class="prod-spec-key">Form</span><span class="prod-spec-val">Black powder</span></div>
+        <div class="prod-spec-row"><span class="prod-spec-key">Packaging</span><span class="prod-spec-val">22.7 kg bags</span></div>
+      </div>
+      <div class="prod-card-footer">
+        <button class="btn-tds" onclick="window.open('https://cloto-oilfield-chemicals.com/production/burovye-rastvory-na-uglevodorodnoy-osnove-ruo/fluid-loss-control-obm/stabilayt-ruo-/')">TDS</button>
+        <button class="btn-ai" onclick="location.href='proposal-en.html'">🤖 AI Match</button>
+        <button class="btn-quote" onclick="window.location.href='mailto:info@cloto.ru?subject=Quote Request: STABILITE OBM'">Quote →</button>
+      </div>
+    </div>
+
+    <div class="prod-card" data-cat="obm" data-name="liquitrol liquid polymer obm fluid loss">
+      <div class="prod-card-top">
+        <div class="prod-meta">
+          <span class="product-cat cat-obm">OBM · FLUID LOSS</span>
+        </div>
+        <div class="prod-name">LIQUITROL®</div>
+        <div class="prod-chemical">Liquid polymeric OBM fluid loss reducer — 50% active in solvent, dark brown liquid</div>
+        <div class="prod-desc">Liquid format for direct addition — no preprocessing required. Minimal rheological impact. Reduces HTHP filtrate and simultaneously enhances emulsion stability and electrical stability. Easy rig-site handling.</div>
+      </div>
+      <div class="prod-card-specs">
+        <div class="prod-spec-row"><span class="prod-spec-key">Form</span><span class="prod-spec-val">Dark brown liquid (50% active)</span></div>
+        <div class="prod-spec-row"><span class="prod-spec-key">Dosage</span><span class="prod-spec-val" style="color:var(--cyan)">14–28 kg/m³ (5–10 ppb)</span></div>
+        <div class="prod-spec-row"><span class="prod-spec-key">Addition</span><span class="prod-spec-val" style="color:var(--green)">Direct — no prep</span></div>
+        <div class="prod-spec-row"><span class="prod-spec-key">Packaging</span><span class="prod-spec-val">200 L drums / IBCs</span></div>
+      </div>
+      <div class="prod-card-footer">
+        <button class="btn-tds" onclick="window.open('https://cloto-oilfield-chemicals.com/production/burovye-rastvory-na-uglevodorodnoy-osnove-ruo/fluid-loss-control-obm/liquid%20polymeric%20OBM%20fluid%20loss%20control%20agent/')">TDS</button>
+        <button class="btn-ai" onclick="location.href='proposal-en.html'">🤖 AI Match</button>
+        <button class="btn-quote" onclick="window.location.href='mailto:info@cloto.ru?subject=Quote Request: LIQUITROL'">Quote →</button>
+      </div>
+    </div>
+
+    <div class="prod-card" data-cat="obm" data-name="advanta starch obm fluid loss polymeric">
+      <div class="prod-card-top">
+        <div class="prod-meta">
+          <span class="product-cat cat-obm">OBM · FLUID LOSS</span>
+        </div>
+        <div class="prod-name">ADVANTA®</div>
+        <div class="prod-chemical">Polymeric starch-based OBM fluid loss control — white powder</div>
+        <div class="prod-desc">Starch-based HTHP filtration reducer for OBM. Disperses optimally at 50°C+. Prevents barite settling, may reduce thickener requirements. Builds stable, low-permeability filter cake. Suitable for reservoir sections.</div>
+      </div>
+      <div class="prod-card-specs">
+        <div class="prod-spec-row"><span class="prod-spec-key">Dispersion temp.</span><span class="prod-spec-val">50°C+ (120°F+)</span></div>
+        <div class="prod-spec-row"><span class="prod-spec-key">Dosage</span><span class="prod-spec-val" style="color:var(--cyan)">3–15 kg/m³ (1–5 ppb)</span></div>
+        <div class="prod-spec-row"><span class="prod-spec-key">Anti-sag</span><span class="prod-spec-val" style="color:var(--green)">Yes</span></div>
+        <div class="prod-spec-row"><span class="prod-spec-key">Packaging</span><span class="prod-spec-val">22.7 kg / 14 kg bags</span></div>
+      </div>
+      <div class="prod-card-footer">
+        <button class="btn-tds" onclick="window.open('https://cloto-oilfield-chemicals.com/production/burovye-rastvory-na-uglevodorodnoy-osnove-ruo/fluid-loss-control-obm/advanta-obm-starch-obm-polymeric-fluid-loss-control-agent/')">TDS</button>
+        <button class="btn-ai" onclick="location.href='proposal-en.html'">🤖 AI Match</button>
+        <button class="btn-quote" onclick="window.location.href='mailto:info@cloto.ru?subject=Quote Request: ADVANTA'">Quote →</button>
+      </div>
+    </div>
+
+  </div><!-- /catalog-grid -->
+
+  <!-- No results message -->
+  <div id="noResults" class="hidden" style="text-align:center;padding:60px 20px;color:var(--text-muted);">
+    <div style="font-size:40px;margin-bottom:16px;">🔍</div>
+    <h3 style="font-size:18px;color:var(--text-secondary);margin-bottom:8px;">No products found</h3>
+    <p>Try a different search term or reset the filters.</p>
+    <button class="btn-outline" style="margin-top:20px;" onclick="resetFilters()">Reset Filters</button>
+  </div>
+
+  <!-- CTA block -->
+  <div style="margin-top:60px;background:var(--bg-card2);border:1px solid var(--border-cyan);border-radius:16px;padding:48px;text-align:center;">
+    <div class="section-label" style="justify-content:center">Need a recommendation?</div>
+    <h2 style="font-size:32px;margin-bottom:12px;">Not sure which product fits your well?</h2>
+    <p style="color:var(--text-secondary);font-size:15px;margin-bottom:32px;max-width:520px;margin-left:auto;margin-right:auto;">Describe your formation, drilling parameters, and operational challenge — our AI will select the right CLOTO product and generate a technical proposal.</p>
+    <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
+      <a href="proposal-en.html"><button class="btn-large">AI Product Recommendation →</button></a>
+      <button class="btn-orange" onclick="window.location.href='mailto:info@cloto.ru'">Talk to a Specialist</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="nav-logo">
+        <div class="logo-mark">CL</div>
+        <div><div class="logo-text">CLO<span>TO</span></div><div class="logo-sub">Oilfield Chemicals · Est. 1991</div></div>
+      </div>
+      <p>65+ registered drilling fluid additives — WBM, OBM, LCM. 20,000 MT/yr powder, 45,000 MT/yr liquid. Arkhangelsk, Russia. info@cloto.ru · +7 (8182) 23-45-96</p>
+    </div>
+    <div class="footer-col">
+      <h4>WBM Products</h4>
+      <ul>
+        <li><a href="#">BLACKTROL®</a></li>
+        <li><a href="#">G-DRILL®</a></li>
+        <li><a href="#">OPTITROL®</a></li>
+        <li><a href="#">HITEMP®200</a></li>
+        <li><a href="#">SUPERSLIDER® PLATINUM</a></li>
+        <li><a href="#">SHALE-X® Liquid</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>OBM Products</h4>
+      <ul>
+        <li><a href="#">CLOTONEX®</a></li>
+        <li><a href="#">EXTRAMUL® SUPREME</a></li>
+        <li><a href="#">WELLTREAT®</a></li>
+        <li><a href="#">STABILITE® OBM</a></li>
+        <li><a href="#">LIQUITROL®</a></li>
+        <li><a href="#">ADVANTA®</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Platform</h4>
+      <ul>
+        <li><a href="index-en.html">Home</a></li>
+        <li><a href="proposal-en.html">AI Proposal Generator</a></li>
+        <li><a href="catalog-ru.html">Russian Catalog</a></li>
+        <li><a href="mailto:info@cloto.ru">Request Quote</a></li>
+        <li><a href="https://cloto-oilfield-chemicals.com" target="_blank">Official Website</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 CLOTO. All rights reserved.</span>
+    <div class="footer-links">
+      <a href="catalog-ru.html">Русская версия</a>
+      <a href="index-en.html">← Back to Platform</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+let currentFilter = 'all';
+
+function setFilter(cat, btn) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  filterProducts();
+}
+
+function filterProducts() {
+  const q = document.getElementById('search').value.toLowerCase();
+  const cards = document.querySelectorAll('.prod-card');
+  let visible = 0;
+  cards.forEach(card => {
+    const matchCat = currentFilter === 'all' || card.dataset.cat === currentFilter;
+    const matchSearch = !q || card.dataset.name.toLowerCase().includes(q) || card.innerText.toLowerCase().includes(q);
+    if (matchCat && matchSearch) { card.classList.remove('hidden'); visible++; }
+    else card.classList.add('hidden');
+  });
+  document.getElementById('noResults').classList.toggle('hidden', visible > 0);
+}
+
+function resetFilters() {
+  document.getElementById('search').value = '';
+  setFilter('all', document.querySelector('.filter-btn'));
+}
+</script>
+</body>
+</html>

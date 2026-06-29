@@ -1,0 +1,2443 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DRILL-Q AI · Ковыктинское ГКМ · Скв. 73</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#06090f;--p1:#0c1220;--p2:#111a2e;--p3:#172038;
+  --line:rgba(255,255,255,.07);--txt:#d8e4f0;--muted:#6b7f96;
+  --cyan:#00d4ff;--cyan2:rgba(0,212,255,.12);
+  --g:#00e676;--g2:rgba(0,230,118,.12);
+  --w:#ffab00;--w2:rgba(255,171,0,.15);
+  --r:#ff3d3d;--r2:rgba(255,61,61,.15);
+  --oil:#22c55e;
+}
+
+/* ── СВЕТЛАЯ ТЕМА (активируется при ?light=1) ── */
+body.light-theme{
+  --bg:#F5F5F7;--p1:#FFFFFF;--p2:#F9F9FB;--p3:#F0F0F5;
+  --line:rgba(0,0,0,.08);--txt:#1D1D1F;--muted:#6E6E73;
+  --cyan:#2563EB;--cyan2:rgba(37,99,235,.08);
+  --g:#059669;--g2:rgba(5,150,105,.08);
+  --w:#D97706;--w2:rgba(217,119,6,.1);
+  --r:#DC2626;--r2:rgba(220,38,38,.08);
+}
+body.light-theme #topbar{background:#FFFFFF;border-bottom:1px solid rgba(0,0,0,.08)}
+body.light-theme #gauges{background:#FFFFFF;border-right:1px solid rgba(0,0,0,.08)}
+body.light-theme #rightpanel{background:#FFFFFF;border-left:1px solid rgba(0,0,0,.08)}
+body.light-theme #bottom{background:#FFFFFF;border-top:1px solid rgba(0,0,0,.08)}
+body.light-theme #formation-banner{background:#F9F9FB;border-bottom:1px solid rgba(0,0,0,.08)}
+body.light-theme .gauge-cell{border-bottom:1px solid rgba(0,0,0,.06)}
+body.light-theme .compact-row{border-bottom:1px solid rgba(0,0,0,.06)}
+body.light-theme .rp-section{border-bottom:1px solid rgba(0,0,0,.06)}
+body.light-theme .ai-event{background:#F9F9FB}
+body.light-theme .form-detail-card{background:#F0F0F5}
+body.light-theme .prop-key{color:#6E6E73}
+body.light-theme .ctrl-btn{background:#F5F5F7;border:1px solid rgba(0,0,0,.1);color:#1D1D1F}
+body.light-theme .ctrl-btn:hover{border-color:rgba(37,99,235,.4);color:#2563EB}
+body.light-theme .ctrl-btn.active{background:#2563EB;border-color:#2563EB;color:#fff}
+body.light-theme #depthInput{border:1px solid rgba(0,0,0,.1);background:#F9F9FB;color:#1D1D1F}
+body.light-theme .tb-name{color:#1D1D1F}
+body.light-theme .status-label{color:#059669 !important}
+body.light-theme .gauge-val.cyan{color:#2563EB}
+body.light-theme .compact-val{color:#2563EB}
+body.light-theme #depthTop{color:#2563EB}
+body.light-theme .rp-title{color:#6E6E73}
+body.light-theme .prop-row{border-bottom:1px solid rgba(0,0,0,.04)}
+body.light-theme #alertBox.warn{background:#FFFBEB;border-color:#D97706}
+body.light-theme #alertBox.crit{background:#FEF2F2;border-color:#DC2626}
+body.light-theme #alertBox.ok{background:#ECFDF5;border-color:#059669}
+body.light-theme #alertBox.info{background:#EFF6FF;border-color:#2563EB}
+body.light-theme #eventModalBox{background:#FFFFFF;border:1px solid rgba(0,0,0,.1)}
+body.light-theme #bottom{display:none !important}
+body.light-theme #cockpit{height:calc(100vh - 46px)}
+
+html,body{height:100%;overflow:hidden}
+body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',Arial,sans-serif;
+  background:var(--bg);color:var(--txt);font-size:13px;-webkit-font-smoothing:antialiased}
+
+/* TOP BAR */
+#topbar{height:46px;background:var(--p1);border-bottom:1px solid var(--line);
+  display:flex;align-items:center;padding:0 14px;gap:12px;flex-shrink:0;overflow:hidden}
+.tb-logo{display:flex;align-items:center;gap:7px;text-decoration:none;color:var(--txt);flex-shrink:0}
+.tb-mark{width:24px;height:24px;border-radius:6px;background:#2563eb;
+  display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#fff}
+.tb-name{font-size:13px;font-weight:800;letter-spacing:-.2px}
+.tb-sep{color:var(--line);font-size:18px;flex-shrink:0}
+.tb-field{font-size:11px;color:var(--muted);font-weight:500;white-space:nowrap}
+.tb-phase{font-size:11px;font-weight:700;color:var(--w);white-space:nowrap;
+  background:rgba(255,171,0,.1);border:1px solid rgba(255,171,0,.2);
+  border-radius:5px;padding:2px 8px}
+.tb-phase.drill{color:var(--g);background:var(--g2);border-color:rgba(0,230,118,.2)}
+.tb-phase.npt{color:var(--r);background:var(--r2);border-color:rgba(255,61,61,.2);animation:blink .7s infinite}
+.tb-right{margin-left:auto;display:flex;align-items:center;gap:10px;flex-shrink:0}
+.status-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.status-dot.drill{background:var(--g);animation:blink 1.4s infinite}
+.status-dot.npt{background:var(--r);animation:blink .6s infinite}
+.status-dot.idle{background:var(--w)}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.status-label{font-size:11px;font-weight:700;letter-spacing:.06em}
+#depthTop{font-size:18px;font-weight:800;font-family:monospace;color:var(--cyan);letter-spacing:-.5px}
+
+/* MAIN LAYOUT */
+#cockpit{height:calc(100vh - 46px - 60px);display:flex;gap:0}
+
+/* LEFT GAUGES */
+#gauges{width:210px;flex-shrink:0;background:var(--p1);border-right:1px solid var(--line);
+  display:flex;flex-direction:column;overflow-y:auto;overflow-x:hidden;
+  scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+.gauge-cell{padding:8px 12px;border-bottom:1px solid var(--line)}
+.gauge-lbl{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:4px}
+.arc-wrap{display:flex;justify-content:center}
+.bar-gauge{height:8px;background:rgba(255,255,255,.06);border-radius:99px;overflow:hidden;margin-top:4px}
+.bar-fill{height:100%;border-radius:99px;transition:width .8s ease}
+.gauge-val{font-size:16px;font-weight:800;font-family:monospace;text-align:center;margin-top:2px}
+.gauge-unit{font-size:9px;color:var(--muted);text-align:center}
+.gauge-val.ok{color:var(--g)}.gauge-val.warn{color:var(--w)}.gauge-val.crit{color:var(--r)}.gauge-val.cyan{color:var(--cyan)}
+.compact-row{display:flex;gap:6px;padding:8px 12px;border-bottom:1px solid var(--line)}
+.compact-cell{flex:1;text-align:center}
+.compact-lbl{font-size:8px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.compact-val{font-size:13px;font-weight:800;font-family:monospace;color:var(--cyan);margin-top:2px}
+
+/* CENTER */
+#center{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+#formation-banner{height:34px;background:var(--p2);border-bottom:1px solid var(--line);
+  display:flex;align-items:center;padding:0 14px;gap:10px;flex-shrink:0}
+.form-badge{display:inline-flex;align-items:center;border-radius:5px;
+  padding:2px 8px;font-size:9px;font-weight:800;letter-spacing:.06em;white-space:nowrap}
+.form-badge.clay{background:rgba(96,112,128,.25);color:#8ba0b4;border:1px solid rgba(96,112,128,.35)}
+.form-badge.sand{background:rgba(200,160,96,.2);color:#daa520;border:1px solid rgba(200,160,96,.3)}
+.form-badge.reservoir{background:rgba(0,230,118,.15);color:var(--g);border:1px solid rgba(0,230,118,.3)}
+.form-badge.gas{background:rgba(255,171,0,.15);color:var(--w);border:1px solid rgba(255,171,0,.3)}
+.form-badge.tight,.form-badge.argillite,.form-badge.loose{background:rgba(90,90,100,.2);color:#9aabb8;border:1px solid rgba(90,90,100,.3)}
+#form-name{font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#form-depth-range{font-size:10px;color:var(--muted);margin-left:auto;white-space:nowrap}
+
+#canvas-wrap{flex:1;position:relative;overflow:hidden}
+#wellCanvas{display:block;width:100%;height:100%}
+
+/* RIGHT PANEL */
+#rightpanel{width:268px;flex-shrink:0;background:var(--p1);border-left:1px solid var(--line);
+  overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+.rp-section{padding:10px 13px;border-bottom:1px solid var(--line)}
+.rp-title{font-size:9px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:8px}
+.prop-row{display:flex;justify-content:space-between;align-items:center;padding:2px 0;
+  border-bottom:1px solid rgba(255,255,255,.03)}
+.prop-row:last-child{border-bottom:none}
+.prop-key{font-size:11px;color:var(--muted)}
+.prop-val{font-size:12px;font-weight:700;font-family:monospace}
+.prop-val.ok{color:var(--g)}.prop-val.warn{color:var(--w)}.prop-val.crit{color:var(--r)}.prop-val.cyan{color:var(--cyan)}
+.trend-arrow{font-size:10px;margin-left:3px}
+.trend-up{color:var(--r)}.trend-dn{color:var(--g)}.trend-ok{color:var(--g);opacity:.5}
+
+.form-detail-card{background:var(--p2);border-radius:7px;padding:9px;margin-bottom:6px}
+.form-detail-name{font-size:12px;font-weight:800;margin-bottom:2px}
+.form-detail-desc{font-size:10px;color:var(--muted);line-height:1.5}
+.form-risk{display:inline-flex;align-items:center;gap:4px;margin-top:5px;
+  font-size:10px;font-weight:700;padding:2px 7px;border-radius:99px}
+.form-risk.low{background:var(--g2);color:var(--g)}
+.form-risk.med{background:var(--w2);color:var(--w)}
+.form-risk.high{background:var(--r2);color:var(--r)}
+
+/* AI FEED */
+.ai-event{background:var(--p2);border-radius:6px;padding:7px 9px;margin-bottom:5px;
+  border-left:3px solid;animation:slideIn .22s ease;cursor:pointer;position:relative}
+.ai-event:hover{opacity:.88}
+.ai-event::after{content:'▶';position:absolute;right:8px;top:50%;transform:translateY(-50%);
+  font-size:8px;color:var(--muted);opacity:.6}
+@keyframes slideIn{from{transform:translateX(16px);opacity:0}to{transform:none;opacity:1}}
+.ai-event.info{border-color:var(--cyan)}.ai-event.warn{border-color:var(--w)}
+.ai-event.high{border-color:#f97316}.ai-event.crit{border-color:var(--r)}.ai-event.ok{border-color:var(--g)}
+.ai-event-time{font-size:9px;color:var(--muted);font-weight:600}
+.ai-event-title{font-size:11px;font-weight:700;margin:2px 0;padding-right:14px}
+.ai-event.info .ai-event-title{color:var(--cyan)}.ai-event.warn .ai-event-title{color:var(--w)}
+.ai-event.high .ai-event-title{color:#f97316}.ai-event.crit .ai-event-title{color:var(--r)}
+.ai-event.ok .ai-event-title{color:var(--g)}
+.ai-event-body{font-size:10px;color:var(--muted);line-height:1.4}
+
+/* BOTTOM */
+#bottom{height:60px;background:var(--p1);border-top:1px solid var(--line);
+  display:flex;align-items:center;padding:0 14px;gap:10px;flex-shrink:0}
+.ctrl-btn{background:var(--p2);border:1px solid var(--line);color:var(--txt);
+  border-radius:7px;padding:5px 12px;cursor:pointer;font-size:11px;font-weight:700;
+  font-family:inherit;letter-spacing:.03em;transition:all .15s;white-space:nowrap}
+.ctrl-btn:hover{border-color:rgba(0,212,255,.4);color:var(--cyan)}
+.ctrl-btn.active{background:#2563eb;border-color:#2563eb;color:#fff}
+.speed-btn{padding:4px 8px;font-size:10px}
+#progressTrack{flex:1;position:relative;height:32px;cursor:pointer;min-width:60px}
+#progressBar{position:absolute;top:50%;transform:translateY(-50%);width:100%;
+  height:4px;background:rgba(255,255,255,.08);border-radius:99px}
+#progressFill{height:100%;background:var(--cyan);border-radius:99px;width:0%}
+#progressNPT{position:absolute;top:0;height:100%;background:rgba(255,61,61,.3);pointer-events:none;border-radius:2px}
+#depthInput{width:80px;border:1px solid var(--line);background:var(--p2);color:var(--txt);
+  border-radius:6px;padding:4px 8px;font-size:11px;font-family:monospace;text-align:center;font-weight:700}
+
+/* CEMENT PROGRESS BAR */
+#cementBar{display:none;position:absolute;inset:0;background:rgba(6,9,15,.85);
+  backdrop-filter:blur(4px);z-index:50;align-items:center;justify-content:center;flex-direction:column;gap:14px}
+#cementBar.show{display:flex}
+.cement-title{font-size:20px;font-weight:800;color:#cbd5e1;letter-spacing:-.3px}
+.cement-sub{font-size:13px;color:var(--muted)}
+.cement-track{width:320px;height:8px;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden}
+.cement-fill{height:100%;background:linear-gradient(90deg,#64748b,#cbd5e1);border-radius:99px;width:0%;transition:width .3s}
+.cement-skip{margin-top:8px;background:var(--p2);border:1px solid var(--line);color:var(--muted);
+  border-radius:7px;padding:5px 16px;cursor:pointer;font-size:11px;font-family:inherit;font-weight:700}
+.cement-skip:hover{color:var(--txt)}
+
+/* ALERT OVERLAY */
+#alertOverlay{display:none;position:fixed;inset:0;z-index:200;
+  background:rgba(0,0,0,.65);backdrop-filter:blur(4px);
+  align-items:center;justify-content:center;flex-direction:column}
+#alertOverlay.show{display:flex;animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+#alertBox{border-radius:16px;padding:26px 30px;max-width:500px;width:90%;border:2px solid;animation:shake .35s ease}
+@keyframes shake{0%,100%{transform:none}20%{transform:translateX(-7px)}40%{transform:translateX(7px)}
+  60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+#alertBox.warn{background:#1a1400;border-color:var(--w)}
+#alertBox.high{background:#170d00;border-color:#f97316}
+#alertBox.crit{background:#1a0000;border-color:var(--r)}
+#alertBox.ok{background:#001a08;border-color:var(--g)}
+#alertBox.info{background:#001319;border-color:var(--cyan)}
+.alert-icon{font-size:34px;text-align:center;margin-bottom:10px}
+.alert-big-title{font-size:17px;font-weight:800;text-align:center;margin-bottom:7px;letter-spacing:-.3px}
+.alert-big-body{font-size:12px;color:var(--muted);line-height:1.65;text-align:center;margin-bottom:16px}
+.alert-prob-row{text-align:center;margin-bottom:16px}
+.alert-prob-chip{display:inline-block;padding:4px 14px;border-radius:99px;font-size:12px;font-weight:800}
+.alert-actions{display:flex;gap:10px;justify-content:center}
+.btn-ack{border-radius:8px;padding:7px 18px;font-size:12px;font-weight:800;cursor:pointer;border:2px solid;font-family:inherit}
+.btn-ack.primary{background:var(--r);border-color:var(--r);color:#fff}
+.btn-ack.primary:hover{background:#cc2222}
+.btn-ack.secondary{background:transparent;border-color:var(--line);color:var(--muted)}
+.btn-ack.secondary:hover{border-color:var(--cyan);color:var(--cyan)}
+
+/* EVENT DETAIL MODAL */
+#eventModal{display:none;position:fixed;inset:0;z-index:180;
+  background:rgba(0,0,0,.6);backdrop-filter:blur(3px);align-items:center;justify-content:center}
+#eventModal.show{display:flex;animation:fadeIn .2s ease}
+#eventModalBox{background:var(--p1);border:1px solid var(--line);border-radius:14px;
+  padding:24px 26px;max-width:540px;width:92%;max-height:80vh;overflow-y:auto;position:relative}
+.em-close{position:absolute;top:14px;right:16px;background:none;border:none;color:var(--muted);
+  font-size:18px;cursor:pointer;line-height:1}
+.em-close:hover{color:var(--txt)}
+.em-depth{font-size:10px;font-weight:700;color:var(--muted);margin-bottom:6px}
+.em-title{font-size:17px;font-weight:800;margin-bottom:10px;letter-spacing:-.3px}
+.em-body{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:14px;white-space:pre-wrap}
+.em-rec{background:var(--p2);border-left:3px solid var(--cyan);border-radius:4px;
+  padding:12px 14px;font-size:12px;line-height:1.65}
+.em-rec-title{font-size:10px;font-weight:800;color:var(--cyan);letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px}
+
+/* FORECAST + REC SECTIONS */
+.fc-row{display:flex;align-items:center;gap:6px;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+.fc-row:last-child{border-bottom:none}
+.fc-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.fc-body{flex:1;min-width:0}
+.fc-name{font-size:9px;font-weight:700;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fc-sub{font-size:8px;color:var(--muted)}
+.fc-risk{font-size:8px;font-weight:800;white-space:nowrap}
+.fc-risk.low{color:var(--g)}.fc-risk.med{color:var(--w)}.fc-risk.high{color:#f97316}.fc-risk.critical{color:var(--r)}
+.rec-line{display:flex;align-items:flex-start;gap:5px;padding:2px 0;font-size:10px;line-height:1.5;color:var(--muted)}
+.rec-line.warn{color:var(--w)}.rec-line.crit{color:var(--r)}.rec-line.ok{color:var(--g)}.rec-line.info{color:var(--cyan)}
+#dmrBadge{display:none;padding:7px 13px;background:rgba(0,230,118,0.07);
+  border-bottom:1px solid rgba(0,230,118,0.15);font-size:10px;color:var(--g);font-weight:700}
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <a class="tb-logo" href="../tools.html"><div class="tb-mark">DQ</div><span class="tb-name">DRILL-Q</span></a>
+  <span class="tb-sep">/</span>
+  <span class="tb-field">Ковыктинское ГКМ · Скв. 73</span>
+  <span class="tb-sep">/</span>
+  <span class="tb-phase drill" id="phaseChip">БУРЕНИЕ</span>
+  <div class="tb-right">
+    <div class="status-dot drill" id="statusDot"></div>
+    <span class="status-label" id="statusLabel" style="color:var(--g)">БУРЕНИЕ</span>
+    <span class="tb-sep">/</span>
+    <div id="depthTop">0 м</div>
+    <span class="tb-sep">/</span>
+    <span id="topDate" style="font-size:11px;color:var(--muted)">20.10.2008</span>
+  </div>
+</div>
+
+<div id="cockpit">
+  <!-- LEFT GAUGES -->
+  <div id="gauges">
+    <div class="gauge-cell">
+      <div class="gauge-lbl">Вес на долото (WOB)</div>
+      <div class="arc-wrap">
+        <svg width="172" height="88" viewBox="0 0 172 88">
+          <path d="M16 76 A70 70 0 0 1 156 76" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="9" stroke-linecap="round"/>
+          <path id="gWOB" d="M16 76 A70 70 0 0 1 156 76" fill="none" stroke="#00d4ff" stroke-width="9" stroke-linecap="round" stroke-dasharray="220" stroke-dashoffset="220"/>
+          <text x="86" y="67" text-anchor="middle" fill="#d8e4f0" font-size="18" font-weight="800" font-family="monospace" id="gWOBv">0</text>
+          <text x="86" y="79" text-anchor="middle" fill="#6b7f96" font-size="9">kN</text>
+        </svg>
+      </div>
+    </div>
+    <div class="gauge-cell">
+      <div class="gauge-lbl">Обороты долота (RPM)</div>
+      <div class="arc-wrap">
+        <svg width="172" height="88" viewBox="0 0 172 88">
+          <path d="M16 76 A70 70 0 0 1 156 76" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="9" stroke-linecap="round"/>
+          <path id="gRPM" d="M16 76 A70 70 0 0 1 156 76" fill="none" stroke="#a78bfa" stroke-width="9" stroke-linecap="round" stroke-dasharray="220" stroke-dashoffset="220"/>
+          <text x="86" y="67" text-anchor="middle" fill="#d8e4f0" font-size="18" font-weight="800" font-family="monospace" id="gRPMv">0</text>
+          <text x="86" y="79" text-anchor="middle" fill="#6b7f96" font-size="9">об/мин</text>
+        </svg>
+      </div>
+    </div>
+    <div class="gauge-cell">
+      <div class="gauge-lbl">Крутящий момент (КМ)</div>
+      <div class="arc-wrap">
+        <svg width="172" height="88" viewBox="0 0 172 88">
+          <path d="M16 76 A70 70 0 0 1 156 76" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="9" stroke-linecap="round"/>
+          <path id="gTQ" d="M16 76 A70 70 0 0 1 156 76" fill="none" stroke="#f97316" stroke-width="9" stroke-linecap="round" stroke-dasharray="220" stroke-dashoffset="220"/>
+          <text x="86" y="67" text-anchor="middle" fill="#d8e4f0" font-size="18" font-weight="800" font-family="monospace" id="gTQv">0</text>
+          <text x="86" y="79" text-anchor="middle" fill="#6b7f96" font-size="9">кН·м</text>
+        </svg>
+      </div>
+    </div>
+    <div class="gauge-cell">
+      <div class="gauge-lbl">Механическая скорость (РОП)</div>
+      <div class="gauge-val cyan" id="gROPv">0 <span style="font-size:10px">м/ч</span></div>
+      <div class="bar-gauge"><div class="bar-fill" id="gROPbar" style="background:var(--cyan);width:0%"></div></div>
+      <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-top:2px"><span>0</span><span>30 м/ч</span></div>
+    </div>
+    <div class="gauge-cell">
+      <div class="gauge-lbl">Давление насосов (ΔP)</div>
+      <div class="gauge-val ok" id="gDPv">0 <span style="font-size:10px">бар</span></div>
+      <div class="bar-gauge"><div class="bar-fill" id="gDPbar" style="background:var(--g);width:0%"></div></div>
+      <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-top:2px"><span>0</span><span>250 бар</span></div>
+    </div>
+    <div class="gauge-cell">
+      <div class="gauge-lbl">ECD (экв. цирк. плотность)</div>
+      <div class="arc-wrap">
+        <svg width="172" height="88" viewBox="0 0 172 88">
+          <path d="M16 76 A70 70 0 0 1 156 76" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="9" stroke-linecap="round"/>
+          <path id="gECD" d="M16 76 A70 70 0 0 1 156 76" fill="none" stroke="#f59e0b" stroke-width="9" stroke-linecap="round" stroke-dasharray="220" stroke-dashoffset="220"/>
+          <text x="86" y="67" text-anchor="middle" fill="#d8e4f0" font-size="15" font-weight="800" font-family="monospace" id="gECDv">1.20</text>
+          <text x="86" y="79" text-anchor="middle" fill="#6b7f96" font-size="9">г/см³</text>
+        </svg>
+      </div>
+    </div>
+    <div class="compact-row">
+      <div class="compact-cell">
+        <div class="compact-lbl">НК, кН</div>
+        <div class="compact-val" id="gHL">0</div>
+      </div>
+      <div class="compact-cell">
+        <div class="compact-lbl">Ходы, ход/м</div>
+        <div class="compact-val" id="gSPM">0</div>
+      </div>
+      <div class="compact-cell">
+        <div class="compact-lbl">Расход, л/с</div>
+        <div class="compact-val" id="gFlow">0</div>
+      </div>
+    </div>
+    <div class="gauge-cell">
+      <div class="gauge-lbl">Приток/потери раствора</div>
+      <div class="gauge-val" id="gPit" style="color:var(--muted)">0 <span style="font-size:9px">л/мин</span></div>
+      <div style="font-size:10px;color:var(--muted);margin-top:2px" id="gPitStatus">Норма</div>
+    </div>
+  </div>
+
+  <!-- CENTER CANVAS -->
+  <div id="center">
+    <div id="formation-banner">
+      <div class="form-badge tight" id="formBadge">Q</div>
+      <span id="form-name">Четвертичные отложения</span>
+      <span id="form-depth-range">0–150 м</span>
+      <span id="form-inc" style="margin-left:10px;font-size:10px;font-weight:700;color:var(--cyan);white-space:nowrap;display:none"></span>
+    </div>
+    <div id="canvas-wrap">
+      <canvas id="wellCanvas"></canvas>
+      <!-- Cement overlay -->
+      <div id="cementBar">
+        <div class="cement-title" id="cementTitle">ОЗЦ — Ожидание затвердевания цемента</div>
+        <div class="cement-sub" id="cementSub">0.0 / 8.0 ч</div>
+        <div class="cement-track"><div class="cement-fill" id="cementFill"></div></div>
+        <button class="cement-skip" onclick="skipPhase()">Пропустить →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div id="rightpanel">
+    <div id="dmrBadge"></div>
+    <div class="rp-section">
+      <div class="rp-title">Параметры бурового раствора</div>
+      <div class="prop-row"><span class="prop-key">Плотность (ρ)</span><span class="prop-val cyan" id="rDens">1.100 г/см³</span></div>
+      <div class="prop-row"><span class="prop-key">Воронка Марш (Т)</span><span class="prop-val ok" id="rT">38 сек</span></div>
+      <div class="prop-row"><span class="prop-key">ПВ</span><span class="prop-val ok" id="rPV">10 сПз</span></div>
+      <div class="prop-row">
+        <span class="prop-key">ДНС <span id="ypTrend" class="trend-arrow trend-ok">→</span></span>
+        <span class="prop-val ok" id="rYP">20 lb/100ft²</span>
+      </div>
+      <div class="prop-row"><span class="prop-key">СНС 10 сек</span><span class="prop-val ok" id="rGel">4 lb/100ft²</span></div>
+      <div class="prop-row"><span class="prop-key">API-фильтрат</span><span class="prop-val ok" id="rAPI">4.5 мл</span></div>
+      <div class="prop-row"><span class="prop-key">pH</span><span class="prop-val ok" id="rPH">9.5</span></div>
+      <div class="prop-row"><span class="prop-key">KCl</span><span class="prop-val ok" id="rKCl">100 кг/м³</span></div>
+      <div class="prop-row"><span class="prop-key">Хлориды</span><span class="prop-val cyan" id="rCl">45 000 мг/л</span></div>
+    </div>
+    <div class="rp-section">
+      <div class="rp-title">Текущий пласт</div>
+      <div class="form-detail-card">
+        <div class="form-detail-name" id="formDetailName">Четвертичные отложения</div>
+        <div class="form-detail-desc" id="formDetailDesc">Рыхлые суглинки, пески. Вертикальный участок.</div>
+        <div class="form-risk low" id="formRisk">● Риск низкий</div>
+      </div>
+    </div>
+    <div class="rp-section">
+      <div class="rp-title">Действия прямо сейчас</div>
+      <div id="drillingRec"></div>
+    </div>
+    <div class="rp-section">
+      <div class="rp-title">Прогноз · Что впереди</div>
+      <div id="formForecast"></div>
+    </div>
+    <div class="rp-section">
+      <div class="rp-title">AI · Журнал событий <span style="font-size:9px;color:var(--muted)">(нажмите для подробностей)</span></div>
+      <div id="aiFeed"></div>
+    </div>
+    <div class="rp-section">
+      <div class="rp-title">НПВ / Экономика</div>
+      <div class="prop-row"><span class="prop-key">Суток пробурено</span><span class="prop-val cyan" id="cDays">0</span></div>
+      <div class="prop-row"><span class="prop-key">НПВ (суток)</span><span class="prop-val ok" id="cNPT">0</span></div>
+      <div class="prop-row"><span class="prop-key">Потери на НПВ</span><span class="prop-val ok" id="cCost">$0</span></div>
+      <div class="prop-row"><span class="prop-key">Экономия AI</span><span class="prop-val ok" id="cSaved" style="color:var(--g)">—</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- BOTTOM CONTROLS -->
+<div id="bottom">
+  <button class="ctrl-btn active" id="btnPlay" onclick="togglePlay()">▶ Пуск</button>
+  <button class="ctrl-btn" onclick="resetSim()">↺</button>
+  <button class="ctrl-btn speed-btn" onclick="setSpeed(1)" id="sp1">1×</button>
+  <button class="ctrl-btn speed-btn active" onclick="setSpeed(5)" id="sp5">5×</button>
+  <button class="ctrl-btn speed-btn" onclick="setSpeed(20)" id="sp20">20×</button>
+  <div id="progressTrack" onclick="seekClick(event)">
+    <div id="progressBar">
+      <div id="progressFill"></div>
+      <div id="progressNPT"></div>
+    </div>
+  </div>
+  <input type="number" id="depthInput" value="0" min="0" max="3700" placeholder="м" onchange="seekDepth(this.value)">
+  <span style="font-size:10px;color:var(--muted)">м</span>
+</div>
+
+<!-- ALERT OVERLAY -->
+<div id="alertOverlay">
+  <div id="alertBox" class="crit">
+    <div class="alert-icon" id="aIcon">🚨</div>
+    <div class="alert-big-title" id="aTitle"></div>
+    <div class="alert-big-body" id="aBody"></div>
+    <div class="alert-prob-row" id="aProbRow" style="display:none">
+      <span class="alert-prob-chip" id="aProb"></span>
+    </div>
+    <div class="alert-actions">
+      <button class="btn-ack primary" id="ackBtn" onclick="ackAlert()">Принял — принять меры</button>
+      <button class="btn-ack secondary" onclick="dismissAlert()">Позже</button>
+    </div>
+  </div>
+</div>
+
+<!-- EVENT DETAIL MODAL -->
+<div id="eventModal">
+  <div id="eventModalBox">
+    <button class="em-close" onclick="closeEventModal()">✕</button>
+    <div class="em-depth" id="emDepth"></div>
+    <div class="em-title" id="emTitle"></div>
+    <div class="em-body" id="emBody"></div>
+    <div class="em-rec">
+      <div class="em-rec-title">Рекомендации AI</div>
+      <div id="emRec"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+// ── Светлая тема по URL-параметру ──
+(function(){
+  const p = new URLSearchParams(window.location.search);
+  if(p.get('light')==='1') document.body.classList.add('light-theme');
+})();
+
+// ═══════════════════════════════════════════════════════════
+// GEOLOGICAL COLUMN — Kovykta GKM, Well 73, Irkutsk region
+// ═══════════════════════════════════════════════════════════
+const STRAT = [
+  {f:0,    t:40,   n:'Четвертичные отложения',            s:'Q',   cls:'loose',
+   c:'#8B7355', torq:2,  wob:20,  rpm:60,  rop:16, dp:60,  ecd:1.05, dens:1.05, pv:8,  yp:15, gel:3,  api:4.0, ph:9.0,  kcl:0, cl:500,    hl:150,
+   risk:'low',      riskLabel:'Риск низкий', desc:'Рыхлые четвертичные отложения: суглинки, пески, галечники. Направление 0–40 м.'},
+  {f:40,   t:700,  n:'Верхоленская свита',                s:'Вх',  cls:'clay',
+   c:'#943A28', torq:6,  wob:40,  rpm:80,  rop:10, dp:95,  ecd:0.97, dens:0.95, pv:14, yp:25, gel:6,  api:6.0, ph:9.0,  kcl:0, cl:800,    hl:250,
+   risk:'critical', riskLabel:'КРИТИЧНО: трещинокарст!', desc:'Красноцветные глины, алевролиты, гипс, карст. ГЛАВНАЯ ЗОНА ПОГЛОЩЕНИЙ. Обрывы КНБК на 209, 228, 272, 664 м.'},
+  {f:700,  t:1150, n:'Литвинцевская свита',               s:'Лв',  cls:'tight',
+   c:'#7A9060', torq:10, wob:70,  rpm:85,  rop:8,  dp:120, ecd:1.07, dens:1.04, pv:15, yp:28, gel:7,  api:5.5, ph:9.5,  kcl:0, cl:1200,   hl:290,
+   risk:'med',      riskLabel:'Умеренный риск', desc:'Известняки и доломиты Литвинцевской свиты. Кавернозность умеренная. Контроль ECD строгий.'},
+  {f:1150, t:1600, n:'Ангарская свита',                   s:'Ан',  cls:'argillite',
+   c:'#C4B898', torq:9,  wob:65,  rpm:80,  rop:9,  dp:135, ecd:1.08, dens:1.06, pv:16, yp:30, gel:8,  api:5.0, ph:9.5,  kcl:0, cl:2500,   hl:295,
+   risk:'med',      riskLabel:'Эвапориты, соли', desc:'Переслаивание ангидритов, каменной соли, доломитов. Насыщение раствора NaCl. Контроль хлоридов каждые 4 ч.'},
+  {f:1600, t:1950, n:'Бельская свита',                    s:'Бл',  cls:'tight',
+   c:'#7A8C78', torq:11, wob:75,  rpm:82,  rop:8,  dp:148, ecd:1.10, dens:1.08, pv:16, yp:29, gel:7,  api:5.2, ph:9.5,  kcl:0, cl:3000,   hl:300,
+   risk:'med',      riskLabel:'Умеренный риск', desc:'Доломиты и известняки Бельской свиты. Плотные породы, умеренная трещиноватость.'},
+  {f:1950, t:2300, n:'Булайская свита',                   s:'Бу',  cls:'tight',
+   c:'#607870', torq:12, wob:80,  rpm:80,  rop:7,  dp:160, ecd:1.12, dens:1.10, pv:17, yp:31, gel:8,  api:5.0, ph:9.5,  kcl:0, cl:4000,   hl:305,
+   risk:'med',      riskLabel:'Умеренный риск', desc:'Массивные доломиты Булайской свиты. Плотные породы, высокие механические нагрузки.'},
+  {f:2300, t:2700, n:'Усольская свита',                   s:'Ус',  cls:'clay',
+   c:'#5050A0', torq:8,  wob:50,  rpm:75,  rop:6,  dp:240, ecd:1.55, dens:1.50, pv:20, yp:35, gel:10, api:4.8, ph:10.0, kcl:0, cl:150000, hl:340,
+   risk:'high',     riskLabel:'АВПД! Ка=2.27', desc:'Галиты (каменная соль), ангидриты, доломиты. АВПД Ка=2.27. Строгий контроль плотности раствора. Риск выброса!'},
+  {f:2700, t:3000, n:'Преображенский горизонт',           s:'Пр',  cls:'reservoir',
+   c:'#1A5C30', torq:10, wob:60,  rpm:75,  rop:9,  dp:280, ecd:1.14, dens:1.11, pv:18, yp:32, gel:9,  api:5.0, ph:9.5,  kcl:0, cl:5000,   hl:320,
+   risk:'high',     riskLabel:'Газовый коллектор!', desc:'Карбонатный газоносный коллектор Преображенского горизонта. Контроль ГВА, готовность ПВО обязательна.'},
+  {f:3000, t:3180, n:'Парфёновский горизонт (цель)',      s:'Пф',  cls:'reservoir',
+   c:'#0A4820', torq:11, wob:55,  rpm:70,  rop:10, dp:295, ecd:1.12, dens:1.11, pv:17, yp:30, gel:8,  api:4.8, ph:9.5,  kcl:0, cl:5000,   hl:315,
+   risk:'high',     riskLabel:'ЦЕЛЬ — газ Парфёновского', desc:'Основной газоносный пласт. Песчаники-коллекторы. ГАЗОВЫЙ КОНТАКТ. Каротаж + ИПТ обязательны.'},
+  {f:3180, t:3540, n:'Чорская свита (хвостовик)',         s:'Чр',  cls:'tight',
+   c:'#2A3C28', torq:14, wob:70,  rpm:72,  rop:6,  dp:310, ecd:1.10, dens:1.08, pv:16, yp:28, gel:8,  api:5.0, ph:9.5,  kcl:0, cl:4000,   hl:310,
+   risk:'med',      riskLabel:'Плотные карбонаты', desc:'Карбонаты и доломиты Чорской свиты. Интервал хвостовика 3180–3540 м.'},
+];
+
+// ═══════════════════════════════════════════════════════════
+// CASING PROGRAM — Kovykta GKM, Well 73
+// ═══════════════════════════════════════════════════════════
+const CASING_PROGRAM = [
+  {shoe:700,  od:426, id_:398, label:'Кондуктор Ø426',       color:'#7090b0', durH:10},
+  {shoe:2140, od:295, id_:273, label:'Тех. колонна-1 Ø295',  color:'#607080', durH:16},
+  {shoe:2700, od:219, id_:201, label:'Тех. колонна-2 Ø219',  color:'#506878', durH:14},
+  {shoe:3180, od:146, id_:130, label:'Экспл. колонна Ø146',  color:'#9aaab8', durH:18},
+  {shoe:3540, od:102, id_:88,  label:'Хвостовик Ø102',       color:'#a0b0c0', durH:10},
+];
+const cementedSet = new Set(); // Set of csgIdx
+
+// ═══════════════════════════════════════════════════════════
+// DRILLING PHASES — Kovykta GKM, Well 73
+// ═══════════════════════════════════════════════════════════
+const PHASES = [
+  {id:0,  type:'drill',   from:0,    to:700,  name:'Кондуктор Ø394 мм (60–700 м)',              holeDiam:394},
+  {id:1,  type:'pooh',    from:700,  to:0,    name:'Подъём КНБК №1'},
+  {id:2,  type:'runcsg',  from:0,    to:700,  name:'Спуск кондуктора Ø426 мм',                  csgIdx:0},
+  {id:3,  type:'cement',             name:'ОЗЦ кондуктора Ø426 мм',                               csgIdx:0},
+  {id:4,  type:'rih',     from:0,    to:700,  name:'Спуск КНБК №2 (Ø295 мм)'},
+  {id:5,  type:'drill',   from:700,  to:2140, name:'Тех. колонна-1 Ø295 мм (700–2140 м)',       holeDiam:295},
+  {id:6,  type:'pooh',    from:2140, to:0,    name:'Подъём КНБК №2'},
+  {id:7,  type:'runcsg',  from:0,    to:2140, name:'Спуск тех. колонны-1 Ø295 мм',              csgIdx:1},
+  {id:8,  type:'cement',             name:'ОЗЦ тех. колонны-1',                                   csgIdx:1},
+  {id:9,  type:'rih',     from:0,    to:2140, name:'Спуск КНБК №3 (Ø215.9 мм)'},
+  {id:10, type:'drill',   from:2140, to:2700, name:'Тех. колонна-2 Ø215.9 мм (2140–2700 м)',   holeDiam:216},
+  {id:11, type:'pooh',    from:2700, to:0,    name:'Подъём КНБК №3'},
+  {id:12, type:'runcsg',  from:0,    to:2700, name:'Спуск тех. колонны-2 Ø219 мм',              csgIdx:2},
+  {id:13, type:'cement',             name:'ОЗЦ тех. колонны-2',                                   csgIdx:2},
+  {id:14, type:'rih',     from:0,    to:2700, name:'Спуск КНБК №4 (Ø155.6 мм)'},
+  {id:15, type:'drill',   from:2700, to:3180, name:'Экспл. колонна Ø155.6 мм (2700–3180 м)',   holeDiam:155},
+  {id:16, type:'pooh',    from:3180, to:0,    name:'Подъём КНБК №4'},
+  {id:17, type:'runcsg',  from:0,    to:3180, name:'Спуск экспл. колонны Ø146 мм',              csgIdx:3},
+  {id:18, type:'cement',             name:'ОЗЦ экспл. колонны Ø146 мм',                           csgIdx:3},
+  {id:19, type:'rih',     from:0,    to:3180, name:'Спуск КНБК №5 (Ø120.7 мм)'},
+  {id:20, type:'drill',   from:3180, to:3540, name:'Хвостовик Ø120.7 мм (3180–3540 м)',        holeDiam:121},
+  {id:21, type:'pooh',    from:3540, to:0,    name:'Подъём КНБК №5'},
+  {id:22, type:'runcsg',  from:0,    to:3540, name:'Спуск хвостовика Ø102 мм',                  csgIdx:4},
+  {id:23, type:'cement',             name:'ОЗЦ хвостовика',                                       csgIdx:4},
+];
+
+// ═══════════════════════════════════════════════════════════
+// DEPTH-TRIGGERED EVENTS — Kovykta GKM, Well 73
+// ═══════════════════════════════════════════════════════════
+const EVENTS = [
+  {d:80,   cls:'crit', icon:'🚨', title:'ВХОД В ВЕРХОЛЕНСКУЮ — зона поглощений!',
+   body:'Интервал 70–700 м: трещинокарстовые поглощения. По данным скв.73 — полная потеря циркуляции с 70 м, интенсивность 36–60 м³/ч.',
+   rec:'1. Снизить расход до минимального (20–22 л/с)\n2. Приготовить ВУС 35 м³ (7% глина + 15% опилки + 8% волокно)\n3. Профилактические отрывы КНБК КАЖДЫЙ 1 М\n4. Ловильный инструмент на буровой (колокол + овершот)\n5. Непрерывный контроль объёма ям',
+   prob:'Риск поглощения: 85%', ack:'Меры приняты', overlay:true},
+  {d:209,  cls:'crit', icon:'🚨', title:'ГЛУБИНА 209 м — ИСТОРИЧЕСКИЙ ОБРЫВ КНБК!',
+   body:'По данным скв.73: обрыв КНБК на 209 м при бурении без циркуляции. AI рекомендует максимальную осторожность.',
+   rec:'1. ПРОФИЛАКТИЧЕСКИЙ ОТРЫВ — прямо сейчас\n2. Снизить осевую нагрузку на 30%\n3. Контроль крутящего момента каждые 0.5 м\n4. Не бурить без циркуляции\n5. Ловильный инструмент в полной готовности',
+   prob:'Риск обрыва КНБК: 75%', ack:'Отрыв выполнен', overlay:true},
+  {d:228,  cls:'high', icon:'⚠️', title:'Глубина 228 м — второй исторический обрыв КНБК',
+   body:'На скв.73: обрыв КНБК на 228 м. Интервал 200–280 м — зона максимальных аварий с КНБК.',
+   rec:'1. Профилактический отрыв\n2. Снизить ВОБ на 20%\n3. Промывка 1 полный цикл\n4. Записать в суточный рапорт',
+   prob:'Риск: 60%', ack:'Выполнено', overlay:false},
+  {d:272,  cls:'high', icon:'⚠️', title:'Глубина 272 м — третий исторический обрыв КНБК',
+   body:'Зафиксирован на скв.73. Режим максимальной осторожности продолжается.',
+   rec:'1. Профилактический отрыв\n2. Контроль ВОБ и момента\n3. Промывка полного цикла',
+   prob:'Риск: 55%', ack:'Выполнено', overlay:false},
+  {d:380,  cls:'warn', icon:'💧', title:'Первые признаки поглощения',
+   body:'Снижение уровня в доливных ёмкостях −2 м³/ч. Частичное поглощение в трещинах Верхоленской свиты.',
+   rec:'1. Закачать ВУС 15 м³\n2. Снизить расход до 18–20 л/с\n3. Зафиксировать объём потерь\n4. При нарастании (>5 м³/ч) — пробка ЛЦМ',
+   prob:'', ack:'ВУС закачан', overlay:false},
+  {d:664,  cls:'crit', icon:'🚨', title:'ГЛУБИНА 664 м — четвёртый обрыв КНБК на скв.73!',
+   body:'Последний задокументированный обрыв КНБК на скв.73 на 664 м. Полная потеря циркуляции, 60 м³/ч.',
+   rec:'1. ОБЯЗАТЕЛЬНЫЙ профилактический отрыв\n2. Снизить ВОБ на 30%\n3. Промывка 2 полных цикла\n4. Режим максимальной осторожности до выхода из зоны\n5. Ловильный инструмент наготове',
+   prob:'Риск обрыва КНБК: 80%', ack:'Отрыв выполнен', overlay:true},
+  {d:700,  cls:'ok',   icon:'✅', title:'Кондуктор завершён — спуск Ø426 мм',
+   body:'Интервал 60–700 м (Верхоленская свита) пройден. Спуск кондуктора Ø426 мм, цементирование.',
+   rec:'1. Подъём КНБК\n2. Спуск кондуктора Ø426 мм\n3. Цементирование до устья\n4. ОЗЦ 48 ч',
+   prob:'', ack:'Выполнено', overlay:false},
+  {d:1100, cls:'info', icon:'📊', title:'Литвинцевская свита — карбонаты',
+   body:'Переход в карбонатные породы. Кавернозность умеренная. Скорректировать режим бурения.',
+   rec:'1. Увеличить ВОБ до 70–80 кН\n2. Перейти на Полибур-Турбо ρ=1.04 г/см³\n3. Об/мин 85–90 для PDC\n4. Строгий контроль ECD',
+   prob:'', ack:'Записано', overlay:false},
+  {d:1450, cls:'warn', icon:'🧂', title:'Ангарская свита — эвапориты, соли',
+   body:'Переслаивание каменной соли и ангидритов. Возможно растворение соли, кавернозность. Контроль хлоридов обязателен.',
+   rec:'1. Насытить раствор NaCl — хлориды ≥ 150 г/л\n2. Контроль хлоридов каждые 4 ч\n3. Снизить расход — риск кавернозности\n4. Промывка каждые 100 м',
+   prob:'Риск кавернозности: 35%', ack:'Насыщение выполнено', overlay:false},
+  {d:2140, cls:'ok',   icon:'✅', title:'Тех. колонна-1 — спуск Ø295 мм (2140 м)',
+   body:'Интервал 700–2140 м завершён. Спуск и цементирование 1-й тех. колонны Ø295 мм.',
+   rec:'1. Подъём КНБК\n2. Спуск тех. колонны Ø295 мм\n3. Цементирование\n4. ОЗЦ 48 ч',
+   prob:'', ack:'Выполнено', overlay:false},
+  {d:2200, cls:'crit', icon:'🔴', title:'АВПД! Усольская свита — Ка=2.27',
+   body:'Вход в зону аномально высоких пластовых давлений. Усольская свита — галиты, ангидриты. Ка=2.27. Риск выброса!',
+   rec:'1. НЕМЕДЛЕННО: плотность до 1.50–1.55 г/см³\n2. Строгий контроль ECD — не выше 1.60 г/см³\n3. Готовность ПВО к немедленному закрытию\n4. Контроль объёма ям каждые 15 мин\n5. Скорость СПО — не более 1 свечи в 5 мин\n6. Уведомить главного инженера',
+   prob:'Риск выброса: 60%', ack:'Плотность увеличена', overlay:true},
+  {d:2700, cls:'ok',   icon:'✅', title:'Тех. колонна-2 — спуск Ø219 мм (2700 м)',
+   body:'Зона АВПД (2140–2700 м) пройдена. Спуск 2-й тех. колонны Ø219 мм.',
+   rec:'1. Подъём КНБК\n2. Спуск тех. колонны Ø219 мм\n3. Цементирование с буферами\n4. ОЗЦ 72 ч',
+   prob:'', ack:'Выполнено', overlay:false},
+  {d:2870, cls:'high', icon:'⛽', title:'Преображенский горизонт — газовый коллектор!',
+   body:'Вход в газоносный коллектор Преображенского горизонта. Контроль ГВА и ПВО — обязательно.',
+   rec:'1. Плотность ≥ 1.11 г/см³ — не снижать\n2. Контроль ГВА каждые 15 мин\n3. ПВО в боеготовности\n4. ГИС обязательно\n5. Замер пластового давления',
+   prob:'Риск газопроявления: 40%', ack:'Режим ALERT', overlay:false},
+  {d:3050, cls:'crit', icon:'⛽', title:'ПАРФЁНОВСКИЙ ГОРИЗОНТ — ОСНОВНАЯ ЦЕЛЬ!',
+   body:'Вход в Парфёновский горизонт — основной газоносный объект Ковыктинского ГКМ. Начало ГИС-комплекса.',
+   rec:'1. Остановить бурение — ГИС (каротаж на кабеле)\n2. ИПТ — испытание пластоиспытателем\n3. Плотность 1.11 г/см³ — строго\n4. Подтвердить коллекторские свойства\n5. Акт вскрытия продуктивного пласта',
+   prob:'Газовый объект — основная цель', ack:'ГИС начат', overlay:true},
+  {d:3180, cls:'ok',   icon:'✅', title:'Экспл. колонна — спуск Ø146 мм (3180 м)',
+   body:'Эксплуатационная колонна 2700–3180 м завершена. Спуск Ø146 мм.',
+   rec:'1. Подъём КНБК\n2. Спуск экспл. колонны Ø146 мм\n3. Цементирование в две ступени\n4. ОЗЦ 72 ч',
+   prob:'', ack:'Выполнено', overlay:false},
+  {d:3540, cls:'ok',   icon:'🏆', title:'СКВАЖИНА ДОБУРЕНА! ТД = 3540 м',
+   body:'Ковыктинская скважина №73 завершена. Хвостовик 3180–3540 м (Чорская свита). Подготовка к испытанию Парфёновского горизонта.',
+   rec:'1. Финальный суточный рапорт\n2. Финальный каротаж\n3. ИПТ Парфёновского горизонта\n4. Подготовка к освоению и испытанию\n5. Ожидаемый дебит газа: 500+ тыс. м³/сут',
+   prob:'Ожидаемый дебит: 500+ тыс. м³/сут', ack:'Скважина завершена!', overlay:true},
+];
+
+// ═══════════════════════════════════════════════════════════
+// SIMULATION STATE
+// ═══════════════════════════════════════════════════════════
+const TD = 3540; // Kovykta Well 73
+let bitDepth = 0;   // current bit/casing tool depth
+let playing = true;
+let speed = 20;
+let animTime = 0;   // wall-clock seconds for smooth animation
+let _simDepthSet = false; // глубина устанавливается один раз при старте, poll не сбрасывает
+let animId = null;
+let lastTs = null;
+let phaseIdx = 0;
+let phaseElapsed = 0; // seconds (wall clock) into current phase
+let triggeredEvents = new Set();
+let nptActive = false;
+let nptDays = 0;
+let pendingAlert = null;
+let alertOpen = false;
+let prevYP = 20;
+
+// Smooth system — lerp toward targets, slow and realistic
+const sm = {wob:0,rpm:0,torq:0,hl:280,rop:100,dp:0,ecd:1.05,pit:0,flow:0,spm:0,
+            dens:0.95,t:38,pv:14,yp:25,gel:6,api:6.0,ph:9.0,kcl:0};
+const tgt = {...sm};
+
+// Параметры введённые пользователем — переопределяют значения пласта
+const userP = {};  // {rop, wob, rpm, torq, dp, flow, hl, dens, pv, yp, fv, ph}
+let lastTgtUpdate = 0;
+
+function seededR(a, b) {
+  // deterministic "random" from two ints — no flickering
+  const n = Math.sin(a * 127.1 + b * 311.7) * 43758.5453;
+  return n - Math.floor(n);
+}
+
+// ═══════════════════════════════════════════════════════════
+// CANVAS SETUP
+// ═══════════════════════════════════════════════════════════
+const canvas = document.getElementById('wellCanvas');
+const ctx = canvas.getContext('2d');
+
+function resizeCanvas() {
+  const wrap = document.getElementById('canvas-wrap');
+  canvas.width  = wrap.offsetWidth;
+  canvas.height = wrap.offsetHeight;
+}
+
+// ═══════════════════════════════════════════════════════════
+// GET CURRENT PHASE & FORMATION
+// ═══════════════════════════════════════════════════════════
+function getForm(d) {
+  for (let i = STRAT.length - 1; i >= 0; i--)
+    if (d >= STRAT[i].f) return STRAT[i];
+  return STRAT[0];
+}
+
+function currentDrillDepth() {
+  // actual bottom-of-hole depth (only advances during drill phases)
+  let d = 0;
+  for (let i = 0; i < phaseIdx; i++) {
+    if (PHASES[i].type === 'drill') d = PHASES[i].to;
+  }
+  if (PHASES[phaseIdx] && PHASES[phaseIdx].type === 'drill') d = bitDepth;
+  return d;
+}
+
+function getHolePx(holeDiam) {
+  // Returns half-width in pixels for a given hole diameter
+  return 14 + (holeDiam - 100) / 250 * 14; // 295→~22, 216→~19, 152→~16, 114→~14
+}
+
+// ═══════════════════════════════════════════════════════════
+// LITHOLOGY TEXTURES (static, seeded — no flickering)
+// ═══════════════════════════════════════════════════════════
+function drawLithoTexture(ctx2, cls, x, y, w, h, depthFrom) {
+  if (h < 3 || w < 2) return;
+  ctx2.save();
+  ctx2.beginPath(); ctx2.rect(x, y, w, h); ctx2.clip();
+
+  if (cls === 'loose') {
+    // Четвертичные — суглинки, пески, галечники
+    for (let row = 0; row < Math.ceil(h / 5); row++) {
+      for (let col = 0; col < Math.ceil(w / 6); col++) {
+        const r = seededR(depthFrom + row * 37, col * 19);
+        if (r > 0.30) {
+          const sz = 1.0 + seededR(row*2, col*3) * 2.5;
+          ctx2.beginPath();
+          ctx2.arc(x + col*6 + seededR(depthFrom+row,col)*4, y + row*5 + 2.5, sz, 0, Math.PI*2);
+          ctx2.fillStyle = r > 0.65
+            ? `rgba(200,180,140,${0.12+seededR(row,col)*0.08})`   // sand grain
+            : `rgba(150,130,100,${0.08+seededR(row*3,col)*0.06})`; // silt
+          ctx2.fill();
+        }
+      }
+    }
+    // Cross-bedding lamination
+    ctx2.lineWidth = 0.4;
+    for (let row = 0; row < Math.ceil(h/12); row++) {
+      ctx2.beginPath(); ctx2.strokeStyle = 'rgba(210,190,150,0.06)';
+      ctx2.moveTo(x, y+row*12+seededR(depthFrom+row,5)*3);
+      for (let dx = 0; dx < w; dx += 4)
+        ctx2.lineTo(x+dx, y+row*12+seededR(depthFrom+row*2,dx)*2);
+      ctx2.stroke();
+    }
+
+  } else if (cls === 'clay') {
+    // Верхоленская — красноцветные глины, гипсовые прожилки, карст
+    // Горизонтальная слоистость
+    ctx2.lineWidth = 0.8;
+    for (let row = 2; row < h; row += 3) {
+      const alpha = 0.06 + seededR(depthFrom + row, 1) * 0.06;
+      const lighter = (row % 9 < 3);
+      ctx2.beginPath();
+      ctx2.strokeStyle = lighter ? `rgba(180,100,80,${alpha+0.03})` : `rgba(130,60,40,${alpha})`;
+      ctx2.moveTo(x, y + row);
+      for (let dx = 0; dx < w; dx += 4)
+        ctx2.lineTo(x+dx, y+row + Math.sin((depthFrom+row+dx)*0.25)*0.8);
+      ctx2.stroke();
+    }
+    // Гипсовые жилки (белые диагональные)
+    for (let i = 0; i < Math.ceil(w*h/400); i++) {
+      if (seededR(depthFrom+i*7, 3) < 0.5) continue;
+      const gx = x + seededR(depthFrom+i, 11)*w;
+      const gy = y + seededR(depthFrom+i, 17)*h;
+      const len = 4 + seededR(depthFrom+i, 23)*10;
+      const ang = seededR(depthFrom+i, 29)*Math.PI;
+      ctx2.beginPath();
+      ctx2.strokeStyle = 'rgba(240,235,220,0.18)';
+      ctx2.lineWidth = 0.7 + seededR(depthFrom+i, 31)*0.6;
+      ctx2.moveTo(gx, gy);
+      ctx2.lineTo(gx + Math.cos(ang)*len, gy + Math.sin(ang)*len);
+      ctx2.stroke();
+    }
+    // Карстовые полости (тёмные эллипсы)
+    for (let i = 0; i < Math.ceil(w*h/800); i++) {
+      if (seededR(depthFrom+i*11, 5) < 0.72) continue;
+      ctx2.beginPath();
+      ctx2.ellipse(
+        x + seededR(depthFrom+i, 41)*w,
+        y + seededR(depthFrom+i, 43)*h,
+        3 + seededR(depthFrom+i, 45)*5,
+        1.5 + seededR(depthFrom+i, 47)*2.5,
+        seededR(depthFrom+i, 49)*Math.PI, 0, Math.PI*2
+      );
+      ctx2.fillStyle = 'rgba(20,10,5,0.20)';
+      ctx2.fill();
+    }
+
+  } else if (cls === 'tight') {
+    // Насоновская/Верхнехетская/Суходудинская — плотные алевролиты
+    // Серые горизонтальные полосы
+    ctx2.lineWidth = 0.5;
+    for (let row = 2; row < h; row += 4) {
+      const thick = (row % 12 < 4);
+      ctx2.beginPath();
+      ctx2.strokeStyle = thick
+        ? `rgba(160,170,155,${0.09+seededR(depthFrom+row,1)*0.05})`
+        : `rgba(120,130,115,${0.05+seededR(depthFrom+row,2)*0.03})`;
+      ctx2.lineWidth = thick ? 0.8 : 0.4;
+      ctx2.moveTo(x, y+row);
+      for (let dx = 0; dx < w; dx += 3)
+        ctx2.lineTo(x+dx, y+row+seededR(depthFrom+row*3,dx)*0.6);
+      ctx2.stroke();
+    }
+    // Стилолиты (зубчатые швы)
+    for (let sy = y+8; sy < y+h-4; sy += 18+seededR(depthFrom+sy,7)*12) {
+      ctx2.beginPath(); ctx2.strokeStyle = 'rgba(80,90,70,0.12)'; ctx2.lineWidth = 0.6;
+      ctx2.moveTo(x, sy);
+      for (let dx = 0; dx < w; dx += 2) {
+        const tooth = ((dx/2)%2===0 ? 1 : -1) * (0.5 + seededR(depthFrom+sy,dx)*1);
+        ctx2.lineTo(x+dx, sy+tooth);
+      }
+      ctx2.stroke();
+    }
+    // Трещины
+    for (let i = 0; i < Math.ceil(w*h/600); i++) {
+      if (seededR(depthFrom+i*13, 7) < 0.6) continue;
+      const fx = x + seededR(depthFrom+i, 19)*w;
+      const fy = y + seededR(depthFrom+i, 23)*h;
+      const flen = 5 + seededR(depthFrom+i, 27)*12;
+      ctx2.beginPath(); ctx2.strokeStyle = 'rgba(200,210,190,0.10)'; ctx2.lineWidth = 0.5;
+      ctx2.moveTo(fx, fy);
+      ctx2.lineTo(fx + (seededR(depthFrom+i,31)-0.5)*3, fy + flen);
+      ctx2.stroke();
+    }
+
+  } else if (cls === 'argillite') {
+    // Ангарская — переслаивание ангидрита, соли, доломита
+    // Чередование светлых (соль) и тёмных (ангидрит) полос
+    for (let row = 0; row < h; row++) {
+      const band = Math.floor((row + seededR(depthFrom + Math.floor(row/3), 7)*3) / 5) % 3;
+      const a = band === 0 ? 0.08 : band === 1 ? 0.04 : 0.06;
+      const c = band === 0 ? '220,215,205' : band === 1 ? '100,110,130' : '160,155,145';
+      ctx2.fillStyle = `rgba(${c},${a})`;
+      ctx2.fillRect(x, y+row, w, 1);
+    }
+    // Кристаллы соли (кубические)
+    for (let i = 0; i < Math.ceil(w*h/180); i++) {
+      if (seededR(depthFrom+i*5, 3) < 0.55) continue;
+      const cx2 = x + seededR(depthFrom+i, 11)*w;
+      const cy2 = y + seededR(depthFrom+i, 13)*h;
+      const cs = 1.5 + seededR(depthFrom+i, 15)*2;
+      ctx2.strokeStyle = 'rgba(230,225,215,0.14)'; ctx2.lineWidth = 0.4;
+      ctx2.strokeRect(cx2, cy2, cs, cs);
+    }
+
+  } else if (cls === 'sand') {
+    // Песчаник
+    const bH = 6, bW = 12;
+    ctx2.lineWidth = 0.4; ctx2.strokeStyle = 'rgba(200,175,110,0.10)';
+    for (let row = 0; row*bH < h+bH; row++) {
+      const off = (row%2)*(bW/2), yy = y+row*bH;
+      ctx2.beginPath(); ctx2.moveTo(x,yy); ctx2.lineTo(x+w,yy); ctx2.stroke();
+      for (let col=-1; col*bW < w+bW; col++) {
+        const xx = x+col*bW+off;
+        ctx2.beginPath(); ctx2.moveTo(xx,yy); ctx2.lineTo(xx,yy+bH); ctx2.stroke();
+      }
+    }
+    for (let i=0; i<Math.ceil(w*h/60); i++) {
+      if (seededR(depthFrom+i,3)<0.6) continue;
+      ctx2.beginPath();
+      ctx2.arc(x+seededR(depthFrom+i,5)*w, y+seededR(depthFrom+i,7)*h, 0.8+seededR(depthFrom+i,9)*0.8, 0, Math.PI*2);
+      ctx2.fillStyle = 'rgba(210,185,120,0.12)'; ctx2.fill();
+    }
+
+  } else if (cls === 'reservoir') {
+    // Газоносный коллектор — Преображенский, Парфёновский
+    // Карбонатная матрица с порами (газ)
+    const bH = 7, bW = 13;
+    ctx2.lineWidth = 0.4; ctx2.strokeStyle = 'rgba(60,180,100,0.13)';
+    for (let row = 0; row*bH < h+bH; row++) {
+      const off = (row%2)*(bW/2), yy = y+row*bH;
+      ctx2.beginPath(); ctx2.moveTo(x,yy); ctx2.lineTo(x+w,yy); ctx2.stroke();
+      for (let col=-1; col*bW<w+bW; col++) {
+        const xx = x+col*bW+off;
+        ctx2.beginPath(); ctx2.moveTo(xx,yy); ctx2.lineTo(xx,yy+bH); ctx2.stroke();
+        if (seededR(depthFrom+row*31, col*23) > 0.42) {
+          ctx2.fillStyle = 'rgba(0,140,70,0.16)';
+          ctx2.fillRect(xx+0.5, yy+0.5, bW-1, bH-1);
+        }
+      }
+    }
+    // Газовые поры
+    for (let i=0; i<Math.ceil(w*h/80); i++) {
+      if (seededR(depthFrom+i*3,5)<0.5) continue;
+      ctx2.beginPath();
+      ctx2.arc(x+seededR(depthFrom+i,11)*w, y+seededR(depthFrom+i,13)*h, 0.8+seededR(depthFrom+i,15)*1.2, 0, Math.PI*2);
+      ctx2.fillStyle = 'rgba(100,230,140,0.18)'; ctx2.fill();
+    }
+  }
+
+  ctx2.restore();
+}
+
+// ═══════════════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════════════
+function rrect(ctx2, x, y, w, h, r) {
+  ctx2.beginPath();
+  ctx2.moveTo(x + r, y);
+  ctx2.lineTo(x + w - r, y);
+  ctx2.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx2.lineTo(x + w, y + h - r);
+  ctx2.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx2.lineTo(x + r, y + h);
+  ctx2.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx2.lineTo(x, y + r);
+  ctx2.quadraticCurveTo(x, y, x + r, y);
+  ctx2.closePath();
+}
+
+const EV_C = {crit:'#ef4444',warn:'#f59e0b',high:'#f97316',info:'#00d4ff',ok:'#22c55e'};
+const EV_BG = {crit:'rgba(239,68,68,.14)',warn:'rgba(245,158,11,.14)',high:'rgba(249,115,22,.14)',info:'rgba(0,212,255,.10)',ok:'rgba(34,197,94,.10)'};
+
+// ═══════════════════════════════════════════════════════════
+// DIRECTIONAL TRAJECTORY
+// ═══════════════════════════════════════════════════════════
+const KOP       = 2500;                            // Kovykta 73: kickoff point, m MD
+const BLD_RATE  = 6;                               // build rate, deg/30m
+const BUILD_LEN = 90 / BLD_RATE * 30;             // 450 m MD for 0→90°
+const R_CURVE   = 30 * 180 / (Math.PI * BLD_RATE); // ≈ 286.5 m radius
+const EOB       = KOP + BUILD_LEN;                 // 2950 m MD (end of build)
+const EOB_TVD   = KOP + R_CURVE;                   // ≈ 2786.5 m TVD
+const EOB_HD    = R_CURVE;                         // ≈ 286.5 m horizontal displacement
+
+function wellPathAt(md) {
+  if (md <= 0)   return {tvd: 0,  hd: 0,  inc: 0};
+  if (md <= KOP) return {tvd: md, hd: 0,  inc: 0};
+  if (md <= EOB) {
+    const incRad = ((md - KOP) / BUILD_LEN) * (Math.PI / 2);
+    return {
+      tvd: KOP + R_CURVE * Math.sin(incRad),
+      hd:  R_CURVE * (1 - Math.cos(incRad)),
+      inc: incRad * 180 / Math.PI
+    };
+  }
+  return {tvd: EOB_TVD, hd: EOB_HD + (md - EOB), inc: 90};
+}
+
+// ═══════════════════════════════════════════════════════════
+// DRAW WELLBORE CANVAS
+// ═══════════════════════════════════════════════════════════
+// Cuttings particles
+const PARTS = [];
+function spawnPart(x, y, color) {
+  PARTS.push({x, y, vx:(Math.random()-.5)*0.4, vy:-0.8-Math.random()*1.2, life:1, size:1+Math.random()*2, color});
+}
+
+// ── Анимация выноса шлама в затрубье ──────────────────────
+// flow — расход л/с, pipePx — радиус трубы в пикселях
+// Позже: подключить к гидравлике (скорость подъёма шлама)
+// toXYFn и getNormFn передаются из drawWell (они локальны там)
+function drawCuttings(fromMD, toMD, holePxFn, pipePx, flow, formColor, toXYFn, getNormFn) {
+  if (flow < 3 || toMD <= fromMD) return;
+
+  // ── Скорость выноса шлама: расход + плотность + ДНС + ПВ ──
+  // Упрощённая модель: v_transport ~ Q * (ρ_effect) * (YP_effect) / PV_penalty
+  const flowFrac   = Math.min(1.8, flow / 30);           // расход (норм. к 30 л/с)
+  const densEffect = Math.min(1.5, sm.dens / 1.0);       // плотность: тяжелее = лучше
+  const ypEffect   = Math.min(1.8, sm.yp / 20);          // ДНС: выше = лучше несёт шлам
+  const pvPenalty  = Math.max(0.6, Math.min(1.2, 14 / Math.max(1, sm.pv))); // ПВ: высокое замедляет
+  const transport  = flowFrac * (densEffect * 0.35 + ypEffect * 0.45 + pvPenalty * 0.20);
+  const riseSpeed  = Math.max(0.5, transport * 11);      // визуальная скорость подъёма
+
+  const nPart = Math.round(Math.min(1.8, flow/20) * 30 * Math.min(1, (toMD-fromMD)/300));
+  const col       = formColor;
+
+  for (let i = 0; i < nPart; i++) {
+    const phaseOff = i / nPart;
+    const phase    = ((animTime * riseSpeed / Math.max(1, toMD-fromMD)) + phaseOff) % 1;
+    const md       = toMD - phase * (toMD - fromMD);
+    if (md < fromMD || md > toMD) continue;
+
+    const pt   = toXYFn(md);
+    const norm = getNormFn(md);
+    const hw   = holePxFn(md);
+    const ann  = Math.max(2, hw - pipePx - 1);
+
+    const radFrac = 0.25 + seededR(i*7, 3) * 0.60;
+    const rad     = pipePx + ann * radFrac;
+    const side    = seededR(i, 13) > 0.5 ? 1 : -1;
+    const sz      = 1.0 + seededR(i*3, 7) * 1.8;
+    const alpha   = 0.55 + seededR(i*5, 11) * 0.35;
+
+    ctx.beginPath();
+    ctx.arc(pt.x + norm.nx * rad * side, pt.y + norm.ny * rad * side, sz, 0, Math.PI*2);
+    ctx.fillStyle = col + Math.floor(alpha*255).toString(16).padStart(2,'0');
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(pt.x - norm.nx * rad * side, pt.y - norm.ny * rad * side, sz*0.7, 0, Math.PI*2);
+    ctx.fillStyle = col + Math.floor(alpha*0.6*255).toString(16).padStart(2,'0');
+    ctx.fill();
+  }
+}
+
+function drawWell() {
+  const W = canvas.width, H = canvas.height;
+  if (!W || !H) return;
+  ctx.clearRect(0, 0, W, H);
+
+  const phase = PHASES[phaseIdx] || PHASES[PHASES.length - 1];
+  const VIEW = 700;
+  const bohDepth = currentDrillDepth();
+  const scale  = H / VIEW;
+  const lithoW = 46;
+
+  // ── Trajectory-aware camera
+  const bitPt  = wellPathAt(bitDepth);
+  const camTVD = Math.max(0, bitPt.tvd - H * 0.72);
+  const camHD  = Math.max(0, bitPt.hd  - W * 0.52);
+  const baseX  = W * 0.38; // screen X where HD=0 lands when camHD=0
+
+  // Convert measured depth → screen {x, y}
+  function toXY(md) {
+    const p = wellPathAt(md);
+    return { x: baseX + (p.hd - camHD) * scale, y: (p.tvd - camTVD) * scale };
+  }
+  // TVD → screen Y  (for formation bands)
+  function toSY(tvd) { return (tvd - camTVD) * scale; }
+  // Perpendicular unit vector at MD
+  function getNorm(md) {
+    const d = 0.4;
+    const a = toXY(Math.max(0, md - d)), b = toXY(md + d);
+    const dx = b.x - a.x, dy = b.y - a.y;
+    const len = Math.sqrt(dx*dx + dy*dy) || 1;
+    return {nx: -dy/len, ny: dx/len};
+  }
+  // Hole radius in px
+  function holePxAt(d) {
+    if (d <= 0) return getHolePx(295);
+    for (let i = 0; i < PHASES.length; i++) {
+      if (PHASES[i].type === 'drill' && d >= PHASES[i].from && d <= PHASES[i].to)
+        return getHolePx(PHASES[i].holeDiam);
+      if (PHASES[i].type === 'drill' && d < PHASES[i].from)
+        return getHolePx(PHASES[i].holeDiam);
+    }
+    return getHolePx(114);
+  }
+  // Trace path on ctx (no stroke/fill — caller does that)
+  function tracePath(fromMD, toMD, N) {
+    N = N || Math.max(18, Math.ceil((toMD - fromMD) / 15));
+    ctx.beginPath();
+    for (let i = 0; i <= N; i++) {
+      const p = toXY(fromMD + (toMD - fromMD) * i / N);
+      i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y);
+    }
+  }
+  // Build wall offset arrays along path
+  function wallPts(fromMD, toMD, hw, N) {
+    N = N || Math.max(18, Math.ceil((toMD - fromMD) / 15));
+    const L = [], R = [];
+    for (let i = 0; i <= N; i++) {
+      const md = fromMD + (toMD - fromMD) * i / N;
+      const {x, y} = toXY(md);
+      const {nx, ny} = getNorm(md);
+      L.push({x: x + nx*hw, y: y + ny*hw});
+      R.push({x: x - nx*hw, y: y - ny*hw});
+    }
+    return {L, R};
+  }
+  function fillBore(fromMD, toMD, hw, style) {
+    const {L, R} = wallPts(fromMD, toMD, hw);
+    ctx.beginPath();
+    L.forEach((p,i) => i===0 ? ctx.moveTo(p.x,p.y) : ctx.lineTo(p.x,p.y));
+    [...R].reverse().forEach(p => ctx.lineTo(p.x,p.y));
+    ctx.closePath();
+    ctx.fillStyle = style; ctx.fill();
+  }
+  function strokeBore(fromMD, toMD, hw, col, lw) {
+    const {L, R} = wallPts(fromMD, toMD, hw);
+    ctx.strokeStyle = col; ctx.lineWidth = lw || 1.5;
+    [L, R].forEach(pts => {
+      ctx.beginPath();
+      pts.forEach((p,i) => i===0 ? ctx.moveTo(p.x,p.y) : ctx.lineTo(p.x,p.y));
+      ctx.stroke();
+    });
+  }
+
+  // ── Background
+  ctx.fillStyle = '#050810';
+  ctx.fillRect(0, 0, W, H);
+
+  // ── Lithology strip + formation bands (TVD-based horizontal bands)
+  STRAT.forEach(s => {
+    const ftv = s.ftv !== undefined ? s.ftv : s.f;
+    const ttv = s.ttv !== undefined ? s.ttv : s.t;
+    const y1 = toSY(ftv), y2 = toSY(ttv);
+    if (y2 < 0 || y1 > H) return;
+    const gy1 = Math.max(-2, y1), gy2 = Math.min(H + 2, y2);
+    const bh = gy2 - gy1;
+    if (bh < 1) return;
+
+    const g = ctx.createLinearGradient(0, gy1, 0, gy2);
+    g.addColorStop(0, s.c + 'ee');
+    g.addColorStop(1, s.c + 'bb');
+    ctx.fillStyle = g;
+    ctx.fillRect(0, gy1, lithoW, bh);
+    drawLithoTexture(ctx, s.cls, 1, gy1, lithoW - 2, bh, ftv);
+    ctx.fillStyle = s.c + '28';
+    ctx.fillRect(lithoW, gy1, W - lithoW, bh);
+
+    if (bh > 18) {
+      ctx.save();
+      ctx.fillStyle = 'rgba(255,255,255,0.7)';
+      ctx.font = 'bold 11px system-ui'; ctx.textAlign = 'left';
+      ctx.shadowColor = 'rgba(0,0,0,0.9)'; ctx.shadowBlur = 4;
+      ctx.fillText(s.s, 3, gy1 + Math.min(15, bh * 0.55));
+      ctx.shadowBlur = 0;
+      if (bh > 28) {
+        ctx.fillStyle = 'rgba(255,255,255,0.35)';
+        ctx.font = '9px system-ui';
+        ctx.shadowColor = 'rgba(0,0,0,0.9)'; ctx.shadowBlur = 3;
+        ctx.fillText(ftv + 'м', 3, gy1 + Math.min(26, bh * 0.8));
+        ctx.shadowBlur = 0;
+      }
+      ctx.restore();
+    }
+  });
+
+  // ── Litho strip border
+  ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(lithoW, 0); ctx.lineTo(lithoW, H); ctx.stroke();
+
+  // ── Formation boundary lines (TVD-based)
+  STRAT.forEach(s => {
+    const ftv = s.ftv !== undefined ? s.ftv : s.f;
+    const y = toSY(ftv);
+    if (y < 0 || y > H) return;
+    ctx.strokeStyle = 'rgba(255,255,255,0.07)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4, 7]);
+    ctx.beginPath(); ctx.moveTo(lithoW, y); ctx.lineTo(W - 50, y); ctx.stroke();
+    ctx.setLineDash([]);
+  });
+
+  // ── Casings (cemented, drawn along trajectory)
+  const sortedCsg = [...cementedSet].sort((a, b) => CASING_PROGRAM[b].shoe - CASING_PROGRAM[a].shoe);
+  sortedCsg.forEach(ci => {
+    const csg = CASING_PROGRAM[ci];
+    const shoePt = toXY(csg.shoe);
+    if (shoePt.y < -50 && toXY(0).y < -50) return;
+    const hw  = holePxAt(csg.shoe / 2);
+    const odPx = 10 + csg.od / 295 * 24;
+    const idPx = odPx - 3;
+    fillBore(0, csg.shoe, hw,   'rgba(120,130,140,0.18)');
+    strokeBore(0, csg.shoe, odPx, csg.color, 2.5);
+    fillBore(0, csg.shoe, idPx, 'rgba(6,12,28,0.85)');
+    // Shoe cap — perpendicular bar at shoe depth
+    if (shoePt.y > -10 && shoePt.y < H + 10) {
+      const {nx, ny} = getNorm(csg.shoe);
+      ctx.strokeStyle = csg.color; ctx.lineWidth = 6;
+      ctx.beginPath();
+      ctx.moveTo(shoePt.x - nx*(odPx+6), shoePt.y - ny*(odPx+6));
+      ctx.lineTo(shoePt.x + nx*(odPx+6), shoePt.y + ny*(odPx+6));
+      ctx.stroke();
+      ctx.fillStyle = 'rgba(255,255,255,0.6)';
+      ctx.font = 'bold 8px system-ui'; ctx.textAlign = 'left';
+      ctx.fillText(csg.label, shoePt.x + Math.abs(nx)*(odPx+10)+2, shoePt.y + ny*(odPx+10)+3);
+    }
+  });
+
+  // ── Open hole (below lowest cemented shoe → bit)
+  const lowestShoe = sortedCsg.length > 0
+    ? CASING_PROGRAM[sortedCsg[sortedCsg.length - 1]].shoe : 0;
+  const curForm = getForm(bitDepth);
+
+  if (bohDepth > lowestShoe) {
+    const hw = getHolePx(phase.holeDiam || 295);
+
+    // Порода на стенках ствола — тонкая полоса цвета формации
+    fillBore(lowestShoe, bohDepth, hw + 3, curForm.c + '60');
+    // Основное заполнение — буровой раствор (тёмно-синий)
+    fillBore(lowestShoe, bohDepth, hw, 'rgba(0,20,60,0.80)');
+    // Небольшой ореол раствора
+    strokeBore(lowestShoe, bohDepth, hw, 'rgba(0,120,220,0.18)', 2);
+    // Стенка ствола — чёткая линия
+    strokeBore(lowestShoe, bohDepth, hw, curForm.c + 'aa', 1.5);
+
+    // Затрубная циркуляция раствора — восходящие полосы в аннулусе
+    if (sm.flow > 3) {
+      const flowFrac = Math.min(1, sm.flow / 35);
+      const hw2 = getHolePx(phase.holeDiam || 295);
+      const pHw = Math.max(2, Math.round(hw2 * 0.15));
+      const annW = hw2 - pHw;
+      const numStripes = Math.round(4 + flowFrac * 6);
+      for (let si = 0; si < numStripes; si++) {
+        const offset = ((animTime * flowFrac * 8 * (H / 700)) + si * (H / numStripes)) % H;
+        const radFrac = 0.15 + seededR(si * 3, 7) * 0.70;
+        const radL = pHw + annW * radFrac;
+        const stripeLen = 12 + seededR(si, 11) * 20;
+        const alpha = 0.06 + seededR(si, 13) * 0.06;
+        // Left side of annulus
+        const mdApprox = lowestShoe + (1 - (offset / H)) * (bohDepth - lowestShoe);
+        if (mdApprox < lowestShoe || mdApprox > bohDepth) continue;
+        const ptA = toXY(mdApprox);
+        const nmA = getNorm(mdApprox);
+        for (let side of [-1, 1]) {
+          ctx.beginPath();
+          ctx.arc(ptA.x + nmA.nx * radL * side, ptA.y + nmA.ny * radL * side,
+                  1.2 + seededR(si, 17) * 1.2, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(80,160,255,${alpha})`;
+          ctx.fill();
+        }
+      }
+    }
+  }
+
+  // ── Drill string / casing string
+  const showDrillStr = ['drill','rih','pooh'].includes(phase.type);
+  const showCsgStr   = phase.type === 'runcsg';
+
+  if (showDrillStr && bitDepth > 2) {
+    const hw = holePxAt(bitDepth / 2);
+    const pipeHw = Math.max(2, Math.round(hw * 0.15)); // радиус трубы ~15% от ствола
+    const tjHw   = Math.max(3, Math.round(hw * 0.22)); // радиус муфты ~22% от ствола
+
+    // Шлам в затрубье (до рисования трубы, чтобы труба перекрывала)
+    if (bohDepth > lowestShoe) {
+      drawCuttings(lowestShoe, Math.min(bitDepth, bohDepth), holePxAt, pipeHw,
+                   sm.flow, curForm.c, toXY, getNorm);
+    }
+
+    // Тело трубы — стальной цвет
+    fillBore(0, bitDepth, pipeHw, 'rgba(55,75,110,0.85)');
+    // Внутреннее отражение — металлический блик
+    fillBore(0, bitDepth, Math.max(1, pipeHw - 2), 'rgba(80,110,160,0.25)');
+    // Контур трубы
+    strokeBore(0, bitDepth, pipeHw, 'rgba(160,190,230,0.45)', 1);
+
+    // Вращение — спиральные насечки на теле трубы (анимированные)
+    if (playing && !nptActive && sm.rpm > 10) {
+      const rotAngle = animTime * (sm.rpm / 60) * Math.PI * 2;
+      const camTopM  = Math.max(0, bitDepth - H * 0.72);
+      ctx.lineWidth = 0.5;
+      for (let md = Math.ceil(camTopM / 2) * 2; md <= bitDepth; md += 2) {
+        const pt2  = toXY(md);
+        if (pt2.y < -5 || pt2.y > H + 5) continue;
+        const nm2  = getNorm(md);
+        const ang  = rotAngle + md * 0.8;
+        const cosA = Math.cos(ang);
+        const vis  = Math.abs(cosA);
+        if (vis < 0.2) continue;
+        ctx.beginPath();
+        ctx.strokeStyle = `rgba(200,220,255,${vis * 0.12})`;
+        ctx.moveTo(pt2.x + nm2.nx * pipeHw * cosA * 0.85,
+                   pt2.y + nm2.ny * pipeHw * cosA * 0.85);
+        ctx.lineTo(pt2.x - nm2.nx * pipeHw * 0.4,
+                   pt2.y - nm2.ny * pipeHw * 0.4);
+        ctx.stroke();
+      }
+    }
+
+    // Муфты (замки) каждые 9.5 м
+    for (let jd = 9.5; jd <= bitDepth; jd += 9.5) {
+      const jPt = toXY(jd);
+      if (jPt.y < -10 || jPt.y > H + 10) continue;
+      const {nx, ny} = getNorm(jd);
+
+      // Тело муфты (шире трубы)
+      ctx.strokeStyle = 'rgba(90,115,160,0.75)'; ctx.lineWidth = tjHw * 2;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(jPt.x + nx * tjHw, jPt.y + ny * tjHw);
+      ctx.lineTo(jPt.x - nx * tjHw, jPt.y - ny * tjHw);
+      ctx.stroke();
+      // Блик на муфте
+      ctx.strokeStyle = 'rgba(180,205,240,0.35)'; ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(jPt.x + nx * tjHw * 0.6, jPt.y + ny * tjHw * 0.6);
+      ctx.lineTo(jPt.x - nx * tjHw * 0.6, jPt.y - ny * tjHw * 0.6);
+      ctx.stroke();
+      ctx.lineCap = 'butt';
+    }
+  }
+
+  if (showCsgStr && bitDepth > 2) {
+    const csg = CASING_PROGRAM[phase.csgIdx];
+    if (csg) strokeBore(0, bitDepth, 10 + csg.od/295*24, csg.color, 2);
+  }
+
+  // ── NPT highlight
+  if (nptActive) {
+    const bPt = toXY(bitDepth);
+    ctx.save();
+    ctx.translate(bPt.x, bPt.y);
+    ctx.rotate(bitPt.inc * Math.PI / 180);
+    ctx.fillStyle = 'rgba(255,30,30,0.07)';
+    ctx.fillRect(-80, -50, 160, 100);
+    ctx.strokeStyle = '#ff3d3d'; ctx.lineWidth = 1.5;
+    ctx.setLineDash([3,5]);
+    ctx.strokeRect(-80, -50, 160, 100);
+    ctx.setLineDash([]);
+    ctx.restore();
+  }
+
+  // ── PDC Bit / casing shoe ─────────────────────────────────
+  const bScr = toXY(bitDepth);
+  const bitX = bScr.x, bitY = bScr.y;
+  const bitInc = bitPt.inc;
+  const bitHw  = holePxAt(bitDepth);
+  const bitPipeHw = Math.max(4, Math.round(bitHw * 0.30));
+
+  if (bitY > -40 && bitY < H + 40) {
+    if (showDrillStr) {
+      const rotAngle = animTime * (sm.rpm / 60) * Math.PI * 2;
+      ctx.save();
+      ctx.translate(bitX, bitY);
+      ctx.rotate(bitInc * Math.PI / 180);
+
+      if (nptActive) {
+        // НПВ — долото остановлено, красная подсветка
+        ctx.fillStyle = 'rgba(255,40,40,0.12)';
+        ctx.beginPath(); ctx.arc(0, 0, bitHw + 6, 0, Math.PI*2); ctx.fill();
+        ctx.fillStyle = '#ff3d3d'; ctx.font = 'bold 10px system-ui';
+        ctx.textAlign = 'center'; ctx.fillText('НПВ', 0, bitHw + 18);
+      } else {
+        // ── PDC-долото — ВИД СБОКУ, лопасти смотрят вниз в породу ──
+        const bR  = bitHw;   // радиус = радиус ствола
+        const pR  = Math.max(2, Math.round(bR * 0.15)); // радиус трубы
+        const bH  = bR * 1.1; // высота корпуса долота
+
+        // Корпус долота — трапециевидный профиль (y+ вниз в породу)
+        const bg = ctx.createLinearGradient(-bR, 0, bR, 0);
+        bg.addColorStop(0,   '#0e1e50');
+        bg.addColorStop(0.2, '#1e3880');
+        bg.addColorStop(0.5, '#2d52b0');
+        bg.addColorStop(0.8, '#1e3880');
+        bg.addColorStop(1,   '#0e1e50');
+        ctx.beginPath();
+        ctx.moveTo(-pR, 0);
+        ctx.bezierCurveTo(-pR, bH*0.15, -bR, bH*0.25, -bR, bH*0.5);
+        ctx.lineTo(-bR * 0.65, bH * 0.88);
+        ctx.lineTo(-bR * 0.15, bH * 1.10);
+        ctx.lineTo(0,          bH * 1.16);   // центральная точка долота
+        ctx.lineTo( bR * 0.15, bH * 1.10);
+        ctx.lineTo( bR * 0.65, bH * 0.88);
+        ctx.lineTo( bR,        bH * 0.5);
+        ctx.bezierCurveTo(bR, bH*0.25, pR, bH*0.15, pR, 0);
+        ctx.closePath();
+        ctx.fillStyle = bg; ctx.fill();
+        ctx.strokeStyle = 'rgba(120,160,230,0.35)'; ctx.lineWidth = 0.8; ctx.stroke();
+
+        // ── Вращающиеся лопасти PDC (5 лопастей, проекция на вид сбоку) ──
+        // Каждая лопасть видна/скрыта в зависимости от угла поворота
+        const rotAngle = animTime * (sm.rpm / 60) * Math.PI * 2;
+        for (let b = 0; b < 5; b++) {
+          const worldAng = (b / 5) * Math.PI * 2 + rotAngle;
+          const cosW     = Math.cos(worldAng); // x-проекция
+          const sinW     = Math.sin(worldAng); // глубина (+= от зрителя)
+          const vis      = Math.max(0, -sinW); // видима только обращённая к зрителю сторона
+          if (vis < 0.06) continue;
+
+          const bx    = cosW * (bR * 0.94);
+          const bW    = Math.max(1, 2.8 * vis);
+
+          // Тело лопасти
+          ctx.beginPath();
+          ctx.moveTo(bx - bW,       bH * 0.20);
+          ctx.lineTo(bx - bW * 0.8, bH * 0.85);
+          ctx.lineTo(bx + bW * 0.8, bH * 0.85);
+          ctx.lineTo(bx + bW,       bH * 0.20);
+          ctx.closePath();
+          ctx.fillStyle = `rgba(55,85,165,${vis * 0.9})`;
+          ctx.fill();
+          ctx.strokeStyle = `rgba(160,195,250,${vis * 0.35})`; ctx.lineWidth = 0.5; ctx.stroke();
+
+          // Алмазные резцы PDC вдоль лопасти
+          for (let c = 0; c < 5; c++) {
+            const cy2 = bH * (0.24 + c * 0.13);
+            const sz  = Math.max(0.8, 2.2 * vis);
+            ctx.beginPath(); ctx.arc(bx, cy2, sz, 0, Math.PI * 2);
+            const dg = ctx.createRadialGradient(bx, cy2, 0, bx, cy2, sz);
+            dg.addColorStop(0, `rgba(230,245,255,${vis})`);
+            dg.addColorStop(1, `rgba(80,140,220,${vis * 0.7})`);
+            ctx.fillStyle = dg; ctx.fill();
+          }
+        }
+
+        // ── Жиклёры и струи бурового раствора ──
+        const nozzleXs = [-bR * 0.38, 0, bR * 0.38];
+        nozzleXs.forEach(nx2 => {
+          const ny2 = bH * 0.52;
+
+          // Струя из жиклёра — вниз к забою, расширяется
+          if (sm.flow > 4) {
+            const jFrac  = Math.min(1, sm.flow / 35);
+            const pulse  = 0.75 + 0.25 * Math.sin(animTime * 9 + nx2 * 3);
+            const jBot   = bH * 1.08 + nx2 * 0.12; // чуть в сторону от центра
+            const jG     = ctx.createLinearGradient(nx2, ny2, nx2 * 1.08, jBot);
+            jG.addColorStop(0, `rgba(160,210,255,${jFrac * 0.9 * pulse})`);
+            jG.addColorStop(0.6, `rgba(100,170,255,${jFrac * 0.55 * pulse})`);
+            jG.addColorStop(1, 'rgba(60,130,255,0)');
+            ctx.beginPath();
+            ctx.moveTo(nx2 - 1.5, ny2);
+            ctx.lineTo(nx2 * 1.08 - 3.5, jBot);
+            ctx.lineTo(nx2 * 1.08 + 3.5, jBot);
+            ctx.lineTo(nx2 + 1.5, ny2);
+            ctx.closePath(); ctx.fillStyle = jG; ctx.fill();
+
+            // Брызги при ударе о забой
+            const sprayR = 3 + jFrac * 5;
+            const spG    = ctx.createRadialGradient(nx2*1.08, jBot, 0, nx2*1.08, jBot, sprayR);
+            spG.addColorStop(0, `rgba(190,225,255,${jFrac * 0.55 * pulse})`);
+            spG.addColorStop(1, 'rgba(100,180,255,0)');
+            ctx.beginPath(); ctx.arc(nx2 * 1.08, jBot, sprayR, 0, Math.PI * 2);
+            ctx.fillStyle = spG; ctx.fill();
+          }
+
+          // Корпус жиклёра
+          ctx.beginPath(); ctx.arc(nx2, ny2, 2.2, 0, Math.PI * 2);
+          ctx.fillStyle = '#001890'; ctx.fill();
+          ctx.strokeStyle = '#3055ff'; ctx.lineWidth = 0.4; ctx.stroke();
+        });
+
+        // Свечение долота (буровой раствор под давлением)
+        const glow = ctx.createRadialGradient(0, bH*0.7, 0, 0, bH*0.7, bR*1.6);
+        glow.addColorStop(0, 'rgba(80,160,255,0.12)');
+        glow.addColorStop(1, 'rgba(0,80,200,0)');
+        ctx.beginPath(); ctx.arc(0, bH*0.7, bR*1.6, 0, Math.PI*2);
+        ctx.fillStyle = glow; ctx.fill();
+      }
+      ctx.restore();
+    }
+    if (showCsgStr) {
+      const csg = CASING_PROGRAM[phase.csgIdx];
+      if (csg) {
+        const odPx = 10 + csg.od/295*24;
+        const {nx, ny} = getNorm(bitDepth);
+        ctx.strokeStyle = csg.color; ctx.lineWidth = 6;
+        ctx.beginPath();
+        ctx.moveTo(bitX - nx*(odPx+4), bitY - ny*(odPx+4));
+        ctx.lineTo(bitX + nx*(odPx+4), bitY + ny*(odPx+4));
+        ctx.stroke();
+        ctx.fillStyle = 'rgba(0,220,255,0.55)';
+        ctx.font = 'bold 8px system-ui'; ctx.textAlign = 'center';
+        ctx.fillText('⬇', bitX, bitY - 6);
+      }
+    }
+  }
+
+  // ── Cuttings particles
+  if (phase.type === 'drill' && playing && !nptActive) {
+    const form = getForm(bitDepth);
+    if (Math.random() < 0.25) spawnPart(bitX + (Math.random()-0.5)*10, bitY, form.c + 'cc');
+  }
+  for (let i = PARTS.length - 1; i >= 0; i--) {
+    const p = PARTS[i];
+    p.x += p.vx; p.y += p.vy; p.vy += 0.05; p.life -= 0.022;
+    if (p.life <= 0) { PARTS.splice(i, 1); continue; }
+    ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+    ctx.fillStyle = p.color ? p.color.substring(0,7) + Math.floor(p.life*200).toString(16).padStart(2,'0') : `rgba(200,175,120,${p.life*0.55})`;
+    ctx.fill();
+  }
+
+  // ── Oil sparkles in reservoir
+  const form = getForm(bitDepth);
+  if (form.cls === 'reservoir' && !nptActive && phase.type === 'drill') {
+    for (let i = 0; i < 4; i++) {
+      if (Math.random() < 0.06) {
+        const sx = bitX - getHolePx(phase.holeDiam||114) - Math.random() * 50;
+        const sy = bitY + Math.random() * 30;
+        ctx.beginPath(); ctx.arc(sx, sy, 1 + Math.random()*2, 0, Math.PI*2);
+        ctx.fillStyle = `rgba(0,220,100,${0.3 + Math.random()*0.3})`; ctx.fill();
+      }
+    }
+  }
+
+  // ── TVD depth scale (right side)
+  ctx.font = 'bold 11px monospace'; ctx.textAlign = 'right';
+  const scaleStep = 100;
+  const startMark = Math.ceil(camTVD / scaleStep) * scaleStep;
+  for (let m = startMark; m <= camTVD + VIEW; m += scaleStep) {
+    const y = toSY(m);
+    if (y < 0 || y > H) continue;
+    // background pill for readability
+    const lbl = m + 'м';
+    const tw = ctx.measureText(lbl).width;
+    ctx.fillStyle = 'rgba(0,0,0,0.55)';
+    rrect(ctx, W - tw - 10, y - 8, tw + 6, 13, 3); ctx.fill();
+    ctx.fillStyle = 'rgba(200,220,240,0.95)';
+    ctx.fillText(lbl, W - 4, y + 3);
+    ctx.strokeStyle = 'rgba(160,180,200,0.25)'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(W - tw - 14, y); ctx.lineTo(W - tw - 50, y); ctx.stroke();
+  }
+
+  // ── Bit depth/inclination annotation
+  if (bitY > 0 && bitY < H) {
+    const incStr = bitInc > 1 ? `  ${Math.round(bitInc)}°` : '';
+    const tvdStr = bitInc > 1 ? `  TVD:${Math.round(bitPt.tvd)}м` : '';
+    const depthLabel = '← MD:' + Math.round(bitDepth) + 'м' + tvdStr + incStr;
+    ctx.font = 'bold 12px monospace'; ctx.textAlign = 'left';
+    const lx = Math.min(bitX + 18, W - 200);
+    const ly = Math.max(16, Math.min(H - 8, bitY + 5));
+    const tw2 = ctx.measureText(depthLabel).width;
+    ctx.fillStyle = 'rgba(0,0,0,0.65)';
+    rrect(ctx, lx - 4, ly - 12, tw2 + 10, 16, 4); ctx.fill();
+    ctx.fillStyle = '#00e5ff';
+    ctx.shadowColor = 'rgba(0,180,255,0.6)'; ctx.shadowBlur = 6;
+    ctx.fillText(depthLabel, lx, ly);
+    ctx.shadowBlur = 0;
+  }
+
+  // ══════════════════════════════════════════════
+  // CANVAS ALERT OVERLAYS
+  // ══════════════════════════════════════════════
+
+  // ── 1. ПРЕДСТОЯЩИЕ СОБЫТИЯ — маркеры впереди долота ──────────
+  const usedYup = [];
+  EVENTS.forEach(ev => {
+    if (triggeredEvents.has(ev.d)) return;
+    if (ev.cls === 'ok' || ev.d <= bitDepth) return;
+    const dist = ev.d - bitDepth;
+    if (dist > 600) return; // не показывать очень далёкие
+    const ePt = toXY(ev.d);
+    if (ePt.y < 0 || ePt.y > H) return;
+
+    // Проверка на наложение
+    const tooClose = usedYup.some(py => Math.abs(py - ePt.y) < 22);
+    if (tooClose) return;
+    usedYup.push(ePt.y);
+
+    const c = EV_C[ev.cls] || '#888';
+    ctx.save();
+    // Пунктирная линия к маркеру
+    ctx.strokeStyle = c + '55'; ctx.lineWidth = 1; ctx.setLineDash([3,4]);
+    ctx.beginPath(); ctx.moveTo(ePt.x + 8, ePt.y); ctx.lineTo(ePt.x + 22, ePt.y); ctx.stroke();
+    ctx.setLineDash([]);
+    // Кружок
+    ctx.strokeStyle = c + '90'; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.arc(ePt.x + 22, ePt.y, 5, 0, Math.PI*2); ctx.stroke();
+    // Текст: иконка + расстояние + краткое название
+    const shortTitle = ev.title.length > 20 ? ev.title.substring(0, 20) + '…' : ev.title;
+    const label = ev.icon + ' ' + shortTitle + '  −' + Math.round(dist) + ' м';
+    ctx.font = 'bold 10px system-ui'; ctx.textAlign = 'left';
+    const lw = ctx.measureText(label).width;
+    ctx.fillStyle = 'rgba(0,0,0,0.65)';
+    rrect(ctx, ePt.x + 30, ePt.y - 8, lw + 10, 16, 4); ctx.fill();
+    ctx.fillStyle = c;
+    ctx.shadowColor = 'rgba(0,0,0,0.9)'; ctx.shadowBlur = 3;
+    ctx.fillText(label, ePt.x + 35, ePt.y + 4);
+    ctx.shadowBlur = 0;
+    ctx.restore();
+  });
+
+  // ── 2. ПРОЙДЕННЫЕ СОБЫТИЯ — маркеры за долотом ────────────────
+  const usedYtr = [];
+  EVENTS.forEach(ev => {
+    if (!triggeredEvents.has(ev.d)) return;
+    if (ev.cls === 'ok') return; // не показывать "всё ок" на канвасе
+    const ePt = toXY(ev.d);
+    if (ePt.y < -4 || ePt.y > H + 4) return;
+    // Проверка на наложение
+    const tooClose = usedYtr.some(py => Math.abs(py - ePt.y) < 20);
+    if (tooClose) return;
+    usedYtr.push(ePt.y);
+
+    const c = EV_C[ev.cls] || '#888';
+    ctx.save();
+    // Точка-маркер
+    ctx.fillStyle = c;
+    ctx.beginPath(); ctx.arc(ePt.x + 14, ePt.y, 5, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,0.75)';
+    ctx.beginPath(); ctx.arc(ePt.x + 14, ePt.y, 2, 0, Math.PI*2); ctx.fill();
+    // Короткая горизонтальная черта
+    ctx.strokeStyle = c + '60'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(ePt.x + 19, ePt.y); ctx.lineTo(ePt.x + 28, ePt.y); ctx.stroke();
+    // Глубина + краткое название
+    const shortT = ev.title.length > 22 ? ev.title.substring(0, 22) + '…' : ev.title;
+    const lbl = Math.round(ev.d) + ' м  ' + ev.icon + ' ' + shortT;
+    ctx.font = 'bold 10px system-ui'; ctx.textAlign = 'left';
+    const lw2 = ctx.measureText(lbl).width;
+    ctx.fillStyle = 'rgba(0,0,0,0.70)';
+    rrect(ctx, ePt.x + 30, ePt.y - 8, lw2 + 10, 16, 4); ctx.fill();
+    ctx.fillStyle = '#e8f0fe';
+    ctx.shadowColor = 'rgba(0,0,0,0.9)'; ctx.shadowBlur = 3;
+    ctx.fillText(lbl, ePt.x + 35, ePt.y + 4);
+    ctx.shadowBlur = 0;
+    ctx.restore();
+  });
+
+  // ── 3. БАННЕР ТЕКУЩЕГО АЛЕРТА у долота (только в пределах 40м) ──
+  if (showDrillStr) {
+    // Берём самый последний критичный алерт в пределах 40м позади долота
+    const nearAlert = EVENTS.slice().reverse().find(ev =>
+      triggeredEvents.has(ev.d) &&
+      ev.cls !== 'ok' && ev.cls !== 'info' &&
+      bitDepth - ev.d >= 0 && bitDepth - ev.d <= 40
+    );
+    if (nearAlert) {
+      const ev = nearAlert;
+      const c = EV_C[ev.cls] || '#888';
+      const bg = EV_BG[ev.cls] || 'rgba(20,20,20,0.7)';
+      const bw = Math.min(W - bitX - 70, 220);
+      const bh = ev.prob ? 58 : 44;
+      const bx = Math.min(bitX + 28, W - bw - 10);
+      const by2 = Math.max(8, Math.min(H - bh - 8, bitY - bh / 2));
+      ctx.save();
+      // Линия от долота к баннеру
+      ctx.strokeStyle = c + '60'; ctx.lineWidth = 1; ctx.setLineDash([3,3]);
+      ctx.beginPath(); ctx.moveTo(bitX + 14, bitY); ctx.lineTo(bx + 2, by2 + bh / 2); ctx.stroke();
+      ctx.setLineDash([]);
+      // Фон баннера
+      rrect(ctx, bx, by2, bw, bh, 7);
+      ctx.fillStyle = bg; ctx.fill();
+      ctx.strokeStyle = c; ctx.lineWidth = 1.5; ctx.stroke();
+      // Цветная полоска слева
+      ctx.fillStyle = c;
+      rrect(ctx, bx, by2, 4, bh, 7); ctx.fill();
+      // Заголовок
+      ctx.font = 'bold 10.5px system-ui'; ctx.fillStyle = '#ffffff';
+      ctx.textAlign = 'left';
+      ctx.shadowColor = 'rgba(0,0,0,0.9)'; ctx.shadowBlur = 3;
+      const titleStr = ev.icon + ' ' + (ev.title.length > 30 ? ev.title.substring(0,30) + '…' : ev.title);
+      ctx.fillText(titleStr, bx + 10, by2 + 14);
+      ctx.shadowBlur = 0;
+      // Вероятность
+      if (ev.prob) {
+        ctx.fillStyle = c; ctx.font = 'bold 9px system-ui';
+        ctx.fillText(ev.prob, bx + 10, by2 + 28);
+      }
+      // Краткое описание (первые 50 символов)
+      const bodyLine = ev.body.length > 52 ? ev.body.substring(0,52) + '…' : ev.body;
+      ctx.fillStyle = 'rgba(200,215,230,0.92)'; ctx.font = '9.5px system-ui';
+      ctx.fillText(bodyLine, bx + 10, ev.prob ? by2 + bh - 8 : by2 + 30);
+      ctx.restore();
+    }
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// SMOOTH TARGET UPDATE
+// ═══════════════════════════════════════════════════════════
+function updateTargets(now) {
+  if (now - lastTgtUpdate < 3000) return; // every 3 real seconds
+  lastTgtUpdate = now;
+  const phase = PHASES[phaseIdx] || {};
+  const form = getForm(bitDepth);
+  const j = () => (Math.random() - 0.5); // small jitter
+
+  // Вспомогательная: берём userP если задано, иначе значение пласта + джиттер
+  const uv = (key, formVal, jAmp) =>
+    userP[key] !== undefined
+      ? userP[key] + j() * jAmp * 0.3   // малый джиттер вокруг реального значения
+      : Math.max(0, formVal + j() * jAmp);
+
+  if (phase.type === 'drill' && !nptActive) {
+    // Normal drilling — реальные данные пользователя имеют приоритет
+    tgt.wob  = uv('wob',  form.wob,  6);
+    tgt.rpm  = uv('rpm',  form.rpm,  4);
+    tgt.torq = uv('torq', form.torq, 2);
+    tgt.hl   = uv('hl',   form.hl - form.wob * 0.3, 8);
+    tgt.rop  = userP.rop !== undefined ? userP.rop : sm.rop; // держим 100 м/ч если не задано вручную
+    tgt.dp   = uv('dp',   form.dp,   10);
+    tgt.ecd  = (userP.dens !== undefined ? userP.dens + 0.02 : form.ecd) + j() * 0.003;
+    tgt.flow = uv('flow', 28,  1.5);
+    tgt.spm  = 65 + j() * 3;
+    tgt.pit  = j() * 3;
+    // Параметры раствора — статичные (без шума), только userP или значение пласта
+    const us = (key, fallback) => userP[key] !== undefined ? userP[key] : fallback;
+    tgt.t   = us('t',   47);
+    tgt.pv  = us('pv',  form.pv);
+    tgt.yp  = us('yp',  form.yp);
+    tgt.gel = us('gel', form.gel);
+    tgt.api = us('api', form.api);
+    tgt.ph  = us('ph',  form.ph);
+    tgt.kcl = us('kcl', form.kcl);
+  } else if (nptActive) {
+    tgt.wob = 0; tgt.rpm = 0; tgt.torq = 0;
+    tgt.hl = 480 + j() * 15; // stuck — high hook load
+    tgt.rop = 0; tgt.dp = form.dp * 0.3 + j() * 8;
+    tgt.ecd = form.ecd - 0.01; tgt.pit = j() * 2;
+    tgt.yp = form.yp + 6 + j() * 1;
+  } else if (phase.type === 'pooh' || phase.type === 'rih') {
+    tgt.wob = 0; tgt.rpm = 80 + j() * 5; tgt.torq = 5 + j() * 1;
+    tgt.hl = 220 + j() * 15; tgt.rop = 0;
+    tgt.dp = form.dp * 0.45 + j() * 8;
+    tgt.ecd = form.ecd * 0.95;
+    tgt.flow = 18 + j() * 2; tgt.spm = 45 + j() * 3;
+  } else if (phase.type === 'runcsg') {
+    tgt.wob = 0; tgt.rpm = 0; tgt.torq = 2 + j() * 0.5;
+    tgt.hl = 350 + j() * 20; tgt.rop = 0;
+    tgt.dp = 30 + j() * 5; tgt.ecd = 1.1;
+    tgt.flow = 5 + j() * 1; tgt.spm = 10 + j() * 2;
+  }
+}
+
+function lerpSmooth() {
+  const a = 0.025;
+  for (const k in sm) {
+    sm[k] += (tgt[k] - sm[k]) * a;
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// UPDATE UI
+// ═══════════════════════════════════════════════════════════
+function setArc(id, val, max, color) {
+  const total = 220;
+  const frac = Math.max(0, Math.min(1, max === 1 ? val : val / max));
+  const el = document.getElementById(id);
+  el.setAttribute('stroke-dashoffset', total * (1 - frac));
+  el.setAttribute('stroke', color);
+}
+
+function updateUI(now) {
+  updateTargets(now);
+  lerpSmooth();
+
+  const phase = PHASES[phaseIdx] || {};
+  const form = getForm(bitDepth);
+
+  // WOB
+  setArc('gWOB', sm.wob, 200, '#00d4ff');
+  document.getElementById('gWOBv').textContent = Math.round(sm.wob);
+
+  // RPM
+  setArc('gRPM', sm.rpm, 200, '#a78bfa');
+  document.getElementById('gRPMv').textContent = Math.round(sm.rpm);
+
+  // Torque
+  setArc('gTQ', sm.torq, 35, '#f97316');
+  document.getElementById('gTQv').textContent = sm.torq.toFixed(1);
+
+  // ROP
+  const ropDisp = Math.round(sm.rop);
+  document.getElementById('gROPv').innerHTML = ropDisp + ' <span style="font-size:10px">м/ч</span>';
+  document.getElementById('gROPbar').style.width = Math.min(100, ropDisp / 30 * 100) + '%';
+  document.getElementById('gROPbar').style.background = ropDisp < 5 ? '#ef4444' : ropDisp < 10 ? '#f59e0b' : 'var(--cyan)';
+
+  // ΔP
+  const dpDisp = Math.round(sm.dp);
+  document.getElementById('gDPv').innerHTML = dpDisp + ' <span style="font-size:10px">бар</span>';
+  document.getElementById('gDPbar').style.width = Math.min(100, dpDisp / 250 * 100) + '%';
+  document.getElementById('gDPbar').style.background = dpDisp > 220 ? '#ef4444' : dpDisp > 190 ? '#f59e0b' : 'var(--g)';
+  document.getElementById('gDPv').className = 'gauge-val ' + (dpDisp > 220 ? 'crit' : dpDisp > 190 ? 'warn' : 'ok');
+
+  // ECD
+  setArc('gECD', (sm.ecd - 1.05) / 0.40, 1, sm.ecd > 1.38 ? '#ef4444' : sm.ecd > 1.34 ? '#f59e0b' : '#f59e0b');
+  document.getElementById('gECDv').textContent = sm.ecd.toFixed(3);
+
+  // Compact row
+  document.getElementById('gHL').textContent = Math.round(sm.hl);
+  document.getElementById('gSPM').textContent = Math.round(sm.spm);
+  document.getElementById('gFlow').textContent = sm.flow.toFixed(1);
+
+  // Pit
+  const pitV = sm.pit;
+  const pitOk = Math.abs(pitV) < 5;
+  document.getElementById('gPit').innerHTML = (pitV > 0 ? '+' : '') + pitV.toFixed(1) + ' <span style="font-size:9px">л/мин</span>';
+  document.getElementById('gPit').className = 'gauge-val ' + (pitOk ? 'ok' : 'crit');
+  document.getElementById('gPitStatus').textContent = pitOk ? 'Норма' : (pitV < 0 ? '⚠ Поглощение' : '⚠ Приток');
+  document.getElementById('gPitStatus').style.color = pitOk ? 'var(--muted)' : 'var(--r)';
+
+  // Mud props
+  const ypV = sm.yp;
+  const ypCls = ypV >= 34 ? 'crit' : ypV >= 31 ? 'warn' : 'ok';
+  const ypTrend = ypV > prevYP + 0.3 ? '↑' : ypV < prevYP - 0.3 ? '↓' : '→';
+  prevYP = ypV;
+
+  document.getElementById('rDens').textContent = sm.dens.toFixed(3) + ' г/см³';
+  document.getElementById('rT').textContent = Math.round(sm.t) + ' сек';
+  document.getElementById('rPV').textContent = Math.round(sm.pv) + ' сПз';
+  document.getElementById('rYP').textContent = Math.round(ypV) + ' lb/100ft²';
+  document.getElementById('rYP').className = 'prop-val ' + ypCls;
+  document.getElementById('ypTrend').textContent = ypTrend;
+  document.getElementById('ypTrend').className = 'trend-arrow ' + (ypTrend === '↑' ? 'trend-up' : ypTrend === '↓' ? 'trend-dn' : 'trend-ok');
+  document.getElementById('rGel').textContent = Math.round(sm.gel) + ' lb/100ft²';
+  document.getElementById('rAPI').textContent = sm.api.toFixed(1) + ' мл';
+  document.getElementById('rPH').textContent = sm.ph.toFixed(1);
+  document.getElementById('rKCl').textContent = Math.round(sm.kcl) + ' кг/м³';
+  document.getElementById('rCl').textContent = Math.round(form.cl / 1000) + ' 000 мг/л';
+
+  // Formation banner
+  const formBadge = document.getElementById('formBadge');
+  formBadge.textContent = form.s;
+  formBadge.className = 'form-badge ' + form.cls;
+  document.getElementById('form-name').textContent = form.n;
+  document.getElementById('form-depth-range').textContent = form.f + '–' + form.t + ' м';
+  const incEl = document.getElementById('form-inc');
+  const curInc = wellPathAt(bitDepth).inc;
+  if (curInc > 0.5) {
+    incEl.style.display = 'inline';
+    incEl.textContent = 'Inc: ' + Math.round(curInc) + '°  HD: ' + Math.round(wellPathAt(bitDepth).hd) + 'м';
+  } else { incEl.style.display = 'none'; }
+  document.getElementById('formDetailName').textContent = form.n;
+  document.getElementById('formDetailDesc').textContent = form.desc;
+  const riskEl = document.getElementById('formRisk');
+  riskEl.textContent = '● ' + form.riskLabel;
+  riskEl.className = 'form-risk ' + form.risk;
+
+  // Phase chip
+  const chip = document.getElementById('phaseChip');
+  chip.textContent = phase.name || '';
+  chip.className = 'tb-phase ' + (nptActive ? 'npt' : phase.type === 'drill' ? 'drill' : '');
+
+  // Top bar depth and date
+  const bohD = currentDrillDepth();
+  document.getElementById('depthTop').textContent = bohD.toFixed(1) + ' м';
+  const dayNum = Math.floor(bohD / 50) + Math.round(nptDays);
+  const startDate = new Date(2008, 9, 20); // Oct 20, 2008 — Kovykta 73
+  const curDate = new Date(startDate.getTime() + dayNum * 86400000);
+  const dd = String(curDate.getDate()).padStart(2, '0');
+  const mm = String(curDate.getMonth() + 1).padStart(2, '0');
+  document.getElementById('topDate').textContent = dd + '.' + mm + '.' + curDate.getFullYear();
+
+  // Status
+  const sd = document.getElementById('statusDot');
+  const sl = document.getElementById('statusLabel');
+  if (nptActive) {
+    sd.className = 'status-dot npt'; sl.textContent = 'НПВ · ПРИХВАТ'; sl.style.color = 'var(--r)';
+  } else if (!playing) {
+    sd.className = 'status-dot idle'; sl.textContent = 'ПАУЗА'; sl.style.color = 'var(--w)';
+  } else if (phase.type === 'drill') {
+    sd.className = 'status-dot drill'; sl.textContent = 'БУРЕНИЕ'; sl.style.color = 'var(--g)';
+  } else if (phase.type === 'pooh') {
+    sd.className = 'status-dot idle'; sl.textContent = 'ПОДЪЁМ'; sl.style.color = 'var(--w)';
+  } else if (phase.type === 'rih') {
+    sd.className = 'status-dot idle'; sl.textContent = 'СПУСК'; sl.style.color = 'var(--cyan)';
+  } else if (phase.type === 'runcsg') {
+    sd.className = 'status-dot idle'; sl.textContent = 'СПУСК КЛМ'; sl.style.color = '#a78bfa';
+  } else {
+    sd.className = 'status-dot idle'; sl.textContent = 'ОЗЦ'; sl.style.color = 'var(--muted)';
+  }
+
+  // Progress bar (based on BOH depth)
+  document.getElementById('progressFill').style.width = (bohD / TD * 100) + '%';
+  document.getElementById('depthInput').value = Math.round(bohD);
+  const nptStartPct = 3328 / TD * 100, nptEndPct = 3480 / TD * 100;
+  const nptZ = document.getElementById('progressNPT');
+  nptZ.style.left = nptStartPct + '%';
+  nptZ.style.width = (nptEndPct - nptStartPct) + '%';
+
+  // Cost tracker
+  const days = Math.round(bohD / 25);
+  const nptR = Math.round(nptDays);
+  document.getElementById('cDays').textContent = days;
+  document.getElementById('cNPT').textContent = nptR + (nptActive ? ' ← активно' : '');
+  document.getElementById('cNPT').className = 'prop-val ' + (nptR > 0 ? 'crit' : 'ok');
+  const cost = nptR * 60000;
+  document.getElementById('cCost').textContent = cost > 0 ? '$' + cost.toLocaleString('en-US') : '$0';
+  document.getElementById('cCost').className = 'prop-val ' + (cost > 0 ? 'crit' : 'ok');
+  const saved = Math.max(0, cost - 60000);
+  document.getElementById('cSaved').textContent = saved > 0 ? '+$' + saved.toLocaleString('en-US') + ' с AI' : '—';
+
+  // ── Formation Forecast (next 3 upcoming formations)
+  const forecastEl = document.getElementById('formForecast');
+  if (forecastEl) {
+    const nextForms = STRAT.filter(s => s.f > bitDepth).slice(0, 4);
+    if (nextForms.length === 0) {
+      forecastEl.innerHTML = '<div style="font-size:10px;color:var(--muted)">Достигнут забой скважины.</div>';
+    } else {
+      const riskLabel = {low:'Низкий',med:'Умеренный',high:'Высокий',critical:'КРИТИЧ.'};
+      forecastEl.innerHTML = nextForms.map(s => {
+        const dist = Math.round(s.f - bitDepth);
+        return `<div class="fc-row">
+          <div class="fc-dot" style="background:${s.c}"></div>
+          <div class="fc-body">
+            <div class="fc-name">${s.s} — ${s.n}</div>
+            <div class="fc-sub">${s.f}–${s.t} м &nbsp;·&nbsp; −${dist} м &nbsp;·&nbsp; ρ ${s.dens} г/см³ &nbsp;·&nbsp; РОП ~${s.rop} м/ч</div>
+          </div>
+          <div class="fc-risk ${s.risk}">${riskLabel[s.risk]||s.risk}</div>
+        </div>`;
+      }).join('');
+    }
+  }
+
+  // ── Drilling Recommendations
+  const recEl = document.getElementById('drillingRec');
+  if (recEl) {
+    recEl.innerHTML = buildRecHTML(phase, form);
+  }
+
+  // ── Пишем текущий забой в localStorage раз в секунду (командный центр читает через storage event)
+  const _now = now || performance.now();
+  if (!updateUI._pTs || _now - updateUI._pTs > 1000) {
+    updateUI._pTs = _now;
+    try {
+      localStorage.setItem('sim_live_depth', Math.round(currentDrillDepth()));
+    } catch(e) {}
+  }
+}
+
+function buildRecHTML(phase, form) {
+  if (phase.type !== 'drill') return '<div class="rec-line">Бурение не активно.</div>';
+  if (nptActive) return `<div class="rec-line crit">🚨 НПВ АКТИВНО — работа по ликвидации прихвата. Контроль нагрузки на крюке.</div>`;
+
+  const lines = [];
+  const riskColors = {low:'ok',med:'info',high:'warn',critical:'crit'};
+  const rc = riskColors[form.risk] || 'info';
+
+  // Formation risk summary
+  if (form.risk === 'critical') {
+    lines.push({cls:'crit', t:'🚨 Критическая зона! ' + form.riskLabel});
+  } else if (form.risk === 'high') {
+    lines.push({cls:'warn', t:'⚠️ ' + form.riskLabel});
+  } else {
+    lines.push({cls:'ok', t:'✓ ' + form.riskLabel + ' · ' + form.s});
+  }
+
+  // Mud parameters
+  const ypV = sm.yp;
+  if (ypV > 33) lines.push({cls:'crit', t:'↑ ДНС=' + Math.round(ypV) + ' — ввести дефлокулянт срочно'});
+  else if (ypV > 30) lines.push({cls:'warn', t:'↑ ДНС=' + Math.round(ypV) + ' — контроль, готовить дефлокулянт'});
+
+  if (sm.ecd > 1.37) lines.push({cls:'crit', t:'ECD=' + sm.ecd.toFixed(3) + ' — риск поглощения! Снизить расход'});
+  else if (sm.ecd > 1.34) lines.push({cls:'warn', t:'ECD=' + sm.ecd.toFixed(3) + ' — приближается к лимиту'});
+
+  if (sm.dp > 215) lines.push({cls:'warn', t:'ΔP=' + Math.round(sm.dp) + ' бар — высокое давление насосов'});
+
+  const pitV = sm.pit;
+  if (pitV < -5) lines.push({cls:'warn', t:'Поглощение ' + pitV.toFixed(1) + ' л/мин — ввести LCM'});
+  else if (pitV > 5) lines.push({cls:'crit', t:'ПРИТОК +' + pitV.toFixed(1) + ' л/мин — проверить давление!'});
+
+  // Formation-specific advice
+  if (form.cls === 'clay' || form.cls === 'argillite') {
+    lines.push({cls:'info', t:'KCl ' + Math.round(sm.kcl) + ' кг/м³ · pH ' + sm.ph.toFixed(1) + ' — контроль ингибирования'});
+    lines.push({cls:'info', t:'Промывка 1 цикл каждые 200 м бурения'});
+  }
+  if (form.cls === 'reservoir') {
+    lines.push({cls:'warn', t:'🛢️ Коллектор — контроль плотности каждый час'});
+    lines.push({cls:'info', t:'Не допускать снижения ρ < ' + (form.dens - 0.005).toFixed(3) + ' г/см³'});
+  }
+  if (form.cls === 'gas') {
+    lines.push({cls:'warn', t:'Газовый горизонт — контроль ГВА каждые 15 мин'});
+  }
+
+  // Upcoming events within 250m
+  const upcoming = EVENTS.filter(ev =>
+    !triggeredEvents.has(ev.d) && ev.d > bitDepth &&
+    ev.d - bitDepth < 250 && ev.cls !== 'ok'
+  );
+  upcoming.forEach(ev => {
+    const dist = Math.round(ev.d - bitDepth);
+    const ec = ev.cls === 'crit' ? 'crit' : ev.cls === 'warn' || ev.cls === 'high' ? 'warn' : 'info';
+    lines.push({cls: ec, t: ev.icon + ' Через ' + dist + ' м: ' + ev.title.substring(0, 28)});
+  });
+
+  // Formation target reminder
+  lines.push({cls:'info', t:'Цель: ρ=' + form.dens + ' г/см³ · РОП~' + form.rop + ' м/ч · WOB~' + form.wob + ' кН'});
+
+  return lines.map(l => `<div class="rec-line ${l.cls}">${l.t}</div>`).join('');
+}
+
+// ═══════════════════════════════════════════════════════════
+// EVENTS
+// ═══════════════════════════════════════════════════════════
+function checkEvents(d) {
+  EVENTS.forEach(ev => {
+    if (triggeredEvents.has(ev.d)) return;
+    if (d >= ev.d) {
+      triggeredEvents.add(ev.d);
+      addFeedEvent(ev);
+      if (ev.d === 3328) { nptActive = true; }
+      if (ev.d === 3480) { nptActive = false; }
+      if (ev.overlay && !alertOpen) showAlert(ev);
+    }
+  });
+}
+
+function addFeedEvent(ev) {
+  const feed = document.getElementById('aiFeed');
+  const el = document.createElement('div');
+  el.className = 'ai-event ' + ev.cls;
+  el.innerHTML = `<div class="ai-event-time">${Math.round(ev.d)} м · ${ev.icon}</div>
+    <div class="ai-event-title">${ev.title}</div>
+    <div class="ai-event-body">${ev.body.substring(0, 80)}${ev.body.length > 80 ? '…' : ''}</div>`;
+  el.onclick = () => openEventModal(ev);
+  feed.insertBefore(el, feed.firstChild);
+  while (feed.children.length > 8) feed.removeChild(feed.lastChild);
+}
+
+function showAlert(ev) {
+  alertOpen = true;
+  playing = false;
+  pendingAlert = ev;
+  const box = document.getElementById('alertBox');
+  box.className = ev.cls === 'ok' ? 'ok' : ev.cls;
+  document.getElementById('aIcon').textContent = ev.icon;
+  document.getElementById('aTitle').textContent = ev.title;
+  document.getElementById('aBody').textContent = ev.body;
+  const probRow = document.getElementById('aProbRow');
+  if (ev.prob) {
+    probRow.style.display = 'block';
+    const chip = document.getElementById('aProb');
+    chip.textContent = ev.prob;
+    const c = ev.cls === 'crit' ? ['var(--r2)','var(--r)'] : ev.cls === 'warn' ? ['var(--w2)','var(--w)'] : ev.cls === 'ok' ? ['var(--g2)','var(--g)'] : ['var(--cyan2)','var(--cyan)'];
+    chip.style.background = c[0]; chip.style.color = c[1];
+  } else {
+    probRow.style.display = 'none';
+  }
+  document.getElementById('ackBtn').textContent = ev.ack || 'Принял';
+  document.getElementById('alertOverlay').classList.add('show');
+}
+
+function ackAlert() {
+  document.getElementById('alertOverlay').classList.remove('show');
+  alertOpen = false;
+  playing = true;
+  pendingAlert = null;
+  lastTs = null;
+  requestAnimationFrame(tick);
+}
+
+function dismissAlert() {
+  document.getElementById('alertOverlay').classList.remove('show');
+  alertOpen = false;
+  playing = true;
+  pendingAlert = null;
+  lastTs = null;
+  requestAnimationFrame(tick);
+}
+
+function openEventModal(ev) {
+  document.getElementById('emDepth').textContent = Math.round(ev.d) + ' м · ' + ev.icon;
+  document.getElementById('emTitle').textContent = ev.title;
+  document.getElementById('emBody').textContent = ev.body;
+  document.getElementById('emRec').textContent = ev.rec || 'Рекомендации не требуются.';
+  document.getElementById('eventModal').classList.add('show');
+}
+
+function closeEventModal() {
+  document.getElementById('eventModal').classList.remove('show');
+}
+
+document.getElementById('eventModal').addEventListener('click', function(e) {
+  if (e.target === this) closeEventModal();
+});
+
+// ═══════════════════════════════════════════════════════════
+// PHASE TRANSITIONS
+// ═══════════════════════════════════════════════════════════
+function nextPhase() {
+  if (phaseIdx >= PHASES.length - 1) return;
+  phaseIdx++;
+  phaseElapsed = 0;
+  bitDepth = PHASES[phaseIdx].from !== undefined ? PHASES[phaseIdx].from : bitDepth;
+  lastTs = null;
+  addPhaseEvent(PHASES[phaseIdx]);
+}
+
+function addPhaseEvent(phase) {
+  const feed = document.getElementById('aiFeed');
+  const el = document.createElement('div');
+  el.className = 'ai-event info';
+  const icons = {drill:'⛏', pooh:'⬆', rih:'⬇', runcsg:'🔩', cement:'🏗'};
+  el.innerHTML = `<div class="ai-event-time">${Math.round(currentDrillDepth())} м · ${icons[phase.type]||'•'}</div>
+    <div class="ai-event-title" style="color:var(--cyan)">${phase.name}</div>`;
+  feed.insertBefore(el, feed.firstChild);
+  while (feed.children.length > 8) feed.removeChild(feed.lastChild);
+}
+
+function skipPhase() {
+  document.getElementById('cementBar').classList.remove('show');
+  if (PHASES[phaseIdx] && PHASES[phaseIdx].type === 'cement') {
+    const ci = PHASES[phaseIdx].csgIdx;
+    if (ci !== undefined) cementedSet.add(ci);
+  }
+  nextPhase();
+  if (playing) { lastTs = null; requestAnimationFrame(tick); }
+}
+
+// ═══════════════════════════════════════════════════════════
+// MAIN LOOP
+// ═══════════════════════════════════════════════════════════
+function tick(ts) {
+  if (!playing || alertOpen) { lastTs = null; return; }
+  if (!lastTs) lastTs = ts;
+  const dt = Math.min(ts - lastTs, 120) / 1000;
+  lastTs = ts;
+  animTime += dt;
+
+  const phase = PHASES[phaseIdx];
+  if (!phase) return;
+
+  if (phase.type === 'drill') {
+    const form = getForm(bitDepth);
+    // МСП в реальном времени: 30 м/ч = 30 метров за 1 реальный час
+    const ropForTick = (userP.rop !== undefined && userP.rop > 0) ? userP.rop : sm.rop;
+    const rate = nptActive ? 0 : (ropForTick / 3600);
+    if (nptActive) nptDays += dt * speed / 86400;
+    bitDepth = Math.min(phase.to, bitDepth + rate * dt);
+    checkEvents(bitDepth);
+    if (bitDepth >= phase.to && !nptActive) nextPhase();
+
+  } else if (phase.type === 'pooh') {
+    // Trip out — complete distance in 18 real seconds
+    const dist = Math.abs(phase.from - phase.to);
+    const rate = dist / 18; // m/s wall clock
+    bitDepth = Math.max(phase.to, bitDepth - rate * dt);
+    if (bitDepth <= phase.to) nextPhase();
+
+  } else if (phase.type === 'rih') {
+    const dist = Math.abs(phase.to - phase.from);
+    const rate = dist / 14;
+    bitDepth = Math.min(phase.to, bitDepth + rate * dt);
+    if (bitDepth >= phase.to) nextPhase();
+
+  } else if (phase.type === 'runcsg') {
+    const dist = phase.to - phase.from;
+    const rate = dist / 22;
+    bitDepth = Math.min(phase.to, bitDepth + rate * dt);
+    if (bitDepth >= phase.to) nextPhase();
+
+  } else if (phase.type === 'cement') {
+    const csg = CASING_PROGRAM[phase.csgIdx];
+    const totalWallSec = 22;
+    phaseElapsed += dt;
+    const pct = Math.min(1, phaseElapsed / totalWallSec);
+    const hoursDisp = (pct * (csg ? csg.durH : 8)).toFixed(1);
+    document.getElementById('cementBar').classList.add('show');
+    document.getElementById('cementTitle').textContent = phase.name;
+    document.getElementById('cementSub').textContent = hoursDisp + ' / ' + (csg ? csg.durH : 8) + '.0 ч';
+    document.getElementById('cementFill').style.width = (pct * 100) + '%';
+    if (pct >= 1) {
+      document.getElementById('cementBar').classList.remove('show');
+      if (phase.csgIdx !== undefined) cementedSet.add(phase.csgIdx);
+      nextPhase();
+    }
+  }
+
+  updateUI(ts);
+  drawWell();
+
+  if (phaseIdx < PHASES.length) {
+    animId = requestAnimationFrame(tick);
+  } else {
+    playing = false;
+    document.getElementById('btnPlay').textContent = '▶ Пуск';
+    document.getElementById('btnPlay').classList.remove('active');
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// CONTROLS
+// ═══════════════════════════════════════════════════════════
+function broadcastState() {
+  try { window.parent.postMessage({ type: 'sim_state', playing }, '*'); } catch(e) {}
+}
+
+function togglePlay() {
+  playing = !playing;
+  const btn = document.getElementById('btnPlay');
+  btn.textContent = playing ? '⏸ Пауза' : '▶ Пуск';
+  btn.classList.toggle('active', playing);
+  if (playing) { lastTs = null; requestAnimationFrame(tick); }
+  broadcastState();
+}
+
+function resetSim() {
+  playing = false; cancelAnimationFrame(animId);
+  bitDepth = 0; phaseIdx = 0; phaseElapsed = 0;
+  nptDays = 0; nptActive = false; prevYP = 20;
+  cementedSet.clear();
+  triggeredEvents.clear();
+  document.getElementById('aiFeed').innerHTML = '';
+  document.getElementById('cementBar').classList.remove('show');
+  document.getElementById('alertOverlay').classList.remove('show');
+  alertOpen = false;
+  document.getElementById('btnPlay').textContent = '▶ Пуск';
+  document.getElementById('btnPlay').classList.remove('active');
+  Object.assign(sm, {wob:0,rpm:0,torq:0,hl:280,rop:100,dp:0,ecd:1.05,pit:0,flow:0,spm:0,
+                     dens:0.95,t:38,pv:14,yp:25,gel:6,api:6.0,ph:9.0,kcl:0});
+  Object.assign(tgt, {...sm});
+  // Re-apply DMR data on reset so real values are always present
+  loadDMRData();
+  updateUI(0); drawWell();
+}
+
+function setSpeed(s) {
+  speed = s;
+  ['sp1','sp5','sp20'].forEach(id => document.getElementById(id).classList.remove('active'));
+  document.getElementById('sp' + s).classList.add('active');
+}
+
+function seekDepth(v) {
+  const d = Math.max(0, Math.min(TD, parseFloat(v) || 0));
+  // Find correct phase
+  let pi = 0;
+  let bd = d;
+  for (let i = 0; i < PHASES.length; i++) {
+    if (PHASES[i].type === 'drill' && d >= PHASES[i].from && d <= PHASES[i].to) {
+      pi = i; bd = d; break;
+    }
+    if (PHASES[i].type === 'drill' && d >= PHASES[i].to) {
+      pi = Math.min(PHASES.length - 1, i + 1);
+    }
+  }
+  phaseIdx = pi; bitDepth = bd; phaseElapsed = 0;
+  nptActive = d >= 3328 && d <= 3480;
+  nptDays = nptActive ? (d - 3328) / 152 * 9 : (d > 3480 ? 9 : 0);
+  // Rebuild cemented set
+  cementedSet.clear();
+  CASING_PROGRAM.forEach((csg, ci) => {
+    if (d > csg.shoe) cementedSet.add(ci);
+  });
+  // Rebuild feed
+  triggeredEvents.clear();
+  document.getElementById('aiFeed').innerHTML = '';
+  EVENTS.forEach(ev => {
+    if (ev.d <= d) { triggeredEvents.add(ev.d); addFeedEvent(ev); }
+  });
+  updateUI(0); drawWell();
+}
+
+function seekClick(e) {
+  const rect = document.getElementById('progressTrack').getBoundingClientRect();
+  const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+  seekDepth(pct * TD);
+}
+
+// ═══════════════════════════════════════════════════════════
+// DMR DATA INTEGRATION — read from localStorage (project_well_dmr_entry)
+// ═══════════════════════════════════════════════════════════
+function loadDMRData() {
+  // Try all plausible key variants for well 23
+  const candidates = [
+    'ws2000_dmr_saved_23_1', 'ws2000_dmr_saved_23_2', 'ws2000_dmr_saved_23_3',
+  ];
+
+  // Also check the index for well 23
+  try {
+    const idx = localStorage.getItem('dmr_reports_23');
+    if (idx) {
+      const reports = JSON.parse(idx);
+      reports.forEach(r => { if (r.state_key) candidates.push(r.state_key); });
+    }
+  } catch(e) {}
+
+  let dmrState = null;
+  for (const key of candidates) {
+    try {
+      const raw = localStorage.getItem(key);
+      if (raw) { dmrState = JSON.parse(raw); break; }
+    } catch(e) {}
+  }
+
+  if (!dmrState) return; // no saved DMR data — simulator runs with its own defaults
+
+  const g = (id, fallback) => {
+    const v = dmrState[id];
+    if (v === undefined || v === null || v === '') return fallback;
+    const n = parseFloat(v);
+    return isNaN(n) ? fallback : n;
+  };
+  const gs = id => (dmrState[id] || '').trim();
+
+  // Override simulator values with real DMR data
+  const dens = g('rig_mud_weight', null);
+  if (dens && dens > 0.9 && dens < 2.5) {
+    sm.dens = dens; tgt.dens = dens;
+    // Patch all formation densities proportionally if real data differs significantly from sim defaults
+    const baseline = 1.10;
+    const offset = dens - baseline;
+    if (Math.abs(offset) > 0.02) {
+      STRAT.forEach(s => { s.dens = Math.round((s.dens + offset) * 1000) / 1000; });
+    }
+  }
+
+  const pv = g('bh_pv', null);
+  if (pv && pv > 0) { sm.pv = pv; tgt.pv = pv; STRAT.forEach(s => s.pv = pv); }
+
+  const yp = g('bh_yp', null);
+  if (yp && yp > 0) { sm.yp = yp; tgt.yp = yp; prevYP = yp; STRAT.forEach(s => s.yp = yp); }
+
+  const gel = g('bh_gel1', null) || g('bh_gel', null);
+  if (gel && gel > 0) { sm.gel = gel; tgt.gel = gel; STRAT.forEach(s => s.gel = gel); }
+
+  const api = g('rig_api', null);
+  if (api && api > 0) { sm.api = api; tgt.api = api; STRAT.forEach(s => s.api = api); }
+
+  const ph = g('bh_ph', null);
+  if (ph && ph > 0) { sm.ph = ph; tgt.ph = ph; STRAT.forEach(s => s.ph = ph); }
+
+  const kcl = g('rig_kcl', null);
+  if (kcl && kcl > 0) { sm.kcl = kcl; tgt.kcl = kcl; STRAT.forEach(s => s.kcl = kcl); }
+
+  const funnel = g('rig_funnel_vis', null) || g('mr_marsh_funnel', null);
+  if (funnel && funnel > 0) { sm.t = funnel; tgt.t = funnel; }
+
+  const wob = g('bh_wob', null);
+  if (wob && wob > 0) { sm.wob = wob; tgt.wob = wob; }
+
+  const rpm = g('bh_rpm', null);
+  if (rpm && rpm > 0) { sm.rpm = rpm; tgt.rpm = rpm; }
+
+  // Seek to recorded bit depth
+  const depthTo = g('bh_bit_depth_to', null);
+  const depthFrom = g('bh_bit_depth_from', null);
+  const depth = depthTo || depthFrom;
+  if (depth && depth > 0 && depth <= TD && !_simDepthSet) {
+    seekDepth(depth);
+    _simDepthSet = true;
+  }
+
+  // Show DMR badge
+  const engineer = gs('mr_engineer') || gs('mud_engineer') || '';
+  const wellName = gs('well_name') || '23';
+  const fluidType = gs('mr_fluid_type') || gs('rig_fluid_type') || '';
+  const badge = document.getElementById('dmrBadge');
+  if (badge) {
+    badge.style.display = 'block';
+    const parts = ['📋 DMR · Скв. ' + wellName];
+    if (fluidType) parts.push(fluidType);
+    if (engineer) parts.push(engineer);
+    badge.textContent = parts.join(' · ');
+  }
+
+  console.log('[DRILL-Q] DMR данные загружены из localStorage', {dens, pv, yp, depth, engineer});
+}
+
+// ═══════════════════════════════════════════════════════════
+// DRILL-Q INPUT — читаем параметры из app-input.html (localStorage dq_*)
+// ═══════════════════════════════════════════════════════════
+function loadDrillQData() {
+  const g = key => {
+    const v = localStorage.getItem('dq_' + key);
+    return v !== null && v !== '' ? parseFloat(v) : null;
+  };
+
+  let hasData = false;
+
+  // 1. Начальная глубина — только при первом вызове, poll не сбрасывает симуляцию.
+  //    Приоритет: sim_live_depth (текущий забой симуляции) > dq_depth (введённая начальная глубина)
+  const depth = g('depth');
+  if (!_simDepthSet) {
+    const liveDepth = parseInt(localStorage.getItem('sim_live_depth') || '0');
+    const startDepth = (liveDepth > 0) ? liveDepth : depth;
+    if (startDepth && startDepth > 0 && startDepth <= TD) {
+      seekDepth(startDepth);
+      _simDepthSet = true;
+      hasData = true;
+    }
+  } else if (depth) {
+    hasData = true;
+  }
+
+  // 2. Плотность бурового раствора (г/см³)
+  const dens = g('density');
+  if (dens && dens > 0.8 && dens < 2.5) {
+    sm.dens = dens; tgt.dens = dens; userP.dens = dens; // userP.dens фиксирует значение от updateTargets
+    const offset = dens - 1.05;
+    if (Math.abs(offset) > 0.02) {
+      STRAT.forEach(s => { s.dens = Math.round((s.dens + offset) * 1000) / 1000; });
+    }
+    hasData = true;
+  }
+
+  // 3. Нагрузка на долото: т → кН
+  const wob = g('wob');
+  if (wob && wob > 0) {
+    const wobKN = wob * 9.81;
+    sm.wob = wobKN; tgt.wob = wobKN; userP.wob = wobKN; hasData = true;
+  }
+
+  // 4. Частота вращения (об/мин)
+  const rpm = g('rpm');
+  if (rpm && rpm > 0) { sm.rpm = rpm; tgt.rpm = rpm; userP.rpm = rpm; hasData = true; }
+
+  // 5. Момент вращения (кН·м)
+  const torque = g('torque');
+  if (torque && torque > 0) { sm.torq = torque; tgt.torq = torque; userP.torq = torque; hasData = true; }
+
+  // 6. МСП из app-input → используем для реальной скорости симуляции
+  const rop = g('rop');
+  if (rop && rop > 0) { sm.rop = rop; tgt.rop = rop; userP.rop = rop; hasData = true; }
+
+  // 7. Давление на стояке: атм → бар
+  const spp = g('spp');
+  if (spp && spp > 0) {
+    const bar = Math.round(spp * 1.0133);
+    sm.dp = bar; tgt.dp = bar; userP.dp = bar; hasData = true;
+  }
+
+  // 8. Расход (л/с)
+  const flow = g('flow');
+  if (flow && flow > 0) { sm.flow = flow; tgt.flow = flow; userP.flow = flow; hasData = true; }
+
+  // 9. Нагрузка на крюке: т → кН
+  const hl = g('hookload');
+  if (hl && hl > 0) {
+    const hlKN = Math.round(hl * 9.81);
+    sm.hl = hlKN; tgt.hl = hlKN; userP.hl = hlKN; hasData = true;
+  }
+
+  // 10. Параметры раствора
+  const pv = g('pv');
+  if (pv && pv > 0) { sm.pv = pv; tgt.pv = pv; userP.pv = pv; }
+  const yp = g('yp');
+  if (yp && yp > 0) { sm.yp = yp; tgt.yp = yp; prevYP = yp; userP.yp = yp; }
+  const fv = g('fv');
+  if (fv && fv > 0) { sm.t = fv; tgt.t = fv; userP.t = fv; }
+  const gel10 = g('gel10');
+  if (gel10 && gel10 > 0) { sm.gel = gel10; tgt.gel = gel10; userP.gel = gel10; }
+  const ph = g('ph');
+  if (ph && ph > 0) { sm.ph = ph; tgt.ph = ph; userP.ph = ph; }
+
+  // Зенитный угол для наклона ствола
+  const incl = g('incl');
+  if (incl && incl >= 0) {
+    // Обновляем наклон в текущей фазе визуализации
+    if (typeof bitInc !== 'undefined') bitInc = incl;
+  }
+
+  // Баннер с данными
+  if (hasData) {
+    const badge = document.getElementById('dmrBadge');
+    if (badge) {
+      badge.style.display = 'block';
+      const ts = localStorage.getItem('dq_ts');
+      const timeStr = ts ? (() => { const d = new Date(ts); return d.getHours() + ':' + String(d.getMinutes()).padStart(2,'0'); })() : '';
+      const parts = ['📊 Параметры ввода'];
+      if (depth) parts.push('Глубина ' + Math.round(depth) + ' м');
+      if (dens) parts.push('ρ=' + dens + ' г/см³');
+      if (rop) parts.push('МСП=' + rop + ' м/ч');
+      if (timeStr) parts.push(timeStr);
+      badge.textContent = parts.join(' · ');
+    }
+    // Обновляем глубину в родительском фрейме
+    try {
+      const pd = window.parent.document;
+      const el = pd.getElementById('cockpitDepth');
+      if (el && depth) el.textContent = Math.round(depth) + ' м';
+    } catch(e) {}
+  }
+
+  return hasData;
+}
+
+// ═══════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════
+window.addEventListener('resize', () => { resizeCanvas(); drawWell(); });
+
+// Команды от родительского фрейма (Play / Pause)
+window.addEventListener('message', e => {
+  if (!e.data || e.data.type !== 'sim_cmd') return;
+  if (e.data.cmd === 'play'  && !playing) { playing = true;  lastTs = null; requestAnimationFrame(tick); broadcastState(); }
+  if (e.data.cmd === 'pause' && playing)  { playing = false; broadcastState(); }
+});
+window.addEventListener('load', () => {
+  resizeCanvas();
+  setSpeed(20);
+  loadDMRData();
+  // Загружаем реальные параметры из app-input.html (приоритет выше DMR)
+  loadDrillQData();
+  updateUI(0); drawWell();
+  addPhaseEvent(PHASES[0]);
+  setTimeout(() => { requestAnimationFrame(tick); broadcastState(); }, 500);
+
+  // Обновляем параметры каждые 5 сек (если пользователь вводит данные)
+  setInterval(() => {
+    if (loadDrillQData()) { updateUI(0); }
+  }, 5000);
+
+  // Слушаем изменения localStorage из других вкладок
+  window.addEventListener('storage', e => {
+    if (e.key && e.key.startsWith('dq_')) {
+      loadDrillQData(); updateUI(0);
+    }
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,235 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ROI Calculator - Digital Drilling Model</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap");
+    :root {
+      --bg: #0a111b;
+      --panel: #121d2b;
+      --line: #22344c;
+      --text: #e9f1fb;
+      --muted: #9db1c9;
+      --accent: #19c7b0;
+      --accent-2: #f4b85f;
+      --danger: #ff6a88;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Manrope", "Segoe UI", Tahoma, sans-serif;
+      color: var(--text);
+      background: radial-gradient(920px 500px at 0% -12%, rgba(26,216,181,.16), transparent), radial-gradient(900px 540px at 100% 0%, rgba(244,184,95,.14), transparent), radial-gradient(1200px 500px at 70% -10%, #1a2a3f 0%, var(--bg) 55%);
+    }
+    .topbar { max-width: 1100px; margin: 24px auto 0; padding: 12px 16px; display:flex; align-items:center; justify-content:space-between; gap:12px; background: rgba(8,15,24,.66); border:1px solid rgba(226,237,255,.08); border-radius:14px; }
+    .brandline { display:flex; align-items:center; gap:10px; font-family:'Oswald',sans-serif; font-size:20px; letter-spacing:.05em; text-transform:uppercase; color:#eef5ff; }
+    .branddot { width:12px; height:12px; border-radius:999px; background:radial-gradient(circle at 35% 35%, #fff1d7, #f4b85f); }
+    .rail { display:flex; flex-wrap:wrap; gap:8px; }
+    .rail a { text-decoration:none; font-size:11px; text-transform:uppercase; letter-spacing:.07em; font-weight:800; border-radius:999px; padding:7px 11px; color:#9fb4cb; border:1px solid rgba(226,237,255,.08); background:rgba(255,255,255,.03); }
+    .rail a.active { color:#2f2406; background:linear-gradient(130deg,#ffe2a7,#f4b85f); border-color:rgba(244,184,95,.75); }
+    .wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+    h1 { margin: 0 0 8px; font-size: 28px; font-family:'Oswald',sans-serif; text-transform:uppercase; letter-spacing:.03em; }
+    .sub { color: var(--muted); margin-bottom: 20px; }
+    .grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 16px;
+    }
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.00));
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 16px;
+    }
+    .field { margin-bottom: 14px; }
+    label { display: block; margin-bottom: 6px; color: var(--muted); font-size: 13px; }
+    input[type="range"] { width: 100%; }
+    input[type="number"] {
+      width: 100%;
+      background: #0b1626;
+      color: var(--text);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 8px 10px;
+    }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .kpi {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px;
+      background: #0d1726;
+      margin-bottom: 10px;
+    }
+    .kpi .name { color: var(--muted); font-size: 12px; }
+    .kpi .val { font-size: 22px; margin-top: 4px; }
+    .accent { color: var(--accent); }
+    .accent2 { color: var(--accent-2); }
+    .danger { color: var(--danger); }
+    table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+    th, td { border-bottom: 1px solid var(--line); padding: 8px; text-align: left; font-size: 13px; }
+    th { color: var(--muted); font-weight: 600; }
+    .hint { color: var(--muted); font-size: 12px; margin-top: 8px; }
+    @media (max-width: 900px) {
+      .topbar { flex-direction: column; align-items: flex-start; }
+      .grid { grid-template-columns: 1fr; }
+      .row { grid-template-columns: 1fr; }
+    }
+  </style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+  <div class="topbar"><div class="brandline"><span class="branddot"></span><span>ROI Calculator</span></div><nav class="rail"><a href="25_digitalization_i5_document_pipeline_charter.html">25 I5</a><a href="26_digitalization_master_roadmap.html">26 Roadmap</a><a href="27_digitalization_analysis_dashboard_v2.html">27 Analysis</a><a href="28_well_gantt_critical_path.html">28 Critical Path</a><a class="active" href="29_roi_calculator_interactive.html">29 ROI</a><a href="30_gantt_665_operations_detailed.html">30 Detailed Gantt</a></nav></div>
+  <div class="wrap">
+    <h1>Interactive ROI Calculator</h1>
+    <div class="sub">Параметрическая модель для масштабируемой цифровизации буровых проектов (не для одной скважины).</div>
+
+    <div class="grid">
+      <section class="card">
+        <h3>Входные параметры</h3>
+
+        <div class="field">
+          <label>Количество скважин в год: <span id="wellsVal">20</span></label>
+          <input id="wells" type="range" min="1" max="100" value="20" />
+        </div>
+
+        <div class="field row">
+          <div>
+            <label>Стоимость часа операционного времени, USD</label>
+            <input id="hourCost" type="number" value="300" min="50" step="10" />
+          </div>
+          <div>
+            <label>Стоимость 1 дня rig, USD</label>
+            <input id="rigDayCost" type="number" value="500000" min="50000" step="10000" />
+          </div>
+        </div>
+
+        <div class="field row">
+          <div>
+            <label>Ожидаемая экономия часов на 1 скважину</label>
+            <input id="hoursSavedPerWell" type="number" value="986.2" min="0" step="1" />
+          </div>
+          <div>
+            <label>Снижение NPT, %</label>
+            <input id="nptReduction" type="number" value="15" min="0" max="50" step="0.5" />
+          </div>
+        </div>
+
+        <div class="field row">
+          <div>
+            <label>Инвестиции в программу (CAPEX/OPEX), USD</label>
+            <input id="investment" type="number" value="443000" min="10000" step="1000" />
+          </div>
+          <div>
+            <label>Средняя длительность скважины, дней</label>
+            <input id="avgWellDays" type="number" value="360" min="30" step="5" />
+          </div>
+        </div>
+
+        <div class="hint">Формулы: Direct = Wells x HoursSavedPerWell x HourCost. NPT value = Wells x AvgWellDays x RigDayCost x NPTReduction%.</div>
+      </section>
+
+      <section class="card">
+        <h3>Результаты</h3>
+        <div class="kpi">
+          <div class="name">Прямая экономия, USD/год</div>
+          <div id="directSaving" class="val accent">0</div>
+        </div>
+        <div class="kpi">
+          <div class="name">Эффект от снижения NPT, USD/год</div>
+          <div id="nptValue" class="val accent2">0</div>
+        </div>
+        <div class="kpi">
+          <div class="name">Совокупный эффект, USD/год</div>
+          <div id="totalValue" class="val">0</div>
+        </div>
+        <div class="kpi">
+          <div class="name">ROI (x)</div>
+          <div id="roiX" class="val accent">0x</div>
+        </div>
+        <div class="kpi">
+          <div class="name">Payback (месяцы)</div>
+          <div id="paybackMonths" class="val danger">0</div>
+        </div>
+      </section>
+    </div>
+
+    <section class="card" style="margin-top:16px;">
+      <h3>Инициативы в модели</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Инициатива</th>
+            <th>Экономия часов/скважину</th>
+            <th>Доля</th>
+          </tr>
+        </thead>
+        <tbody id="initiativesBody"></tbody>
+      </table>
+    </section>
+  </div>
+
+  <script>
+    const initiativeHours = [
+      { id: "I1", name: "Depth-Day Optimizer", h: 381.7 },
+      { id: "I2", name: "Hydraulics Twin", h: 284.5 },
+      { id: "I3", name: "Losses Engine", h: 140.0 },
+      { id: "I4", name: "Casing/Cementing", h: 85.0 },
+      { id: "I5", name: "Document Pipeline", h: 95.0 }
+    ];
+
+    function fmtUSD(v) {
+      return new Intl.NumberFormat("ru-RU", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(v);
+    }
+
+    function renderInitiatives(totalHours) {
+      const body = document.getElementById("initiativesBody");
+      body.innerHTML = "";
+      initiativeHours.forEach(x => {
+        const tr = document.createElement("tr");
+        const share = totalHours > 0 ? ((x.h / totalHours) * 100).toFixed(1) : 0;
+        tr.innerHTML = `<td>${x.id} - ${x.name}</td><td>${x.h.toFixed(1)}</td><td>${share}%</td>`;
+        body.appendChild(tr);
+      });
+    }
+
+    function recalc() {
+      const wells = Number(document.getElementById("wells").value);
+      const hourCost = Number(document.getElementById("hourCost").value);
+      const rigDayCost = Number(document.getElementById("rigDayCost").value);
+      const hoursSavedPerWell = Number(document.getElementById("hoursSavedPerWell").value);
+      const nptReduction = Number(document.getElementById("nptReduction").value) / 100;
+      const investment = Number(document.getElementById("investment").value);
+      const avgWellDays = Number(document.getElementById("avgWellDays").value);
+
+      document.getElementById("wellsVal").textContent = wells;
+
+      const directSaving = wells * hoursSavedPerWell * hourCost;
+      const nptValue = wells * avgWellDays * rigDayCost * nptReduction;
+      const totalValue = directSaving + nptValue;
+      const roiX = investment > 0 ? totalValue / investment : 0;
+      const paybackMonths = totalValue > 0 ? (investment / totalValue) * 12 : 0;
+
+      document.getElementById("directSaving").textContent = fmtUSD(directSaving);
+      document.getElementById("nptValue").textContent = fmtUSD(nptValue);
+      document.getElementById("totalValue").textContent = fmtUSD(totalValue);
+      document.getElementById("roiX").textContent = roiX.toFixed(1) + "x";
+      document.getElementById("paybackMonths").textContent = paybackMonths.toFixed(2);
+
+      renderInitiatives(hoursSavedPerWell);
+    }
+
+    ["wells","hourCost","rigDayCost","hoursSavedPerWell","nptReduction","investment","avgWellDays"].forEach(id => {
+      document.getElementById(id).addEventListener("input", recalc);
+    });
+
+    recalc();
+  </script>
+  <script src="assets/js/global-auth-widget.js"></script>
+</body>
+</html>

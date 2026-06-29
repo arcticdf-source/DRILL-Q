@@ -1,0 +1,1065 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>55 · Тендер · Новый проект и загрузка</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap");
+
+    :root {
+      --bg-0: #071018;
+      --bg-1: #102030;
+      --bg-2: #1b3041;
+      --panel: rgba(11, 20, 31, 0.84);
+      --line: rgba(227, 238, 255, 0.16);
+      --line-soft: rgba(227, 238, 255, 0.09);
+      --text: #edf5ff;
+      --muted: #9ab0c7;
+      --cyan: #22d7b4;
+      --amber: #f8bd5f;
+      --danger: #ff7c68;
+      --ok: #8cefc8;
+      --shadow: 0 22px 52px rgba(0, 0, 0, 0.4);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      font-family: "Manrope", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(900px 460px at 0% -10%, rgba(34, 215, 180, 0.18), rgba(34, 215, 180, 0)),
+        radial-gradient(760px 420px at 100% 0%, rgba(248, 189, 95, 0.16), rgba(248, 189, 95, 0)),
+        linear-gradient(145deg, var(--bg-0), var(--bg-1) 46%, var(--bg-2));
+    }
+
+    .wrap {
+      width: min(980px, 92vw);
+      margin: 0 auto;
+      padding: 24px 0 72px;
+    }
+
+    .top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border: 1px solid var(--line-soft);
+      border-radius: 14px;
+      background: rgba(8, 15, 24, 0.66);
+      padding: 12px 14px;
+      position: sticky;
+      top: 12px;
+      z-index: 20;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: "Oswald", sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-size: 20px;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 35% 35%, #d6fff7, var(--cyan));
+    }
+
+    .nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .nav a {
+      text-decoration: none;
+      color: #082922;
+      background: linear-gradient(130deg, #a0f9eb, #22d7b4);
+      border: 1px solid rgba(34, 215, 180, 0.75);
+      border-radius: 10px;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-weight: 800;
+      padding: 8px 12px;
+    }
+
+    .hero {
+      margin-top: 18px;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background:
+        linear-gradient(150deg, rgba(34, 215, 180, 0.12), rgba(12, 22, 34, 0.9) 40%, rgba(248, 189, 95, 0.1));
+      box-shadow: var(--shadow);
+      padding: 24px;
+    }
+
+    .hero small {
+      display: inline-block;
+      margin-bottom: 8px;
+      font-family: "Oswald", sans-serif;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.11em;
+      color: var(--cyan);
+    }
+
+    .hero h1 {
+      margin: 0 0 10px;
+      font-family: "Oswald", sans-serif;
+      font-size: clamp(30px, 5vw, 48px);
+      letter-spacing: -0.02em;
+    }
+
+    .hero p {
+      margin: 0;
+      color: #c6d7ec;
+      line-height: 1.6;
+      max-width: 85ch;
+    }
+
+    .panel {
+      margin-top: 18px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      padding: 22px;
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text);
+      padding: 12px 14px;
+      font: inherit;
+      outline: none;
+      margin-bottom: 14px;
+    }
+
+    .dropzone {
+      border: 2px dashed rgba(34, 215, 180, 0.55);
+      border-radius: 16px;
+      background: rgba(34, 215, 180, 0.06);
+      padding: 26px 20px;
+      text-align: center;
+      transition: border-color 200ms ease, background 200ms ease;
+    }
+
+    .dropzone.active {
+      border-color: var(--amber);
+      background: rgba(248, 189, 95, 0.12);
+    }
+
+    .dropzone strong {
+      display: block;
+      font-size: 18px;
+      margin-bottom: 6px;
+    }
+
+    .dropzone p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .dropzone input {
+      display: none;
+    }
+
+    .picker-btn {
+      display: inline-block;
+      margin-top: 12px;
+      border: 1px solid rgba(34, 215, 180, 0.75);
+      border-radius: 10px;
+      background: linear-gradient(130deg, #a0f9eb, #22d7b4);
+      color: #082922;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-weight: 800;
+      padding: 9px 12px;
+      cursor: pointer;
+    }
+
+    .meta {
+      margin-top: 12px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .meta-item {
+      border: 1px solid var(--line-soft);
+      border-radius: 12px;
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .meta-item .k {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .meta-item .v {
+      margin-top: 4px;
+      font-weight: 800;
+      font-size: 18px;
+    }
+
+    .files {
+      margin-top: 16px;
+      border: 1px solid var(--line-soft);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.03);
+      max-height: 260px;
+      overflow: auto;
+      display: none;
+    }
+
+    .files.show {
+      display: block;
+    }
+
+    .file {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--line-soft);
+      font-size: 13px;
+    }
+
+    .file:last-child {
+      border-bottom: 0;
+    }
+
+    .file small {
+      color: var(--muted);
+    }
+
+    .status {
+      margin-top: 14px;
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 14px;
+      line-height: 1.55;
+      display: none;
+    }
+
+    .status.ok {
+      display: block;
+      background: rgba(140, 239, 200, 0.12);
+      border: 1px solid rgba(140, 239, 200, 0.32);
+      color: var(--ok);
+    }
+
+    .status.err {
+      display: block;
+      background: rgba(255, 124, 104, 0.12);
+      border: 1px solid rgba(255, 124, 104, 0.34);
+      color: var(--danger);
+    }
+
+    .status.warn {
+      display: block;
+      background: rgba(248, 189, 95, 0.12);
+      border: 1px solid rgba(248, 189, 95, 0.34);
+      color: #ffd8a0;
+    }
+
+    .actions {
+      margin-top: 18px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .folder-row {
+      margin-top: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .folder-chip {
+      border: 1px solid var(--line-soft);
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 12px;
+      color: #d8e6f7;
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .folder-chip.ok {
+      border-color: rgba(140, 239, 200, 0.45);
+      color: var(--ok);
+      background: rgba(140, 239, 200, 0.1);
+    }
+
+    .folder-chip.warn {
+      border-color: rgba(248, 189, 95, 0.45);
+      color: #ffd8a0;
+      background: rgba(248, 189, 95, 0.1);
+    }
+
+    .autobuild {
+      margin-top: 16px;
+      border: 1px solid rgba(248, 189, 95, 0.35);
+      border-radius: 14px;
+      background: rgba(248, 189, 95, 0.1);
+      padding: 12px 14px;
+    }
+
+    .autobuild strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 14px;
+      color: #ffd9a1;
+    }
+
+    .autobuild p {
+      margin: 0 0 8px;
+      color: #f0dcba;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .cmd-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .cmd {
+      flex: 1 1 420px;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 12px;
+      background: rgba(8, 15, 24, 0.7);
+      border: 1px solid var(--line-soft);
+      border-radius: 10px;
+      color: #eaf4ff;
+      padding: 8px 10px;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+
+    button {
+      border: 0;
+      border-radius: 12px;
+      padding: 12px 16px;
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .primary {
+      color: #06231f;
+      background: linear-gradient(130deg, #9af7e7, #22d7b4);
+    }
+
+    .secondary {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--line);
+    }
+
+    .footer {
+      margin-top: 18px;
+      font-size: 12px;
+      color: #8ea3bb;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    @media (max-width: 760px) {
+      .top {
+        position: static;
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .meta {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+  <main class="wrap">
+    <header class="top">
+      <div class="brand"><span class="dot" aria-hidden="true"></span><span>Nexus Oilfield AI</span></div>
+      <div class="nav">
+        <a href="42_drilling_fluids_dashboard.html">Назад к модулям</a>
+      </div>
+    </header>
+
+    <section class="hero">
+      <small>Шаг 0 · Intake</small>
+      <h1>Новый проект и загрузка документов</h1>
+      <p>
+        Введите название проекта, загрузите исходные тендерные документы или архив,
+        затем переходите к построению проекта. На следующем шаге страница проекта автоматически
+        подставит название и перечень загруженных файлов.
+      </p>
+    </section>
+
+    <section class="panel">
+      <label for="projectName">Новый проект</label>
+      <div style="display:flex;gap:10px;align-items:center;margin-bottom:14px">
+        <input id="projectName" type="text" placeholder="Например: ВЧНГ" style="flex:1" />
+        <button id="createProjectBtn" class="primary" type="button">Создать проект</button>
+      </div>
+
+      <label>Upload files</label>
+      <div class="dropzone" id="dropzone">
+        <input id="fileInput" type="file" multiple />
+        <strong>Drag and drop документы сюда</strong>
+        <p>Поддерживается: doc/docx, xls/xlsx, pdf, zip/rar, txt и др. файлы тендера.</p>
+        <label for="fileInput" class="picker-btn">Или выбрать файлы</label>
+      </div>
+
+      <div class="meta">
+        <div class="meta-item"><div class="k">Файлов</div><div class="v" id="filesCount">0</div></div>
+        <div class="meta-item"><div class="k">Общий размер</div><div class="v" id="filesSize">0 MB</div></div>
+        <div class="meta-item"><div class="k">Архивы</div><div class="v" id="archivesCount">0</div></div>
+      </div>
+
+      <div class="files" id="filesList"></div>
+      <div id="status" class="status"></div>
+
+      <div class="actions">
+        <button id="pickFolderBtn" class="secondary" type="button">Подключить папку tenders</button>
+        <button id="analyzeBtn" class="secondary" type="button">Анализировать документы</button>
+        <button id="continueBtn" class="primary" type="button">Перейти к проекту</button>
+        <button id="clearBtn" class="secondary" type="button">Очистить</button>
+      </div>
+
+      <div class="folder-row">
+        <div id="serverChip" class="folder-chip warn">Сервер не запущен</div>
+        <div id="folderStatusChip" class="folder-chip warn">Папка tenders не подключена</div>
+      </div>
+
+      <div class="autobuild">
+        <strong>Локальный сервер для автоматической обработки</strong>
+        <p>
+          Запустите сервер один раз — после этого любой архив, брошенный в загрузчик,
+          автоматически сохранится в папку tenders и будет проанализирован Python-пайплайном.
+          Страница проекта получит полные структурированные данные (интервалы, параметры, реагенты).
+        </p>
+        <div class="cmd-row">
+          <div class="cmd" id="autobuildCmd">C:\Users\Andrey\Desktop\NEW\knowledge\tools\start_tender_server.cmd</div>
+          <button id="copyCmdBtn" class="secondary" type="button">Копировать команду</button>
+        </div>
+      </div>
+    </section>
+
+    <p class="footer">Intake для тендерного проекта · Doc 55</p>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script>
+    const INTAKE_KEY = "nexus-tender-intake-v1";
+    const SERVER_URL = "http://127.0.0.1:7234";
+
+    const inputProject = document.getElementById("projectName");
+    const dropzone = document.getElementById("dropzone");
+    const fileInput = document.getElementById("fileInput");
+    const filesList = document.getElementById("filesList");
+    const filesCount = document.getElementById("filesCount");
+    const filesSize = document.getElementById("filesSize");
+    const archivesCount = document.getElementById("archivesCount");
+    const status = document.getElementById("status");
+    const analyzeBtn = document.getElementById("analyzeBtn");
+    const pickFolderBtn = document.getElementById("pickFolderBtn");
+    const folderStatusChip = document.getElementById("folderStatusChip");
+    const serverChip = document.getElementById("serverChip");
+
+    let currentFiles = [];
+    let analysisCache = null;
+    let serverSeed = null;      // filled when server returns autobuild seed
+    let tendersFolderHandle = null;
+    let copiedFilesCount = 0;
+    let serverOnline = false;
+
+    function formatSize(bytes) {
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
+      return (bytes / (1024 * 1024)).toFixed(1) + " MB";
+    }
+
+    function dedupeFiles(files) {
+      const map = new Map();
+      files.forEach((f) => {
+        const key = [f.name, f.size, f.lastModified].join("|");
+        if (!map.has(key)) map.set(key, f);
+      });
+      return Array.from(map.values());
+    }
+
+    function updateView() {
+      const total = currentFiles.reduce((sum, f) => sum + (f.size || 0), 0);
+      const archives = currentFiles.filter((f) => /\.(zip|rar|7z)$/i.test(f.name)).length;
+
+      filesCount.textContent = String(currentFiles.length);
+      filesSize.textContent = currentFiles.length ? formatSize(total) : "0 MB";
+      archivesCount.textContent = String(archives);
+
+      if (!currentFiles.length) {
+        filesList.classList.remove("show");
+        filesList.innerHTML = "";
+        return;
+      }
+
+      filesList.classList.add("show");
+      filesList.innerHTML = currentFiles.map((f) => {
+        return "<div class=\"file\"><div>" +
+          "<strong>" + escapeHtml(f.name) + "</strong><br><small>" +
+          (f.type ? escapeHtml(f.type) : "тип не определен") +
+          "</small></div><div><small>" + formatSize(f.size || 0) + "</small></div></div>";
+      }).join("");
+    }
+
+    function escapeHtml(text) {
+      return String(text)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/\"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    // ── Server integration ─────────────────────────────────────────
+
+    function updateServerChip(online) {
+      serverOnline = online;
+      if (online) {
+        serverChip.className = "folder-chip ok";
+        serverChip.textContent = "Сервер подключен · автосохранение + автоанализ";
+      } else {
+        serverChip.className = "folder-chip warn";
+        serverChip.textContent = "Сервер не запущен · только браузерный анализ";
+      }
+    }
+
+    async function checkServer() {
+      try {
+        const res = await fetch(SERVER_URL + "/ping", { signal: AbortSignal.timeout(1500) });
+        updateServerChip(res.ok);
+      } catch {
+        updateServerChip(false);
+      }
+    }
+
+    async function uploadToServer(files) {
+      if (!files.length) return false;
+      const fd = new FormData();
+      for (const f of files) fd.append("file", f, f.name);
+
+      setStatus("warn", "Загрузка на локальный сервер и запуск автоанализа...");
+      try {
+        const res = await fetch(SERVER_URL + "/upload", { method: "POST", body: fd });
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        const data = await res.json();
+        if (data.seed && Object.keys(data.seed).length) {
+          serverSeed = data.seed;
+          analysisCache = buildAnalysisFromSeed(data.seed, data.report, files);
+        }
+        const saved = data.saved ? data.saved.join(", ") : "";
+        const ok = data.autobuildOk ? "Автосборка завершена." : "Автосборка завершилась с предупреждением.";
+        const kb = data.knowledgeIndexReport && data.knowledgeIndexReport.summary
+          ? data.knowledgeIndexReport.summary
+          : null;
+        const kbMsg = data.knowledgeIndexOk
+          ? (kb
+              ? " KB обновлена: " + kb.files_with_text + " файлов с текстом, " + kb.chunks_created + " чанков."
+              : " KB обновлена.")
+          : " KB не обновилась (проверьте build_knowledge_index.py).";
+        setStatus("ok", ok + (saved ? " Сохранены: " + saved : "") + kbMsg);
+        return true;
+      } catch (err) {
+        console.warn("Server upload failed:", err);
+        updateServerChip(false);
+        return false;
+      }
+    }
+
+    function buildAnalysisFromSeed(seed, report, files) {
+      // Build analysis cache from rich autobuild seed so doc 50 gets all data
+      const allText = [
+        (seed.general_excerpt || []).join(" "),
+        (seed.lithology_excerpt || []).join(" "),
+        (seed.well_construction_excerpt || []).join(" "),
+      ].join(" ");
+
+      const tags = detectTagsFromText(allText);
+      const maxDepth = findMaxDepth(allText);
+      const signals = detectProjectSignals(allText, files.map((f) => f.name));
+
+      // Attempt to extract deeper signals from seed text
+      const exc = allText.toLowerCase();
+      if (!signals.region) {
+        if (/южно.*обск|обская/.test(exc)) signals.region = "Южно-Обское месторождение";
+        else if (/западн.*сибир/.test(exc)) signals.region = "Западная Сибирь";
+      }
+
+      const keyDocs = (report && report.key_documents) ? report.key_documents : {};
+
+      return {
+        analyzedAt: new Date().toISOString(),
+        durationMs: 0,
+        filesCount: files.length,
+        zipEntriesCount: 0,
+        unsupported: [],
+        tags,
+        maxDepth,
+        signals,
+        keyDocuments: {
+          appendixV1: keyDocs.appendix_v1 || "",
+          appendix1:  keyDocs.appendix_1  || "",
+          appendix14: keyDocs.appendix_14 || "",
+          appendix41: keyDocs.appendix_4_1 || "",
+          appendix42: keyDocs.appendix_4_2 || "",
+        },
+        extractedPreview: allText.slice(0, 5000),
+        fromAutobuild: true,
+      };
+    }
+
+    // ── File handling ─────────────────────────────────────────────
+
+    async function pushFiles(list) {
+      const incoming = Array.from(list || []);
+      currentFiles = dedupeFiles(currentFiles.concat(incoming));
+      updateView();
+
+      if (serverOnline) {
+        await uploadToServer(incoming);
+      } else {
+        await copyFilesToTenders(incoming);
+      }
+    }
+
+    function setStatus(kind, message) {
+      status.className = "status " + kind;
+      status.textContent = message;
+    }
+
+    function clearStatus() {
+      status.className = "status";
+      status.textContent = "";
+    }
+
+    function updateFolderChip() {
+      if (tendersFolderHandle) {
+        folderStatusChip.className = "folder-chip ok";
+        folderStatusChip.textContent = "Папка подключена: " + tendersFolderHandle.name + " · скопировано: " + copiedFilesCount;
+      } else {
+        folderStatusChip.className = "folder-chip warn";
+        folderStatusChip.textContent = "Папка tenders не подключена";
+      }
+    }
+
+    async function pickTendersFolder() {
+      if (!window.showDirectoryPicker) {
+        setStatus("warn", "Браузер не поддерживает прямую запись в папку. Используйте Edge/Chrome или локальный пайплайн.");
+        return;
+      }
+
+      try {
+        const handle = await window.showDirectoryPicker({ mode: "readwrite" });
+        tendersFolderHandle = handle;
+        updateFolderChip();
+        if (handle.name.toLowerCase() !== "tenders") {
+          setStatus("warn", "Подключена папка \"" + handle.name + "\". Рекомендуется выбрать именно папку tenders.");
+        } else {
+          setStatus("ok", "Папка tenders подключена. Новые загруженные файлы будут копироваться автоматически.");
+        }
+      } catch {
+        setStatus("warn", "Подключение папки отменено.");
+      }
+    }
+
+    async function copyFilesToTenders(files) {
+      if (!tendersFolderHandle || !files.length) return;
+      let copiedNow = 0;
+
+      for (const file of files) {
+        try {
+          const safeName = file.name.replace(/[\\/:*?"<>|]+/g, "_");
+          const target = await tendersFolderHandle.getFileHandle(safeName, { create: true });
+          const writable = await target.createWritable();
+          await writable.write(await file.arrayBuffer());
+          await writable.close();
+          copiedNow += 1;
+        } catch (error) {
+          console.warn("Failed to copy file to tenders folder", file.name, error);
+        }
+      }
+
+      if (copiedNow > 0) {
+        copiedFilesCount += copiedNow;
+        updateFolderChip();
+        setStatus("ok", "Файлы автоматически скопированы в папку tenders: " + copiedNow);
+      }
+    }
+
+    function detectTagsFromText(text) {
+      const source = (text || "").toLowerCase();
+      const tags = [];
+      if (/глин|аргиллит|shale/.test(source)) tags.push("Реактивные глины");
+      if (/соль|salt|галит/.test(source)) tags.push("Соли");
+      if (/гипс|gypsum/.test(source)) tags.push("Гипсы");
+      if (/ангидрит/.test(source)) tags.push("Ангидриты");
+      if (/h2s|сероводород/.test(source)) tags.push("H2S");
+      if (/co2|углекисл/.test(source)) tags.push("CO2");
+      if (/поглощ|loss/.test(source)) tags.push("Потери");
+      if (/прихват/.test(source)) tags.push("Прихваты");
+      if (/узк.{0,12}окн|narrow/.test(source)) tags.push("Узкое окно давлений");
+      return [...new Set(tags)];
+    }
+
+    function findMaxDepth(text) {
+      const source = text || "";
+      let maxDepth = 0;
+      const intervalRe = /(\d{1,4})\s*[-–]\s*(\d{1,4})\s*м/gi;
+      let m;
+      while ((m = intervalRe.exec(source)) !== null) {
+        const v = Number(m[2]);
+        if (v > maxDepth && v < 10000) maxDepth = v;
+      }
+      const depthRe = /глубин.{0,25}?(\d{3,4})\s*м/gi;
+      while ((m = depthRe.exec(source)) !== null) {
+        const v = Number(m[1]);
+        if (v > maxDepth && v < 10000) maxDepth = v;
+      }
+      return maxDepth;
+    }
+
+    function detectProjectSignals(allText, fileNames) {
+      const joined = (allText + "\n" + fileNames.join(" ")).toLowerCase();
+      const signals = {
+        region: "",
+        projectHint: "",
+        wellType: "",
+      };
+
+      if (/вчнг|верхнечон/.test(joined)) {
+        signals.projectHint = "ВЧНГ";
+        signals.region = "Верхнечонское месторождение";
+      } else if (/иркут/.test(joined)) {
+        signals.region = "Иркутская область";
+      } else if (/ямал|янао/.test(joined)) {
+        signals.region = "ЯНАО";
+      }
+
+      if (/горизонт|гс\b|гсп\b/.test(joined)) {
+        signals.wellType = "horizontal";
+      } else if (/наклон|ннб/.test(joined)) {
+        signals.wellType = "deviated";
+      } else if (/вертикал/.test(joined)) {
+        signals.wellType = "vertical";
+      }
+
+      return signals;
+    }
+
+    async function extractDocxTextFromBuffer(buffer) {
+      const zip = await JSZip.loadAsync(buffer);
+      const doc = zip.file("word/document.xml");
+      if (!doc) return "";
+      const xml = await doc.async("text");
+      const lines = [];
+      const re = /<w:t[^>]*>([\s\S]*?)<\/w:t>/g;
+      let m;
+      while ((m = re.exec(xml)) !== null) {
+        const t = m[1]
+          .replace(/&amp;/g, "&")
+          .replace(/&lt;/g, "<")
+          .replace(/&gt;/g, ">")
+          .replace(/&quot;/g, '"')
+          .replace(/&#39;/g, "'")
+          .trim();
+        if (t) lines.push(t);
+      }
+      return lines.join(" ");
+    }
+
+    function extractXlsxTextFromBuffer(buffer) {
+      const wb = XLSX.read(buffer, { type: "array" });
+      const out = [];
+      wb.SheetNames.slice(0, 4).forEach((sn) => {
+        const ws = wb.Sheets[sn];
+        if (!ws) return;
+        const rows = XLSX.utils.sheet_to_json(ws, { header: 1, raw: false }).slice(0, 80);
+        rows.forEach((r) => {
+          const row = (r || []).map((v) => String(v || "").trim()).filter(Boolean);
+          if (row.length) out.push(row.join(" | "));
+        });
+      });
+      return out.join(" \n ");
+    }
+
+    async function extractTextFromZipFile(file) {
+      const buffer = await file.arrayBuffer();
+      const zip = await JSZip.loadAsync(buffer);
+      const out = [];
+      const names = [];
+
+      const entries = Object.values(zip.files)
+        .filter((entry) => !entry.dir)
+        .slice(0, 120);
+
+      for (const entry of entries) {
+        const name = entry.name;
+        names.push(name);
+        const low = name.toLowerCase();
+
+        try {
+          if (low.endsWith(".txt") || low.endsWith(".csv") || low.endsWith(".json")) {
+            out.push(await entry.async("text"));
+          } else if (low.endsWith(".docx")) {
+            const nestedBuffer = await entry.async("arraybuffer");
+            out.push(await extractDocxTextFromBuffer(nestedBuffer));
+          } else if (low.endsWith(".xlsx") || low.endsWith(".xlsm") || low.endsWith(".xls")) {
+            const nestedBuffer = await entry.async("arraybuffer");
+            out.push(extractXlsxTextFromBuffer(nestedBuffer));
+          }
+        } catch {
+          // continue with other entries
+        }
+      }
+
+      return { text: out.join("\n"), entries: names };
+    }
+
+    async function extractTextFromFile(file) {
+      const low = file.name.toLowerCase();
+      if (low.endsWith(".txt") || low.endsWith(".csv") || low.endsWith(".json")) {
+        return { text: await file.text(), entries: [] };
+      }
+      if (low.endsWith(".docx")) {
+        return { text: await extractDocxTextFromBuffer(await file.arrayBuffer()), entries: [] };
+      }
+      if (low.endsWith(".xlsx") || low.endsWith(".xlsm") || low.endsWith(".xls")) {
+        return { text: extractXlsxTextFromBuffer(await file.arrayBuffer()), entries: [] };
+      }
+      if (low.endsWith(".zip")) {
+        return extractTextFromZipFile(file);
+      }
+      return { text: "", entries: [] };
+    }
+
+    async function analyzeFiles(files) {
+      const started = Date.now();
+      const names = files.map((f) => f.name);
+      const extractedParts = [];
+      const zipEntries = [];
+      const unsupported = [];
+
+      for (const file of files) {
+        const low = file.name.toLowerCase();
+        if (/\.(rar|7z|pdf|doc)$/i.test(low)) {
+          unsupported.push(file.name);
+        }
+        const data = await extractTextFromFile(file);
+        if (data.text) extractedParts.push(data.text);
+        if (data.entries && data.entries.length) zipEntries.push(...data.entries);
+      }
+
+      const fullText = extractedParts.join("\n").slice(0, 800000);
+      const tags = detectTagsFromText(fullText + "\n" + names.join(" "));
+      const maxDepth = findMaxDepth(fullText);
+      const signals = detectProjectSignals(fullText, names.concat(zipEntries));
+
+      const keyDocuments = {
+        appendixV1: names.find((n) => /в1|v1/i.test(n)) || zipEntries.find((n) => /в1|v1/i.test(n)) || "",
+        appendix1: names.find((n) => /приложение\s*1|appendix\s*1/i.test(n)) || zipEntries.find((n) => /приложение\s*1|appendix\s*1/i.test(n)) || "",
+        appendix14: names.find((n) => /14/.test(n)) || zipEntries.find((n) => /14/.test(n)) || "",
+        appendix41: names.find((n) => /4\.1/.test(n)) || zipEntries.find((n) => /4\.1/.test(n)) || "",
+        appendix42: names.find((n) => /4\.2/.test(n)) || zipEntries.find((n) => /4\.2/.test(n)) || "",
+      };
+
+      return {
+        analyzedAt: new Date().toISOString(),
+        durationMs: Date.now() - started,
+        filesCount: files.length,
+        zipEntriesCount: zipEntries.length,
+        unsupported,
+        tags,
+        maxDepth,
+        signals,
+        keyDocuments,
+        extractedPreview: fullText.slice(0, 5000),
+      };
+    }
+
+    function toSerializable(files) {
+      return files.map((f) => ({
+        name: f.name,
+        size: f.size || 0,
+        type: f.type || "",
+        lastModified: f.lastModified || 0
+      }));
+    }
+
+    async function persistAndContinue() {
+      const projectName = inputProject.value.trim();
+      if (!projectName) {
+        setStatus("err", "Введите название проекта перед переходом.");
+        return;
+      }
+      if (!currentFiles.length) {
+        setStatus("err", "Загрузите минимум один документ или архив перед переходом.");
+        return;
+      }
+
+      if (!analysisCache) {
+        setStatus("warn", "Идет автоанализ документов (может занять до 1-2 минут)...");
+        analyzeBtn.disabled = true;
+        try {
+          analysisCache = await analyzeFiles(currentFiles);
+          setStatus("ok", "Документы проанализированы. Формирую проект...");
+        } catch (error) {
+          console.warn(error);
+          setStatus("err", "Не удалось проанализировать часть документов. Продолжаю с доступными данными.");
+        } finally {
+          analyzeBtn.disabled = false;
+        }
+      }
+
+      const payload = {
+        projectName,
+        uploadedAt: new Date().toISOString(),
+        files: toSerializable(currentFiles),
+        analysis: analysisCache,
+        seed: serverSeed || null,
+      };
+
+      localStorage.setItem(INTAKE_KEY, JSON.stringify(payload));
+      localStorage.removeItem("nexus-drilling-fluids-tender-project-v1");
+      setStatus("ok", "Данные intake сохранены. Переходим к странице проекта...");
+      window.location.href = "50_drilling_fluids_tender_project.html";
+    }
+
+    async function runAnalyzeOnly() {
+      if (!currentFiles.length) {
+        setStatus("err", "Сначала загрузите документы или архив.");
+        return;
+      }
+      setStatus("warn", "Анализирую загруженные документы...");
+      analyzeBtn.disabled = true;
+      try {
+        analysisCache = await analyzeFiles(currentFiles);
+        const msg = "Анализ завершен: " + analysisCache.filesCount + " файл(ов), теги: " + (analysisCache.tags.join(", ") || "не выявлены") + ".";
+        setStatus("ok", msg);
+      } catch (error) {
+        console.warn(error);
+        setStatus("err", "Ошибка анализа. Проверьте формат файла или попробуйте загрузить документы по отдельности.");
+      } finally {
+        analyzeBtn.disabled = false;
+      }
+    }
+
+    // --- Project creation logic ---
+    document.getElementById("createProjectBtn").onclick = function() {
+      const name = inputProject.value.trim();
+      if (!name) {
+        setStatus("err", "Введите название проекта");
+        inputProject.focus();
+        return;
+      }
+      // Сохраняем проект в localStorage
+      let projects = [];
+      try {
+        projects = JSON.parse(localStorage.getItem("nexus-projects-list") || "[]");
+      } catch {}
+      if (!projects.includes(name)) {
+        projects.push(name);
+        localStorage.setItem("nexus-projects-list", JSON.stringify(projects));
+      }
+      setStatus("ok", `Проект '${name}' создан! Теперь он появится в разделе 'Мои проекты'.`);
+    };
+
+    dropzone.addEventListener("dragover", (event) => {
+      event.preventDefault();
+      dropzone.classList.add("active");
+    });
+
+    dropzone.addEventListener("dragleave", () => {
+      dropzone.classList.remove("active");
+    });
+
+    dropzone.addEventListener("drop", (event) => {
+      event.preventDefault();
+      dropzone.classList.remove("active");
+      pushFiles(event.dataTransfer.files);
+      clearStatus();
+    });
+
+    fileInput.addEventListener("change", (event) => {
+      pushFiles(event.target.files);
+      clearStatus();
+      fileInput.value = "";
+    });
+
+    document.getElementById("continueBtn").addEventListener("click", persistAndContinue);
+
+    document.getElementById("clearBtn").addEventListener("click", () => {
+      currentFiles = [];
+      analysisCache = null;
+      copiedFilesCount = 0;
+      inputProject.value = "";
+      updateView();
+      updateFolderChip();
+      clearStatus();
+      localStorage.removeItem(INTAKE_KEY);
+    });
+
+    pickFolderBtn.addEventListener("click", pickTendersFolder);
+    analyzeBtn.addEventListener("click", runAnalyzeOnly);
+    updateFolderChip();
+
+    // Check server status on load and every 10 seconds
+    checkServer();
+    setInterval(checkServer, 10000);
+
+    document.getElementById("copyCmdBtn").addEventListener("click", async () => {
+      const cmd = document.getElementById("autobuildCmd").textContent.trim();
+      try {
+        await navigator.clipboard.writeText(cmd);
+        setStatus("ok", "Команда скопирована. Запустите ее в PowerShell для автосборки тендера.");
+      } catch {
+        setStatus("ok", "Скопируйте команду из блока вручную и выполните в PowerShell.");
+      }
+    });
+  </script>
+  <script src="assets/js/global-auth-widget.js"></script>
+</body>
+</html>

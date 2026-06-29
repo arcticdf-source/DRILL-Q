@@ -1,0 +1,266 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DRILL-Q · Каталог · Маркетплейс</title>
+  <link rel="stylesheet" href="drill-q.css">
+  <style>
+    .mp-wrap { max-width:1360px;margin:0 auto;padding:36px 48px 80px; }
+    .pg-header { display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:28px;gap:20px; }
+    .pg-title { font-size:30px;font-weight:700;letter-spacing:-.03em;color:rgba(255,255,255,.97);margin:0 0 6px; }
+    .pg-sub { font-size:13px;color:rgba(255,255,255,.4); }
+    .pg-btn { display:inline-flex;align-items:center;gap:7px;background:var(--blue);border:1px solid #2563EB;color:#fff;border-radius:8px;padding:11px 18px;font-size:13px;font-weight:600;text-decoration:none;transition:all .15s; }
+    .pg-btn:hover { background:#2563EB; }
+
+    .cat-toolbar { display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap; }
+    .cat-search { flex:1;min-width:240px;display:flex;align-items:center;gap:8px;background:var(--bg-02);border:1px solid var(--b-01);border-radius:8px;padding:10px 14px; }
+    .cat-search input { background:transparent;border:none;outline:none;color:rgba(255,255,255,.9);font-size:13px;font-family:inherit;width:100%; }
+    .cat-search input::placeholder { color:rgba(255,255,255,.3); }
+    .cat-filters { display:flex;gap:8px;flex-wrap:wrap; }
+    .cat-filter { background:var(--bg-02);border:1px solid var(--b-01);border-radius:6px;padding:8px 14px;font-size:12px;color:rgba(255,255,255,.5);cursor:pointer;transition:all .15s;white-space:nowrap; }
+    .cat-filter.active { background:rgba(59,130,246,.12);border-color:rgba(59,130,246,.3);color:var(--blue); }
+    .cat-filter:hover { border-color:rgba(255,255,255,.2);color:rgba(255,255,255,.8); }
+
+    .cat-count { font-size:12px;color:rgba(255,255,255,.3);font-family:var(--mono);margin-bottom:16px; }
+
+    .cat-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:14px; }
+    .prod-card { background:var(--bg-02);border:1px solid var(--b-01);border-radius:var(--r2);padding:22px;transition:all .15s;position:relative; }
+    .prod-card:hover { border-color:rgba(59,130,246,.28);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.3); }
+    .prod-cat-tag { font-size:10px;font-family:var(--mono);color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px; }
+    .prod-name { font-size:17px;font-weight:600;color:rgba(255,255,255,.92);margin-bottom:6px; }
+    .prod-desc { font-size:12px;color:rgba(255,255,255,.42);line-height:1.55;margin-bottom:14px; }
+    .prod-meta { display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:14px; }
+    .prod-meta-item { display:flex;flex-direction:column;gap:2px; }
+    .prod-meta-label { font-size:10px;color:rgba(255,255,255,.3);font-family:var(--mono);text-transform:uppercase; }
+    .prod-meta-val { font-size:12px;color:rgba(255,255,255,.65); }
+    .prod-footer { display:flex;align-items:center;justify-content:space-between;gap:8px;padding-top:12px;border-top:1px solid rgba(255,255,255,.06); }
+
+    .badge-sm { display:inline-flex;align-items:center;border-radius:4px;padding:3px 7px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em; }
+    .bs-green { background:rgba(16,185,129,.15);color:#10B981; }
+    .bs-yellow { background:rgba(245,158,11,.15);color:#F59E0B; }
+    .bs-blue { background:rgba(59,130,246,.15);color:#3B82F6; }
+
+    .sup-count { font-size:11px;color:rgba(255,255,255,.3); }
+    .prod-action { font-size:12px;color:var(--blue);font-weight:500;cursor:pointer;border:none;background:none;padding:0;text-decoration:none; }
+
+    .cat-empty { text-align:center;padding:60px 20px;color:rgba(255,255,255,.3);font-size:14px; }
+  </style>
+</head>
+<body>
+
+<div class="ticker-bar">
+  <div class="ticker-track">
+    <span class="ticker-item"><span class="lbl">КАТАЛОГ</span><span class="t-blue">180+ позиций · химия + оборудование · 300+ компаний</span></span>
+    <span class="ticker-item sep">·</span>
+    <span class="ticker-item"><span class="lbl">НОВИНКИ</span><span class="t-up">Миррико · Эмульгатор Cleave FM</span></span>
+    <span class="ticker-item sep">·</span>
+    <span class="ticker-item"><span class="lbl">AI</span><span class="t-blue">MudGPT подбор реагентов активен</span></span>
+    <span class="ticker-item sep">·</span>
+    <span class="ticker-item"><span class="lbl">КЛОТО</span><span class="t-up">с 1991 · Буровые растворы и химия</span></span>
+  </div>
+</div>
+
+<nav>
+  <a class="nav-logo" href="index-ru.html">
+    <div class="dq-mark">DQ</div>
+    <div class="dq-wordmark">
+      <div class="dq-name">DRILL-Q</div>
+      <div class="dq-powered">powered by <span>cloto</span></div>
+    </div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index-ru.html">Платформа</a></li>
+    <li><a href="catalog-ru.html">Химия</a></li>
+    <li><a href="proposal-ru.html">Тендеры</a></li>
+    <li><a href="tools-ru.html">Инструменты</a></li>
+    <li><a href="marketplace-ru.html"><span class="nav-dot"></span>Маркетплейс</a></li>
+  </ul>
+  <div class="nav-right">
+    <a class="lang-link" href="#">EN</a>
+    <a class="btn-primary" href="marketplace-rfq.html">Создать RFQ</a>
+  </div>
+</nav>
+
+<div class="mp-wrap">
+  <div class="pg-header">
+    <div>
+      <div class="pg-title">Каталог</div>
+      <div class="pg-sub"><a href="marketplace-ru.html" style="color:rgba(255,255,255,.3);">← Маркетплейс</a> · Реагенты, полимеры, ингибиторы, арматура, КИП, буровое оборудование</div>
+    </div>
+    <a class="pg-btn" href="marketplace-ai.html">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+      AI Подбор
+    </a>
+  </div>
+
+  <div class="cat-toolbar">
+    <div class="cat-search">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="catSearch" placeholder="Поиск по названию, категории, производителю..." oninput="filterCatalog()">
+    </div>
+    <div class="cat-filters">
+      <div class="cat-filter active" onclick="setFilter(this,'')">Все</div>
+      <div class="cat-filter" onclick="setFilter(this,'Filtration Control')">Контроль фильтрации</div>
+      <div class="cat-filter" onclick="setFilter(this,'Rheology')">Реология</div>
+      <div class="cat-filter" onclick="setFilter(this,'Inhibitor')">Ингибиторы</div>
+      <div class="cat-filter" onclick="setFilter(this,'Encapsulation')">Инкапсуляция</div>
+      <div class="cat-filter" onclick="setFilter(this,'Alkalinity')">Щёлочность</div>
+      <div class="cat-filter" onclick="setFilter(this,'Foam')">Пеногасители</div>
+      <div class="cat-filter" onclick="setFilter(this,'Bentonite')">Бентонит</div>
+      <div class="cat-filter" onclick="setFilter(this,'Миррико')">Миррико</div>
+      <div class="cat-filter" onclick="setFilter(this,'Арматура')">Арматура</div>
+      <div class="cat-filter" onclick="setFilter(this,'Насосы')">Насосы</div>
+      <div class="cat-filter" onclick="setFilter(this,'КИП')">КИП</div>
+      <div class="cat-filter" onclick="setFilter(this,'Уплотнения')">Уплотнения</div>
+      <div class="cat-filter" onclick="setFilter(this,'Буровой инструмент')">Буровой инструмент</div>
+    </div>
+  </div>
+
+  <div class="cat-count" id="catCount">Показано 27 продуктов</div>
+
+  <div class="cat-grid" id="catGrid">
+    <!-- Rendered by JS -->
+  </div>
+</div>
+
+<footer >
+  <div class="footer-grid">
+    <div>
+      <a class="nav-logo" style="margin-bottom:16px;display:inline-flex;" href="index-ru.html">
+        <div class="dq-mark">DQ</div>
+        <div class="dq-wordmark"><div class="dq-name">DRILL-Q</div><div class="dq-powered">powered by <span>cloto</span></div></div>
+      </a>
+      <p class="footer-brand-desc">Маркетплейс закупок буровых растворов и химических реагентов.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Маркетплейс</h4>
+      <ul>
+        <li><a href="marketplace-ru.html">Обзор</a></li>
+        <li><a href="marketplace-catalog.html">Каталог</a></li>
+        <li><a href="marketplace-warehouses.html">Склады</a></li>
+        <li><a href="marketplace-rfq.html">Закупки / RFQ</a></li>
+        <li><a href="marketplace-ai.html">AI Инженер</a></li>
+        <li><a href="marketplace-neftegaz.html">Нефтегаз 2026</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>DRILL-Q</h4>
+      <ul>
+        <li><a href="index-ru.html">Платформа</a></li>
+        <li><a href="catalog-ru.html">Химия</a></li>
+        <li><a href="tools-ru.html">Инструменты</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Клото</h4>
+      <ul>
+        <li><a href="proposal-ru.html">Запрос доступа</a></li>
+        <li><a href="mailto:arcticdf@gmail.com">arcticdf@gmail.com</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 ООО «КЛОТО» · DRILL-Q Platform · Архангельск</span>
+    <div style="display:flex;gap:20px;">
+      <a href="marketplace-ru.html">Маркетплейс</a>
+      <a href="marketplace-rfq.html">Закупки</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+var PRODUCTS = [
+  { id:'pac-lv', name:'PAC LV', desc:'Полимер для контроля фильтрации бурового раствора на водной основе.', cat:'Filtration Control', mfr:'Baroid', app:'WBM', temp:'до 120°C', dose:'0.5–2.0%', status:'APPROVED', sup:2 },
+  { id:'kcl', name:'KCl', desc:'Ингибитор гидратации глин для ингибированных систем.', cat:'Inhibitor', mfr:'Миррико', app:'Shale Inhibition', temp:'стандарт', dose:'3–7%', status:'TESTING', sup:1 },
+  { id:'xanthan-gum', name:'Xanthan Gum', desc:'Биополимер для повышения реологии и выноса шлама.', cat:'Rheology', mfr:'KemX', app:'Viscosifier', temp:'до 90°C', dose:'0.2–1.0%', status:'APPROVED', sup:2 },
+  { id:'phpa', name:'PHPA', desc:'Полимер для ингибирования и капсулирования шлама.', cat:'Encapsulation', mfr:'MudTech / Миррико', app:'Encapsulation', temp:'до 110°C', dose:'0.3–1.5%', status:'APPROVED', sup:2 },
+  { id:'caustic-soda', name:'Caustic Soda', desc:'Щелочной реагент для регулирования pH и alkalinity.', cat:'Alkalinity', mfr:'ChemBase / Миррико', app:'pH Control', temp:'стандарт', dose:'по расчету', status:'APPROVED', sup:2 },
+  { id:'defoamer-df21', name:'Defoamer DF-21', desc:'Пеногаситель для буровых и технологических жидкостей.', cat:'Foam Control', mfr:'WellChem', app:'Foam Control', temp:'до 100°C', dose:'0.05–0.3%', status:'TESTING', sup:1 },
+  { id:'bentonite', name:'Бентонитовый глинопорошок', desc:'Бентонит для буровых растворов, ГНБ и инженерных задач.', cat:'Bentonite', mfr:'Multiple Suppliers', app:'WBM / HDD', temp:'стандарт', dose:'по рецептуре', status:'APPROVED', sup:3 },
+  { id:'mir-001', name:'Эмульгатор Cleave FM', desc:'Эмульгатор для инвертных и углеводородных буровых растворов.', cat:'Эмульгаторы', mfr:'Миррико', app:'OBM / инверт', temp:'до 130°C', dose:'10–30 кг/м³', status:'APPROVED', sup:1 },
+  { id:'mir-002', name:'Algypo F-Stab', desc:'Химический продукт для стабилизации бурового раствора.', cat:'Стабилизаторы / спецреагенты', mfr:'Миррико', app:'WBM / OBM', temp:'стандарт', dose:'по программе', status:'APPROVED', sup:1 },
+  { id:'mir-003', name:'Полиакриламид-флокулянт', desc:'Флокулянт для водных систем и технологических операций.', cat:'Флокулянты / полимеры', mfr:'Миррико', app:'Обработка воды', temp:'до 80°C', dose:'0.01–0.1%', status:'APPROVED', sup:1 },
+  { id:'mir-004', name:'Atren Spacer', desc:'Промывочный продукт для подготовки ствола и вытеснения систем.', cat:'Spacer', mfr:'Миррико', app:'Спейсер', temp:'стандарт', dose:'по расчету', status:'APPROVED', sup:1 },
+  { id:'mir-005', name:'Органобентопорошок Основа-Medium', desc:'Органобентонит для инвертных буровых растворов.', cat:'OBM / Bentonite', mfr:'Миррико', app:'OBM', temp:'до 150°C', dose:'20–50 кг/м³', status:'APPROVED', sup:1 },
+  { id:'mir-006', name:'OSNO-DESCO N-C', desc:'Диспергирующий агент для буровых растворов.', cat:'Диспергаторы', mfr:'Миррико', app:'WBM / OBM', temp:'до 120°C', dose:'5–15 кг/м³', status:'APPROVED', sup:1 },
+  { id:'mir-007', name:'Реагент гильсонитовый', desc:'Гильсонит для контроля фильтрации и улучшения свойств раствора.', cat:'Filtration Control / LCM', mfr:'Миррико', app:'Контроль фильтрации', temp:'до 200°C', dose:'20–50 кг/м³', status:'APPROVED', sup:1 },
+  { id:'mir-009', name:'Atren Roll', desc:'Антифрикционный агент для снижения крутящего момента и прихватов.', cat:'Антифрикционные добавки', mfr:'Миррико', app:'Lubricant', temp:'до 120°C', dose:'5–20 кг/м³', status:'APPROVED', sup:1 },
+  { id:'mir-010', name:'WELL-AMIN', desc:'Ингибитор гидратации глинистых пород.', cat:'Inhibitor', mfr:'Миррико', app:'Shale Inhibition', temp:'до 100°C', dose:'5–20 кг/м³', status:'APPROVED', sup:1 },
+  { id:'mir-008', name:'Гидрофобизирующая жидкость', desc:'Жидкий гидрофобизирующий реагент для буровых систем.', cat:'OBM / гидрофобизаторы', mfr:'Миррико', app:'OBM / WBM', temp:'стандарт', dose:'10–30 кг/м³', status:'APPROVED', sup:1 },
+  // ─── Арматура ───────────────────────────────────────────────────────────────
+  { id:'ball-valve', name:'Шаровой кран (DN50–DN400)', desc:'Запорная арматура для нефтегазовых трубопроводов. Фланцевое/сварное присоединение, Pу 16–80 бар.', cat:'Арматура', mfr:'XINTAI VALVE GROUP / УZПА', app:'Нефтегаз / Трубопроводы', temp:'до 350°C', dose:'по проекту', status:'APPROVED', sup:3 },
+  { id:'check-valve', name:'Обратный клапан (DN25–DN600)', desc:'Подъёмный и поворотный тип для предотвращения обратного потока в трубопроводных системах.', cat:'Арматура', mfr:'BEIJING ZHH / FX FLOW CONTROL BV', app:'Нефтегаз / Жидкости', temp:'до 250°C', dose:'по проекту', status:'APPROVED', sup:2 },
+  { id:'butterfly-valve', name:'Дисковый затвор (DN80–DN1200)', desc:'Высокотемпературные и крио-исполнения для нефтяных и газовых коммуникаций.', cat:'Арматура', mfr:'ZHEJIANG DIANTAI / УЛЬЯНОВСКИЙ ЗПСА', app:'Технологические линии', temp:'до 500°C', dose:'по проекту', status:'APPROVED', sup:2 },
+  { id:'gate-valve', name:'Задвижка клиновая (DN50–DN1000)', desc:'Полнопроходная задвижка для высоконагруженных применений, ГОСТ / API 600.', cat:'Арматура', mfr:'РУСАРМКОМПЛЕКТ / ТОРУС', app:'Магистральные трубопроводы', temp:'до 425°C', dose:'по проекту', status:'APPROVED', sup:2 },
+  // ─── Насосы и компрессоры ────────────────────────────────────────────────────
+  { id:'centrifugal-pump', name:'Центробежный насос (до 500 м³/ч)', desc:'Горизонтальный и вертикальный. Для перекачки буровых растворов, технологических жидкостей и воды.', cat:'Насосы', mfr:'КАМИМТЕХ / HEBEI JERRY PUMP', app:'Буровая промывка / Нефтедобыча', temp:'до 120°C', dose:'по проекту', status:'APPROVED', sup:2 },
+  { id:'progressive-cavity-pump', name:'Одновинтовой насос (1–200 м³/ч)', desc:'Горизонтальный и вертикальный тип для вязких и абразивных сред, мазута, шлама.', cat:'Насосы', mfr:'КАМИМТЕХ', app:'Перекачка шлама / Нефтедобыча', temp:'до 100°C', dose:'по проекту', status:'APPROVED', sup:1 },
+  { id:'reciprocating-compressor', name:'Поршневой компрессор (0.5–50 МПа)', desc:'Нефтяного и газового применения, азотный, воздушный. Производительность до 1500 нм³/ч.', cat:'Насосы', mfr:'DALGAKIRAN / ЧКЗ / КОМПРЕССОРТЕХ', app:'Подготовка газа / Азот', temp:'стандарт', dose:'по проекту', status:'APPROVED', sup:3 },
+  // ─── КИП и метрология ────────────────────────────────────────────────────────
+  { id:'em-flowmeter', name:'Электромагнитный расходомер', desc:'Измерение потока электропроводных жидкостей — буровые растворы, нефть, вода. ВЗЛЕТ, ЭМИС.', cat:'КИП', mfr:'ВЗЛЕТ / ЭМИС / МЕТРАН', app:'Технологические линии', temp:'до 150°C', dose:'—', status:'APPROVED', sup:3 },
+  { id:'pressure-transmitter', name:'Датчик давления (0–100 МПа)', desc:'Цифровой с токовым выходом 4–20 мА, HART, взрывозащищённые исполнения. ЭЛЕМЕР, МЕТРАН.', cat:'КИП', mfr:'ЭЛЕМЕР / МЕТРАН / ПРОСОФТ', app:'Контроль давления', temp:'–60…+120°C', dose:'—', status:'APPROVED', sup:3 },
+  { id:'multiphase-flowmeter', name:'Многофазный расходомер', desc:'Без источников ионизирующего излучения. Покомпонентный учёт нефть/вода/газ на устье скважины.', cat:'КИП', mfr:'КВАЛИТЕТ', app:'Нефтедобыча', temp:'до 100°C', dose:'—', status:'APPROVED', sup:1 },
+  // ─── Уплотнения ──────────────────────────────────────────────────────────────
+  { id:'mechanical-seal', name:'Торцевое уплотнение (DN20–DN200)', desc:'Одинарные и двойные картриджные уплотнения для нефтяных насосов, компрессоров, мешалок.', cat:'Уплотнения', mfr:'HQ Seals / РИЗУР / СИЧУАНЬ СИНВЭЙ', app:'Насосы / Компрессоры', temp:'до 250°C', dose:'—', status:'APPROVED', sup:3 },
+  { id:'flange-gasket', name:'Прокладки фланцевые (ГОСТ / ASME)', desc:'Спирально-навитые, металлические и неметаллические, огнестойкие. Для нефтегазовых соединений.', cat:'Уплотнения', mfr:'РИЗУР / УНИХИМТЕК', app:'Трубопроводные соединения', temp:'до 500°C', dose:'—', status:'APPROVED', sup:2 },
+  // ─── Буровой инструмент ─────────────────────────────────────────────────────
+  { id:'pdc-drill-bit', name:'Буровое долото PDC (4¾"–17½")', desc:'Поликристаллические долота для мягких и средних пород. Шарошечные и безопорные типы.', cat:'Буровой инструмент', mfr:'CHINA VIGOR / КМЗ Бит / JINAN KAIXIANG', app:'Бурение нефтяных скважин', temp:'до 200°C', dose:'осевая нагрузка', status:'APPROVED', sup:3 },
+  { id:'centralizer', name:'Центратор обсадных колонн', desc:'Жёсткие и пружинные, лопастные — для равномерного цементирования затрубного пространства.', cat:'Буровой инструмент', mfr:'JIANGSU RUDONG LIANFENG / АНЕКО', app:'Крепление скважины', temp:'стандарт', dose:'по проекту', status:'APPROVED', sup:2 },
+];
+
+var currentFilter = '';
+
+function statusBadge(s) {
+  if(s==='APPROVED') return '<span class="badge-sm bs-green">Approved</span>';
+  if(s==='TESTING') return '<span class="badge-sm bs-yellow">Testing</span>';
+  return '<span class="badge-sm bs-blue">Review</span>';
+}
+
+function render(list) {
+  var g = document.getElementById('catGrid');
+  document.getElementById('catCount').textContent = 'Показано ' + list.length + ' продуктов';
+  if(!list.length) { g.innerHTML='<div class="cat-empty">По вашему запросу ничего не найдено</div>'; return; }
+  g.innerHTML = list.map(function(p){
+    return '<div class="prod-card" data-cat="'+p.cat+'" data-mfr="'+p.mfr+'">' +
+      '<div class="prod-cat-tag">'+p.cat+'</div>' +
+      '<div class="prod-name">'+p.name+'</div>' +
+      '<div class="prod-desc">'+p.desc+'</div>' +
+      '<div class="prod-meta">' +
+        '<div class="prod-meta-item"><div class="prod-meta-label">Производитель</div><div class="prod-meta-val">'+p.mfr+'</div></div>' +
+        '<div class="prod-meta-item"><div class="prod-meta-label">Применение</div><div class="prod-meta-val">'+p.app+'</div></div>' +
+        '<div class="prod-meta-item"><div class="prod-meta-label">Температура</div><div class="prod-meta-val">'+p.temp+'</div></div>' +
+        '<div class="prod-meta-item"><div class="prod-meta-label">Дозировка</div><div class="prod-meta-val">'+p.dose+'</div></div>' +
+      '</div>' +
+      '<div class="prod-footer">' +
+        statusBadge(p.status) +
+        '<span class="sup-count">'+p.sup+' поставщ.</span>' +
+        '<a class="prod-action" href="marketplace-rfq.html?product='+encodeURIComponent(p.name)+'">Запросить КП →</a>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function filterCatalog() {
+  var q = document.getElementById('catSearch').value.toLowerCase().trim();
+  var list = PRODUCTS.filter(function(p) {
+    var haystack = [p.name, p.desc, p.cat, p.mfr, p.app].join(' ').toLowerCase();
+    var matchQ = !q || haystack.includes(q);
+    var matchF = !currentFilter || haystack.includes(currentFilter.toLowerCase());
+    return matchQ && matchF;
+  });
+  render(list);
+}
+
+function setFilter(el, val) {
+  document.querySelectorAll('.cat-filter').forEach(function(f){ f.classList.remove('active'); });
+  el.classList.add('active');
+  currentFilter = val;
+  filterCatalog();
+}
+
+render(PRODUCTS);
+</script>
+</body>
+</html>
+

@@ -1,0 +1,532 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>139 · Экран супервайзера бурения</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Rajdhani:wght@600;700&display=swap");
+
+    :root {
+      --bg:#eef3f8;
+      --panel:#ffffff;
+      --panel-soft:#f6f9fc;
+      --grid:#d2dbe6;
+      --grid-soft:#e5ebf2;
+      --text:#1f3347;
+      --muted:#688099;
+      --accent:#2a7de1;
+      --accent-soft:#dbe9fb;
+      --shadow:0 18px 48px rgba(27, 50, 77, 0.12);
+      --board-height:720px;
+      --axis-width:96px;
+      --track-width:92px;
+      --notes-width:300px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      background:
+        linear-gradient(180deg, rgba(42,125,225,.08), transparent 28%),
+        linear-gradient(135deg, #f7fafc, var(--bg));
+      color: var(--text);
+      font-family: "IBM Plex Sans", sans-serif;
+    }
+
+    body { padding: 12px; }
+    .page { display: grid; gap: 14px; width: min(100%, 1760px); margin: 0 auto; }
+    .topbar, .status-strip, .board-shell {
+      background: var(--panel);
+      border: 1px solid var(--grid-soft);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 18px;
+      padding: 14px 16px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font: 600 11px/1 "IBM Plex Mono", monospace;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: currentColor;
+      box-shadow: 0 0 0 4px rgba(42,125,225,.14);
+    }
+
+    h1 {
+      margin: 8px 0 0;
+      font: 700 clamp(28px, 4vw, 40px)/1 "Rajdhani", sans-serif;
+      letter-spacing: .01em;
+      text-transform: uppercase;
+    }
+
+    .subtitle {
+      margin-top: 4px;
+      max-width: 880px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+
+    .button, .button-ghost {
+      border-radius: 12px;
+      padding: 10px 14px;
+      border: 1px solid transparent;
+      text-decoration: none;
+      cursor: pointer;
+      font: 600 12px/1 "IBM Plex Mono", monospace;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+
+    .button {
+      background: linear-gradient(135deg, #2a7de1, #5f9ff0);
+      color: #fff;
+      border-color: rgba(42,125,225,.36);
+    }
+
+    .button-ghost {
+      background: #fff;
+      color: var(--text);
+      border-color: var(--grid);
+    }
+
+    .status-strip {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 8px;
+      padding: 12px;
+    }
+
+    .status-card {
+      background: var(--panel-soft);
+      border: 1px solid var(--grid-soft);
+      border-radius: 14px;
+      padding: 10px 12px;
+    }
+
+    .status-card strong {
+      display: block;
+      font: 700 21px/1 "Rajdhani", sans-serif;
+    }
+
+    .status-card span {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font: 500 11px/1.4 "IBM Plex Mono", monospace;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+
+    .board-shell { overflow: auto; padding: 12px; }
+    .board { min-width: calc(var(--axis-width) * 2 + var(--track-width) * 21 + var(--notes-width)); }
+
+    .board-head,
+    .board-body {
+      display: grid;
+      grid-template-columns:
+        var(--axis-width)
+        var(--axis-width)
+        repeat(7, var(--track-width))
+        repeat(7, var(--track-width))
+        repeat(7, var(--track-width))
+        var(--notes-width);
+      gap: 0;
+    }
+
+    .board-head {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      background: linear-gradient(180deg, rgba(255,255,255,.98), rgba(255,255,255,.96));
+    }
+
+    .axis-head,
+    .notes-head,
+    .track-head {
+      min-height: 114px;
+      border: 1px solid var(--grid);
+      border-bottom: none;
+      background: linear-gradient(180deg, #ffffff, #f4f7fb);
+    }
+
+    .axis-head,
+    .notes-head {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font: 700 28px/1 "Rajdhani", sans-serif;
+      color: #6c84a1;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+    }
+
+    .track-head {
+      padding: 8px 8px 10px;
+      display: grid;
+      align-content: start;
+      gap: 6px;
+      border-top: 4px solid var(--track-color, var(--accent));
+    }
+
+    .track-name {
+      min-height: 34px;
+      font: 600 12px/1.2 "IBM Plex Sans", sans-serif;
+      color: var(--text);
+    }
+
+    .track-current {
+      font: 700 24px/1 "Rajdhani", sans-serif;
+      color: var(--track-color, var(--accent));
+    }
+
+    .track-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      font: 500 10px/1.4 "IBM Plex Mono", monospace;
+      color: var(--muted);
+    }
+
+    .axis-cell,
+    .notes-cell,
+    .track-cell {
+      position: relative;
+      height: var(--board-height);
+      border: 1px solid var(--grid);
+      background: #fff;
+    }
+
+    .axis-cell,
+    .notes-cell {
+      background:
+        repeating-linear-gradient(to bottom, transparent 0 59px, rgba(210,219,230,.55) 59px 60px),
+        linear-gradient(180deg, #ffffff, #f8fbff);
+    }
+
+    .track-cell {
+      background:
+        repeating-linear-gradient(to bottom, transparent 0 59px, rgba(210,219,230,.55) 59px 60px),
+        repeating-linear-gradient(to right, transparent 0 21px, rgba(229,235,242,.8) 21px 22px),
+        linear-gradient(180deg, #ffffff, #f8fbff);
+    }
+
+    .axis-mark {
+      position: absolute;
+      left: 10px;
+      transform: translateY(-50%);
+      color: var(--muted);
+      font: 500 11px/1 "IBM Plex Mono", monospace;
+      white-space: nowrap;
+    }
+
+    .axis-mark strong {
+      display: block;
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .track-svg { width: 100%; height: 100%; display: block; }
+    .notes-lane { position: relative; height: 100%; padding: 10px; }
+
+    .note-item {
+      position: absolute;
+      left: 10px;
+      right: 10px;
+      transform: translateY(-50%);
+      border-radius: 10px;
+      border-left: 4px solid var(--note-color, var(--accent));
+      background: rgba(255,255,255,.9);
+      box-shadow: 0 10px 20px rgba(31,51,71,.08);
+      padding: 8px 10px;
+    }
+
+    .note-time {
+      color: var(--muted);
+      font: 500 10px/1 "IBM Plex Mono", monospace;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+
+    .note-text {
+      margin-top: 4px;
+      font-size: 12px;
+      line-height: 1.45;
+      color: var(--text);
+    }
+
+    .legend {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+
+    .legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: #f4f8fd;
+      border: 1px solid var(--grid-soft);
+      color: var(--muted);
+      font: 500 11px/1 "IBM Plex Mono", monospace;
+    }
+
+    .legend i {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--dot-color, var(--accent));
+    }
+
+    @media (max-width: 900px) {
+      .status-strip { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 700px) {
+      body { padding: 10px; }
+      .topbar { display: grid; }
+      .controls { justify-content: flex-start; }
+      .status-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 560px) {
+      .status-strip { grid-template-columns: 1fr; }
+    }
+  </style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+  <main class="page">
+    <header class="topbar">
+      <div>
+        <span class="eyebrow">Doc 139 · Screen mode</span>
+        <h1>Экран супервайзера бурения</h1>
+        <p class="subtitle">Одна скважина, светлый экран, вертикальные real-time треки по времени и глубине. Линии непрерывно смещаются вниз, как на экране супервайзера при текущем бурении.</p>
+        <div class="legend" id="legend"></div>
+      </div>
+      <div class="controls">
+        <button class="button" id="playButton" type="button">Пуск</button>
+        <button class="button-ghost" id="pauseButton" type="button">Пауза</button>
+        <button class="button-ghost" id="stepButton" type="button">Шаг</button>
+        <button class="button-ghost" id="resetButton" type="button">Сброс</button>
+      </div>
+    </header>
+
+    <section class="status-strip" id="statusStrip"></section>
+
+    <section class="board-shell">
+      <div class="board">
+        <div class="board-head">
+          <div class="axis-head">Время</div>
+          <div class="axis-head">Глубина</div>
+          <div id="surfaceHead"></div>
+          <div id="mudHead"></div>
+          <div id="mechanicsHead"></div>
+          <div class="notes-head">Заметки</div>
+        </div>
+        <div class="board-body">
+          <div class="axis-cell" id="timeAxis"></div>
+          <div class="axis-cell" id="depthAxis"></div>
+          <div id="surfaceTracks"></div>
+          <div id="mudTracks"></div>
+          <div id="mechanicsTracks"></div>
+          <div class="notes-cell">
+            <div class="notes-lane" id="notesLane"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="assets/js/witsml-simulator.js"></script>
+  <script>
+    const api = window.NexusWitsmlSimulator;
+    const layout = api.getTrackLayout();
+    const groupTargets = {
+      surface: { head: document.getElementById('surfaceHead'), body: document.getElementById('surfaceTracks') },
+      mud: { head: document.getElementById('mudHead'), body: document.getElementById('mudTracks') },
+      mechanics: { head: document.getElementById('mechanicsHead'), body: document.getElementById('mechanicsTracks') }
+    };
+
+    function formatValue(track, value) {
+      const digits = track.digits || 0;
+      return new Intl.NumberFormat('ru-RU', {
+        minimumFractionDigits: digits,
+        maximumFractionDigits: digits
+      }).format(value);
+    }
+
+    function buildTrackHeader(track, latest) {
+      return `
+        <div class="track-head" style="--track-color:${track.color}">
+          <div class="track-name">${track.label}${track.unit ? `, ${track.unit}` : ''}</div>
+          <div class="track-current">${formatValue(track, latest.values[track.key])}</div>
+          <div class="track-meta"><span>${track.min}</span><span>${track.max}</span></div>
+        </div>
+      `;
+    }
+
+    function buildTrackSvg(track, history) {
+      const width = 92;
+      const height = 720;
+      const left = 10;
+      const right = 10;
+      const top = 6;
+      const bottom = 6;
+      const innerWidth = width - left - right;
+      const innerHeight = height - top - bottom;
+      const samples = history.length ? history : [{ values: { [track.key]: track.min } }];
+      const points = samples.map((entry, index) => {
+        const value = Math.max(track.min, Math.min(track.max, entry.values[track.key]));
+        const ratio = (value - track.min) / Math.max(1e-6, track.max - track.min);
+        const x = left + ratio * innerWidth;
+        const y = top + ((samples.length - 1 - index) / Math.max(1, samples.length - 1)) * innerHeight;
+        return { x, y };
+      });
+      const d = points.map((point, index) => `${index === 0 ? 'M' : 'L'} ${point.x.toFixed(2)} ${point.y.toFixed(2)}`).join(' ');
+      const latest = points[points.length - 1];
+      const guideLines = Array.from({ length: 12 }, (_, index) => {
+        const y = top + (index / 11) * innerHeight;
+        return `<line x1="0" y1="${y.toFixed(2)}" x2="${width}" y2="${y.toFixed(2)}" stroke="rgba(210,219,230,.45)" stroke-width="1" />`;
+      }).join('');
+      const centerGuides = [0.25, 0.5, 0.75].map((ratio) => {
+        const x = left + ratio * innerWidth;
+        return `<line x1="${x.toFixed(2)}" y1="0" x2="${x.toFixed(2)}" y2="${height}" stroke="rgba(229,235,242,.9)" stroke-width="1" />`;
+      }).join('');
+
+      return `
+        <svg class="track-svg" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${track.label}">
+          ${guideLines}
+          ${centerGuides}
+          <path d="${d}" fill="none" stroke="${track.color}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" />
+          <circle cx="${latest.x.toFixed(2)}" cy="${latest.y.toFixed(2)}" r="4.5" fill="#fff" stroke="${track.color}" stroke-width="2" />
+        </svg>
+      `;
+    }
+
+    function buildAxis(history, valueSelector, element, formatter) {
+      const boardHeight = 720;
+      const marks = [];
+      const step = 20;
+      for (let index = 0; index < history.length; index += step) {
+        const y = (index / Math.max(1, history.length - 1)) * boardHeight;
+        marks.push(`<div class="axis-mark" style="top:${y}px">${formatter(valueSelector(history[index]))}</div>`);
+      }
+      element.innerHTML = marks.join('');
+    }
+
+    function buildTimeAxis(history) {
+      buildAxis(history, (entry) => entry.timeLabel, document.getElementById('timeAxis'), (value) => value.replace(' ', '<strong>') + '</strong>');
+    }
+
+    function buildDepthAxis(history) {
+      buildAxis(history, (entry) => entry.holeDepthM, document.getElementById('depthAxis'), (value) => `<strong>${Math.round(value)}</strong>м`);
+    }
+
+    function renderNotes(snapshot, history) {
+      const lane = document.getElementById('notesLane');
+      const boardHeight = 720;
+      const noteColors = { info: '#2a7de1', warning: '#d98d23', critical: '#c44d69' };
+
+      lane.innerHTML = snapshot.notes
+        .filter((note) => snapshot.sampleIndex - note.sampleIndex < history.length)
+        .slice(0, 12)
+        .map((note) => {
+          const age = snapshot.sampleIndex - note.sampleIndex;
+          const top = boardHeight - ((age / Math.max(1, history.length - 1)) * boardHeight);
+          return `
+            <article class="note-item" style="top:${top}px; --note-color:${noteColors[note.level] || '#2a7de1'}">
+              <div class="note-time">${note.timeLabel}</div>
+              <div class="note-text">${note.text}</div>
+            </article>
+          `;
+        })
+        .join('');
+    }
+
+    function renderGroup(groupKey, history, latest) {
+      const group = layout.find((item) => item.key === groupKey);
+      const target = groupTargets[groupKey];
+      target.head.style.display = 'contents';
+      target.body.style.display = 'contents';
+      target.head.innerHTML = group.tracks.map((track) => buildTrackHeader(track, latest)).join('');
+      target.body.innerHTML = group.tracks.map((track) => `<div class="track-cell">${buildTrackSvg(track, history)}</div>`).join('');
+    }
+
+    function renderStatus(snapshot, history) {
+      const latest = history[0];
+      document.getElementById('statusStrip').innerHTML = `
+        <article class="status-card"><strong>${snapshot.supervisorTime}</strong><span>Текущее время супервайзера</span></article>
+        <article class="status-card"><strong>${snapshot.wellName}</strong><span>Скважина</span></article>
+        <article class="status-card"><strong>${latest.phaseLabel}</strong><span>Текущая операция</span></article>
+        <article class="status-card"><strong>${Math.round(latest.bitDepthM)} м</strong><span>Глубина долота</span></article>
+        <article class="status-card"><strong>${Math.round(latest.standProgressM)} / 30 м</strong><span>Текущая свеча</span></article>
+        <article class="status-card"><strong>${snapshot.running ? 'LIVE' : 'PAUSE'}</strong><span>Режим экрана</span></article>
+      `;
+    }
+
+    function renderLegend() {
+      document.getElementById('legend').innerHTML = layout
+        .flatMap((group) => group.tracks.slice(0, 2))
+        .map((track) => `<span><i style="--dot-color:${track.color}"></i>${track.label}</span>`)
+        .join('');
+    }
+
+    function render(snapshot) {
+      const latest = snapshot.currentEntry || (snapshot.history.length ? snapshot.history[0] : null);
+      const history = (snapshot.history.length ? [...snapshot.history].reverse() : latest ? [latest] : []);
+      renderStatus(snapshot, latest ? [latest] : history);
+      renderGroup('surface', history, latest || history[history.length - 1]);
+      renderGroup('mud', history, latest || history[history.length - 1]);
+      renderGroup('mechanics', history, latest || history[history.length - 1]);
+      buildTimeAxis(history);
+      buildDepthAxis(history);
+      renderNotes(snapshot, history);
+    }
+
+    document.getElementById('playButton').addEventListener('click', () => api.setRunning(true));
+    document.getElementById('pauseButton').addEventListener('click', () => api.setRunning(false));
+    document.getElementById('stepButton').addEventListener('click', () => api.tickOnce());
+    document.getElementById('resetButton').addEventListener('click', () => api.resetScenario());
+
+    renderLegend();
+    render(api.loadSnapshot());
+    api.subscribe(render);
+    api.setRunning(true);
+  </script>
+</body>
+</html>

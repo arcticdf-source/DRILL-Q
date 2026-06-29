@@ -1,0 +1,1411 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Drilling Cockpit — DRILL-Q</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://unpkg.com/mammoth@1.6.0/mammoth.browser.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0A0C10;--bg2:#111318;--bg3:#181C24;--bg4:#1E2330;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);
+  --text:#E8EAF0;--text2:#8B90A0;--text3:#4A5068;
+  --blue:#3B82F6;--blue-d:#1D4ED8;--blue-l:rgba(59,130,246,0.12);
+  --green:#22C55E;--green-l:rgba(34,197,94,0.12);
+  --yellow:#F59E0B;--yellow-l:rgba(245,158,11,0.12);
+  --red:#EF4444;--red-l:rgba(239,68,68,0.12);
+  --cyan:#06B6D4;--cyan-l:rgba(6,182,212,0.12);
+  --purple:#A855F7;--purple-l:rgba(168,85,247,0.12);
+  --r:12px;--r-sm:8px;--r-lg:16px;
+  --sh:0 4px 24px rgba(0,0,0,0.4);
+}
+html,body{height:100%;overflow:hidden}
+body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",Arial,sans-serif;
+  background:var(--bg);color:var(--text);font-size:13px;line-height:1.5;
+  -webkit-font-smoothing:antialiased}
+
+/* ===== SCREENS ===== */
+.screen{position:fixed;inset:0;display:flex;flex-direction:column;
+  background:var(--bg);transition:opacity .4s,transform .4s;z-index:10}
+.screen.hidden{opacity:0;pointer-events:none;transform:translateY(20px)}
+
+/* ===== NAV ===== */
+.topbar{height:52px;min-height:52px;background:var(--bg2);
+  border-bottom:1px solid var(--border);display:flex;align-items:center;
+  padding:0 20px;gap:16px;flex-shrink:0}
+.logo{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--text)}
+.logo-mark{width:26px;height:26px;border-radius:6px;background:var(--blue);
+  display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff}
+.logo-name{font-size:14px;font-weight:700;letter-spacing:-.3px}
+.topbar-sep{width:1px;height:24px;background:var(--border)}
+.topbar-title{font-size:13px;font-weight:600;color:var(--text2)}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.well-chip{background:var(--bg3);border:1px solid var(--border);border-radius:99px;
+  padding:4px 12px;font-size:11px;color:var(--text2);display:flex;align-items:center;gap:6px}
+.well-chip b{color:var(--text);font-weight:600}
+.dot{width:6px;height:6px;border-radius:50%}
+.dot.green{background:var(--green);box-shadow:0 0 6px var(--green)}
+.dot.yellow{background:var(--yellow)}
+.dot.red{background:var(--red);box-shadow:0 0 6px var(--red)}
+
+/* ===== BUTTONS ===== */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:var(--r-sm);
+  border:none;cursor:pointer;font-size:13px;font-weight:600;transition:all .15s}
+.btn-primary{background:var(--blue);color:#fff} .btn-primary:hover{background:#2563EB}
+.btn-ghost{background:transparent;border:1px solid var(--border2);color:var(--text2)}
+.btn-ghost:hover{border-color:var(--blue);color:var(--text)}
+.btn-sm{padding:5px 12px;font-size:12px}
+.btn-danger{background:var(--red);color:#fff} .btn-danger:hover{background:#DC2626}
+.btn-green{background:var(--green);color:#000} .btn-green:hover{background:#16A34A}
+
+/* ===== ONBOARD SCREEN ===== */
+#screen-onboard{justify-content:center;align-items:center;
+  background:radial-gradient(ellipse at 30% 40%,rgba(59,130,246,.08) 0%,transparent 60%),
+             radial-gradient(ellipse at 70% 70%,rgba(6,182,212,.06) 0%,transparent 60%),
+             var(--bg)}
+.onboard-inner{max-width:700px;width:90%;text-align:center}
+.ob-eyebrow{display:inline-flex;align-items:center;gap:8px;background:var(--blue-l);
+  color:var(--blue);border-radius:99px;padding:5px 16px;font-size:11px;font-weight:700;
+  letter-spacing:.05em;margin-bottom:24px}
+.ob-h1{font-size:clamp(32px,6vw,56px);font-weight:800;letter-spacing:-1.5px;line-height:1.05;
+  margin-bottom:16px}
+.ob-h1 span{background:linear-gradient(135deg,var(--blue),var(--cyan));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.ob-sub{font-size:16px;color:var(--text2);line-height:1.7;max-width:520px;
+  margin:0 auto 40px}
+.upload-zone{background:var(--bg2);border:2px dashed var(--border2);border-radius:var(--r-lg);
+  padding:48px 32px;text-align:center;cursor:pointer;transition:all .2s;position:relative;
+  margin-bottom:24px}
+.upload-zone:hover,.upload-zone.drag{border-color:var(--blue);background:var(--blue-l)}
+.upload-icon{font-size:40px;margin-bottom:12px}
+.upload-label{font-size:15px;font-weight:700;margin-bottom:6px}
+.upload-hint{font-size:12px;color:var(--text3)}
+#file-input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.file-types{display:flex;justify-content:center;gap:8px;margin-bottom:32px;flex-wrap:wrap}
+.ft-chip{background:var(--bg3);border:1px solid var(--border);border-radius:99px;
+  padding:4px 12px;font-size:11px;color:var(--text2);display:flex;align-items:center;gap:5px}
+.ft-chip .ico{font-size:13px}
+.file-list{margin-bottom:24px;display:flex;flex-direction:column;gap:8px;text-align:left}
+.file-item{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-sm);
+  padding:10px 14px;display:flex;align-items:center;gap:10px}
+.file-item .fi-icon{font-size:18px}
+.file-item .fi-name{font-size:13px;font-weight:600;flex:1}
+.file-item .fi-size{font-size:11px;color:var(--text3)}
+.file-item .fi-rm{cursor:pointer;color:var(--text3);padding:2px 6px;border-radius:4px}
+.file-item .fi-rm:hover{color:var(--red);background:var(--red-l)}
+.ob-skip{font-size:12px;color:var(--text3);margin-top:16px;cursor:pointer}
+.ob-skip:hover{color:var(--text2)}
+
+/* ===== EXTRACT SCREEN ===== */
+#screen-extract{overflow:hidden}
+.extract-body{flex:1;overflow:auto;padding:24px}
+.extract-header{text-align:center;padding:32px 0 24px}
+.extract-h1{font-size:24px;font-weight:800;letter-spacing:-.5px;margin-bottom:8px}
+.extract-sub{color:var(--text2);font-size:14px}
+.extract-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:960px;margin:0 auto}
+.ex-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:20px}
+.ex-card-hd{font-size:12px;font-weight:700;color:var(--text2);letter-spacing:.06em;
+  text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.ex-row{display:flex;justify-content:space-between;align-items:center;
+  padding:6px 0;border-bottom:1px solid var(--border)}
+.ex-row:last-child{border-bottom:none}
+.ex-key{color:var(--text2);font-size:12px}
+.ex-val{font-size:12px;font-weight:600;color:var(--cyan)}
+.ex-editable{background:transparent;border:none;border-bottom:1px solid var(--border2);
+  color:var(--cyan);font-size:12px;font-weight:600;width:140px;text-align:right;
+  outline:none;padding:2px 4px}
+.ex-editable:focus{border-color:var(--blue)}
+.parse-log{background:var(--bg);border:1px solid var(--border);border-radius:var(--r-sm);
+  padding:12px 16px;font-family:monospace;font-size:11px;color:var(--text2);
+  max-height:120px;overflow-y:auto;margin-top:16px;line-height:1.7}
+.parse-log .ok{color:var(--green)}
+.parse-log .warn{color:var(--yellow)}
+.parse-log .err{color:var(--red)}
+.extract-actions{display:flex;justify-content:center;gap:12px;margin-top:24px;padding-bottom:24px}
+
+/* ===== COCKPIT SCREEN ===== */
+#screen-cockpit{display:flex;flex-direction:column;overflow:hidden}
+.cockpit-body{flex:1;display:grid;grid-template-columns:300px 1fr 280px;
+  grid-template-rows:1fr;overflow:hidden;gap:0}
+
+/* Left panel — Alerts */
+.panel-left{background:var(--bg2);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;overflow:hidden}
+.panel-hd{padding:14px 16px;border-bottom:1px solid var(--border);
+  font-size:11px;font-weight:700;color:var(--text2);letter-spacing:.06em;text-transform:uppercase;
+  display:flex;align-items:center;gap:8px}
+.alert-count{background:var(--red);color:#fff;border-radius:99px;
+  padding:1px 7px;font-size:10px;font-weight:800}
+.alert-count.yellow{background:var(--yellow);color:#000}
+.alert-count.green{background:var(--green);color:#000}
+.alerts-list{flex:1;overflow-y:auto;padding:8px}
+.alert-item{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-sm);
+  padding:12px;margin-bottom:8px;cursor:pointer;transition:all .15s}
+.alert-item:hover{border-color:var(--border2)}
+.alert-item.crit{border-left:3px solid var(--red);background:var(--red-l)}
+.alert-item.warn{border-left:3px solid var(--yellow);background:var(--yellow-l)}
+.alert-item.info{border-left:3px solid var(--blue);background:var(--blue-l)}
+.alert-item.ok{border-left:3px solid var(--green);background:var(--green-l)}
+.alert-sev{font-size:10px;font-weight:700;letter-spacing:.05em;margin-bottom:4px}
+.alert-item.crit .alert-sev{color:var(--red)}
+.alert-item.warn .alert-sev{color:var(--yellow)}
+.alert-item.info .alert-sev{color:var(--blue)}
+.alert-item.ok .alert-sev{color:var(--green)}
+.alert-title{font-size:12px;font-weight:700;margin-bottom:4px}
+.alert-body{font-size:11px;color:var(--text2);line-height:1.5}
+.alert-rec{font-size:10px;color:var(--cyan);margin-top:6px;font-weight:600}
+.alert-time{font-size:10px;color:var(--text3);margin-top:4px}
+.no-alerts{padding:24px;text-align:center;color:var(--text3);font-size:12px}
+
+/* Center panel */
+.panel-center{display:flex;flex-direction:column;overflow:hidden}
+.center-scroll{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:16px}
+
+/* KPI row */
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.kpi{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);
+  padding:14px 16px}
+.kpi-label{font-size:10px;font-weight:600;color:var(--text3);letter-spacing:.06em;
+  text-transform:uppercase;margin-bottom:6px}
+.kpi-val{font-size:22px;font-weight:800;letter-spacing:-.5px;line-height:1}
+.kpi-unit{font-size:11px;color:var(--text2);margin-left:3px;font-weight:400}
+.kpi-trend{font-size:10px;margin-top:4px}
+.kpi-trend.up{color:var(--green)}
+.kpi-trend.dn{color:var(--red)}
+.kpi-trend.flat{color:var(--text3)}
+
+/* Param input panel */
+.param-panel{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r)}
+.param-panel-hd{padding:12px 16px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between}
+.param-panel-hd h3{font-size:12px;font-weight:700;color:var(--text2);
+  letter-spacing:.05em;text-transform:uppercase}
+.param-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0}
+.param-cell{padding:10px 14px;border-bottom:1px solid var(--border);border-right:1px solid var(--border)}
+.param-cell:nth-child(3n){border-right:none}
+.param-cell:nth-last-child(-n+3){border-bottom:none}
+.param-lbl{font-size:10px;color:var(--text3);margin-bottom:4px;font-weight:600;letter-spacing:.03em}
+.param-inp{background:transparent;border:none;border-bottom:1.5px solid var(--border2);
+  color:var(--text);font-size:15px;font-weight:700;width:100%;outline:none;
+  padding:2px 0;transition:border-color .15s}
+.param-inp:focus{border-color:var(--blue)}
+.param-inp.changed{border-color:var(--cyan);color:var(--cyan)}
+.param-unit{font-size:10px;color:var(--text3);margin-top:2px}
+.param-actions{padding:12px 16px;border-top:1px solid var(--border);
+  display:flex;gap:8px;justify-content:flex-end}
+
+/* History chart area */
+.chart-area{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);
+  padding:14px 16px}
+.chart-hd{font-size:11px;font-weight:700;color:var(--text2);letter-spacing:.05em;
+  text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;
+  justify-content:space-between}
+.chart-tabs{display:flex;gap:4px}
+.ctab{padding:3px 10px;border-radius:99px;font-size:10px;font-weight:600;cursor:pointer;
+  color:var(--text3);transition:all .15s}
+.ctab.active{background:var(--blue-l);color:var(--blue)}
+canvas.sparkline{width:100%;height:80px;display:block}
+
+/* Right panel */
+.panel-right{background:var(--bg2);border-left:1px solid var(--border);
+  display:flex;flex-direction:column;overflow:hidden}
+.right-scroll{flex:1;overflow-y:auto;padding:10px}
+
+/* Formation risk */
+.form-risk-item{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-sm);
+  padding:10px 12px;margin-bottom:8px}
+.fri-header{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.fri-depth{font-size:11px;font-weight:700}
+.fri-name{font-size:11px;color:var(--text2)}
+.fri-badge{margin-left:auto;font-size:10px;font-weight:700;padding:2px 8px;border-radius:99px}
+.fri-badge.high{background:var(--red-l);color:var(--red)}
+.fri-badge.med{background:var(--yellow-l);color:var(--yellow)}
+.fri-badge.low{background:var(--green-l);color:var(--green)}
+.fri-risks{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.fri-risk-tag{font-size:10px;background:var(--bg);border:1px solid var(--border);
+  border-radius:4px;padding:2px 6px;color:var(--text2)}
+
+/* BHA summary */
+.bha-row{display:flex;justify-content:space-between;padding:6px 0;
+  border-bottom:1px solid var(--border);font-size:11px}
+.bha-row:last-child{border-bottom:none}
+.bha-k{color:var(--text2)}
+.bha-v{font-weight:600;color:var(--cyan)}
+
+/* Checklist */
+.chk-item{display:flex;align-items:flex-start;gap:8px;padding:6px 0;
+  border-bottom:1px solid var(--border);font-size:11px}
+.chk-item:last-child{border-bottom:none}
+.chk-dot{width:6px;height:6px;border-radius:50%;margin-top:4px;flex-shrink:0}
+.chk-txt{line-height:1.5}
+.chk-txt b{color:var(--text)}
+.chk-sub{color:var(--text3);font-size:10px}
+
+/* Depth tracker */
+.depth-bar{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);
+  padding:14px 16px}
+.depth-bar-inner{position:relative;height:8px;background:var(--bg);
+  border-radius:99px;margin:8px 0 4px;overflow:hidden}
+.depth-bar-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--cyan));
+  border-radius:99px;transition:width .5s}
+.depth-meta{display:flex;justify-content:space-between;font-size:10px;color:var(--text3)}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:99px}
+::-webkit-scrollbar-thumb:hover{background:var(--text3)}
+
+/* Spinner */
+.spinner{width:28px;height:28px;border:3px solid var(--border);
+  border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite;
+  margin:0 auto 12px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Progress bar */
+.prog-bar{height:3px;background:var(--border);border-radius:99px;overflow:hidden;margin:8px 0}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--cyan));
+  border-radius:99px;transition:width .4s}
+
+/* Toast */
+#toast{position:fixed;bottom:24px;right:24px;background:var(--bg3);
+  border:1px solid var(--border2);border-radius:var(--r);padding:12px 18px;
+  font-size:12px;font-weight:600;color:var(--text);box-shadow:var(--sh);
+  z-index:9999;opacity:0;transform:translateY(10px);transition:all .25s;pointer-events:none}
+#toast.show{opacity:1;transform:none}
+
+/* Responsive */
+@media(max-width:1100px){
+  .cockpit-body{grid-template-columns:260px 1fr 240px}
+  .kpi-row{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:800px){
+  .cockpit-body{grid-template-columns:1fr}
+  .panel-left,.panel-right{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- =================== SCREEN: ONBOARD =================== -->
+<div id="screen-onboard" class="screen">
+  <div class="onboard-inner">
+    <div class="ob-eyebrow">🔩 AI DRILLING COCKPIT · DRILL-Q</div>
+    <h1 class="ob-h1">Управляйте бурением<br><span>на опережение</span></h1>
+    <p class="ob-sub">Загрузите проектную документацию и архив суточных рапортов — AI извлечёт параметры скважины, оценит риски и откроет кокпит с предиктивными алертами в реальном времени.</p>
+
+    <div class="upload-zone" id="upload-zone">
+      <input type="file" id="file-input" multiple accept=".pdf,.docx,.doc,.xlsx,.xls,.csv">
+      <div class="upload-icon">📂</div>
+      <div class="upload-label">Перетащите файлы или нажмите для выбора</div>
+      <div class="upload-hint">Проект на бурение, ГТН, суточные рапорты, отчёты по скважинам</div>
+    </div>
+
+    <div class="file-types">
+      <span class="ft-chip"><span class="ico">📄</span>PDF</span>
+      <span class="ft-chip"><span class="ico">📝</span>DOCX / DOC</span>
+      <span class="ft-chip"><span class="ico">📊</span>XLSX / XLS</span>
+      <span class="ft-chip"><span class="ico">📋</span>CSV</span>
+    </div>
+
+    <div class="file-list" id="file-list"></div>
+
+    <button class="btn btn-primary" id="btn-analyze" style="display:none;width:100%;justify-content:center;padding:14px;font-size:15px" onclick="startAnalysis()">
+      🤖 Анализировать и запустить кокпит
+    </button>
+
+    <div class="ob-skip" onclick="skipToDemo()">⚡ Пропустить — запустить с демо-данными</div>
+  </div>
+</div>
+
+<!-- =================== SCREEN: EXTRACT =================== -->
+<div id="screen-extract" class="screen hidden">
+  <div class="topbar">
+    <a class="logo" href="javascript:void(0)">
+      <div class="logo-mark">DQ</div>
+      <span class="logo-name">DRILL-Q</span>
+    </a>
+    <div class="topbar-sep"></div>
+    <span class="topbar-title">AI-анализ документации</span>
+  </div>
+
+  <div class="extract-body">
+    <div class="extract-header">
+      <div id="extract-spinner" class="spinner"></div>
+      <div id="extract-prog-wrap">
+        <div class="prog-bar"><div class="prog-fill" id="extract-prog" style="width:0%"></div></div>
+      </div>
+      <h2 class="extract-h1" id="extract-h1">Читаю документы…</h2>
+      <p class="extract-sub" id="extract-sub">Парсинг файлов и извлечение параметров</p>
+    </div>
+
+    <div class="extract-grid" id="extract-grid" style="display:none">
+      <!-- filled dynamically -->
+    </div>
+
+    <div class="parse-log" id="parse-log"></div>
+
+    <div class="extract-actions" id="extract-actions" style="display:none">
+      <button class="btn btn-ghost" onclick="goToOnboard()">← Загрузить другие файлы</button>
+      <button class="btn btn-primary" onclick="goToCockpit()" style="padding:12px 32px;font-size:14px">
+        🔩 Открыть кокпит бурения →
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- =================== SCREEN: COCKPIT =================== -->
+<div id="screen-cockpit" class="screen hidden">
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <a class="logo" href="javascript:void(0)">
+      <div class="logo-mark">DQ</div>
+      <span class="logo-name">DRILL-Q</span>
+    </a>
+    <div class="topbar-sep"></div>
+    <div class="well-chip"><div class="dot green" id="rig-dot"></div><b id="hdr-well">Скважина не задана</b></div>
+    <div class="well-chip">📍 <span id="hdr-depth">0</span> м МД</div>
+    <div class="well-chip">⏱ <span id="hdr-time">00:00</span></div>
+    <div class="topbar-right">
+      <button class="btn btn-ghost btn-sm" onclick="goToOnboard()">↑ Загрузить данные</button>
+      <button class="btn btn-primary btn-sm" onclick="showParamModal()">+ Ввести параметры</button>
+    </div>
+  </div>
+
+  <!-- BODY -->
+  <div class="cockpit-body">
+
+    <!-- LEFT: Alerts -->
+    <div class="panel-left">
+      <div class="panel-hd">
+        ⚠ Предиктивные алерты
+        <span class="alert-count" id="alert-cnt">0</span>
+      </div>
+      <div class="alerts-list" id="alerts-list">
+        <div class="no-alerts">Алертов нет.<br>Введите параметры бурения.</div>
+      </div>
+    </div>
+
+    <!-- CENTER -->
+    <div class="panel-center">
+      <div class="center-scroll">
+
+        <!-- Depth progress -->
+        <div class="depth-bar" id="depth-bar-widget">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
+            <span style="font-size:11px;font-weight:700;color:var(--text2);letter-spacing:.05em;text-transform:uppercase">Прогресс бурения</span>
+            <span style="font-size:11px;color:var(--cyan);font-weight:700" id="depth-pct">0%</span>
+          </div>
+          <div class="depth-bar-inner"><div class="depth-bar-fill" id="depth-fill" style="width:0%"></div></div>
+          <div class="depth-meta">
+            <span>Старт: <b id="depth-start">0 м</b></span>
+            <span>Текущий забой: <b id="depth-cur" style="color:var(--cyan)">0 м</b></span>
+            <span>Проектный: <b id="depth-proj">0 м</b></span>
+          </div>
+        </div>
+
+        <!-- KPIs -->
+        <div class="kpi-row" id="kpi-row">
+          <div class="kpi"><div class="kpi-label">МСП / ROP</div>
+            <div><span class="kpi-val" id="kpi-rop">—</span><span class="kpi-unit">м/ч</span></div>
+            <div class="kpi-trend flat" id="kpi-rop-tr">нет данных</div></div>
+          <div class="kpi"><div class="kpi-label">ДНС / WOB</div>
+            <div><span class="kpi-val" id="kpi-wob">—</span><span class="kpi-unit">тс</span></div>
+            <div class="kpi-trend flat" id="kpi-wob-tr">нет данных</div></div>
+          <div class="kpi"><div class="kpi-label">Момент / Torque</div>
+            <div><span class="kpi-val" id="kpi-torq">—</span><span class="kpi-unit">кН·м</span></div>
+            <div class="kpi-trend flat" id="kpi-torq-tr">нет данных</div></div>
+          <div class="kpi"><div class="kpi-label">ЕЦД / ECD</div>
+            <div><span class="kpi-val" id="kpi-ecd">—</span><span class="kpi-unit">г/см³</span></div>
+            <div class="kpi-trend flat" id="kpi-ecd-tr">нет данных</div></div>
+          <div class="kpi"><div class="kpi-label">Насос / Q</div>
+            <div><span class="kpi-val" id="kpi-flow">—</span><span class="kpi-unit">л/с</span></div>
+            <div class="kpi-trend flat" id="kpi-flow-tr">нет данных</div></div>
+          <div class="kpi"><div class="kpi-label">Об/мин / RPM</div>
+            <div><span class="kpi-val" id="kpi-rpm">—</span><span class="kpi-unit">об/мин</span></div>
+            <div class="kpi-trend flat" id="kpi-rpm-tr">нет данных</div></div>
+          <div class="kpi"><div class="kpi-label">Давление / SPP</div>
+            <div><span class="kpi-val" id="kpi-spp">—</span><span class="kpi-unit">атм</span></div>
+            <div class="kpi-trend flat" id="kpi-spp-tr">нет данных</div></div>
+          <div class="kpi"><div class="kpi-label">Объём / Pit</div>
+            <div><span class="kpi-val" id="kpi-pit">—</span><span class="kpi-unit">м³</span></div>
+            <div class="kpi-trend flat" id="kpi-pit-tr">нет данных</div></div>
+        </div>
+
+        <!-- Param input -->
+        <div class="param-panel">
+          <div class="param-panel-hd">
+            <h3>Параметры режима бурения</h3>
+            <span style="font-size:10px;color:var(--text3)" id="param-last-update">не обновлялось</span>
+          </div>
+          <div class="param-grid">
+            <div class="param-cell">
+              <div class="param-lbl">МСП / ROP</div>
+              <input class="param-inp" id="inp-rop" type="number" placeholder="—">
+              <div class="param-unit">м/ч</div>
+            </div>
+            <div class="param-cell">
+              <div class="param-lbl">ДНС / WOB</div>
+              <input class="param-inp" id="inp-wob" type="number" placeholder="—">
+              <div class="param-unit">тс</div>
+            </div>
+            <div class="param-cell">
+              <div class="param-lbl">Обороты / RPM</div>
+              <input class="param-inp" id="inp-rpm" type="number" placeholder="—">
+              <div class="param-unit">об/мин</div>
+            </div>
+            <div class="param-cell">
+              <div class="param-lbl">Момент / Torque</div>
+              <input class="param-inp" id="inp-torq" type="number" placeholder="—">
+              <div class="param-unit">кН·м</div>
+            </div>
+            <div class="param-cell">
+              <div class="param-lbl">Расход / Flow</div>
+              <input class="param-inp" id="inp-flow" type="number" placeholder="—">
+              <div class="param-unit">л/с</div>
+            </div>
+            <div class="param-cell">
+              <div class="param-lbl">Давление / SPP</div>
+              <input class="param-inp" id="inp-spp" type="number" placeholder="—">
+              <div class="param-unit">атм</div>
+            </div>
+            <div class="param-cell">
+              <div class="param-lbl">ЕЦД / ECD</div>
+              <input class="param-inp" id="inp-ecd" type="number" step="0.01" placeholder="—">
+              <div class="param-unit">г/см³</div>
+            </div>
+            <div class="param-cell">
+              <div class="param-lbl">Объём / Pit</div>
+              <input class="param-inp" id="inp-pit" type="number" step="0.1" placeholder="—">
+              <div class="param-unit">м³</div>
+            </div>
+            <div class="param-cell">
+              <div class="param-lbl">Забой / Depth MD</div>
+              <input class="param-inp" id="inp-depth" type="number" placeholder="—">
+              <div class="param-unit">м</div>
+            </div>
+            <div class="param-cell">
+              <div class="param-lbl">YP раствора</div>
+              <input class="param-inp" id="inp-yp" type="number" placeholder="—">
+              <div class="param-unit">Па</div>
+            </div>
+            <div class="param-cell">
+              <div class="param-lbl">Плотность р-ра</div>
+              <input class="param-inp" id="inp-mw" type="number" step="0.01" placeholder="—">
+              <div class="param-unit">г/см³</div>
+            </div>
+            <div class="param-cell">
+              <div class="param-lbl">Приток/Потери</div>
+              <input class="param-inp" id="inp-gain" type="number" step="0.1" placeholder="—">
+              <div class="param-unit">м³ (+приток/-потери)</div>
+            </div>
+          </div>
+          <div class="param-actions">
+            <button class="btn btn-ghost btn-sm" onclick="clearParams()">Очистить</button>
+            <button class="btn btn-primary btn-sm" onclick="submitParams()">💾 Применить параметры</button>
+          </div>
+        </div>
+
+        <!-- Trend chart -->
+        <div class="chart-area">
+          <div class="chart-hd">
+            Тренды параметров
+            <div class="chart-tabs">
+              <span class="ctab active" onclick="setChartTab(this,'rop')">МСП</span>
+              <span class="ctab" onclick="setChartTab(this,'torq')">Момент</span>
+              <span class="ctab" onclick="setChartTab(this,'ecd')">ЕЦД</span>
+              <span class="ctab" onclick="setChartTab(this,'wob')">ДНС</span>
+            </div>
+          </div>
+          <canvas class="sparkline" id="sparkline" width="600" height="80"></canvas>
+          <div style="font-size:10px;color:var(--text3);margin-top:4px" id="spark-meta">Нет данных для отображения</div>
+        </div>
+
+      </div><!-- end center-scroll -->
+    </div><!-- end panel-center -->
+
+    <!-- RIGHT: Formation + BHA + Checklist -->
+    <div class="panel-right">
+      <div class="right-scroll">
+
+        <!-- Formation risk -->
+        <div class="panel-hd" style="padding-left:4px">🗺 Риски по интервалам</div>
+        <div id="form-risk-list">
+          <div style="padding:12px;text-align:center;color:var(--text3);font-size:11px">Загрузите ГТН для анализа рисков</div>
+        </div>
+
+        <!-- BHA summary -->
+        <div class="panel-hd" style="padding-left:4px;margin-top:8px">🔩 КНБК / BHA</div>
+        <div style="padding:4px 4px 8px" id="bha-list">
+          <div class="bha-row"><span class="bha-k">Долото</span><span class="bha-v" id="bha-bit">—</span></div>
+          <div class="bha-row"><span class="bha-k">Диаметр</span><span class="bha-v" id="bha-diam">—</span></div>
+          <div class="bha-row"><span class="bha-k">Тип</span><span class="bha-v" id="bha-type">—</span></div>
+          <div class="bha-row"><span class="bha-k">Проходка на долото</span><span class="bha-v" id="bha-meters">—</span></div>
+          <div class="bha-row"><span class="bha-k">Часы на долото</span><span class="bha-v" id="bha-hours">—</span></div>
+        </div>
+
+        <!-- Best Practices Checklist -->
+        <div class="panel-hd" style="padding-left:4px;margin-top:8px">✅ Best Practices</div>
+        <div style="padding:4px" id="checklist-list">
+          <!-- filled dynamically -->
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- end cockpit-body -->
+</div><!-- end screen-cockpit -->
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<script>
+// ============================================================
+// PDF.js worker
+// ============================================================
+if(typeof pdfjsLib !== 'undefined'){
+  pdfjsLib.GlobalWorkerOptions.workerSrc =
+    'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+}
+
+// ============================================================
+// GLOBAL STATE
+// ============================================================
+const WellState = {
+  // Well info
+  wellName: '',
+  field: '',
+  cluster: '',
+  rig: '',
+  contractor: '',
+  // Depths
+  depthStart: 0,
+  depthCurrent: 0,
+  depthProject: 3000,
+  // Design params
+  mudWeightDesign: 1.15,
+  ecdDesign: 1.18,
+  fracGradient: 1.85,
+  poreGradient: 1.10,
+  flowDesign: 30,
+  wobDesign: 8,
+  rpmDesign: 120,
+  // BHA
+  bitSize: '',
+  bitType: '',
+  bhaDesc: '',
+  metersOnBit: 0,
+  hoursOnBit: 0,
+  // Formations / risks
+  formations: [],
+  // History (array of param snapshots)
+  history: [],
+  // Current params
+  current: {},
+  // Loaded text corpus
+  corpus: '',
+  // Parse log
+  parseLog: [],
+  // Baseline values (first submission)
+  baseline: {},
+  // Timer
+  startTime: Date.now()
+};
+
+// ============================================================
+// FILES
+// ============================================================
+let uploadedFiles = [];
+
+document.getElementById('file-input').addEventListener('change', e => {
+  Array.from(e.target.files).forEach(addFile);
+});
+
+const uz = document.getElementById('upload-zone');
+uz.addEventListener('dragover', e => { e.preventDefault(); uz.classList.add('drag'); });
+uz.addEventListener('dragleave', () => uz.classList.remove('drag'));
+uz.addEventListener('drop', e => {
+  e.preventDefault(); uz.classList.remove('drag');
+  Array.from(e.dataTransfer.files).forEach(addFile);
+});
+
+function addFile(f){
+  if(uploadedFiles.find(x=>x.name===f.name)) return;
+  uploadedFiles.push(f);
+  renderFileList();
+}
+function removeFile(name){
+  uploadedFiles = uploadedFiles.filter(f=>f.name!==name);
+  renderFileList();
+}
+function renderFileList(){
+  const el = document.getElementById('file-list');
+  const btn = document.getElementById('btn-analyze');
+  if(!uploadedFiles.length){ el.innerHTML=''; btn.style.display='none'; return; }
+  btn.style.display='flex';
+  el.innerHTML = uploadedFiles.map(f=>{
+    const ext = f.name.split('.').pop().toLowerCase();
+    const ico = ext==='pdf'?'📄':ext==='docx'||ext==='doc'?'📝':'📊';
+    const sz = f.size<1024*1024 ? Math.round(f.size/1024)+'KB' : (f.size/1024/1024).toFixed(1)+'MB';
+    return `<div class="file-item">
+      <span class="fi-icon">${ico}</span>
+      <span class="fi-name">${f.name}</span>
+      <span class="fi-size">${sz}</span>
+      <span class="fi-rm" onclick="removeFile('${f.name}')">✕</span>
+    </div>`;
+  }).join('');
+}
+
+// ============================================================
+// SCREEN TRANSITIONS
+// ============================================================
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.add('hidden'));
+  document.getElementById('screen-'+id).classList.remove('hidden');
+}
+function goToOnboard(){ showScreen('onboard'); }
+
+// ============================================================
+// ANALYSIS
+// ============================================================
+async function startAnalysis(){
+  showScreen('extract');
+  logParse('Начало анализа…', 'ok');
+  setExtractProgress(5, 'Загружаю файлы…', 'Парсинг документов');
+
+  let corpus = '';
+  let n = uploadedFiles.length;
+  for(let i=0;i<n;i++){
+    const f = uploadedFiles[i];
+    logParse(`Читаю: ${f.name}`, '');
+    setExtractProgress(10 + Math.round(60*i/n), `Читаю ${f.name}…`, '');
+    try {
+      const txt = await readFile(f);
+      corpus += '\n\n=== ' + f.name + ' ===\n' + txt;
+      logParse(`✓ ${f.name} — ${txt.length} символов`, 'ok');
+    } catch(e){
+      logParse(`⚠ ${f.name}: ${e.message||e}`, 'warn');
+    }
+  }
+  WellState.corpus = corpus;
+
+  setExtractProgress(72, 'AI-экстракция параметров…', 'Анализ геологии, рисков, КНБК');
+  await sleep(400);
+
+  extractParamsFromCorpus(corpus);
+
+  setExtractProgress(95, 'Формирование кокпита…', 'Подготовка алертов и рисков');
+  await sleep(300);
+
+  setExtractProgress(100, 'Готово!', 'Данные извлечены — можно начинать бурение');
+  document.getElementById('extract-spinner').style.display='none';
+  renderExtractCards();
+  document.getElementById('extract-grid').style.display='grid';
+  document.getElementById('extract-actions').style.display='flex';
+
+  // pre-populate cockpit
+  buildFormationRisk();
+  buildChecklist();
+  updateCockpitHeader();
+}
+
+async function readFile(f){
+  const ext = f.name.split('.').pop().toLowerCase();
+  if(ext==='pdf')  return await readPDF(f);
+  if(ext==='docx'||ext==='doc') return await readDOCX(f);
+  if(ext==='xlsx'||ext==='xls') return await readXLSX(f);
+  if(ext==='csv')  return await readText(f);
+  return await readText(f);
+}
+
+async function readPDF(f){
+  if(typeof pdfjsLib==='undefined') throw new Error('PDF.js не загружен');
+  const ab = await f.arrayBuffer();
+  const doc = await pdfjsLib.getDocument({data: new Uint8Array(ab)}).promise;
+  let txt = '';
+  for(let p=1;p<=Math.min(doc.numPages,40);p++){
+    const page = await doc.getPage(p);
+    const tc = await page.getTextContent();
+    txt += tc.items.map(i=>i.str).join(' ') + '\n';
+  }
+  return txt;
+}
+
+async function readDOCX(f){
+  if(typeof mammoth==='undefined') throw new Error('mammoth.js не загружен');
+  const ab = await f.arrayBuffer();
+  const result = await mammoth.extractRawText({arrayBuffer: ab});
+  return result.value;
+}
+
+async function readXLSX(f){
+  if(typeof XLSX==='undefined') throw new Error('SheetJS не загружен');
+  const ab = await f.arrayBuffer();
+  const wb = XLSX.read(ab, {type:'array'});
+  let txt = '';
+  wb.SheetNames.forEach(sn=>{
+    const ws = wb.Sheets[sn];
+    txt += '\n--- Лист: ' + sn + ' ---\n';
+    txt += XLSX.utils.sheet_to_csv(ws);
+  });
+  return txt;
+}
+
+async function readText(f){
+  return new Promise((res,rej)=>{
+    const r = new FileReader();
+    r.onload = e => res(e.target.result);
+    r.onerror = rej;
+    r.readAsText(f,'utf-8');
+  });
+}
+
+// ============================================================
+// PARAM EXTRACTION  (rule-based NLP from text corpus)
+// ============================================================
+function extractParamsFromCorpus(txt){
+  const t = txt.toUpperCase();
+
+  // Helper: find number after pattern
+  function findNum(patterns, fallback){
+    for(const p of patterns){
+      const re = new RegExp(p + '[^\\d]{0,10}([\\d][\\d.,]*)', 'i');
+      const m = txt.match(re);
+      if(m) return parseFloat(m[1].replace(',','.'));
+    }
+    return fallback;
+  }
+  function findStr(patterns, fallback){
+    for(const p of patterns){
+      const re = new RegExp(p + '[:\\s]+([^\\n\\r,;.]{2,40})', 'i');
+      const m = txt.match(re);
+      if(m) return m[1].trim();
+    }
+    return fallback;
+  }
+
+  WellState.wellName  = findStr(['Скважина №?','Скважина:','Well:','WELL NAME'], '— не определена —');
+  WellState.field     = findStr(['Месторождение','Field','FIELD'], '— не указано —');
+  WellState.rig       = findStr(['Буровая установка','Rig:','РИГ'], '—');
+  WellState.contractor= findStr(['Подрядчик','Contractor'], '—');
+
+  WellState.depthProject   = findNum(['Проектная глубина','Proj.*depth','DEPTH.*PROJ','TD.*=','TD :'], 3500);
+  WellState.depthCurrent   = findNum(['Текущий забой','Current depth','Забой МД','DEPTH.*CUR'], 0);
+  WellState.mudWeightDesign= findNum(['Плотность раствора','Mud weight','MW.*=','Плотн'], 1.18);
+  WellState.fracGradient   = findNum(['Градиент разрыва','Fracture gradient','FG.*='], 1.85);
+  WellState.poreGradient   = findNum(['Пластовое давление.*г/см','Pore.*gradient','PP.*='], 1.10);
+  WellState.flowDesign     = findNum(['Расход.*насоса','Flow rate','Q.*=','л/с'], 28);
+  WellState.wobDesign      = findNum(['Нагрузка на долото','WOB','ДНС'], 8);
+  WellState.bitSize        = findStr(['Долото.*мм','Bit size','PDC','ДЛТ'], '215.9 мм');
+  WellState.bitType        = findStr(['Тип долота','Bit type'], 'PDC');
+
+  // Extract formation intervals
+  extractFormations(txt);
+
+  logParse(`Скважина: ${WellState.wellName}`, 'ok');
+  logParse(`Проектная глубина: ${WellState.depthProject} м`, 'ok');
+  logParse(`Плотность р-ра: ${WellState.mudWeightDesign} г/см³`, 'ok');
+  logParse(`Градиент разрыва: ${WellState.fracGradient} г/см³`, 'ok');
+  logParse(`Извлечено пластов: ${WellState.formations.length}`, WellState.formations.length?'ok':'warn');
+}
+
+function extractFormations(txt){
+  // Try to find formation table rows: depth, name, risk keywords
+  const fmts = [];
+  // Patterns: lines with depth range + formation name
+  const reRow = /(\d{3,4})\s*[-–—]\s*(\d{3,4})\s+([А-ЯA-Z][^\n\r]{3,40})/ig;
+  let m;
+  while((m=reRow.exec(txt))!==null && fmts.length<12){
+    const f0=parseInt(m[1]), t0=parseInt(m[2]), name=m[3].trim();
+    if(t0<=f0||t0-f0<5) continue;
+    const risks = detectFormationRisks(name, txt, f0, t0);
+    fmts.push({f:f0, t:t0, name, risks, riskLevel: risks.length>=3?'high':risks.length>=1?'med':'low'});
+  }
+  // Fallback: use generic intervals if nothing found
+  if(fmts.length===0){
+    fmts.push({f:0,   t:500,  name:'Четвертичные отложения',       risks:['Поглощение'],             riskLevel:'low'});
+    fmts.push({f:500, t:1200, name:'Верхнемеловые отложения',      risks:['Осыпи','Обвалы'],          riskLevel:'med'});
+    fmts.push({f:1200,t:2200, name:'Нижнемеловые отложения',       risks:['Поглощение','Нестабильность'],riskLevel:'med'});
+    fmts.push({f:2200,t:2900, name:'Юрские отложения',             risks:['АВПД','Газопроявление','Прихват'],riskLevel:'high'});
+    fmts.push({f:2900,t:3500, name:'Продуктивный горизонт',        risks:['АВПД','Газ','Нефть'],      riskLevel:'high'});
+  }
+  WellState.formations = fmts;
+}
+
+function detectFormationRisks(name, txt, f, t){
+  const risks = [];
+  const combined = (name + ' ' + txt.slice(Math.max(0, txt.indexOf(String(f))-200),
+    txt.indexOf(String(f))+500)).toLowerCase();
+  if(/поглощ|loss|lost/i.test(combined))  risks.push('Поглощение');
+  if(/осып|обвал|кавер|cavit/i.test(combined)) risks.push('Осыпи/Обвалы');
+  if(/прихват|sticking|stuck/i.test(combined)) risks.push('Прихват');
+  if(/газ|gas|kick|проявл/i.test(combined)) risks.push('Газ/ГНВП');
+  if(/авпд|overpressure/i.test(combined)) risks.push('АВПД');
+  if(/нестаб|instab/i.test(combined)) risks.push('Нестабильность');
+  if(/соль|salt/i.test(combined)) risks.push('Соленосные пачки');
+  return risks;
+}
+
+// ============================================================
+// EXTRACT UI
+// ============================================================
+function setExtractProgress(pct, h1, sub){
+  document.getElementById('extract-prog').style.width = pct+'%';
+  if(h1) document.getElementById('extract-h1').textContent = h1;
+  if(sub) document.getElementById('extract-sub').textContent = sub;
+}
+
+function logParse(msg, cls){
+  const el = document.getElementById('parse-log');
+  const d = document.createElement('div');
+  if(cls) d.className = cls;
+  d.textContent = '> ' + msg;
+  el.appendChild(d);
+  el.scrollTop = el.scrollHeight;
+  WellState.parseLog.push(msg);
+}
+
+function renderExtractCards(){
+  const grid = document.getElementById('extract-grid');
+  grid.innerHTML = `
+    <div class="ex-card">
+      <div class="ex-card-hd">🏗 Основные данные скважины</div>
+      ${exRow('Скважина', WellState.wellName, 'wellName')}
+      ${exRow('Месторождение', WellState.field, 'field')}
+      ${exRow('Буровая', WellState.rig, 'rig')}
+      ${exRow('Подрядчик', WellState.contractor, 'contractor')}
+    </div>
+    <div class="ex-card">
+      <div class="ex-card-hd">📏 Глубины и конструкция</div>
+      ${exRowNum('Проектная глубина, м', WellState.depthProject, 'depthProject')}
+      ${exRowNum('Текущий забой, м', WellState.depthCurrent, 'depthCurrent')}
+      ${exRow('Долото', WellState.bitSize, 'bitSize')}
+      ${exRow('Тип долота', WellState.bitType, 'bitType')}
+    </div>
+    <div class="ex-card">
+      <div class="ex-card-hd">🧪 Параметры раствора</div>
+      ${exRowNum('Плотность р-ра (проект), г/см³', WellState.mudWeightDesign, 'mudWeightDesign')}
+      ${exRowNum('ЕЦД проект, г/см³', WellState.ecdDesign, 'ecdDesign')}
+      ${exRowNum('Градиент разрыва, г/см³', WellState.fracGradient, 'fracGradient')}
+      ${exRowNum('Пластовый градиент, г/см³', WellState.poreGradient, 'poreGradient')}
+    </div>
+    <div class="ex-card">
+      <div class="ex-card-hd">⚙️ Проектные режимы</div>
+      ${exRowNum('Расход насосов, л/с', WellState.flowDesign, 'flowDesign')}
+      ${exRowNum('ДНС проект, тс', WellState.wobDesign, 'wobDesign')}
+      ${exRowNum('Об/мин проект', WellState.rpmDesign, 'rpmDesign')}
+      <div class="ex-row" style="padding-top:10px">
+        <span class="ex-key">Пластов извлечено</span>
+        <span class="ex-val">${WellState.formations.length}</span>
+      </div>
+    </div>`;
+}
+
+function exRow(label, val, field){
+  return `<div class="ex-row">
+    <span class="ex-key">${label}</span>
+    <input class="ex-editable" value="${val}" onchange="WellState['${field}']=this.value">
+  </div>`;
+}
+function exRowNum(label, val, field){
+  return `<div class="ex-row">
+    <span class="ex-key">${label}</span>
+    <input class="ex-editable" type="number" step="any" value="${val}" onchange="WellState['${field}']=parseFloat(this.value)||0">
+  </div>`;
+}
+
+// ============================================================
+// SKIP TO DEMO
+// ============================================================
+function skipToDemo(){
+  WellState.wellName      = 'Проектная скважина';
+  WellState.field         = 'Северный блок';
+  WellState.rig           = 'БУ-5000';
+  WellState.contractor    = 'Буровая компания';
+  WellState.depthProject  = 3200;
+  WellState.depthCurrent  = 1850;
+  WellState.mudWeightDesign = 1.18;
+  WellState.ecdDesign     = 1.20;
+  WellState.fracGradient  = 1.88;
+  WellState.poreGradient  = 1.12;
+  WellState.flowDesign    = 30;
+  WellState.wobDesign     = 8;
+  WellState.rpmDesign     = 120;
+  WellState.bitSize       = '215,9 мм';
+  WellState.bitType       = 'PDC';
+  WellState.formations = [
+    {f:0,   t:600,  name:'Четвертичные / неоген', risks:['Обвалы'], riskLevel:'low'},
+    {f:600, t:1300, name:'Верхнемеловые (Д₁)', risks:['Осыпи','Поглощение'], riskLevel:'med'},
+    {f:1300,t:2000, name:'Нижнемеловые (Б₁₀)', risks:['Поглощение'], riskLevel:'med'},
+    {f:2000,t:2600, name:'Юрский комплекс', risks:['АВПД','Нестабильность','Прихват'], riskLevel:'high'},
+    {f:2600,t:3200, name:'Продуктивный горизонт', risks:['АВПД','Газ/ГНВП'], riskLevel:'high'},
+  ];
+  goToCockpit();
+}
+
+// ============================================================
+// COCKPIT — redirect to drilling_hub.html with extracted data
+// ============================================================
+function goToCockpit(){
+  const ws = WellState;
+
+  // ── Build strat from extracted formations ──────────────────
+  const riskMap = {high:'critical', med:'med', low:'low'};
+  const strat = ws.formations.length ? ws.formations.map((f,i) => {
+    const abbr = f.name.match(/[А-ЯA-Z0-9]+/)?.[0] || ('Л'+i);
+    const riskRec = {
+      high: 'АВПД. Непрерывный контроль плотности и ЕЦД. Контроль давления.',
+      med:  'Повышенная бдительность. Расхаживание инструмента, контроль ГВА.',
+      low:  'Стандартный режим бурения. Промывка каждые 50 м.'
+    }[f.riskLevel] || '';
+    const extraRec = f.risks.includes('Прихват') ? ' Расхаживание каждые 10–15 м.' :
+                     f.risks.includes('Поглощение') ? ' LCM готовность.' : '';
+    const densAdj = f.riskLevel==='high' ? Math.min(1.55, +(ws.mudWeightDesign+0.08).toFixed(3)) :
+                    f.riskLevel==='med'  ? +(ws.mudWeightDesign+0.02).toFixed(3) :
+                                            +ws.mudWeightDesign.toFixed(3);
+    return {
+      s: abbr.substring(0,3),
+      n: f.name,
+      f: f.f,
+      t: f.t,
+      risk: riskMap[f.riskLevel] || 'low',
+      incidents: f.risks.length,
+      dens: densAdj,
+      rop: f.riskLevel==='high' ? 7 : f.riskLevel==='med' ? 11 : 16,
+      rec: (riskRec + extraRec).trim()
+    };
+  }) : null; // null = drilling_hub will use VANKOR_STRAT_REF
+
+  // ── Build incidents from high-risk formations ──────────────
+  const incidents = ws.formations
+    .filter(f => f.riskLevel !== 'low')
+    .flatMap(f => f.risks.slice(0,2).map(r => ({
+      depth: Math.round((f.f + f.t) / 2),
+      cls: f.riskLevel === 'high' ? 'critical' : 'warn',
+      title: r + ' — ' + f.name,
+      prob: f.riskLevel === 'high' ? '65%' : '35%',
+      type: r.toLowerCase().includes('газ') ? 'gas_show' :
+            r.toLowerCase().includes('прихват') ? 'sticking' :
+            r.toLowerCase().includes('поглощ') ? 'loss' :
+            r.toLowerCase().includes('авпд') ? 'reservoir' : 'generic'
+    })));
+
+  // ── Build wells payload ────────────────────────────────────
+  const wells = [{
+    name: ws.wellName || 'Проектная скважина',
+    td: ws.depthProject || 3200,
+    npt_days: 0,
+    source: 'ai_import',
+    reports: ws.depthCurrent > 0 ? [{
+      depth_from: 0,
+      depth_to: ws.depthCurrent,
+      dens: ws.mudWeightDesign,
+      pv: 18, yp: 12, gel: 4, api: 5,
+      rop: 8, wob: ws.wobDesign, rpm: ws.rpmDesign,
+      flow: ws.flowDesign, spp: 140, torq: 8, ecd: ws.ecdDesign
+    }] : []
+  }];
+
+  // ── Save to localStorage and redirect ─────────────────────
+  const payload = {
+    source: 'cockpit_import',
+    well_info: {
+      name:       ws.wellName,
+      field:      ws.field,
+      rig:        ws.rig,
+      contractor: ws.contractor,
+      depth_proj: ws.depthProject,
+      depth_cur:  ws.depthCurrent,
+      mud_weight: ws.mudWeightDesign,
+      ecd_design: ws.ecdDesign,
+      frac_grad:  ws.fracGradient,
+      pore_grad:  ws.poreGradient,
+      flow_design:ws.flowDesign
+    },
+    wells,
+    strat: strat || undefined,
+    incidents: incidents.length ? incidents : undefined
+  };
+  localStorage.setItem('dq_cockpit_import', JSON.stringify(payload));
+  window.location.href = 'drilling_hub.html';
+}
+
+function updateCockpitHeader(){
+  document.getElementById('hdr-well').textContent = WellState.wellName || 'Скважина';
+  document.getElementById('depth-cur').textContent = WellState.depthCurrent + ' м';
+  document.getElementById('depth-proj').textContent = WellState.depthProject + ' м';
+}
+
+function updateDepthWidget(){
+  const s = WellState.depthStart, c = WellState.depthCurrent, p = WellState.depthProject;
+  const pct = p>s ? Math.min(100, Math.round((c-s)/(p-s)*100)) : 0;
+  document.getElementById('depth-fill').style.width = pct+'%';
+  document.getElementById('depth-pct').textContent = pct+'%';
+  document.getElementById('depth-start').textContent = s+' м';
+  document.getElementById('depth-cur').textContent = c+' м';
+  document.getElementById('depth-proj').textContent = p+' м';
+  document.getElementById('hdr-depth').textContent = c;
+}
+
+// ============================================================
+// FORMATION RISK PANEL
+// ============================================================
+function buildFormationRisk(){
+  const el = document.getElementById('form-risk-list');
+  if(!WellState.formations.length){ el.innerHTML='<div style="padding:12px;text-align:center;color:var(--text3);font-size:11px">Нет данных о пластах</div>'; return; }
+  el.innerHTML = WellState.formations.map(f=>`
+    <div class="form-risk-item">
+      <div class="fri-header">
+        <span class="fri-depth">${f.f}–${f.t} м</span>
+        <span class="fri-name">${f.name.substring(0,22)}</span>
+        <span class="fri-badge ${f.riskLevel}">${f.riskLevel==='high'?'ВЫСОКИЙ':f.riskLevel==='med'?'СРЕДНИЙ':'НИЗКИЙ'}</span>
+      </div>
+      <div class="fri-risks">${f.risks.map(r=>`<span class="fri-risk-tag">${r}</span>`).join('')}</div>
+    </div>`).join('');
+}
+
+// ============================================================
+// BEST PRACTICES CHECKLIST
+// ============================================================
+const BEST_PRACTICES = [
+  {color:'var(--green)', title:'Промывка перед СПО', body:'Мин. 2 цикла до подъёма', sub:'Предотвращает шламовые пробки'},
+  {color:'var(--green)', title:'Контроль ЕЦД', body:'ECD < FG − 0.05 г/см³', sub:'Буфер безопасности до разрыва'},
+  {color:'var(--yellow)',title:'Мониторинг притока', body:'Отслеживать объём каждые 5 мин', sub:'Раннее обнаружение ГНВП'},
+  {color:'var(--green)', title:'Обработка раствора', body:'YP 8–15 Па, ГС₁₀ < 3 дПа', sub:'Стабильный вынос шлама'},
+  {color:'var(--green)', title:'Скорость подъёма', body:'Max 0.5 м/с в открытом стволе', sub:'Снижает риск поршневания'},
+  {color:'var(--yellow)',title:'Контроль d-экспонента', body:'Рост плотности при снижении d-exp', sub:'Индикатор АВПД'},
+  {color:'var(--green)', title:'Расхаживание в опасных зонах', body:'Каждые 15 м в зонах прихватов', sub:'Предотвращает прихват инструмента'},
+  {color:'var(--cyan)',  title:'Шаблонирование', body:'После каждой трубы в осложнённых зонах', sub:'Контроль сужений ствола'},
+];
+function buildChecklist(){
+  document.getElementById('checklist-list').innerHTML = BEST_PRACTICES.map(p=>`
+    <div class="chk-item">
+      <div class="chk-dot" style="background:${p.color}"></div>
+      <div class="chk-txt"><b>${p.title}</b> — ${p.body}<div class="chk-sub">${p.sub}</div></div>
+    </div>`).join('');
+}
+
+// ============================================================
+// PARAM SUBMISSION
+// ============================================================
+function submitParams(){
+  const get = id => { const v = document.getElementById(id).value; return v===''?null:parseFloat(v); };
+  const getStr = id => document.getElementById(id).value;
+
+  const depth = get('inp-depth');
+  if(depth!==null) WellState.depthCurrent = depth;
+
+  const p = {
+    ts:     Date.now(),
+    depth:  depth ?? WellState.depthCurrent,
+    rop:    get('inp-rop'),
+    wob:    get('inp-wob'),
+    rpm:    get('inp-rpm'),
+    torq:   get('inp-torq'),
+    flow:   get('inp-flow'),
+    spp:    get('inp-spp'),
+    ecd:    get('inp-ecd'),
+    pit:    get('inp-pit'),
+    yp:     get('inp-yp'),
+    mw:     get('inp-mw'),
+    gain:   get('inp-gain'),
+  };
+
+  // Remove nulls for baseline check
+  const hasData = Object.values(p).some(v=>v!==null && typeof v==='number');
+  if(!hasData){ showToast('⚠ Введите хотя бы один параметр'); return; }
+
+  WellState.history.push(p);
+  WellState.current = p;
+
+  // Set baseline from first submission
+  if(Object.keys(WellState.baseline).length===0) WellState.baseline = {...p};
+
+  // Update KPIs
+  updateKPIs(p);
+  // Run alert engine
+  const alerts = AlertEngine.run(p);
+  renderAlerts(alerts);
+  // Update trend chart
+  drawSparkline(activeChartParam);
+  // Update depth
+  updateDepthWidget();
+
+  const now = new Date();
+  document.getElementById('param-last-update').textContent =
+    'обновлено в ' + now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
+
+  showToast('✓ Параметры применены · Алерты обновлены');
+}
+
+function clearParams(){
+  ['inp-rop','inp-wob','inp-rpm','inp-torq','inp-flow','inp-spp','inp-ecd','inp-pit','inp-yp','inp-mw','inp-gain','inp-depth']
+    .forEach(id=>{ document.getElementById(id).value=''; document.getElementById(id).classList.remove('changed'); });
+}
+
+function showParamModal(){ document.querySelector('.param-panel').scrollIntoView({behavior:'smooth'}); }
+
+// ============================================================
+// KPI UPDATE
+// ============================================================
+function updateKPIs(p){
+  const h = WellState.history;
+  function setKPI(id, val, unit, trendId, prev){
+    if(val===null) return;
+    document.getElementById(id).textContent = typeof val==='number' ? (Number.isInteger(val)?val:val.toFixed(2)) : val;
+    if(prev!==null && trendId){
+      const diff = val - prev;
+      const pct = prev ? Math.round(diff/Math.abs(prev)*100) : 0;
+      const el = document.getElementById(trendId);
+      el.className = 'kpi-trend ' + (diff>0?'up':diff<0?'dn':'flat');
+      el.textContent = (diff>0?'↑':'↓') + ' ' + Math.abs(pct) + '% от пред.';
+    }
+  }
+  const prev = h.length>1 ? h[h.length-2] : {};
+  setKPI('kpi-rop',  p.rop,  'м/ч',  'kpi-rop-tr',  prev.rop??null);
+  setKPI('kpi-wob',  p.wob,  'тс',   'kpi-wob-tr',  prev.wob??null);
+  setKPI('kpi-torq', p.torq, 'кН·м', 'kpi-torq-tr', prev.torq??null);
+  setKPI('kpi-ecd',  p.ecd,  'г/см³','kpi-ecd-tr',  prev.ecd??null);
+  setKPI('kpi-flow', p.flow, 'л/с',  'kpi-flow-tr', prev.flow??null);
+  setKPI('kpi-rpm',  p.rpm,  'об/мин','kpi-rpm-tr', prev.rpm??null);
+  setKPI('kpi-spp',  p.spp,  'атм',  'kpi-spp-tr',  prev.spp??null);
+  setKPI('kpi-pit',  p.pit,  'м³',   'kpi-pit-tr',  prev.pit??null);
+  document.getElementById('hdr-depth').textContent = WellState.depthCurrent;
+}
+
+// ============================================================
+// ALERT ENGINE
+// ============================================================
+const AlertEngine = {
+  run(p){
+    const alerts = [];
+    const h = WellState.history;
+    const bl = WellState.baseline;
+    const ws = WellState;
+
+    // --- RULE 1: KICK — pit gain ---
+    if(p.gain !== null){
+      if(p.gain > 2.0) alerts.push({sev:'crit', title:'🆘 ГНВП — Значительный приток', body:`Прирост объёма: +${p.gain} м³. Немедленная реакция!`, rec:'Закрыть превентор, уведомить супервайзера, контроль устья'});
+      else if(p.gain > 0.5) alerts.push({sev:'crit', title:'⚠ ГНВП — Приток флюида', body:`Прирост объёма: +${p.gain} м³. Возможное газонефтеводопроявление.`, rec:'Увеличить плотность раствора, мониторить объём непрерывно'});
+      else if(p.gain < -1.5) alerts.push({sev:'warn', title:'📉 Потери раствора', body:`Потери: ${p.gain} м³. Риск поглощения.`, rec:'Снизить ЕЦД, LCM-обработка, мониторинг'});
+    }
+
+    // --- RULE 2: ECD vs fracture gradient ---
+    if(p.ecd !== null){
+      const fg = ws.fracGradient;
+      const pg = ws.poreGradient;
+      if(p.ecd > fg - 0.03) alerts.push({sev:'crit', title:'🔴 ЕЦД критически близко к градиенту разрыва', body:`ECD: ${p.ecd} г/см³ | FG: ${fg} г/см³ | Зазор: ${(fg-p.ecd).toFixed(3)} г/см³`, rec:'Снизить расход, увеличить вязкость, контроль давления'});
+      else if(p.ecd > fg - 0.08) alerts.push({sev:'warn', title:'🟡 ЕЦД приближается к FG', body:`ECD: ${p.ecd} г/см³ | FG: ${fg} г/см³ | Зазор: ${(fg-p.ecd).toFixed(3)} г/см³`, rec:'Мониторинг ЕЦД, снизить обороты, проверить реологию'});
+      if(p.ecd < pg + 0.03) alerts.push({sev:'warn', title:'⚠ ЕЦД близко к пластовому давлению', body:`ECD: ${p.ecd} г/см³ | PP: ${pg} г/см³`, rec:'Повысить плотность раствора или снизить интенсивность промывки'});
+    }
+
+    // --- RULE 3: Torque creep — stuck pipe predictor ---
+    if(p.torq !== null && h.length >= 3){
+      const recent = h.slice(-4).map(x=>x.torq).filter(x=>x!==null);
+      if(recent.length >= 3){
+        const oldest = recent[0], latest = recent[recent.length-1];
+        const inc = oldest > 0 ? (latest - oldest) / oldest : 0;
+        if(inc > 0.30) alerts.push({sev:'crit', title:'🔴 Рост момента — риск прихвата КРИТИЧЕСКИЙ', body:`Момент вырос на ${Math.round(inc*100)}% за последние замеры (${oldest}→${latest} кН·м)`, rec:'Расхаживание, промывка, снизить ДНС. Готовность к ванне'});
+        else if(inc > 0.15) alerts.push({sev:'warn', title:'🟡 Тренд момента — ранний признак прихвата', body:`Момент вырос на ${Math.round(inc*100)}% (${oldest}→${latest} кН·м)`, rec:'Расхаживание каждые 10–15 м, контроль тяги на подъём'});
+      }
+    }
+
+    // --- RULE 4: Torque spike from baseline ---
+    if(p.torq !== null && bl.torq){
+      const inc = (p.torq - bl.torq) / bl.torq;
+      if(inc > 0.40 && !(alerts.some(a=>a.title.includes('прихват')))) {
+        alerts.push({sev:'warn', title:'🟡 Момент значительно выше проектного', body:`+${Math.round(inc*100)}% от базового (${bl.torq}→${p.torq} кН·м)`, rec:'Проверить состояние ствола, реологию раствора, центраторы'});
+      }
+    }
+
+    // --- RULE 5: ROP decline — bit wear ---
+    if(p.rop !== null && bl.rop && p.wob !== null && bl.wob){
+      const ropDrop = bl.rop > 0 ? (bl.rop - p.rop) / bl.rop : 0;
+      const wobDiff = bl.wob > 0 ? Math.abs(p.wob - bl.wob) / bl.wob : 0;
+      if(ropDrop > 0.40 && wobDiff < 0.15) alerts.push({sev:'warn', title:'📉 Снижение МСП — износ долота', body:`МСП упала на ${Math.round(ropDrop*100)}% при неизменной ДНС (${bl.rop}→${p.rop} м/ч)`, rec:'Оценить ресурс долота, рассмотреть подъём на смену'});
+    }
+
+    // --- RULE 6: ECD creep — poor hole cleaning ---
+    if(p.ecd !== null && h.length >= 4){
+      const recentECD = h.slice(-4).map(x=>x.ecd).filter(x=>x!==null);
+      if(recentECD.length >= 3){
+        const trend = recentECD[recentECD.length-1] - recentECD[0];
+        if(trend > 0.04) alerts.push({sev:'warn', title:'📈 Рост ЕЦД — плохая очистка ствола', body:`ЕЦД вырос на ${trend.toFixed(3)} г/см³ за последние замеры`, rec:'Увеличить расход, обработка раствора, промывочные циклы'});
+      }
+    }
+
+    // --- RULE 7: D-exponent pore pressure ---
+    if(p.rop !== null && p.wob !== null && p.rpm !== null && WellState.bitSize){
+      const bitD = parseFloat(WellState.bitSize) || 215.9;
+      const dexp = calcDexp(p.rop, p.wob, p.rpm, bitD);
+      if(dexp !== null && bl.rop && bl.wob && bl.rpm){
+        const dbl = calcDexp(bl.rop, bl.wob, bl.rpm, bitD);
+        if(dbl && (dbl - dexp) / dbl > 0.18) alerts.push({sev:'warn', title:'📉 D-экспонент снижается — признак АВПД', body:`d-exp: ${dexp.toFixed(2)} (базовый: ${dbl.toFixed(2)}). Снижение на ${Math.round((dbl-dexp)/dbl*100)}%`, rec:'Повысить плотность раствора, усилить газовый контроль'});
+      }
+    }
+
+    // --- RULE 8: Low flow rate ---
+    if(p.flow !== null){
+      const qd = ws.flowDesign;
+      if(qd && p.flow < qd * 0.82) alerts.push({sev:'warn', title:'🟡 Расход ниже проектного — вынос шлама', body:`Расход: ${p.flow} л/с | Проект: ${qd} л/с (${Math.round(p.flow/qd*100)}%)`, rec:'Проверить насосы, устранить утечки, восстановить расход'});
+    }
+
+    // --- RULE 9: High YP / gel strength — stuck pipe risk ---
+    if(p.yp !== null){
+      if(p.yp > 18) alerts.push({sev:'warn', title:'🟡 Высокое динамическое напряжение сдвига', body:`YP: ${p.yp} Па. Риск прихвата при длительных остановках.`, rec:'Обработать раствор, снизить YP до 8–15 Па'});
+    }
+
+    // --- RULE 10: Formation-specific hazards ---
+    const curDepth = p.depth ?? ws.depthCurrent;
+    ws.formations.forEach(f=>{
+      if(curDepth >= f.f && curDepth <= f.t && f.riskLevel==='high'){
+        const alreadyFormAlert = alerts.some(a=>a.title.includes('зона'));
+        if(!alreadyFormAlert) alerts.push({sev:'info', title:`🗺 Опасная зона: ${f.name}`, body:`Текущий забой ${curDepth} м входит в зону повышенного риска: ${f.risks.join(', ')}`, rec:'Усиленный мониторинг параметров, выполнение расхаживания'});
+      }
+    });
+
+    // Sort: crit first, then warn, then info
+    const ord = {crit:0, warn:1, info:2, ok:3};
+    alerts.sort((a,b)=>ord[a.sev]-ord[b.sev]);
+    return alerts;
+  }
+};
+
+function calcDexp(rop, wob, rpm, bitD){
+  if(!rop||!wob||!rpm||!bitD||rop<=0) return null;
+  // d = log(ROP/RPM) / log(12 * WOB / (1000 * bitD))
+  const num = Math.log10(rop / rpm);
+  const den = Math.log10(12 * wob / bitD);
+  if(!den) return null;
+  return num / den;
+}
+
+// ============================================================
+// RENDER ALERTS
+// ============================================================
+function renderAlerts(alerts){
+  const el = document.getElementById('alerts-list');
+  const cnt = document.getElementById('alert-cnt');
+  const critN = alerts.filter(a=>a.sev==='crit').length;
+  const warnN = alerts.filter(a=>a.sev==='warn').length;
+
+  if(!alerts.length){
+    el.innerHTML='<div class="no-alerts">✅ Алертов нет.<br>Параметры в норме.</div>';
+    cnt.textContent='0'; cnt.className='alert-count green'; return;
+  }
+  cnt.textContent = alerts.length;
+  cnt.className = 'alert-count' + (critN>0?' ':(warnN>0?' yellow':' green'));
+  if(critN>0) cnt.className='alert-count';
+
+  const now = new Date();
+  const timeStr = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
+
+  el.innerHTML = alerts.map(a=>`
+    <div class="alert-item ${a.sev}">
+      <div class="alert-sev">${a.sev==='crit'?'КРИТИЧЕСКИЙ':a.sev==='warn'?'ПРЕДУПРЕЖДЕНИЕ':'ИНФОРМАЦИЯ'}</div>
+      <div class="alert-title">${a.title}</div>
+      <div class="alert-body">${a.body}</div>
+      ${a.rec?`<div class="alert-rec">▶ ${a.rec}</div>`:''}
+      <div class="alert-time">${timeStr}</div>
+    </div>`).join('');
+
+  // Blink rig dot
+  const dot = document.getElementById('rig-dot');
+  if(critN>0){ dot.className='dot red'; }
+  else if(warnN>0){ dot.className='dot yellow'; }
+  else { dot.className='dot green'; }
+}
+
+// ============================================================
+// SPARKLINE CHART
+// ============================================================
+let activeChartParam = 'rop';
+function setChartTab(el, param){
+  document.querySelectorAll('.ctab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  activeChartParam = param;
+  drawSparkline(param);
+}
+function drawSparkline(param){
+  const canvas = document.getElementById('sparkline');
+  const ctx2 = canvas.getContext('2d');
+  const W = canvas.offsetWidth||600, H = canvas.offsetHeight||80;
+  canvas.width = W; canvas.height = H;
+  ctx2.clearRect(0,0,W,H);
+
+  const data = WellState.history.map(h=>h[param]).filter(v=>v!==null);
+  document.getElementById('spark-meta').textContent =
+    data.length ? `${data.length} замеров · последнее: ${data[data.length-1]}` : 'Нет данных';
+  if(data.length < 2) return;
+
+  const min = Math.min(...data), max = Math.max(...data);
+  const rng = max-min||1;
+  const pts = data.map((v,i)=>({
+    x: (i/(data.length-1))*W,
+    y: H - ((v-min)/rng)*(H-16) - 8
+  }));
+
+  // Fill
+  ctx2.beginPath();
+  ctx2.moveTo(pts[0].x, H);
+  pts.forEach(p=>ctx2.lineTo(p.x,p.y));
+  ctx2.lineTo(pts[pts.length-1].x, H);
+  ctx2.closePath();
+  const grad = ctx2.createLinearGradient(0,0,0,H);
+  grad.addColorStop(0,'rgba(59,130,246,0.3)');
+  grad.addColorStop(1,'rgba(59,130,246,0)');
+  ctx2.fillStyle=grad; ctx2.fill();
+
+  // Line
+  ctx2.beginPath();
+  pts.forEach((p,i)=>i===0?ctx2.moveTo(p.x,p.y):ctx2.lineTo(p.x,p.y));
+  ctx2.strokeStyle='#3B82F6'; ctx2.lineWidth=2; ctx2.stroke();
+
+  // Last dot
+  const lp = pts[pts.length-1];
+  ctx2.beginPath(); ctx2.arc(lp.x,lp.y,4,0,Math.PI*2);
+  ctx2.fillStyle='#60A5FA'; ctx2.fill();
+}
+
+// ============================================================
+// CLOCK
+// ============================================================
+function startCockpitClock(){
+  function tick(){
+    const elapsed = Math.floor((Date.now() - WellState.startTime)/1000);
+    const h = Math.floor(elapsed/3600).toString().padStart(2,'0');
+    const m = Math.floor((elapsed%3600)/60).toString().padStart(2,'0');
+    document.getElementById('hdr-time').textContent = h+':'+m;
+  }
+  tick();
+  setInterval(tick, 30000);
+}
+
+// ============================================================
+// TOAST
+// ============================================================
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2500);
+}
+
+// ============================================================
+// UTILS
+// ============================================================
+function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
+
+// Param input change highlight
+document.querySelectorAll('.param-inp').forEach(inp=>{
+  inp.addEventListener('input', function(){ this.classList.toggle('changed', this.value!==''); });
+});
+
+// Init
+showScreen('onboard');
+</script>
+</body>
+</html>

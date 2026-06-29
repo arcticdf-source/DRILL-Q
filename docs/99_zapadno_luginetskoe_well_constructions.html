@@ -1,0 +1,877 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>99 · Западно-Лугинецкое · Конструкция скважин</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap");
+
+    :root {
+      --bg-0:#061018;
+      --bg-1:#101f30;
+      --bg-2:#1a3040;
+      --panel:rgba(10,19,30,.86);
+      --panel-soft:rgba(255,255,255,.035);
+      --line:rgba(227,238,255,.14);
+      --line-soft:rgba(227,238,255,.08);
+      --text:#edf5ff;
+      --muted:#a8bdd2;
+      --cyan:#22d7b4;
+      --amber:#f8bd5f;
+      --blue:#8db4ff;
+      --violet:#c6a6ff;
+      --green:#7de0a7;
+      --coral:#ff9687;
+      --rose:#ff8ca8;
+      --shadow:0 24px 56px rgba(0,0,0,.42);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      font-family: "Manrope", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(960px 480px at 0% -10%, rgba(34,215,180,.18), transparent),
+        radial-gradient(860px 460px at 100% 0%, rgba(141,180,255,.16), transparent),
+        radial-gradient(640px 340px at 50% 0%, rgba(248,189,95,.1), transparent),
+        linear-gradient(145deg, var(--bg-0), var(--bg-1) 46%, var(--bg-2));
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(to right, rgba(255,255,255,.02) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,.02) 1px, transparent 1px);
+      background-size: 38px 38px;
+      mask-image: radial-gradient(circle at 50% 20%, rgba(0,0,0,.96), transparent 72%);
+    }
+
+    .wrap {
+      position: relative;
+      z-index: 1;
+      width: min(1380px, 94vw);
+      margin: 0 auto;
+      padding: 24px 0 64px;
+    }
+
+    .top,
+    .hero,
+    .section,
+    .section-shell {
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+    }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 12px 16px;
+      border-radius: 16px;
+      background: rgba(8,15,24,.66);
+      position: sticky;
+      top: 12px;
+      z-index: 20;
+      backdrop-filter: blur(10px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: "Oswald", sans-serif;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      font-size: 20px;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 35% 35%, #d6fff7, var(--cyan));
+      box-shadow: 0 0 18px rgba(34,215,180,.45);
+    }
+
+    .nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .nav a {
+      text-decoration: none;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      font-weight: 800;
+      border-radius: 10px;
+      padding: 8px 12px;
+      color: #082922;
+      background: linear-gradient(130deg, #a0f9eb, #22d7b4);
+      border: 1px solid rgba(34,215,180,.75);
+    }
+
+    .hero,
+    .section,
+    .section-shell {
+      margin-top: 18px;
+      border-radius: 24px;
+      background: var(--panel);
+      padding: 22px;
+    }
+
+    .hero {
+      background:
+        radial-gradient(520px 260px at 0% 0%, rgba(34,215,180,.12), transparent),
+        radial-gradient(560px 280px at 100% 0%, rgba(141,180,255,.14), transparent),
+        var(--panel);
+    }
+
+    .eyebrow,
+    .tag,
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line-soft);
+      background: rgba(255,255,255,.04);
+      color: #d8e8f8;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .hero h1,
+    h2,
+    h3,
+    h4 {
+      margin: 0;
+      font-family: "Oswald", sans-serif;
+      letter-spacing: -.01em;
+    }
+
+    .hero h1 {
+      margin: 14px 0 10px;
+      font-size: clamp(34px, 5vw, 60px);
+      line-height: .95;
+      max-width: 1080px;
+    }
+
+    .hero p,
+    .section p,
+    .metric p,
+    .card p,
+    .note,
+    td,
+    li {
+      color: #c9d9eb;
+      line-height: 1.65;
+      font-size: 14px;
+      margin: 0;
+    }
+
+    .hero-grid,
+    .overview-grid,
+    .metrics,
+    .graphic-grid,
+    .cards,
+    .table-grid,
+    .pilot-grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .hero-grid {
+      margin-top: 18px;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .hero-stat,
+    .metric,
+    .callout,
+    .card,
+    .table-box,
+    .schematic-shell,
+    .legend-shell,
+    .pilot-card {
+      border: 1px solid var(--line-soft);
+      border-radius: 18px;
+      background: var(--panel-soft);
+      padding: 16px;
+    }
+
+    .hero-stat strong,
+    .metric strong {
+      display: block;
+      font-size: 26px;
+      line-height: 1;
+    }
+
+    .hero-stat span,
+    .metric span {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .overview-grid {
+      margin-top: 16px;
+      grid-template-columns: 1.15fr .85fr;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .section-head h2 {
+      font-size: 28px;
+    }
+
+    .metrics {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .cards,
+    .pilot-grid {
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+
+    .card h3,
+    .pilot-card h3,
+    .table-box h3,
+    .schematic-shell h3,
+    .legend-shell h3 {
+      font-size: 22px;
+      margin-bottom: 10px;
+    }
+
+    .graphic-grid {
+      grid-template-columns: minmax(580px, 1.04fr) minmax(280px, .96fr);
+      align-items: start;
+    }
+
+    .schematic-shell svg,
+    .pilot-chart svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .legend-list,
+    .callout-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .legend-card {
+      border: 1px solid var(--line-soft);
+      border-radius: 16px;
+      padding: 14px;
+      background: rgba(255,255,255,.025);
+    }
+
+    .legend-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .legend-swatch {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      box-shadow: 0 0 0 4px currentColor;
+    }
+
+    .legend-meta,
+    .micro {
+      display: block;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .caption,
+    .note {
+      margin-top: 12px;
+      font-size: 13px;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border-radius: 16px;
+      border: 1px solid var(--line-soft);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 760px;
+    }
+
+    th,
+    td {
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      color: #eef6ff;
+      font-size: 12px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      background: rgba(255,255,255,.04);
+    }
+
+    .table-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .pilot-card {
+      position: relative;
+      overflow: hidden;
+      background:
+        linear-gradient(145deg, rgba(255,255,255,.05), rgba(255,255,255,.02)),
+        rgba(255,255,255,.02);
+    }
+
+    .pilot-card::after {
+      content: "";
+      position: absolute;
+      inset: auto -40px -60px auto;
+      width: 120px;
+      height: 120px;
+      border-radius: 999px;
+      background: radial-gradient(circle, rgba(255,255,255,.16), transparent 70%);
+      opacity: .35;
+      pointer-events: none;
+    }
+
+    .pilot-depth {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 10px;
+      font-size: 13px;
+      color: #d7e5f7;
+    }
+
+    .pilot-bar {
+      margin-top: 10px;
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.06);
+      overflow: hidden;
+    }
+
+    .pilot-fill {
+      height: 100%;
+      border-radius: inherit;
+    }
+
+    .footer {
+      margin-top: 16px;
+      font-size: 12px;
+      color: #8ea2bc;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    @media (max-width: 1120px) {
+      .hero-grid,
+      .metrics,
+      .graphic-grid,
+      .table-grid,
+      .overview-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 980px) {
+      .top {
+        position: static;
+      }
+
+      .hero-grid,
+      .metrics,
+      .cards,
+      .pilot-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+  <main class="wrap">
+    <header class="top">
+      <a class="brand" href="97_zapadno_luginetskoe_project_dashboard.html"><span class="dot" aria-hidden="true"></span><span>Западно-Лугинецкое · Конструкция скважин</span></a>
+      <nav class="nav">
+        <a href="97_zapadno_luginetskoe_project_dashboard.html">К дашборду</a>
+        <a href="98_zapadno_luginetskoe_general_info.html">Общая информация</a>
+        <a href="56_fields_projects_dashboard.html">Все месторождения</a>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <span class="eyebrow">Раздел 2 · Конструкция скважин</span>
+      <h1>Скв. 101ПО · Колонны, пилотные стволы и графическая схема конструкции</h1>
+      <p>Модуль собран по предоставленному скрину с таблицей конструкции. Внутри показаны основные обсадные секции, пилотный кластер, точки спуска по вертикали и по стволу, а также отдельное графическое изображение, чтобы конструкция считывалась сразу, как в вашем примере.</p>
+      <div class="hero-grid">
+        <div class="hero-stat"><strong>6</strong><span>ключевых секций</span></div>
+        <div class="hero-stat"><strong>3326 м</strong><span>макс. глубина по стволу</span></div>
+        <div class="hero-stat"><strong>3+1</strong><span>пилотные стволы</span></div>
+        <div class="hero-stat"><strong>3141 м</strong><span>ТОЦ по хвостовику</span></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>Что важно сразу</h2>
+          <p>Верх конструкции закрывается направлением и кондуктором до устья. Ниже работает пилотный кластер, после чего основной ствол закрепляется эксплуатационной колонной и завершается хвостовиком с собственным уровнем подъема цемента.</p>
+        </div>
+        <span class="tag">Источник: ручной перенос из скрина</span>
+      </div>
+      <div class="overview-grid">
+        <div class="callout">
+          <h3 style="font-size:22px;margin-bottom:10px">Инженерная логика конструкции</h3>
+          <p>Конструкция сочетает классический верхний блок с многовариантной пилотной частью. Для пилотных стволов в источнике отдельно указан сценарий установки ликвидационного и опорного цементных мостов, а основной ствол далее уходит в эксплуатационную колонну 178 x 9,2 и хвостовик 114 x 7,4.</p>
+        </div>
+        <div class="callout-list">
+          <div class="callout">
+            <h3 style="font-size:20px;margin-bottom:8px">Вертикаль / ствол</h3>
+            <p>В таблице сохранены обе глубины: по вертикали и по стволу. Это вынесено в легенду и таблицу, чтобы сразу видеть, где геометрия начинает расходиться.</p>
+          </div>
+          <div class="callout">
+            <h3 style="font-size:20px;margin-bottom:8px">Пилот №4</h3>
+            <p>Четвертый пилотный ствол в источнике обозначен как дополнительный и выполняется только по согласованию с Генеральным Заказчиком.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>Паспорт конструкции</h2>
+          <p>Краткие карточки по каждой секции конструкции, чтобы быстро читать диаметр, глубину спуска и сценарий цементирования.</p>
+        </div>
+      </div>
+      <div class="cards" id="sectionCards"></div>
+    </section>
+
+    <section class="section-shell">
+      <div class="section-head">
+        <div>
+          <h2>Графическая схема конструкции</h2>
+          <p>Слева показана схема колонн и пилотного блока, справа вынесены пояснения по секциям и цементированию.</p>
+        </div>
+      </div>
+      <div class="graphic-grid">
+        <div class="schematic-shell">
+          <h3>Схематический рисунок</h3>
+          <div id="constructionSchematic"></div>
+          <div class="caption">Схема построена по данным из скрина: направление, кондуктор и эксплуатационная колонна показаны как основные обсадные секции, хвостовик выделен отдельно, а пилотные стволы сведены в единый визуальный кластер с отдельными глубинами.</div>
+        </div>
+        <div class="legend-shell">
+          <h3>Легенда и пояснения</h3>
+          <div class="legend-list" id="legendList"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>Пилотный блок</h2>
+          <p>Отдельно вынесены пилотные стволы, чтобы видеть разброс глубин и сценарий по каждому ответвлению.</p>
+        </div>
+      </div>
+      <div class="pilot-grid" id="pilotCards"></div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>Таблица исходных данных</h2>
+          <p>Таблица повторяет логику исходного скрина: название колонны, диаметр, глубина спуска по вертикали/по стволу и высота подъема цемента.</p>
+        </div>
+      </div>
+      <div class="table-grid">
+        <div class="table-box">
+          <h3>Исходная таблица конструкции</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Наименование</th>
+                  <th>Диаметр колонны, мм</th>
+                  <th>Глубина спуска, м</th>
+                  <th>Подъем цемента</th>
+                </tr>
+              </thead>
+              <tbody id="constructionTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="table-box">
+          <h3>Ключевые замечания</h3>
+          <p>По пилотным стволам в исходнике не указан наружный диаметр обсадной колонны, поэтому они интерпретированы как технологические ветви с отдельным блоком ликвидационного и опорного цементных мостов. Для основной конструкции ключевые закрепленные элементы - направление 324, кондуктор 245, эксплуатационная колонна 178 и хвостовик 114 мм.</p>
+          <div class="note">В этом модуле намеренно сохранена исходная терминология из скрина: «до устья», «установка ликвидационного и опорного цементных мостов», «отбор керна». Если пришлете следующую таблицу или схему, можно сразу развивать модуль дальше в более детальный инженерный паспорт.</div>
+        </div>
+      </div>
+    </section>
+
+    <p class="footer">Западно-Лугинецкое · Doc 99</p>
+  </main>
+
+  <script>
+    const casingSections = [
+      {
+        name: "Направление",
+        diameter: 324,
+        wall: "324 x 9,5",
+        vertical: 60,
+        measured: 60,
+        cement: "До устья",
+        color: "#f8bd5f",
+        kind: "casing",
+        note: "Верхний опорный блок для стабилизации устья и запуска верхнего каркаса конструкции."
+      },
+      {
+        name: "Кондуктор",
+        diameter: 245,
+        wall: "245 x 8,9",
+        vertical: 970,
+        measured: 970,
+        cement: "До устья",
+        color: "#64d7bf",
+        kind: "casing",
+        note: "Основная верхняя колонна, которая держит верхний интервал до точки раскрытия пилотного блока."
+      },
+      {
+        name: "Эксплуатационная колонна",
+        diameter: 178,
+        wall: "178 x 9,2",
+        vertical: 2910,
+        measured: 3216,
+        cement: "До устья",
+        color: "#8db4ff",
+        kind: "casing",
+        note: "Основной ствол после пилотного этапа. В источнике отмечен отбор керна 80 м."
+      },
+      {
+        name: "Хвостовик",
+        diameter: 114,
+        wall: "114 x 7,4",
+        vertical: 3020,
+        measured: 3326,
+        cement: "3141 м",
+        color: "#c6a6ff",
+        kind: "liner",
+        note: "Финальный хвостовик. В источнике отмечен отбор керна 20 м и отдельный верх цемента 3141 м."
+      }
+    ];
+
+    const pilotSections = [
+      {
+        name: "Пилотный ствол №1",
+        vertical: 2540,
+        measured: 2940,
+        cement: "Ликвидационный и опорный цементные мосты",
+        color: "#ff9687",
+        optional: false
+      },
+      {
+        name: "Пилотный ствол №2",
+        vertical: 2474,
+        measured: 2996,
+        cement: "Ликвидационный и опорный цементные мосты",
+        color: "#22d7b4",
+        optional: false
+      },
+      {
+        name: "Пилотный ствол №3",
+        vertical: 2573,
+        measured: 3093,
+        cement: "Ликвидационный и опорный цементные мосты",
+        color: "#ff8ca8",
+        optional: false
+      },
+      {
+        name: "Пилотный ствол №4",
+        vertical: 2910,
+        measured: 3216,
+        cement: "Ликвидационный и опорный цементные мосты",
+        color: "#ffd36f",
+        optional: true
+      }
+    ];
+
+    const tableRows = [
+      { name: "Направление", diameter: "324x9,5", depth: "60", cement: "до устья" },
+      { name: "Кондуктор", diameter: "245x8,9", depth: "970/970", cement: "до устья" },
+      { name: "Пилотный ствол №1", diameter: "-", depth: "2540/2940", cement: "установка ликвидационного и опорного цементных мостов" },
+      { name: "Пилотный ствол №2", diameter: "-", depth: "2474/2996", cement: "установка ликвидационного и опорного цементных мостов" },
+      { name: "Пилотный ствол №3", diameter: "-", depth: "2573/3093", cement: "установка ликвидационного и опорного цементных мостов" },
+      { name: "Пилотный ствол №4 (дополнительно по согласованию)", diameter: "-", depth: "2910/3216", cement: "установка ликвидационного и опорного цементных мостов" },
+      { name: "Эксплуатационная колонна (отбор керна 80м)", diameter: "178x9,2", depth: "2910/3216", cement: "до устья" },
+      { name: "Хвостовик (отбор керна 20м)", diameter: "114x7,4", depth: "3020/3326", cement: "3141" }
+    ];
+
+    function formatNumber(value) {
+      return String(value).replace(".", ",");
+    }
+
+    function createSvg(width, height, inner) {
+      return `<svg viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg" role="img">${inner}</svg>`;
+    }
+
+    function renderSectionCards() {
+      const root = document.getElementById("sectionCards");
+      root.innerHTML = [...casingSections, ...pilotSections].map((section) => `
+        <article class="card">
+          <h3>${section.name}</h3>
+          <p>${section.note || "Пилотный ствол показан как отдельная технологическая ветвь внутри кластера пилотов."}</p>
+          <div class="micro">Глубина по вертикали: ${formatNumber(section.vertical)} м · по стволу: ${formatNumber(section.measured)} м</div>
+          <div class="micro">${section.wall ? `Диаметр: ${section.wall}` : "Диаметр обсадной секции не указан в исходнике"}</div>
+          <div class="micro">Цементирование: ${section.cement}${section.optional ? " · опция по согласованию" : ""}</div>
+        </article>
+      `).join("");
+    }
+
+    function renderLegend() {
+      const legendItems = [
+        {
+          title: "Направление",
+          text: "Колонна 324 x 9,5 до 60 м. Цементирование до устья.",
+          meta: "Верхний стартовый блок конструкции",
+          color: "#f8bd5f"
+        },
+        {
+          title: "Кондуктор",
+          text: "Колонна 245 x 8,9 до 970 м по вертикали и по стволу. Цементирование до устья.",
+          meta: "Основа верхнего крепления до пилотного узла",
+          color: "#64d7bf"
+        },
+        {
+          title: "Пилотный кластер",
+          text: "Три базовых пилотных ствола и один дополнительный по согласованию. Для каждого указан сценарий ликвидационного и опорного цементных мостов.",
+          meta: "TVD 2474-2910 м · MD 2940-3216 м",
+          color: "#ff9687"
+        },
+        {
+          title: "Эксплуатационная колонна",
+          text: "Колонна 178 x 9,2 до 2910 м по вертикали и 3216 м по стволу. Цементирование до устья.",
+          meta: "Основной ствол после пилотного этапа",
+          color: "#8db4ff"
+        },
+        {
+          title: "Хвостовик",
+          text: "Хвостовик 114 x 7,4 до 3020 м по вертикали и 3326 м по стволу. Верх цемента 3141 м.",
+          meta: "Финальный нижний интервал конструкции",
+          color: "#c6a6ff"
+        }
+      ];
+
+      document.getElementById("legendList").innerHTML = legendItems.map((item) => `
+        <article class="legend-card">
+          <div class="legend-head">
+            <span class="legend-swatch" style="background:${item.color}; color:${item.color}"></span>
+            <strong>${item.title}</strong>
+          </div>
+          <p>${item.text}</p>
+          <span class="legend-meta">${item.meta}</span>
+        </article>
+      `).join("");
+    }
+
+    function renderPilotCards() {
+      const maxDepth = Math.max(...pilotSections.map((pilot) => pilot.measured));
+      document.getElementById("pilotCards").innerHTML = pilotSections.map((pilot) => {
+        const width = (pilot.measured / maxDepth) * 100;
+        return `
+          <article class="pilot-card">
+            <h3>${pilot.name}</h3>
+            <p>${pilot.optional ? "Дополнительный сценарий по согласованию." : "Базовый пилотный сценарий в источнике."}</p>
+            <div class="pilot-depth"><span>По вертикали</span><strong>${formatNumber(pilot.vertical)} м</strong></div>
+            <div class="pilot-depth"><span>По стволу</span><strong>${formatNumber(pilot.measured)} м</strong></div>
+            <div class="pilot-depth"><span>Цементирование</span><strong style="font-size:12px;line-height:1.4;text-align:right">${pilot.cement}</strong></div>
+            <div class="pilot-bar"><div class="pilot-fill" style="width:${width}%; background:${pilot.color}"></div></div>
+          </article>
+        `;
+      }).join("");
+    }
+
+    function renderTable() {
+      document.getElementById("constructionTableBody").innerHTML = tableRows.map((row) => `
+        <tr>
+          <td>${row.name}</td>
+          <td>${row.diameter}</td>
+          <td>${row.depth}</td>
+          <td>${row.cement}</td>
+        </tr>
+      `).join("");
+    }
+
+    function renderConstructionSchematic() {
+      const width = 860;
+      const height = 1040;
+      const chartTop = 118;
+      const chartBottom = 968;
+      const chartHeight = chartBottom - chartTop;
+      const rulerX = 78;
+      const centerX = 290;
+      const labelX = 585;
+      const maxDiameter = 340;
+      const totalDepth = 3326;
+      const scaleY = (depth) => chartTop + (depth / totalDepth) * chartHeight;
+      const ticks = [0, 60, 970, 2474, 2540, 2573, 2910, 3020, 3326];
+
+      let svg = `
+        <defs>
+          <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="rgba(255,255,255,.08)" />
+            <stop offset="100%" stop-color="rgba(255,255,255,.02)" />
+          </linearGradient>
+          <pattern id="cementPattern" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+            <rect width="8" height="8" fill="rgba(248,189,95,.12)" />
+            <line x1="0" y1="0" x2="0" y2="8" stroke="rgba(248,189,95,.32)" stroke-width="2" />
+          </pattern>
+          <pattern id="linerPattern" width="10" height="10" patternUnits="userSpaceOnUse">
+            <rect width="10" height="10" fill="rgba(198,166,255,.08)" />
+            <circle cx="5" cy="5" r="1.6" fill="rgba(198,166,255,.42)" />
+          </pattern>
+          <pattern id="borePattern" width="10" height="10" patternUnits="userSpaceOnUse">
+            <rect width="10" height="10" fill="rgba(141,180,255,.03)" />
+            <circle cx="5" cy="5" r="1" fill="rgba(141,180,255,.18)" />
+          </pattern>
+        </defs>
+        <rect x="20" y="20" width="820" height="1000" rx="28" fill="url(#bg)" stroke="rgba(255,255,255,.08)" />
+        <rect x="36" y="36" width="788" height="968" rx="20" fill="rgba(255,255,255,.02)" stroke="rgba(255,255,255,.04)" />
+        <text x="42" y="58" fill="#edf5ff" font-size="25" font-family="Oswald, sans-serif">Графическая схема конструкции</text>
+        <text x="42" y="80" fill="#b8cde3" font-size="14">Скв. 101ПО · Западно-Лугинецкое</text>
+        <text x="40" y="152" fill="#76c8ff" font-size="11">Глубина, м</text>
+        <rect x="${centerX - 92}" y="${chartTop - 26}" width="184" height="${chartHeight + 16}" fill="url(#borePattern)" rx="16" opacity="0.84" />
+        <rect x="${centerX - 56}" y="88" width="112" height="22" rx="4" fill="#e6e7e8" opacity="0.96" />
+        <rect x="${centerX - 36}" y="54" width="72" height="18" rx="2" fill="#f4f5f6" opacity="0.96" />
+        <line x1="${centerX - 28}" y1="72" x2="${centerX}" y2="88" stroke="rgba(255,255,255,.5)" stroke-width="2" />
+        <line x1="${centerX + 28}" y1="72" x2="${centerX}" y2="88" stroke="rgba(255,255,255,.5)" stroke-width="2" />
+        <line x1="${centerX}" y1="${chartTop - 8}" x2="${centerX}" y2="${chartBottom}" stroke="rgba(255,255,255,.12)" stroke-width="2" stroke-dasharray="4 6" />
+      `;
+
+      ticks.forEach((depth) => {
+        const y = scaleY(depth);
+        svg += `
+          <line x1="${rulerX}" y1="${y}" x2="${centerX - 104}" y2="${y}" stroke="rgba(255,255,255,.18)" stroke-dasharray="4 6" />
+          <text x="50" y="${y + 4}" fill="#bfd3e8" font-size="12" font-weight="700">${formatNumber(depth)}</text>
+        `;
+      });
+
+      const drawCasing = (section, fromDepth, toDepth, cementTopDepth) => {
+        const top = scaleY(fromDepth);
+        const bottom = scaleY(toDepth);
+        const casingWidth = (section.diameter / maxDiameter) * 188;
+        const innerWidth = casingWidth * 0.78;
+        const casingX = centerX - casingWidth / 2;
+        const innerX = centerX - innerWidth / 2;
+        const midY = top + (bottom - top) / 2;
+
+        if (cementTopDepth === 0) {
+          svg += `<rect x="${casingX - 10}" y="${chartTop}" width="${casingWidth + 20}" height="${bottom - chartTop}" fill="url(#cementPattern)" rx="14" opacity="0.55" />`;
+        }
+
+        svg += `
+          <rect x="${casingX}" y="${top}" width="8" height="${bottom - top}" fill="${section.color}" opacity="0.96" />
+          <rect x="${casingX + casingWidth - 8}" y="${top}" width="8" height="${bottom - top}" fill="${section.color}" opacity="0.96" />
+          <rect x="${innerX}" y="${top}" width="${innerWidth}" height="${bottom - top}" fill="rgba(255,255,255,.05)" />
+          <line x1="${centerX + casingWidth / 2 + 12}" y1="${midY}" x2="${labelX - 12}" y2="${midY}" stroke="${section.color}" stroke-width="2" />
+          <text x="${labelX}" y="${midY - 8}" fill="${section.color}" font-size="14" font-weight="700">${section.name}</text>
+          <text x="${labelX}" y="${midY + 12}" fill="#d9e6f5" font-size="12">${section.wall} · ${formatNumber(section.vertical)} / ${formatNumber(section.measured)} м</text>
+        `;
+
+        if (section.kind === "liner") {
+          const cementTopY = scaleY(3141);
+          svg += `<rect x="${casingX - 10}" y="${cementTopY}" width="${casingWidth + 20}" height="${bottom - cementTopY}" fill="url(#linerPattern)" rx="14" opacity="0.78" />`;
+          svg += `<text x="${labelX}" y="${cementTopY - 10}" fill="#d7c6ff" font-size="12">ТОЦ 3141 м</text>`;
+        }
+
+        svg += `
+          <line x1="${centerX - casingWidth / 2 - 12}" y1="${bottom}" x2="${centerX + casingWidth / 2 + 12}" y2="${bottom}" stroke="${section.color}" stroke-width="5" opacity="0.96" />
+          <line x1="${centerX - casingWidth / 2 - 12}" y1="${bottom}" x2="${centerX - casingWidth / 2 - 3}" y2="${bottom - 10}" stroke="${section.color}" stroke-width="4" />
+          <line x1="${centerX + casingWidth / 2 + 12}" y1="${bottom}" x2="${centerX + casingWidth / 2 + 3}" y2="${bottom - 10}" stroke="${section.color}" stroke-width="4" />
+        `;
+      };
+
+      drawCasing(casingSections[0], 0, 60, 0);
+      drawCasing(casingSections[1], 0, 970, 0);
+      drawCasing(casingSections[2], 0, 2910, 0);
+      drawCasing(casingSections[3], 3020, 3326, 3141);
+
+      const pilotStartY = scaleY(970);
+      const pilotLabelStartY = pilotStartY + 38;
+      svg += `
+        <rect x="${centerX - 118}" y="${pilotStartY}" width="236" height="${scaleY(2910) - pilotStartY}" rx="22" fill="rgba(255,255,255,.018)" stroke="rgba(255,255,255,.05)" />
+        <text x="${centerX - 102}" y="${pilotStartY + 24}" fill="#bfd3e8" font-size="12">Пилотный кластер</text>
+      `;
+
+      const pilotLanes = [
+        { x: centerX - 44, offset: -38, section: pilotSections[0] },
+        { x: centerX - 16, offset: -12, section: pilotSections[1] },
+        { x: centerX + 16, offset: 14, section: pilotSections[2] },
+        { x: centerX + 44, offset: 40, section: pilotSections[3] }
+      ];
+
+      pilotLanes.forEach((lane, index) => {
+        const endY = scaleY(lane.section.vertical);
+        const labelY = pilotLabelStartY + index * 78;
+        svg += `
+          <line x1="${lane.x}" y1="${pilotStartY + 30}" x2="${lane.x + lane.offset}" y2="${endY}" stroke="${lane.section.color}" stroke-width="5" stroke-dasharray="8 8" stroke-linecap="round" opacity="0.95" />
+          <circle cx="${lane.x + lane.offset}" cy="${endY}" r="8" fill="${lane.section.color}" />
+          <line x1="${lane.x + lane.offset + (lane.offset > 0 ? 16 : -16)}" y1="${endY}" x2="${labelX - 12}" y2="${labelY}" stroke="${lane.section.color}" stroke-width="1.8" />
+          <text x="${labelX}" y="${labelY - 6}" fill="${lane.section.color}" font-size="13" font-weight="700">${lane.section.name}${lane.section.optional ? " · опция" : ""}</text>
+          <text x="${labelX}" y="${labelY + 12}" fill="#d9e6f5" font-size="12">${formatNumber(lane.section.vertical)} / ${formatNumber(lane.section.measured)} м · мосты</text>
+        `;
+      });
+
+      return createSvg(width, height, svg);
+    }
+
+    renderSectionCards();
+    renderLegend();
+    renderPilotCards();
+    renderTable();
+    document.getElementById("constructionSchematic").innerHTML = renderConstructionSchematic();
+  </script>
+  <script src="assets/js/global-auth-widget.js"></script>
+</body>
+</html>

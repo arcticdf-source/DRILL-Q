@@ -1,0 +1,69 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI-помощник</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@500;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/ai-assistant-chat.css" />
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+  <div class="assistant-app">
+    <aside class="assistant-sidebar">
+      <div class="assistant-sidebar__brand">
+        <div>
+          <div class="assistant-sidebar__title">AI-помощник</div>
+          <div class="assistant-sidebar__subtitle">Новый чат и история запросов</div>
+        </div>
+      </div>
+
+      <button class="assistant-sidebar__button" id="newChatBtn" type="button">+ Новый чат</button>
+
+      <section class="assistant-side-card assistant-side-card--history">
+        <h3>История</h3>
+        <div class="assistant-history" id="historyList"></div>
+      </section>
+
+      <section class="assistant-side-card assistant-side-card--compact">
+        <h3>Быстрые запросы</h3>
+        <div class="assistant-suggestions" id="starterPrompts"></div>
+      </section>
+
+      <div class="assistant-sidebar__footer" id="knowledgeStatus">Подготавливаю индексы и training-pack…</div>
+    </aside>
+
+    <main class="assistant-main">
+      <header class="assistant-main__topbar">
+        <a class="assistant-home-link" href="../index.html">На главную</a>
+      </header>
+
+      <div class="assistant-thread-wrap">
+        <div class="assistant-thread" id="threadRoot">
+          <section class="assistant-empty" id="emptyState">
+            <div class="assistant-empty__inner">
+              <h1>Над чем ты работаешь?</h1>
+              <p>Спроси про бурение, буровые растворы, гидравлику, КНБК, KPI, pilot scope, rollout или экономический эффект. Помощник отвечает кратко, по делу и без инженерной "воды".</p>
+            </div>
+          </section>
+          <div class="assistant-thread__list assistant-hidden" id="messageList"></div>
+        </div>
+
+        <div class="assistant-composer-wrap">
+          <form class="assistant-composer" id="assistantComposer">
+            <div class="assistant-composer__icon" aria-hidden="true">+</div>
+            <textarea id="assistantPrompt" placeholder="Спросите AI-помощника" autocomplete="off"></textarea>
+            <button class="assistant-composer__submit" type="submit">↑</button>
+          </form>
+          <div class="assistant-composer__hint">Enter отправляет вопрос, Shift+Enter добавляет новую строку.</div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="assets/js/assistant-training-data.js"></script>
+  <script src="assets/js/ai-assistant-chat.js"></script>
+</body>
+</html>

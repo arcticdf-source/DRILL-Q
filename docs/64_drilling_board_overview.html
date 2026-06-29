@@ -1,0 +1,108 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Drilling Board Overview | NEXUS OILFIELD AI</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap");
+    :root {
+      --bg-0: #060a11;
+      --bg-1: #101929;
+      --bg-2: #182842;
+      --text: #edf4ff;
+      --muted: #9cb0ca;
+      --cyan: #22dec0;
+      --amber: #ffbf57;
+      --violet: #a78bff;
+      --line-soft: rgba(233,240,255,.08);
+      --panel: rgba(9,15,27,.8);
+      --shadow: 0 22px 52px rgba(0,0,0,.44);
+      --radius: 18px;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      font-family: "Manrope", sans-serif;
+      color: var(--text);
+      background: radial-gradient(900px 420px at 0% -12%, rgba(34,222,192,.15), transparent), radial-gradient(760px 360px at 100% 0%, rgba(167,139,255,.14), transparent), linear-gradient(150deg, var(--bg-0), var(--bg-1) 45%, var(--bg-2));
+    }
+    .wrap { width: min(1220px, 92vw); margin: 0 auto; padding: 24px 0 60px; }
+    .topbar, .hero, .section { border: 1px solid var(--line-soft); box-shadow: var(--shadow); }
+    .topbar { display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; padding:12px 16px; border-radius:14px; background:rgba(7,12,20,.62); position:sticky; top:12px; z-index:20; }
+    .brand { display:flex; gap:10px; align-items:center; font-family:"Oswald", sans-serif; font-size:20px; text-transform:uppercase; letter-spacing:.05em; }
+    .brand-dot { width:12px; height:12px; border-radius:999px; background: radial-gradient(circle at 30% 30%, #d9fff8, var(--cyan)); }
+    .btn, .btn-ghost { text-decoration:none; border-radius:999px; padding:7px 12px; font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:.06em; }
+    .btn { color:#06241f; background: linear-gradient(135deg, #9efcef, var(--cyan)); border:1px solid rgba(34,222,192,.82); }
+    .btn-ghost { color:var(--muted); border:1px solid var(--line-soft); background:rgba(255,255,255,.03); }
+    .hero { margin-top:18px; border-radius:28px; padding:clamp(22px,3vw,38px); background:linear-gradient(145deg, rgba(34,222,192,.1), rgba(7,12,20,.92) 40%, rgba(167,139,255,.1)); }
+    .eyebrow { display:inline-flex; gap:8px; align-items:center; border-radius:999px; border:1px solid var(--line-soft); background:rgba(255,255,255,.04); padding:6px 11px; font-size:11px; text-transform:uppercase; letter-spacing:.09em; color:#cfddf0; }
+    .eyebrow::before { content:""; width:7px; height:7px; border-radius:999px; background:var(--amber); }
+    h1 { margin:14px 0 0; font-family:"Oswald", sans-serif; font-size:clamp(42px,6vw,78px); line-height:.96; text-transform:uppercase; }
+    h1 span { color:var(--cyan); }
+    .lead { margin-top:14px; max-width:860px; color:#acbed6; font-size:clamp(15px,2vw,19px); line-height:1.5; }
+    .section { margin-top:18px; border-radius:var(--radius); background:var(--panel); padding:18px; }
+    .section-head { display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:14px; }
+    .section h2 { margin:0; font-family:"Oswald", sans-serif; font-size:30px; text-transform:uppercase; letter-spacing:.04em; }
+    .tag { border-radius:999px; border:1px solid rgba(34,222,192,.3); background:rgba(34,222,192,.08); color:#97edde; padding:5px 10px; font-size:11px; text-transform:uppercase; letter-spacing:.08em; font-weight:800; }
+    .grid-2, .grid-4 { display:grid; gap:12px; }
+    .grid-2 { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .grid-4 { grid-template-columns:repeat(4,minmax(0,1fr)); }
+    .card { border:1px solid var(--line-soft); border-radius:16px; background:rgba(255,255,255,.03); padding:14px; }
+    .num { display:inline-flex; align-items:center; justify-content:center; min-width:32px; height:26px; border-radius:8px; background:rgba(255,191,87,.14); border:1px solid rgba(255,191,87,.42); color:var(--amber); font-size:12px; font-weight:800; margin-bottom:10px; }
+    .card h3 { margin:0; font-size:16px; }
+    .card p { margin:8px 0 0; font-size:13px; line-height:1.45; color:#a8bbd3; }
+    .mini-list { margin:10px 0 0; padding-left:18px; display:grid; gap:6px; font-size:13px; line-height:1.42; color:#bed0e6; }
+    .footer { margin-top:18px; font-size:12px; color:#8197b0; text-align:center; text-transform:uppercase; letter-spacing:.08em; }
+    @media (max-width: 980px) { .grid-4, .grid-2 { grid-template-columns:1fr; } .topbar { position:static; } }
+  </style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+  <main class="wrap">
+    <header class="topbar">
+      <div class="brand"><span class="brand-dot" aria-hidden="true"></span>Nexus Oilfield AI</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <a class="btn-ghost" href="63_drilling_stage_roadmap.html">Roadmap</a>
+        <a class="btn" href="37_drilling_modules.html">Модуль бурение</a>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="eyebrow">Board-level executive summary</div>
+      <h1>Drilling <span>BOARD</span><br>Overview</h1>
+      <p class="lead">Короткая управленческая страница для решения: зачем идти в цифровой контур бурения, как распределяется риск по стадиям, где появляется measurable value и в какой момент программа становится масштабируемой бизнес-моделью, а не экспериментом.</p>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>Три главных вывода</h2><span class="tag">What matters most</span></div>
+      <div class="grid-4">
+        <div class="card"><span class="num">01</span><h3>Stage 1 снижает риск</h3><p>Проектирование, baseline и quality gates нужны, чтобы пилот не начинался вслепую и не дискредитировал идею.</p></div>
+        <div class="card"><span class="num">02</span><h3>Stage 2 доказывает value</h3><p>Пилот отвечает на ключевой вопрос руководства: есть ли measurable экономический эффект в реальной операции.</p></div>
+        <div class="card"><span class="num">03</span><h3>Stage 3 делает модель масштабируемой</h3><p>Именно здесь пилот превращается в repeatable delivery с MLOps, playbook и value governance.</p></div>
+        <div class="card"><span class="num">04</span><h3>Stage 4 ускоряет, но не отменяет контроль</h3><p>Автономность работает только при policy engine, audit trail и жестких HSE-guardrails.</p></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>Инвестиционная логика по стадиям</h2><span class="tag">Capital to confidence</span></div>
+      <div class="grid-2">
+        <div class="card"><span class="num">Investment thesis</span><ul class="mini-list"><li>Сначала вложения идут в данные, baseline и процессную дисциплину.</li><li>Затем инвестиции оправдываются через pilot value proof.</li><li>После подтверждения эффекта капитал работает на масштабирование, а не на эксперименты.</li><li>Автономность финансируется только после зрелости control stack.</li></ul></div>
+        <div class="card"><span class="num">Decision lens</span><ul class="mini-list"><li>Есть ли риск-понижающий design layer?</li><li>Подтвержден ли эффект на пилоте?</li><li>Переживает ли качество масштаб?</li><li>Готовы ли guardrails для autonomy?</li></ul></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>Куда идти дальше</h2><span class="tag">Next board actions</span></div>
+      <div class="grid-2">
+        <a class="card" href="63_drilling_stage_roadmap.html" style="text-decoration:none;color:inherit"><span class="num">63</span><h3>Открыть roadmap 1-4</h3><p>Полная карта зрелости, role-based view и связь всех drilling-стадий.</p></a>
+        <a class="card" href="16_drilling_stage_2_pilot.html" style="text-decoration:none;color:inherit"><span class="num">16</span><h3>Перейти к pilot logic</h3><p>Если нужен уровень глубины ниже board-view: KPI, deliverables, cadence и operational loop пилота.</p></a>
+      </div>
+    </section>
+
+    <p class="footer">Board-level drilling overview · Doc 64</p>
+  </main>
+  <script src="assets/js/global-auth-widget.js"></script>
+</body>
+</html>

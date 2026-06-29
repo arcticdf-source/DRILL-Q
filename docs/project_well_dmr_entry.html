@@ -1,0 +1,3327 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>40 · WS2000 Site Edition</title>
+<style>
+  :root{--bg:#0b1220;--panel:#121a2b;--card:#182338;--line:#2b3954;--txt:#e6edf7;--muted:#9caecc;--a:#1ad8b5;--w:#ffbc4c;--r:#f85149;--g:#3fb950}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:radial-gradient(1200px 600px at 15% -10%,rgba(26,216,181,.15),transparent),linear-gradient(160deg,#09101d,#111b2c 50%,#16243a);color:var(--txt);min-height:100vh}
+  .app{max-width:1500px;margin:0 auto;padding:18px}
+  .top{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid var(--line);border-radius:12px;background:rgba(11,18,33,.72);padding:10px 12px;position:sticky;top:8px;z-index:20}
+  .brand{font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+  .brand span{color:var(--a)}
+  .top-actions{display:flex;gap:8px;flex-wrap:wrap}
+  .btn{border:1px solid var(--line);background:#1b2840;color:#cfe3ff;border-radius:8px;padding:7px 11px;cursor:pointer;font-weight:600}
+  .btn:hover{border-color:var(--a)}
+  .btn.main{background:linear-gradient(135deg,#8bf5e6,#1ad8b5);color:#0a1d1a;border-color:#1ad8b5}
+  .btn.tag-edit{border-color:#38608f;background:#1a2943}
+  .btn.tag-auto{border-color:#2f6a53;background:#163a31}
+  .btn.tag-edit::after,.btn.tag-auto::after{margin-left:8px;font-size:10px;font-weight:800;letter-spacing:.04em;padding:2px 6px;border-radius:999px;vertical-align:middle}
+  .btn.tag-edit::after{content:'EDIT';background:#264d7a;color:#d7eaff}
+  .btn.tag-auto::after{content:'AUTO';background:#1f5c49;color:#d4ffef}
+  .legend{display:flex;gap:8px;align-items:center;flex-wrap:wrap;color:var(--muted);font-size:12px}
+  .chip-edit,.chip-auto{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:999px;padding:3px 8px}
+  .chip-edit{background:#1a2943;border-color:#38608f;color:#d7eaff}
+  .chip-auto{background:#163a31;border-color:#2f6a53;color:#d4ffef}
+  .toggle{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:4px 8px;background:#111f34;color:#cfe3ff}
+  .layout{display:grid;grid-template-columns:280px 1fr;gap:12px;margin-top:12px}
+  .side,.work{border:1px solid var(--line);border-radius:12px;background:rgba(13,22,37,.76)}
+  .side{padding:12px;position:sticky;top:64px;height:calc(100vh - 82px);overflow:auto}
+  .work{padding:14px}
+  h1{font-size:21px;color:var(--a)}
+  .sub{margin-top:4px;color:var(--muted);font-size:13px}
+  .modules{margin-top:14px;display:grid;gap:6px}
+  .mod-btn{width:100%;text-align:left;padding:10px 10px;border-radius:8px;border:1px solid var(--line);background:#16243a;color:#d5e4fb;cursor:pointer}
+  .mod-btn:hover,.mod-btn.active{border-color:var(--a);background:#1a2b44}
+  .mod-title{font-weight:700;font-size:13px}
+  .mod-sub{font-size:11px;color:#98afcf;margin-top:2px}
+  .status{margin-top:14px;border:1px solid var(--line);border-radius:8px;background:#111a2b;padding:10px;font-size:12px}
+  .srow{display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px dotted #273b59}
+  .srow:last-child{border-bottom:none}
+  .ok{color:var(--g)} .warn{color:var(--w)} .bad{color:var(--r)}
+
+  .module{display:none}
+  .module.active{display:block}
+  .module-toolbar{display:flex;justify-content:flex-end;gap:8px;margin:0 0 12px}
+  .fluid-report-layout{display:grid;grid-template-columns:240px 1fr;gap:12px}
+  .fluid-report-list{display:grid;gap:10px}
+  .fluid-report-list table td,.fluid-report-list table th{font-size:12px}
+  .fluid-form-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:12px}
+  .fluid-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+  .fluid-tab{border:1px solid var(--line);border-radius:8px;padding:7px 10px;background:#111d31;color:#d7e6f7;font-size:12px;font-weight:700}
+  .fluid-flag-row{display:flex;gap:18px;align-items:center;justify-content:flex-end;margin-bottom:8px;flex-wrap:wrap}
+  .fluid-check{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
+  .fluid-props table input,.fluid-props table select{min-width:0}
+  h2{font-size:18px;color:var(--a);margin-bottom:10px;border-bottom:1px solid var(--line);padding-bottom:6px}
+  h3{font-size:14px;color:var(--w);margin:10px 0 6px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+  .card{border:1px solid var(--line);border-radius:10px;background:#17253b;padding:10px}
+  label{display:block;font-size:12px;color:var(--muted);margin:7px 0 4px}
+  input,select,textarea{width:100%;border:1px solid var(--line);border-radius:6px;background:#0c1526;color:var(--txt);padding:7px 8px;font-size:13px}
+  input.ro{background:#0f2135;border-color:#2c4b73;color:#9ee9d7;font-weight:700}
+  input.ro.fail{border-color:#f85149;background:#3a1418;color:#ffd7d5;box-shadow:0 0 0 2px rgba(248,81,73,.22)}
+  textarea{min-height:70px;resize:vertical}
+  .row{display:flex;gap:8px;align-items:center}
+  .row>*{flex:1}
+  table{width:100%;border-collapse:collapse;margin-top:7px}
+  th,td{border:1px solid var(--line);padding:6px;font-size:12px;vertical-align:top}
+  th{background:#111d31;color:var(--a)}
+  .small{font-size:11px;color:var(--muted)}
+  .out{margin-top:10px;border:1px solid #20436b;background:#0a1a2e;border-radius:8px;padding:8px}
+  .orow{display:flex;justify-content:space-between;border-bottom:1px dotted #1f3d61;padding:3px 0;font-size:12px}
+  .orow:last-child{border-bottom:none}
+  .mono{font-family:Consolas,monospace;color:var(--a);font-weight:700}
+  .hyd-screen{display:grid;gap:12px}
+  .hyd-pumps table td,.hyd-pumps table th,.hyd-panel table td,.hyd-panel table th{font-size:12px}
+  .hyd-panels{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;align-items:start}
+  .hyd-panel{min-height:100%}
+  .hyd-panel h3{font-style:italic}
+  .hyd-note{border:1px solid #746a2a;background:linear-gradient(180deg,rgba(255,236,140,.16),rgba(255,196,87,.08));color:#ffe9a8}
+  .time-breakdown-grid{display:grid;grid-template-columns:1fr 1fr 320px;gap:12px;align-items:start}
+  .time-breakdown-list{display:grid;gap:8px}
+  .time-breakdown-row{display:grid;grid-template-columns:1fr 110px;gap:10px;align-items:center}
+  .time-breakdown-row label{margin:0}
+  .time-breakdown-screen .small{line-height:1.45}
+  .table-wrap{width:100%;overflow-x:auto}
+  .inventory-table{table-layout:auto;min-width:1320px}
+  .inventory-table th:nth-child(1),.inventory-table td:nth-child(1){min-width:210px}
+  .inventory-table th:nth-child(2),.inventory-table td:nth-child(2){min-width:120px}
+  .inventory-table th:nth-child(3),.inventory-table td:nth-child(3){min-width:110px}
+  .inventory-table th:nth-child(4),.inventory-table td:nth-child(4){min-width:110px}
+  .inventory-table th:nth-child(5),.inventory-table td:nth-child(5){min-width:120px}
+  .inventory-table th:nth-child(6),.inventory-table td:nth-child(6){min-width:120px}
+  .inventory-table th:nth-child(7),.inventory-table td:nth-child(7){min-width:110px}
+  .inventory-table th:nth-child(8),.inventory-table td:nth-child(8){min-width:110px}
+  .inventory-table th:nth-child(9),.inventory-table td:nth-child(9){min-width:120px}
+  .inventory-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:12px}
+  .inventory-summary label{margin-top:0}
+  .additional-cost-table{table-layout:auto;min-width:1180px}
+  .additional-cost-table th:nth-child(1),.additional-cost-table td:nth-child(1){min-width:240px}
+  .additional-cost-table th:nth-child(2),.additional-cost-table td:nth-child(2){min-width:160px}
+  .additional-cost-table th:nth-child(3),.additional-cost-table td:nth-child(3){min-width:90px}
+  .additional-cost-table th:nth-child(4),.additional-cost-table td:nth-child(4){min-width:100px}
+  .additional-cost-table th:nth-child(5),.additional-cost-table td:nth-child(5){min-width:130px}
+  .additional-cost-table th:nth-child(6),.additional-cost-table td:nth-child(6){min-width:130px}
+  .additional-cost-table th:nth-child(7),.additional-cost-table td:nth-child(7){min-width:190px}
+  .product-catalog-card{width:100%}
+  .product-catalog-table{table-layout:auto;min-width:1240px}
+  .product-catalog-table th:nth-child(1),.product-catalog-table td:nth-child(1){min-width:190px}
+  .product-catalog-table th:nth-child(2),.product-catalog-table td:nth-child(2){min-width:230px}
+  .product-catalog-table th:nth-child(3),.product-catalog-table td:nth-child(3){min-width:70px}
+  .product-catalog-table th:nth-child(4),.product-catalog-table td:nth-child(4){min-width:70px}
+  .product-catalog-table th:nth-child(5),.product-catalog-table td:nth-child(5){min-width:120px}
+  .product-catalog-table th:nth-child(6),.product-catalog-table td:nth-child(6){min-width:130px}
+  .product-catalog-table th:nth-child(7),.product-catalog-table td:nth-child(7){min-width:130px}
+  .product-catalog-table th:nth-child(8),.product-catalog-table td:nth-child(8){min-width:130px}
+  .product-catalog-table input,.product-catalog-table select{min-width:0;white-space:normal}
+  .pit-visual-section{margin-top:12px}
+  .pit-visual-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:12px}
+  .pit-visual-summary label{margin-top:0}
+  .pit-visual-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;align-items:end}
+  .pit-visual-card{border:1px solid #28486d;border-radius:10px;background:linear-gradient(180deg,#14233a,#0f1b2d);padding:10px}
+  .pit-visual-head{display:flex;justify-content:space-between;gap:8px;align-items:flex-start;margin-bottom:8px}
+  .pit-visual-name{font-weight:700;color:#d9ebff}
+  .pit-visual-capacity{font-size:12px;white-space:nowrap}
+  .pit-visual-tank-wrap{display:flex;justify-content:center;align-items:flex-end;min-height:150px;padding:10px 0 4px}
+  .pit-visual-tank{position:relative;width:calc(72% + 28% * var(--pit-scale,1));height:calc(90px + 50px * var(--pit-scale,1));border:2px solid #4f6f9c;border-radius:8px 8px 10px 10px;background:linear-gradient(180deg,rgba(125,156,203,.06),rgba(18,31,48,.7));overflow:hidden;box-shadow:inset 0 0 0 1px rgba(255,255,255,.04)}
+  .pit-visual-fill{position:absolute;left:0;right:0;bottom:0;height:var(--pit-fill,0%);background:linear-gradient(180deg,rgba(26,216,181,.92),rgba(10,132,112,.94));border-top:1px solid rgba(220,255,247,.35);transition:height .2s ease}
+  .pit-visual-level{position:absolute;left:0;right:0;bottom:8px;text-align:center;font-size:20px;font-weight:800;color:#dffcf6;text-shadow:0 1px 2px rgba(0,0,0,.45)}
+  .pit-visual-meta{display:flex;justify-content:space-between;gap:8px;margin-top:8px;padding-top:8px;border-top:1px dashed #2b3954;font-size:11px;color:var(--muted)}
+  .pit-visual-over{color:var(--r)}
+  .mud-report-workspace{display:grid;gap:12px}
+  .mud-report-stat-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}
+  .mud-report-stat-grid label{margin-top:0}
+  .mud-report-preview-card{padding:12px}
+  .mud-report-preview{min-height:240px;border:1px dashed #355278;border-radius:12px;background:#0d1627;padding:12px}
+  .mud-report-placeholder{font-size:12px;color:var(--muted);line-height:1.6}
+  .mud-report-sheet{background:#fff;color:#152132;border-radius:12px;padding:18px 20px;box-shadow:0 18px 48px rgba(3,9,17,.28)}
+  .mud-report-header{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;border-bottom:2px solid #1b3550;padding-bottom:12px;margin-bottom:12px}
+  .mud-report-brand{font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#47698a}
+  .mud-report-title{font-size:26px;line-height:1.1;font-weight:800;color:#10243a;margin-top:4px}
+  .mud-report-subtitle{font-size:12px;color:#5e7084;margin-top:6px}
+  .mud-report-badge{min-width:170px;border:1px solid #c9d7e6;border-radius:10px;background:#f4f8fc;padding:10px 12px;text-align:right}
+  .mud-report-badge-label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#70859a}
+  .mud-report-badge-value{font-size:24px;font-weight:800;color:#17314b;margin-top:4px}
+  .mud-report-badge-note{font-size:11px;color:#5f7387;margin-top:4px}
+  .mud-report-topline{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:12px}
+  .mud-report-kpi{border:1px solid #d9e3ed;border-radius:10px;background:#f7fafc;padding:10px 12px}
+  .mud-report-kpi-label{display:block;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#74879a}
+  .mud-report-kpi-value{display:block;font-size:18px;font-weight:800;color:#13283f;margin-top:6px}
+  .mud-report-meta{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:12px}
+  .mud-report-meta-card{border:1px solid #d9e3ed;border-radius:10px;padding:10px 12px;background:#fff}
+  .mud-report-meta-title{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#70859a;margin-bottom:8px}
+  .mud-report-meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 12px}
+  .mud-report-meta-item span{display:block;font-size:10px;color:#6e8095;text-transform:uppercase;letter-spacing:.08em}
+  .mud-report-meta-item strong{display:block;font-size:13px;color:#13283f;margin-top:4px;word-break:break-word}
+  .mud-report-section{margin-top:14px}
+  .mud-report-section-title{font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#193651;border-top:1px solid #d9e3ed;border-bottom:1px solid #d9e3ed;background:#f5f8fb;padding:8px 10px}
+  .mud-report-section-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:12px;margin-top:10px}
+  .mud-report-table{width:100%;border-collapse:collapse;margin-top:10px}
+  .mud-report-table th,.mud-report-table td{border:1px solid #d4dee8;padding:6px 7px;font-size:11px;color:#12283f;vertical-align:top}
+  .mud-report-table th{background:#eaf1f8;color:#17314b;font-weight:800}
+  .mud-report-note-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
+  .mud-report-note{border:1px solid #d8e2ec;border-radius:10px;background:#fbfdff;padding:10px 12px}
+  .mud-report-note h4{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#6e8297;margin-bottom:8px}
+  .mud-report-note p{font-size:12px;line-height:1.55;color:#21364d;white-space:pre-wrap}
+  .mud-report-empty{color:#7f91a5;font-style:italic}
+  @media print{
+    body{background:#fff}
+    .top,.legend,.side,.module-toolbar,.btn,.mud-report-preview-card>h3{display:none !important}
+    .layout{display:block}
+    .work,.module,.module.active{display:block !important;border:none;background:#fff;padding:0}
+    .card{border:none;background:#fff;padding:0}
+    #m_mud .mud-report-preview{border:none;background:#fff;padding:0;min-height:auto}
+    #m_mud .mud-report-sheet{box-shadow:none;padding:0;border-radius:0}
+  }
+
+  @media (max-width:1100px){.layout{grid-template-columns:1fr}.side{position:static;height:auto}}
+  @media (max-width:1100px){.hyd-panels{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  @media (max-width:1100px){.time-breakdown-grid{grid-template-columns:1fr 1fr}}
+  @media (max-width:800px){.grid2,.grid3,.fluid-report-layout,.fluid-form-grid,.hyd-panels,.time-breakdown-grid,.pit-visual-summary,.mud-report-topline,.mud-report-meta,.mud-report-note-grid,.mud-report-section-grid,.mud-report-stat-grid{grid-template-columns:1fr}}
+</style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <div class="brand" id="brandTitle"><span>WS2000</span> Site Edition · Модуль БУРЕНИЕ</div>
+    <div class="top-actions">
+      <button class="btn" id="loadButton" onclick="loadState()">Загрузить</button>
+      <button class="btn" id="saveButton" onclick="saveState()">Сохранить</button>
+      <button class="btn" onclick="runQC()">Quality Check</button>
+      <button class="btn" onclick="openModById('data')">Data Exchange</button>
+      <button class="btn" onclick="openPrintManager()">Print Manager</button>
+      <button class="btn" onclick="exportJSON()">Export JSON</button>
+      <button class="btn main" onclick="generateReport()">Generate Report</button>
+      <button class="btn" onclick="openReportManager()">Report Manager</button>
+      <a class="btn" href="37_drilling_modules.html" style="text-decoration:none;display:inline-flex;align-items:center">Назад в БУРЕНИЕ</a>
+      <a class="btn main" href="50_tender_project_calc.html" style="background:linear-gradient(135deg,#ffe7b0,#ffbc4c);color:#222;font-weight:700;">Рассчитать проект</a>
+    </div>
+  </div>
+  <div class="legend" style="margin-top:8px">
+    <span class="chip-edit">EDIT: действия ввода/управления</span>
+    <span class="chip-auto">AUTO: проверка/расчет/генерация</span>
+    <label class="toggle"><input id="auto_calc" type="checkbox" checked onchange="toggleAutoCalc()"> Авторасчет при изменении полей</label>
+  </div>
+
+  <div class="layout">
+    <aside class="side">
+      <h1 id="workspaceTitle">Рабочий стол</h1>
+      <div class="sub" id="workspaceSub">Аналог WS2000/WELLSIGHT на сайте</div>
+      <div class="modules">
+          <button class="mod-btn" data-mod="pilot" onclick="openMod('pilot',this)"><div class="mod-title">Этап 2: Пилот</div><div class="mod-sub">Shadow mode, калибровка порогов, rollout</div></button>
+        <button class="mod-btn active" data-mod="well" onclick="openMod('well',this)"><div class="mod-title">Well Data</div><div class="mod-sub">Паспорт скважины и единицы</div></button>
+        <button class="mod-btn" data-mod="rig" onclick="openMod('rig',this)"><div class="mod-title">Оборудование бурового станка</div><div class="mod-sub">Наземное оборудование, насосы, емкости, очистка</div></button>
+        <button class="mod-btn" data-mod="design" onclick="openMod('design',this)"><div class="mod-title">Этап 1: Проектирование</div><div class="mod-sub">Perimeter, baseline, архитектура, метрики</div></button>
+        <button class="mod-btn" data-mod="casing" onclick="openMod('casing',this)"><div class="mod-title">Well Casing & Sections</div><div class="mod-sub">Обсадные и интервалы</div></button>
+        <button class="mod-btn" data-mod="lith" onclick="openMod('lith',this)"><div class="mod-title">Lithology</div><div class="mod-sub">Породы и интервалы</div></button>
+        <button class="mod-btn" data-mod="survey" onclick="openMod('survey',this)"><div class="mod-title">Well Surveys</div><div class="mod-sub">Траектория MD/TVD/Azimuth</div></button>
+        <button class="mod-btn" data-mod="testing" onclick="openMod('testing',this)"><div class="mod-title">Well Testings</div><div class="mod-sub">Испытания и результаты</div></button>
+        <button class="mod-btn" data-mod="bit" onclick="openMod('bit',this)"><div class="mod-title">Bit Records</div><div class="mod-sub">Рейсы долота, ROP</div></button>
+        <button class="mod-btn" data-mod="bha" onclick="openMod('bha',this)"><div class="mod-title">КНБК (BHA)</div><div class="mod-sub">Элементы компоновки низа бурильной колонны</div></button>
+        <button class="mod-btn" data-mod="fluid" onclick="openMod('fluid',this)"><div class="mod-title">Fluid Sets & Properties</div><div class="mod-sub">Свойства раствора</div></button>
+        <button class="mod-btn" data-mod="time" onclick="openMod('time',this)"><div class="mod-title">Time Breakdown</div><div class="mod-sub">Суточная разбивка времени и ROP</div></button>
+        <button class="mod-btn" data-mod="products" onclick="openMod('products',this)"><div class="mod-title">Product Lists</div><div class="mod-sub">Компоненты и SG</div></button>
+        <button class="mod-btn" data-mod="inv" onclick="openMod('inv',this)"><div class="mod-title">Inventory & Costing</div><div class="mod-sub">Продукты, доп. расходы и кумулятивная стоимость</div></button>
+        <button class="mod-btn" data-mod="vol" onclick="openMod('vol',this)"><div class="mod-title">Volumes / Losses & Gains</div><div class="mod-sub">Блокирующая сверка балансов</div></button>
+        <button class="mod-btn" data-mod="hyd" onclick="openMod('hyd',this)"><div class="mod-title">Hydraulics</div><div class="mod-sub">ECD, режимы, риски</div></button>
+        <button class="mod-btn" data-mod="zero" onclick="openMod('zero',this)"><div class="mod-title">Zero Defects Tracking</div><div class="mod-sub">Критичные проверки качества</div></button>
+        <button class="mod-btn" data-mod="mud" onclick="openMod('mud',this)"><div class="mod-title">Mud Reports</div><div class="mod-sub">Суточные и сводные отчеты</div></button>
+        <button class="mod-btn" data-mod="audit" onclick="openMod('audit',this)"><div class="mod-title">Post Well Audit</div><div class="mod-sub">Интервальные recap</div></button>
+        <button class="mod-btn" data-mod="data" onclick="openMod('data',this)"><div class="mod-title">Data Management</div><div class="mod-sub">Server exchange и DIMS</div></button>
+        <button class="mod-btn" data-mod="print" onclick="openMod('print',this)"><div class="mod-title">Print Manager</div><div class="mod-sub">Пакеты отчетов и печать</div></button>
+        <button class="mod-btn" data-mod="report" onclick="openMod('report',this)"><div class="mod-title">Report Manager</div><div class="mod-sub">Шаблоны и выгрузка отчетов</div></button>
+      </div>
+
+      <div class="status" id="qcPanel">
+        <div class="srow"><span>Well mandatory</span><span class="mono">PENDING</span></div>
+        <div class="srow"><span>Volume reconciliation</span><span class="mono">PENDING</span></div>
+        <div class="srow"><span>Cost consistency</span><span class="mono">PENDING</span></div>
+        <div class="srow"><span>Audit readiness</span><span class="mono">PENDING</span></div>
+      </div>
+    </aside>
+
+    <section class="work">
+      <div id="m_well" class="module active">
+        <h2>Well Data</h2>
+        <div class="grid2">
+          <div class="card">
+            <h3>Общие данные</h3>
+            <label>Well name *</label><input id="well_name" value="Well-12 North">
+            <div class="row"><div><label>API/PCN *</label><input id="well_api" value="API-78431"></div><div><label>Operator *</label><input id="well_operator" value="NEXUS OIL"></div></div>
+            <div class="row"><div><label>Contractor</label><input id="well_contractor" value="NEXUS Drilling"></div><div><label>Rig</label><input id="well_rig" value="Rig-07"></div></div>
+            <div class="row"><div><label>Well function</label><select id="well_func"><option>Exploration</option><option selected>Development</option><option>Appraisal</option><option>Workover</option></select></div><div><label>Profile</label><select id="well_profile"><option>Vertical</option><option selected>Deviated</option><option>Horizontal</option></select></div></div>
+            <div class="row"><div><label>MD (m) *</label><input id="well_md" type="number" value="3667"></div><div><label>TVD (m) *</label><input id="well_tvd" type="number" value="3600"></div></div>
+          </div>
+          <div class="card">
+            <h3>Локация и контроль доступа</h3>
+            <div class="row"><div><label>Country</label><input id="well_country" value="RU"></div><div><label>Region</label><input id="well_region" value="YNAO"></div></div>
+            <div class="row"><div><label>Field</label><input id="well_field" value="North Field"></div><div><label>Basin</label><input id="well_basin" value="West Siberia"></div></div>
+            <div class="row"><div><label>Latitude</label><input id="well_lat" value="67.25"></div><div><label>Longitude</label><input id="well_lon" value="74.91"></div></div>
+            <div class="row"><div><label>Unit system</label><select id="well_units"><option selected>Metric (SI)</option><option>API/Imperial</option></select></div><div><label>Priority level</label><select id="well_priority"><option>Level I</option><option selected>Level II</option><option>Level III</option></select></div></div>
+            <label><input id="well_tight" type="checkbox"> Tight Hole</label>
+            <div class="row"><div><label>MD/TVD check (AUTO)</label><input id="well_status_auto" class="ro" readonly value="PENDING"></div><div><label>Depth margin (AUTO, m)</label><input id="well_margin_auto" class="ro" readonly value="0.00"></div></div>
+            <button class="btn" onclick="validateWell()">Validate Well Data</button>
+            <div id="well_out" class="out" style="display:none"></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="m_rig" class="module">
+        <h2>Оборудование бурового станка</h2>
+        <div class="grid2">
+          <div class="card">
+            <h3>Наземное оборудование (м и см)</h3>
+            <div class="row"><div><label>Модель</label><input id="rig_surface_model" value="Стандартная компоновка буровой"></div><div><label>Диаметр стояка (см)</label><input id="rig_standpipe_diameter" type="number" step="0.1" value="10.2"></div></div>
+            <table>
+              <tr><th>Элемент</th><th>Экв. длина (м)</th><th>Экв. ID (см)</th></tr>
+              <tr><td>Стояк</td><td><input id="rig_eq_len1" type="number" step="0.1" value="13.7"></td><td><input id="rig_eq_id1" type="number" step="0.1" value="10.2"></td></tr>
+              <tr><td>РВД</td><td><input id="rig_eq_len2" type="number" step="0.1" value="16.8"></td><td><input id="rig_eq_id2" type="number" step="0.1" value="7.6"></td></tr>
+              <tr><td>Вертлюг</td><td><input id="rig_eq_len3" type="number" step="0.1" value="1.8"></td><td><input id="rig_eq_id3" type="number" step="0.1" value="7.6"></td></tr>
+              <tr><td>Келли / верхний привод</td><td><input id="rig_eq_len4" type="number" step="0.1" value="12.2"></td><td><input id="rig_eq_id4" type="number" step="0.1" value="10.2"></td></tr>
+            </table>
+          </div>
+          <div class="card">
+            <h3>Буровые насосы</h3>
+            <table>
+              <tr><th>№</th><th>Модель</th><th>Тип</th><th>Ход (мм)</th><th>Диаметр штока (мм)</th></tr>
+              <tr><td>1</td><td><input id="rig_pump_model1" value="OW 1700 PT"></td><td><input id="rig_pump_style1" value="Triplex"></td><td><input id="rig_pump_stroke1" type="number" value="305"></td><td><input id="rig_pump_rod1" type="number" value="76"></td></tr>
+              <tr><td>2</td><td><input id="rig_pump_model2" value="OW 1700 PT"></td><td><input id="rig_pump_style2" value="Triplex"></td><td><input id="rig_pump_stroke2" type="number" value="305"></td><td><input id="rig_pump_rod2" type="number" value="76"></td></tr>
+              <tr><td>3</td><td><input id="rig_pump_model3" value="Резерв"></td><td><input id="rig_pump_style3" value="Triplex"></td><td><input id="rig_pump_stroke3" type="number" value="305"></td><td><input id="rig_pump_rod3" type="number" value="76"></td></tr>
+            </table>
+          </div>
+        </div>
+        <div class="grid2">
+          <div class="card">
+            <h3>Емкости бурового раствора</h3>
+            <table>
+              <tr><th>№</th><th>Название емкости</th><th>Прямой замер</th><th>Форма</th><th>Объем (м3)</th></tr>
+              <tbody id="rigPitTableBody">
+                <tr><td>1</td><td><input id="rig_pit_name1" value="Песколовка"></td><td><select id="rig_pit_direct1"><option selected>Да</option><option>Нет</option></select></td><td><input id="rig_pit_shape1" value="Прямоугольная"></td><td><input id="rig_pit_vol1" type="number" step="0.1" value="18"></td></tr>
+                <tr><td>2</td><td><input id="rig_pit_name2" value="Емкость 1"></td><td><select id="rig_pit_direct2"><option selected>Да</option><option>Нет</option></select></td><td><input id="rig_pit_shape2" value="Прямоугольная"></td><td><input id="rig_pit_vol2" type="number" step="0.1" value="24"></td></tr>
+                <tr><td>3</td><td><input id="rig_pit_name3" value="Емкость 2"></td><td><select id="rig_pit_direct3"><option selected>Да</option><option>Нет</option></select></td><td><input id="rig_pit_shape3" value="Прямоугольная"></td><td><input id="rig_pit_vol3" type="number" step="0.1" value="24"></td></tr>
+                <tr><td>4</td><td><input id="rig_pit_name4" value="Резервная емкость"></td><td><select id="rig_pit_direct4"><option selected>Да</option><option>Нет</option></select></td><td><input id="rig_pit_shape4" value="Прямоугольная"></td><td><input id="rig_pit_vol4" type="number" step="0.1" value="16"></td></tr>
+              </tbody>
+            </table>
+            <div class="module-toolbar"><button class="btn" type="button" onclick="addRigPitRow()">Добавить емкость</button></div>
+          </div>
+          <div class="card">
+            <h3>Оборудование очистки твердой фазы</h3>
+            <table>
+              <tr><th>№</th><th>Тип</th><th>Производитель</th><th>Модель</th><th>Конусов, шт</th><th>Размер конусов (дюйм)</th><th>Сит, шт</th><th>Схема сит</th></tr>
+              <tbody id="rigSolidsTableBody">
+                <tr><td>1</td><td><input id="rig_sc_type1" value="Шейкер"></td><td><input id="rig_sc_make1" value="Swaco"></td><td><input id="rig_sc_model1" value="ALS II"></td><td><input id="rig_sc_cones1" type="number" value="0"></td><td><input id="rig_sc_cone_size1" type="number" value="0"></td><td><input id="rig_sc_screens1" type="number" value="2"></td><td><input id="rig_sc_layout1" value="Линейно"></td></tr>
+                <tr><td>2</td><td><input id="rig_sc_type2" value="Шейкер"></td><td><input id="rig_sc_make2" value="Thule"></td><td><input id="rig_sc_model2" value="VSM-100"></td><td><input id="rig_sc_cones2" type="number" value="0"></td><td><input id="rig_sc_cone_size2" type="number" value="0"></td><td><input id="rig_sc_screens2" type="number" value="5"></td><td><input id="rig_sc_layout2" value="Бок о бок"></td></tr>
+                <tr><td>3</td><td><input id="rig_sc_type3" value="Десендер"></td><td><input id="rig_sc_make3" value="Swaco"></td><td><input id="rig_sc_model3" value="3-12 D-Sander"></td><td><input id="rig_sc_cones3" type="number" value="3"></td><td><input id="rig_sc_cone_size3" type="number" value="12"></td><td><input id="rig_sc_screens3" type="number" value="0"></td><td><input id="rig_sc_layout3" value="Гидроциклоны"></td></tr>
+              </tbody>
+            </table>
+            <div class="module-toolbar"><button class="btn" type="button" onclick="addRigSolidControlRow()">Добавить оборудование очистки</button></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="m_casing" class="module">
+        <h2>Well Casing & Sections</h2>
+        <div class="grid2">
+          <div class="card">
+            <h3>Обсадные колонны</h3>
+            <table>
+              <tr><th>String</th><th>OD (mm)</th><th>ID (mm)</th><th>Shoe TVD (m)</th></tr>
+              <tr><td>Conductor</td><td><input id="cs_od1" type="number" value="339.72"></td><td><input id="cs_id1" type="number" value="320.42"></td><td><input id="cs_tv1" type="number" value="450"></td></tr>
+              <tr><td>Intermediate</td><td><input id="cs_od2" type="number" value="244.48"></td><td><input id="cs_id2" type="number" value="226.6"></td><td><input id="cs_tv2" type="number" value="1500"></td></tr>
+              <tr><td>Production</td><td><input id="cs_od3" type="number" value="177.8"></td><td><input id="cs_id3" type="number" value="157.08"></td><td><input id="cs_tv3" type="number" value="3549.6"></td></tr>
+              <tr><td>Liner</td><td><input id="cs_od4" type="number" value="114.3"></td><td><input id="cs_id4" type="number" value="97.18"></td><td><input id="cs_tv4" type="number" value="3644.7"></td></tr>
+            </table>
+          </div>
+          <div class="card">
+            <h3>Интервалы ствола</h3>
+            <table>
+              <tr><th>Section</th><th>From (m)</th><th>To (m)</th><th>Hole OD (mm)</th></tr>
+              <tr><td>16"</td><td><input id="sec_f1" type="number" value="0"></td><td><input id="sec_t1" type="number" value="450"></td><td><input id="sec_d1" type="number" value="406"></td></tr>
+              <tr><td>12-1/4"</td><td><input id="sec_f2" type="number" value="0"></td><td><input id="sec_t2" type="number" value="1689"></td><td><input id="sec_d2" type="number" value="311.15"></td></tr>
+              <tr><td>8-3/4"</td><td><input id="sec_f3" type="number" value="0"></td><td><input id="sec_t3" type="number" value="4391"></td><td><input id="sec_d3" type="number" value="222.3"></td></tr>
+              <tr><td>6-1/8"</td><td><input id="sec_f4" type="number" value="4356"></td><td><input id="sec_t4" type="number" value="6129.2"></td><td><input id="sec_d4" type="number" value="155.6"></td></tr>
+            </table>
+            <button class="btn" onclick="calcGeometry()">Check geometry</button>
+            <div id="casing_out" class="out" style="display:none"></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="m_lith" class="module">
+        <h2>Lithology</h2>
+        <div class="card">
+          <h3>Интервалы пород</h3>
+          <table>
+            <tr><th>From</th><th>To</th><th>Lithology</th><th>Formation</th></tr>
+            <tr><td><input id="l_f1" type="number" value="0"></td><td><input id="l_t1" type="number" value="900"></td><td><input id="l_ty1" value="Shale"></td><td><input id="l_fr1" value="Nord Fm"></td></tr>
+            <tr><td><input id="l_f2" type="number" value="900"></td><td><input id="l_t2" type="number" value="2600"></td><td><input id="l_ty2" value="Sandstone"></td><td><input id="l_fr2" value="Beta Fm"></td></tr>
+            <tr><td><input id="l_f3" type="number" value="2600"></td><td><input id="l_t3" type="number" value="3667"></td><td><input id="l_ty3" value="Interbedded"></td><td><input id="l_fr3" value="Gamma Fm"></td></tr>
+          </table>
+          <div class="small">Для Level I рекомендуется максимальная детализация литологии.</div>
+        </div>
+      </div>
+
+      <div id="m_survey" class="module">
+        <h2>Well Surveys</h2>
+        <div class="card">
+          <h3>Точки траектории</h3>
+          <table>
+            <tr><th>MD (m)</th><th>Inclination (deg)</th><th>Azimuth (deg)</th><th>TVD (m)</th></tr>
+            <tr><td><input id="sv_md1" type="number" value="1200"></td><td><input id="sv_in1" type="number" value="12"></td><td><input id="sv_az1" type="number" value="110"></td><td><input id="sv_tv1" type="number" value="1189"></td></tr>
+            <tr><td><input id="sv_md2" type="number" value="2400"></td><td><input id="sv_in2" type="number" value="22"></td><td><input id="sv_az2" type="number" value="118"></td><td><input id="sv_tv2" type="number" value="2310"></td></tr>
+            <tr><td><input id="sv_md3" type="number" value="3667"></td><td><input id="sv_in3" type="number" value="35"></td><td><input id="sv_az3" type="number" value="126"></td><td><input id="sv_tv3" type="number" value="3600"></td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div id="m_testing" class="module">
+        <h2>Well Testings</h2>
+        <div class="grid2">
+          <div class="card">
+            <h3>Испытание пласта/интервала</h3>
+            <div class="row"><div><label>Test type</label><select id="wt_type"><option selected>Flow test</option><option>Pressure build-up</option><option>Leak-off test</option></select></div><div><label>Section</label><input id="wt_section" value="8-1/2 OH"></div></div>
+            <div class="row"><div><label>From MD (m)</label><input id="wt_from" type="number" value="3520"></div><div><label>To MD (m)</label><input id="wt_to" type="number" value="3667"></div></div>
+            <div class="row"><div><label>Pressure (MPa)</label><input id="wt_p" type="number" value="27.5" step="0.1"></div><div><label>Duration (h)</label><input id="wt_h" type="number" value="3.5" step="0.1"></div></div>
+            <label>Result</label><textarea id="wt_result">Стабильное давление, утечек не выявлено.</textarea>
+            <div class="row"><div><label>Interval (AUTO, m)</label><input id="wt_int_auto" class="ro" readonly value="0.00"></div><div><label>Status (AUTO)</label><input id="wt_status_auto" class="ro" readonly value="PENDING"></div></div>
+            <button class="btn" onclick="runTestingCheck()">Validate testing</button>
+            <div id="wt_out" class="out" style="display:none"></div>
+          </div>
+          <div class="card">
+            <h3>История тестов</h3>
+            <table>
+              <tr><th>Date</th><th>Type</th><th>Status</th></tr>
+              <tr><td>2026-02-15</td><td>Leak-off</td><td>PASS</td></tr>
+              <tr><td>2026-02-19</td><td>Flow test</td><td>PASS</td></tr>
+              <tr><td>2026-02-22</td><td>Build-up</td><td>WATCH</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div id="m_bit" class="module">
+        <h2>Bit Records</h2>
+        <div class="grid2">
+          <div class="card">
+            <h3>Текущий рейс долота</h3>
+            <div class="row"><div><label>Bit type</label><input id="bit_type" value="PDC 8-1/2"></div><div><label>IADC</label><input id="bit_iadc" value="M323"></div></div>
+            <div class="row"><div><label>From MD (m)</label><input id="bit_from" type="number" value="3200"></div><div><label>To MD (m)</label><input id="bit_to" type="number" value="3667"></div></div>
+            <div class="row"><div><label>Drilling hours</label><input id="bit_h" type="number" value="26"></div><div><label>NPT hours</label><input id="bit_npt" type="number" value="4"></div></div>
+            <div class="row"><div><label>Footage (AUTO, m)</label><input id="bit_footage_auto" class="ro" readonly value="0.00"></div><div><label>ROP (AUTO, m/h)</label><input id="bit_rop_auto" class="ro" readonly value="0.00"></div></div>
+            <button class="btn" onclick="calcBit()">Calc ROP/NPT</button>
+            <div id="bit_out" class="out" style="display:none"></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="m_bha" class="module">
+        <h2>КНБК (BHA)</h2>
+        <div class="card">
+          <h3>Элементы КНБК</h3>
+          <table>
+            <tr><th>№</th><th>Тип</th><th>Длина</th><th>OD (мм)</th><th>ID (мм)</th></tr>
+            <tbody id="bhaTableBody">
+              <tr><td>1</td><td><input id="bha_type1" value="Долото PDC"></td><td><input id="bha_len1" type="number" step="0.01" value="0.35"></td><td><input id="bha_od1" type="number" step="0.01" value="222.3"></td><td><input id="bha_id1" type="number" step="0.01" value="0"></td></tr>
+              <tr><td>2</td><td><input id="bha_type2" value="РУС / ВЗД"></td><td><input id="bha_len2" type="number" step="0.01" value="10"></td><td><input id="bha_od2" type="number" step="0.01" value="172"></td><td><input id="bha_id2" type="number" step="0.01" value="0"></td></tr>
+              <tr><td>3</td><td><input id="bha_type3" value="Телесистема MWD/LWD"></td><td><input id="bha_len3" type="number" step="0.01" value="7.66"></td><td><input id="bha_od3" type="number" step="0.01" value="172"></td><td><input id="bha_id3" type="number" step="0.01" value="0"></td></tr>
+              <tr><td>4</td><td><input id="bha_type4" value="УБТ / НУБТ"></td><td><input id="bha_len4" type="number" step="0.01" value="9"></td><td><input id="bha_od4" type="number" step="0.01" value="177.8"></td><td><input id="bha_id4" type="number" step="0.01" value="57.2"></td></tr>
+            </tbody>
+          </table>
+          <div class="module-toolbar"><button class="btn" type="button" onclick="addBhaRow()">Добавить элемент КНБК</button></div>
+        </div>
+        <div class="grid2" style="margin-top:10px">
+          <div class="card">
+            <h3>Гидравлика на долоте</h3>
+            <table>
+              <tr><th>Кол-во</th><th>Диаметр насадки (мм)</th></tr>
+              <tr><td><input id="bh_qty1" type="number" value="3"></td><td><input id="bh_dia1" type="number" step="0.1" value="14.3"></td></tr>
+              <tr><td><input id="bh_qty2" type="number" value="1"></td><td><input id="bh_dia2" type="number" step="0.1" value="15.9"></td></tr>
+              <tr><td><input id="bh_qty3" type="number" value="0"></td><td><input id="bh_dia3" type="number" step="0.1" value="0"></td></tr>
+              <tr><td><input id="bh_qty4" type="number" value="0"></td><td><input id="bh_dia4" type="number" step="0.1" value="0"></td></tr>
+            </table>
+            <div class="row"><div><label>TFA (AUTO, мм²)</label><input id="bh_tfa_mm2_auto" class="ro" readonly value="0.00"></div><div><label>TFA (AUTO, см²)</label><input id="bh_tfa_cm2_auto" class="ro" readonly value="0.000"></div></div>
+            <div class="small">Формула TFA в метрической системе: $TFA = \frac{\pi}{4} \times \sum(n \times d^2)$, где $d$ в мм. Это эквивалент исходной формулы из WS для расчета суммарной площади насадок.</div>
+          </div>
+          <div class="card">
+            <h3>Очистка ствола</h3>
+            <label>Тип бурового раствора</label><input id="bh_mud_type" value="РУО / OBM">
+            <div class="row"><div><label>Плотность раствора (кг/м³)</label><input id="bh_mud_weight" type="number" step="1" value="1420"></div><div><label>Угол ствола (град)</label><input id="bh_hole_angle" type="number" step="0.1" value="35"></div></div>
+            <div class="row"><div><label>Кольцевая скорость по БТ (м/мин)</label><input id="bh_ann_vel_dp" type="number" step="0.1" value="45"></div><div><label>Кольцевая скорость по УБТ (м/мин)</label><input id="bh_ann_vel_dc" type="number" step="0.1" value="32"></div></div>
+            <label>Примечания</label><textarea id="bh_remarks">Ручной ввод параметров по очистке ствола и конфигурации насадок долота.</textarea>
+          </div>
+        </div>
+        <div class="card" style="margin-top:10px">
+          <h3>Параметры (автоматический расчет)</h3>
+          <div class="grid2">
+            <div>
+              <div class="row"><div><label>Расход насосов (AUTO, л/с)</label><input id="bh_pump_output_auto" class="ro" readonly value="0.00"></div><div><label>Давление на насосе (AUTO, МПа)</label><input id="bh_pump_pressure_auto" class="ro" readonly value="0.00"></div></div>
+              <div class="row"><div><label>Перепад давления на долоте (AUTO, МПа)</label><input id="bh_bit_pressure_drop_auto" class="ro" readonly value="0.00"></div><div><label>Скорость струи (AUTO, м/с)</label><input id="bh_jet_velocity_auto" class="ro" readonly value="0.00"></div></div>
+              <div class="row"><div><label>Удельная гидромощность (AUTO, кВт/см²)</label><input id="bh_hhsi_auto" class="ro" readonly value="0.000"></div><div><label>Сила удара струи (AUTO, Н)</label><input id="bh_impact_force_auto" class="ro" readonly value="0.00"></div></div>
+            </div>
+            <div class="out" id="bh_formula_out" style="display:block">
+              <div class="orow"><span>Формула расхода</span><span class="mono">$Q = \frac{hy\_q}{60}$</span></div>
+              <div class="orow"><span>Формула скорости струи</span><span class="mono">$V = \frac{Q}{A}$</span></div>
+              <div class="orow"><span>Перепад на долоте</span><span class="mono">$\Delta P = \frac{\rho}{2}\left(\frac{Q}{C_d A}\right)^2$</span></div>
+              <div class="orow"><span>Давление на насосе</span><span class="mono">$P_{pump}=\Delta P_{bit}+\Delta P_{ann}$</span></div>
+              <div class="orow"><span>Удельная гидромощность</span><span class="mono">$HHSI_{metric}=\frac{\Delta P_{bit}\cdot Q}{TFA}$</span></div>
+              <div class="orow"><span>Сила удара струи</span><span class="mono">$F = \rho QV$</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="m_fluid" class="module">
+        <h2>Fluid Sets & Properties</h2>
+        <div class="card fluid-props">
+          <div class="fluid-report-layout">
+            <div class="fluid-report-list">
+              <h3>Суточные отчеты по свойствам раствора</h3>
+              <table>
+                <thead><tr><th>Время</th><th>Тип раствора</th></tr></thead>
+                <tbody><tr><td><input id="fl_check_time" type="time" value="08:00"></td><td><select id="fl_type"><option>Spud Mud</option><option>РВО KCl</option><option selected>РУО Petrofree</option><option>Synthetic</option></select></td></tr></tbody>
+              </table>
+              <div class="small">Тип раствора и текущая запись задаются прямо здесь, как в журнале ежедневных измерений.</div>
+            </div>
+            <div>
+              <div class="fluid-flag-row">
+                <label class="fluid-check"><input id="fl_use_hydraulics" type="checkbox"> Use for Hydraulics</label>
+                <label class="fluid-check"><input id="fl_graph" type="checkbox"> Graph</label>
+              </div>
+              <div class="fluid-tabs">
+                <span class="fluid-tab">Общие свойства</span>
+                <span class="fluid-tab">Свойства водной основы</span>
+                <span class="fluid-tab">Дополнительные свойства</span>
+              </div>
+              <div class="fluid-form-grid">
+                <div>
+                  <div class="row"><div><label>Источник пробы</label><select id="fl_sample_source"><option selected>Flow Line</option><option>Shale Shaker</option><option>Active Pit</option><option>Trip Tank</option></select></div><div><label>Глубина замера (м)</label><input id="fl_md" type="number" value="1200"></div></div>
+                  <div class="row"><div><label>Истинная вертикальная глубина (м)</label><input id="fl_tvd" type="number" value="1200"></div><div><label>Температура потока (°C)</label><input id="fl_flow_temp" type="number" step="0.1" value="40.5"></div></div>
+                  <div class="row"><div><label>Плотность (г/см3)</label><input id="fl_rho" type="number" value="1.19" step="0.01"></div><div><label>Температура замера плотности (°C)</label><input id="fl_rho_temp" type="number" step="0.1" value="40.5"></div></div>
+                  <div class="row"><div><label>Воронка Марша (с/кварта)</label><input id="fl_funnel" type="number" value="54"></div><div><label>Пластическая вязкость PV (AUTO, cP)</label><input id="fl_pv" class="ro" readonly type="number" value="6"></div></div>
+                  <div class="row"><div><label>Yield Point (AUTO, lbs/100ft2)</label><input id="fl_yp" class="ro" readonly type="number" step="0.1" value="11"></div><div><label>Гели 10с / 10м / 30м (lbs/100ft2)</label><input id="fl_gels" value="10 / 18 / 26"></div></div>
+                  <div class="row"><div><label>Фильтрация API (мл/30 мин)</label><input id="fl_flt" type="number" value="5.5" step="0.1"></div><div><label>HTHP фильтрация (мл/30 мин)</label><input id="fl_hthp" type="number" step="0.1" value="0"></div></div>
+                  <div class="row"><div><label>Толщина корки Cake (мм)</label><input id="fl_cake" type="number" step="0.1" value="3.2"></div><div><label>Хлориды (мг/л)</label><input id="fl_cl" type="number" value="55000"></div></div>
+                  <div class="row"><div><label>Retort Oil (% об.)</label><input id="fl_retort_oil" type="number" step="0.1" value="0"></div><div><label>Retort Water (% об.)</label><input id="fl_retort_water" type="number" step="0.1" value="88.3"></div></div>
+                  <div class="row"><div><label>Песок (% об.)</label><input id="fl_sand" type="number" step="0.1" value="9.5"></div><div><label>PV limit (AUTO)</label><input id="fl_pv_lim_auto" class="ro" readonly value="0.00"></div></div>
+                  <div class="row"><div><label>PV status (AUTO)</label><input id="fl_pv_status_auto" class="ro" readonly value="PENDING"></div><div><label>Температура HTHP (°C)</label><input id="fl_hthp_temp" type="number" step="0.1" value="0"></div></div>
+                </div>
+                <div>
+                  <h3>Показания реометра</h3>
+                  <table>
+                    <tr><th>Скорость</th><th>Показание</th></tr>
+                    <tr><td>θ600</td><td><input id="fl_rheo_600" type="number" value="35"></td></tr>
+                    <tr><td>θ300</td><td><input id="fl_rheo_300" type="number" value="29"></td></tr>
+                    <tr><td>θ200</td><td><input id="fl_rheo_200" type="number" value="26"></td></tr>
+                    <tr><td>θ100</td><td><input id="fl_rheo_100" type="number" value="21"></td></tr>
+                    <tr><td>θ6</td><td><input id="fl_rheo_6" type="number" value="10"></td></tr>
+                    <tr><td>θ3</td><td><input id="fl_rheo_3" type="number" value="9"></td></tr>
+                  </table>
+                  <h3 style="margin-top:12px">Концентрация продуктов</h3>
+                  <table>
+                    <tr><th>Продукт</th><th>Конц.</th><th>Ед.</th></tr>
+                    <tr><td>Barite</td><td><input id="pc1" type="number" value="58"></td><td>kg/m3</td></tr>
+                    <tr><td>Emulsifier</td><td><input id="pc2" type="number" value="7.2"></td><td>kg/m3</td></tr>
+                    <tr><td>Lime</td><td><input id="pc3" type="number" value="3.5"></td><td>kg/m3</td></tr>
+                  </table>
+                </div>
+              </div>
+              <button class="btn" onclick="checkFluidProps()">Проверить свойства раствора</button>
+              <div id="fluid_out" class="out" style="display:none"></div>
+            </div>
+          </div>
+        </div>
+        <div class="card fluid-props" style="margin-top:12px">
+          <h3>Свойства водной основы</h3>
+          <div class="fluid-form-grid">
+            <div>
+              <div class="row"><div><label>Тип соли</label><select id="fl_wb_salt_type"><option selected>NaCl</option><option>KCl</option><option>CaCl2</option><option>Смешанная соль</option></select></div><div><label>MBT (кг/м3)</label><input id="fl_wb_mbt" type="number" step="0.1" value="20"></div></div>
+              <div class="row"><div><label>Тип измерения pH</label><select id="fl_wb_ph_measure"><option selected>Meter</option><option>Paper</option></select></div><div><label>pH</label><input id="fl_wb_ph" type="number" step="0.01" value="9.23"></div></div>
+              <div class="row"><div><label>Температура pH (°C)</label><input id="fl_wb_ph_temp" type="number" step="0.1" value="23.9"></div><div><label>Щелочность раствора Pm (мл)</label><input id="fl_wb_pm" type="number" step="0.01" value="0.45"></div></div>
+              <div class="row"><div><label>Фильтрат. щелочность PF / MF (мл)</label><input id="fl_wb_pf_mf" value="0.08 / 0.13"></div><div><label>Фильтрат. щелочность P (мл)</label><input id="fl_wb_pf" type="number" step="0.01" value="0"></div></div>
+              <div class="row"><div><label>Фильтрат. щелочность P1 / P2 (мл)</label><input id="fl_wb_p1_p2" value="0 / 0"></div><div><label>Хлориды (мг/л)</label><input id="fl_wb_cl" type="number" value="10000"></div></div>
+              <div class="row"><div><label>Общая жесткость (мг/л)</label><input id="fl_wb_hardness" type="number" value="480"></div><div><label>Содержание извести (AUTO, кг/м3)</label><input id="fl_wb_lime_auto" class="ro" readonly value="0.00"></div></div>
+              <div class="row"><div><label>Скорректированная твердая фаза (AUTO, % об.)</label><input id="fl_wb_corrected_solids_auto" class="ro" readonly value="0.00"></div><div><label>LGS (AUTO, % об.)</label><input id="fl_wb_lgs_pct_auto" class="ro" readonly value="0.00"></div></div>
+              <div class="row"><div><label>HGS (AUTO, % об.)</label><input id="fl_wb_hgs_pct_auto" class="ro" readonly value="0.00"></div><div><label>ASG (AUTO, SG)</label><input id="fl_wb_asg_auto" class="ro" readonly value="0.000"></div></div>
+            </div>
+            <div>
+              <div class="row"><div><label>SG утяжелителя</label><input id="fl_wb_weight_sg" type="number" step="0.01" value="4.20"></div><div><label>SG базового масла</label><input id="fl_wb_base_oil_sg" type="number" step="0.01" value="0.84"></div></div>
+              <div class="row"><div><label>SG выбуренной твердой фазы</label><input id="fl_wb_drilled_sg" type="number" step="0.01" value="2.60"></div><div><label>LGS (AUTO, кг/м3)</label><input id="fl_wb_lgs_mass_auto" class="ro" readonly value="0.00"></div></div>
+              <div class="row"><div><label>HGS (AUTO, кг/м3)</label><input id="fl_wb_hgs_mass_auto" class="ro" readonly value="0.00"></div><div><label>Примечание</label><input id="fl_wb_note" value="Зеленые ячейки считаются автоматически"></div></div>
+              <div class="out" id="fl_wb_out" style="display:block;margin-top:10px">
+                <div class="orow"><span>Содержание извести</span><span class="mono">из концентрации извести</span></div>
+                <div class="orow"><span>Скорректированная твердая фаза</span><span class="mono">100 - Retort Oil - Retort Water</span></div>
+                <div class="orow"><span>HGS</span><span class="mono">по концентрации утяжелителя и его SG</span></div>
+                <div class="orow"><span>LGS</span><span class="mono">Corrected Solids - HGS</span></div>
+                <div class="orow"><span>ASG</span><span class="mono">средний SG твердой фазы</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card fluid-props" style="margin-top:12px">
+          <h3>Дополнительные свойства</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Параметр</th><th>Значение</th><th>Ед. изм.</th></tr>
+              </thead>
+              <tbody id="fluidAdditionalBody">
+                <tr><td>Карбонаты [PF/MF]</td><td><input id="fl_add_carbonate_auto" class="ro" readonly value="0.000"></td><td><input id="fl_add_carbonate_unit" class="ro" readonly value="мг/л"></td></tr>
+                <tr><td>Tau 0</td><td><input id="fl_add_tau0_auto" class="ro" readonly value="0.000"></td><td><input id="fl_add_tau0_unit" class="ro" readonly value="lbs/100ft2"></td></tr>
+                <tr><td>K [HB]</td><td><input id="fl_add_k_auto" class="ro" readonly value="0.000"></td><td><input id="fl_add_k_unit" class="ro" readonly value="lb*s^n/100ft2"></td></tr>
+                <tr><td>n [HB]</td><td><input id="fl_add_n_auto" class="ro" readonly value="0.000"></td><td><input id="fl_add_n_unit" class="ro" readonly value="-"></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="module-toolbar"><button class="btn" type="button" onclick="addFluidAdditionalRow()">Добавить параметр</button></div>
+        </div>
+      </div>
+
+      <div id="m_products" class="module">
+        <h2>Product Lists</h2>
+        <div>
+          <div class="card product-catalog-card">
+            <h3>Каталог компонентов</h3>
+            <div class="table-wrap">
+              <table class="product-catalog-table">
+                <thead>
+                  <tr>
+                    <th>Продукт</th>
+                    <th>Назначение</th>
+                    <th>Ед.</th>
+                    <th>SG *</th>
+                    <th>Упаковка</th>
+                    <th>Вес упаковки</th>
+                    <th>Цена за тонну, р</th>
+                    <th>Цена за ед., р</th>
+                  </tr>
+                </thead>
+                <tbody id="productCatalogBody"></tbody>
+              </table>
+            </div>
+            <div class="row"><div><label>Missing SG (AUTO)</label><input id="pl_missing_auto" class="ro" readonly value="0"></div><div><label>Rule status (AUTO)</label><input id="pl_status_auto" class="ro" readonly value="PENDING"></div></div>
+            <button class="btn" onclick="calcProductList()">Check product list</button>
+            <div id="pl_out" class="out" style="display:none"></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="m_time" class="module">
+        <h2>Time Breakdown</h2>
+        <div class="card time-breakdown-screen">
+          <div class="time-breakdown-grid">
+            <div class="card">
+              <h3>Операции на буровой</h3>
+              <div class="time-breakdown-list">
+                <div class="time-breakdown-row"><label>Монтаж / демонтаж буровой</label><input id="tb_rig_up_down" type="number" step="0.1" value="0"></div>
+                <div class="time-breakdown-row"><label>Чистое время бурения</label><input id="tb_drilling_actual" type="number" step="0.1" value="19.5"></div>
+                <div class="time-breakdown-row"><label>Райбирование</label><input id="tb_reaming" type="number" step="0.1" value="0"></div>
+                <div class="time-breakdown-row"><label>Отбор керна</label><input id="tb_coring" type="number" step="0.1" value="0"></div>
+                <div class="time-breakdown-row"><label>Кондиционирование раствора / циркуляция</label><input id="tb_cond_mud_circ" type="number" step="0.1" value="2.0"></div>
+                <div class="time-breakdown-row"><label>СПО</label><input id="tb_tripping" type="number" step="0.1" value="1.0"></div>
+                <div class="time-breakdown-row"><label>Обслуживание буровой</label><input id="tb_rig_service" type="number" step="0.1" value="0"></div>
+                <div class="time-breakdown-row"><label>Ремонт буровой</label><input id="tb_rig_repair" type="number" step="0.1" value="0"></div>
+                <div class="time-breakdown-row"><label>Замена бурильной линии</label><input id="tb_cut_drill_line" type="number" step="0.1" value="0"></div>
+                <div class="time-breakdown-row"><label>Инклинометрия / survey</label><input id="tb_dev_survey" type="number" step="0.1" value="0.5"></div>
+                <div class="time-breakdown-row"><label>Каротаж на кабеле</label><input id="tb_wireline_logs" type="number" step="0.1" value="0"></div>
+                <div class="time-breakdown-row"><label>Спуск колонны и цементирование</label><input id="tb_run_casing_cement" type="number" step="0.1" value="0"></div>
+              </div>
+            </div>
+
+            <div class="card">
+              <h3>Прочие операции</h3>
+              <div class="time-breakdown-list">
+                <div class="time-breakdown-row"><label>Ожидание цемента</label><input id="tb_wait_cement" type="number" step="0.1" value="0"></div>
+                <div class="time-breakdown-row"><label>Монтаж превентора</label><input id="tb_nipple_bop" type="number" step="0.1" value="0"></div>
+                <div class="time-breakdown-row"><label>Опрессовка ПВО</label><input id="tb_test_bop" type="number" step="0.1" value="0"></div>
+                <div class="time-breakdown-row"><label>DST / испытание пласта</label><input id="tb_dst" type="number" step="0.1" value="0"></div>
+                <div class="time-breakdown-row"><label>Забурка бокового ствола / plug back</label><input id="tb_plug_back" type="number" step="0.1" value="0"></div>
+                <div class="time-breakdown-row"><label>Сквиз-цементирование</label><input id="tb_squeeze_cement" type="number" step="0.1" value="0"></div>
+                <div class="time-breakdown-row"><label>Ликвидация аварий / fishing</label><input id="tb_fishing" type="number" step="0.1" value="0"></div>
+                <div class="time-breakdown-row"><label>Наклонно-направленные работы</label><input id="tb_dir_work" type="number" step="0.1" value="0"></div>
+                <div class="time-breakdown-row"><label>Совещание по безопасности</label><input id="tb_safety_meeting" type="number" step="0.1" value="0"></div>
+                <div class="time-breakdown-row"><label>Выдержка LCM-пилюли</label><input id="tb_lcm_pill_soak" type="number" step="0.1" value="0.5"></div>
+                <div class="time-breakdown-row"><label>Разбуривание</label><input id="tb_drill_out" type="number" step="0.1" value="0.5"></div>
+                <div class="time-breakdown-row"><label>Забивка кондуктора 20&quot;</label><input id="tb_drive_20_csg" type="number" step="0.1" value="0"></div>
+                <div class="time-breakdown-row"><label>Прочее время</label><input id="tb_misc_time" type="number" step="0.1" value="0"></div>
+              </div>
+            </div>
+
+            <div class="card">
+              <h3>Авторасчет</h3>
+              <div class="time-breakdown-list">
+                <div class="time-breakdown-row"><label>Время вращения долота на забое (AUTO)</label><input id="tb_rotating_hours_auto" class="ro" readonly value="0.00"></div>
+                <div class="time-breakdown-row"><label>Средняя ROP (AUTO, м/час)</label><input id="tb_avg_rop_auto" class="ro" readonly value="0.00"></div>
+                <div class="time-breakdown-row"><label>Начало отчета (AUTO)</label><input id="tb_report_start_auto" class="ro" readonly value=""></div>
+                <div class="time-breakdown-row"><label>Конец отчета (AUTO)</label><input id="tb_report_end_auto" class="ro" readonly value=""></div>
+                <div class="time-breakdown-row"><label>Часы отчета (AUTO)</label><input id="tb_report_hours_auto" class="ro" readonly value="0.00"></div>
+                <div class="time-breakdown-row"><label>Сумма по операциям (AUTO)</label><input id="tb_report_total_auto" class="ro" readonly value="0.00"></div>
+                <div class="time-breakdown-row"><label>Статус суточной сводки (AUTO)</label><input id="tb_balance_status_auto" class="ro" readonly value="ОЖИДАНИЕ"></div>
+              </div>
+              <div id="tb_out" class="out" style="display:block;margin-top:10px">
+                <div class="orow"><span>Время вращения долота</span><span class="mono">Бурение + Разбуривание + Керн + ННБ</span></div>
+                <div class="orow"><span>Средняя ROP</span><span class="mono">Метры бурения / (Время вращения - Разбуривание)</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="module-toolbar"><button class="btn" onclick="calcTimeBreakdown()">Пересчитать разбивку времени</button></div>
+        </div>
+      </div>
+
+      <div id="m_inv" class="module">
+        <h2>Inventory & Costing</h2>
+        <div class="card">
+          <h3>Inventory продуктов</h3>
+          <div class="table-wrap">
+            <table class="inventory-table">
+              <thead>
+                <tr>
+                  <th>Продукт</th>
+                  <th>Упаковка</th>
+                  <th>Старт. кол-во</th>
+                  <th>Поступило</th>
+                  <th>Цена прихода, р</th>
+                  <th>Использ./потери</th>
+                  <th>Прочее списание</th>
+                  <th>Кон. кол-во</th>
+                  <th>Стоимость за отчет</th>
+                </tr>
+              </thead>
+              <tbody id="inventoryProductBody"></tbody>
+            </table>
+          </div>
+          <div class="module-toolbar">
+            <button class="btn" type="button" onclick="addInventoryRow()">Добавить продукт</button>
+            <button class="btn" type="button" onclick="checkInventory()">Пересчитать инвентарь</button>
+          </div>
+          <h3 style="margin-top:12px">Дополнительные расходы за сутки</h3>
+          <div class="table-wrap">
+            <table class="additional-cost-table">
+              <thead>
+                <tr>
+                  <th>Статья расхода</th>
+                  <th>Fluid Set</th>
+                  <th>Количество</th>
+                  <th>Единицы</th>
+                  <th>Цена за ед., р</th>
+                  <th>Стоимость за сутки, р</th>
+                  <th>Разбивка затрат</th>
+                </tr>
+              </thead>
+              <tbody id="additionalCostBody"></tbody>
+            </table>
+          </div>
+          <div class="module-toolbar">
+            <button class="btn" type="button" onclick="addAdditionalChargeRow()">Добавить расход</button>
+          </div>
+          <div class="inventory-summary">
+            <div><label>Затраты на продукты за сутки (AUTO, р)</label><input id="cost_products_daily_auto" class="ro" readonly value="0.00 р"></div>
+            <div><label>Затраты на продукты кумулятивно (AUTO, р)</label><input id="cost_products_cumulative_auto" class="ro" readonly value="0.00 р"></div>
+            <div><label>Total cost за сутки (AUTO, р)</label><input id="cost_total_daily_auto" class="ro" readonly value="0.00 р"></div>
+            <div><label>Total cost кумулятивно (AUTO, р)</label><input id="cost_total_cumulative_auto" class="ro" readonly value="0.00 р"></div>
+          </div>
+          <input id="cost_prev_products_cumulative" type="hidden" value="0">
+          <input id="cost_prev_additional_cumulative" type="hidden" value="0">
+          <input id="cost_prev_total_cumulative" type="hidden" value="0">
+          <input id="inv_report_total_auto" type="hidden" value="0.00 р">
+          <input id="inv_cumulative_auto" type="hidden" value="0.00 р">
+          <input id="inv_diff_auto" type="hidden" value="0.00">
+          <input id="co_total_auto" type="hidden" value="0.00 р">
+          <input id="cost_additional_daily_auto" type="hidden" value="0.00 р">
+          <input id="cost_additional_cumulative_auto" type="hidden" value="0.00 р">
+          <div id="inv_outbox" class="out" style="display:none"></div>
+          <div id="cost_out" class="out" style="display:none"></div>
+        </div>
+      </div>
+
+      <div id="m_vol" class="module">
+        <h2>Volumes / Losses & Gains</h2>
+        <div class="grid2">
+          <div class="card">
+            <h3>Volumes</h3>
+            <div class="row"><div><label>Глубина открытого ствола (м)</label><input id="vo_open_hole_depth" type="number" step="0.1" value="0"></div><div><label>Обсадная колонна ID (мм)</label><input id="vo_casing_id" type="number" step="0.1" value="0"></div></div>
+            <div class="row"><div><label>Глубина долота (м)</label><input id="vo_bit_depth" type="number" step="0.1" value="0"></div><div></div></div>
+            <div class="row"><div><label>Prev system volume (m3)</label><input id="vo_prev" type="number" value="180"></div><div><label>Current system volume (m3)</label><input id="vo_cur" type="number" value="176"></div></div>
+            <div class="row"><div><label>Annular volume (m3)</label><input id="vo_ann" type="number" value="20.5"></div><div><label>Pits total (m3)</label><input id="vo_pits" type="number" value="120"></div></div>
+            <label>Net change (AUTO, m3)</label><input id="vo_delta_auto" class="ro" readonly value="0.00">
+            <button class="btn" onclick="calcVolumeDelta()">Calc net change</button>
+            <div id="vol_out" class="out" style="display:none"></div>
+          </div>
+          <div class="card">
+            <h3>Losses & Gains</h3>
+            <div class="row"><div><label>Documented gains (m3)</label><input id="lg_gain" type="number" value="2"></div><div><label>Documented losses (m3)</label><input id="lg_loss" type="number" value="6"></div></div>
+            <label>Loss type</label><select id="lg_type"><option>Differential pressure</option><option>Downhole</option><option>Surface handling</option></select>
+            <label>Comment</label><textarea id="lg_comment">Observed losses in open hole interval</textarea>
+            <div class="row"><div><label>Documented delta (AUTO, m3)</label><input id="lg_doc_auto" class="ro" readonly value="0.00"></div><div><label>Reconcile diff (AUTO, m3)</label><input id="lg_diff_auto" class="ro" readonly value="0.000"></div></div>
+            <button class="btn" onclick="reconcileLG()">Reconcile (blocking rule)</button>
+            <div id="lg_out" class="out" style="display:none"></div>
+          </div>
+        </div>
+        <div class="card pit-visual-section">
+          <h3>Визуализация емкостей</h3>
+          <div class="pit-visual-summary">
+            <div><label>Суммарная вместимость (AUTO, м3)</label><input id="vo_pit_capacity_total_auto" class="ro" readonly value="0.0"></div>
+            <div><label>Текущий объем по емкостям (AUTO, м3)</label><input id="vo_pit_current_total_auto" class="ro" readonly value="0.0"></div>
+            <div><label>Разница к Current system volume (AUTO, м3)</label><input id="vo_pit_vs_system_auto" class="ro" readonly value="0.0"></div>
+          </div>
+          <div id="voPitVisualization" class="pit-visual-grid"></div>
+        </div>
+      </div>
+
+      <div id="m_hyd" class="module">
+        <h2>Гидравлика</h2>
+        <div class="card hyd-screen">
+          <div class="hyd-pumps">
+            <h3>Буровые насосы</h3>
+            <table>
+              <tr><th>Тип</th><th>Модель</th><th>Лайнер (мм)</th><th>КПД (%)</th><th>л/ход</th><th>ход/мин</th><th>л/мин</th><th>Бустер</th></tr>
+              <tr>
+                <td><input id="hy_pump_type1" value="Триплекс"></td>
+                <td><input id="hy_pump_model1" value="OW 1700-PT"></td>
+                <td><input id="hy_liner1" type="number" step="0.1" value="165.1"></td>
+                <td><input id="hy_eff1" type="number" step="0.1" value="95"></td>
+                <td><input id="hy_ls1_auto" class="ro" readonly value="0.000"></td>
+                <td><input id="hy_spm1" type="number" step="0.1" value="65"></td>
+                <td><input id="hy_flow1_auto" class="ro" readonly value="0.0"></td>
+                <td style="text-align:center"><input id="hy_booster1" type="checkbox"></td>
+              </tr>
+              <tr>
+                <td><input id="hy_pump_type2" value="Триплекс"></td>
+                <td><input id="hy_pump_model2" value="OW 1700-PT"></td>
+                <td><input id="hy_liner2" type="number" step="0.1" value="165.1"></td>
+                <td><input id="hy_eff2" type="number" step="0.1" value="95"></td>
+                <td><input id="hy_ls2_auto" class="ro" readonly value="0.000"></td>
+                <td><input id="hy_spm2" type="number" step="0.1" value="70"></td>
+                <td><input id="hy_flow2_auto" class="ro" readonly value="0.0"></td>
+                <td style="text-align:center"><input id="hy_booster2" type="checkbox"></td>
+              </tr>
+            </table>
+          </div>
+
+          <div class="hyd-panels">
+            <div class="card hyd-panel">
+              <h3>Параметры</h3>
+              <div class="row"><div><label>Максимальное давление (МПа)</label><input id="hy_max_pressure" type="number" step="0.1" value="34.0"></div><div><label>Давление циркуляции (МПа)</label><input id="hy_circ_press_auto" type="number" step="0.01" value="0.00"></div></div>
+              <div class="row"><div><label>Расход (AUTO, л/мин)</label><input id="hy_q" class="ro" readonly value="0"></div><div><label>Расчетный TVD (AUTO, м)</label><input id="hy_tvd" class="ro" readonly value="0.0"></div></div>
+              <div class="row"><div><label>Глубина ствола (AUTO, м MD)</label><input id="hy_hole_md_auto" class="ro" readonly value="0"></div><div><label>Диаметр ствола (AUTO, мм)</label><input id="hy_hole_size_auto" class="ro" readonly value="0.0"></div></div>
+              <div class="row"><div><label>Глубина долота (AUTO, м MD)</label><input id="hy_bit_md_auto" class="ro" readonly value="0"></div><div><label>Диаметр долота (AUTO, мм)</label><input id="hy_bit_size_auto" class="ro" readonly value="0.0"></div></div>
+              <div class="row"><div><label>Размыв ствола (%)</label><input id="hy_washout" type="number" step="0.1" value="9"></div><div><label>Скорость струи (AUTO, м/с)</label><input id="hy_v" class="ro" readonly value="0.0"></div></div>
+              <div class="row"><div><label>Средний диаметр шлама (мм)</label><input id="hy_cuttings_diam" type="number" step="0.1" value="6.4"></div><div><label>SG шлама</label><input id="hy_cuttings_sg" type="number" step="0.01" value="2.65"></div></div>
+            </div>
+
+            <div class="card hyd-panel">
+              <h3>ECD</h3>
+              <div class="row"><div><label>У долота (AUTO, г/см3)</label><input id="hy_ecd_auto" class="ro" readonly value="0.000"></div><div><label>На башмаке ОК (AUTO, г/см3)</label><input id="hy_ecd_shoe_auto" class="ro" readonly value="0.000"></div></div>
+              <div class="row"><div><label>Текущая плотность раствора (AUTO, г/см3)</label><input id="hy_mw_auto" class="ro" readonly value="0.000"></div><div><label>Башмак обсадной (AUTO, м TVD)</label><input id="hy_csg_shoe_auto" class="ro" readonly value="0.0"></div></div>
+
+              <h3>Время циркуляции / ходы</h3>
+              <div class="row"><div><label>Подъем забойных шламов (AUTO, мин)</label><input id="hy_bottoms_up_time_auto" class="ro" readonly value="0.0"></div><div><label>Полный цикл (AUTO, мин)</label><input id="hy_total_circ_time_auto" class="ro" readonly value="0.0"></div></div>
+              <div class="row"><div><label>Подъем забойных шламов (AUTO, ходов)</label><input id="hy_bottoms_up_strokes_auto" class="ro" readonly value="0"></div><div><label>Полный цикл (AUTO, ходов)</label><input id="hy_total_strokes_auto" class="ro" readonly value="0"></div></div>
+            </div>
+
+            <div class="card hyd-panel">
+              <h3>Потери давления</h3>
+              <div class="row"><div><label>Поверхность (AUTO, МПа)</label><input id="hy_loss_surf_auto" class="ro" readonly value="0.00"></div><div><label>Трубы (AUTO, МПа)</label><input id="hy_loss_pipe_auto" class="ro" readonly value="0.00"></div></div>
+              <div class="row"><div><label>Прочее (МПа)</label><input id="hy_loss_other" type="number" step="0.01" value="0.00"></div><div><label>ВЗД / мотор (AUTO, МПа)</label><input id="hy_loss_motor_auto" class="ro" readonly value="0.00"></div></div>
+              <div class="row"><div><label>Долото (AUTO, МПа)</label><input id="hy_loss_bit_auto" class="ro" readonly value="0.00"></div><div><label>Затруб (AUTO, МПа)</label><input id="hy_dp" class="ro" readonly value="0.00"></div></div>
+              <div class="row"><div><label>Итого расчетных потерь (AUTO, МПа)</label><input id="hy_total_loss_auto" class="ro" readonly value="0.00"></div><div><label>Баланс давления (AUTO)</label><input id="hy_pressure_balance_auto" class="ro" readonly value="ОЖИДАНИЕ"></div></div>
+            </div>
+
+            <div class="card hyd-panel">
+              <h3>Гидравлика на долоте</h3>
+              <div class="row"><div><label>HHSI (AUTO, кВт/см²)</label><input id="hy_hhsi_auto" class="ro" readonly value="0.000"></div><div><label>Скорость струи (AUTO, м/с)</label><input id="hy_jet_velocity_auto" class="ro" readonly value="0.0"></div></div>
+              <div class="row"><div><label>Сила удара (AUTO, Н)</label><input id="hy_impact_force_auto" class="ro" readonly value="0.0"></div><div><label>Состояние гидравлики (AUTO)</label><input id="hy_noz_auto" class="ro" readonly value="ОЖИДАНИЕ"></div></div>
+
+              <h3>Параметры раствора</h3>
+              <div class="row"><div><label>Сохраненная модель</label><input id="hy_saved_method_auto" class="ro" readonly value="Herschel-Bulkley"></div><div><label>Время проверки</label><input id="hy_check_time_auto" class="ro" readonly value="00:00"></div></div>
+              <div class="row"><div><label>Метод расчета</label><select id="hy_eval_method"><option selected>Herschel-Bulkley</option><option>Бингам-Пластик</option><option>Степенной закон</option></select></div><div><label>n (AUTO)</label><input id="hy_n_auto" class="ro" readonly value="0.000"></div></div>
+              <div class="row"><div><label>K (AUTO, Па·с^n)</label><input id="hy_k_auto" class="ro" readonly value="0.000"></div><div><label>Tau0 (AUTO, Па)</label><input id="hy_tau0_auto" class="ro" readonly value="0.000"></div></div>
+            </div>
+
+            <div class="card hyd-panel">
+              <h3>Затрубные скорости</h3>
+              <div class="row"><div><label>Райзер (AUTO, м/мин)</label><input id="hy_riser_velocity_auto" class="ro" readonly value="0.0"></div><div><label>Мин. по БТ (AUTO, м/мин)</label><input id="hy_min_dp_velocity_auto" class="ro" readonly value="0.0"></div></div>
+              <div class="row"><div><label>Макс. по УБТ (AUTO, м/мин)</label><input id="hy_max_dc_velocity_auto" class="ro" readonly value="0.0"></div><div><label>Критерий выноса (AUTO)</label><input id="hy_transport_status_auto" class="ro" readonly value="ОЖИДАНИЕ"></div></div>
+            </div>
+
+            <div class="card hyd-panel hyd-note">
+              <h3>Комментарий</h3>
+              <div class="small">Давление циркуляции и суммарные потери давления должны практически совпадать. Верхний предел задается полем «Максимальное давление», а зеленые поля пересчитываются из насосов, геометрии, КНБК и параметров раствора.</div>
+            </div>
+          </div>
+
+          <div class="module-toolbar"><button class="btn" onclick="calcHyd()">Пересчитать гидравлику</button></div>
+          <div id="hyd_out" class="out" style="display:none"></div>
+        </div>
+      </div>
+
+      <div id="m_zero" class="module">
+        <h2>Zero Defects Tracking</h2>
+        <div class="grid2">
+          <div class="card">
+            <h3>Контроль дефектов</h3>
+            <div class="row"><div><label>Open issues</label><input id="zd_open" type="number" value="1"></div><div><label>Critical issues</label><input id="zd_critical" type="number" value="0"></div></div>
+            <div class="row"><div><label>Overdue actions</label><input id="zd_overdue" type="number" value="0"></div><div><label>Closed this day</label><input id="zd_closed" type="number" value="3"></div></div>
+            <label>Risk note</label><textarea id="zd_note">Контроль потерь выполнен, отклонений по ECD нет.</textarea>
+            <div class="row"><div><label>Zero score (AUTO)</label><input id="zd_score_auto" class="ro" readonly value="0"></div><div><label>Status (AUTO)</label><input id="zd_status_auto" class="ro" readonly value="PENDING"></div></div>
+            <button class="btn" onclick="runZeroDefects()">Run zero-defects check</button>
+            <div id="zd_out" class="out" style="display:none"></div>
+          </div>
+          <div class="card">
+            <h3>Критерии</h3>
+            <table>
+              <tr><th>Rule</th><th>Target</th></tr>
+              <tr><td>Critical issues</td><td>0</td></tr>
+              <tr><td>Overdue actions</td><td>0</td></tr>
+              <tr><td>Open issues trend</td><td>Non-increasing</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div id="m_mud" class="module">
+        <h2>Mud Reports</h2>
+        <div class="mud-report-workspace">
+          <div class="grid2">
+            <div class="card">
+              <h3>Параметры суточного рапорта</h3>
+              <div class="row"><div><label>Дата рапорта</label><input id="mr_date" type="date" value=""></div><div><label>Смена</label><select id="mr_shift"><option selected>Day</option><option>Night</option></select></div></div>
+              <div class="row"><div><label>Использовано раствора (м3)</label><input id="mr_used" type="number" step="0.1" value="22"></div><div><label>Обработано раствора (м3)</label><input id="mr_treated" type="number" step="0.1" value="18"></div></div>
+              <div class="row"><div><label>Подготовил</label><input id="mr_prepared_by" value="Инженер по БР"></div><div><label>Представитель заказчика</label><input id="mr_customer_rep" value=""></div></div>
+              <label>Операционная сводка</label><textarea id="mr_ops">Бурение секции, поддержание свойств бурового раствора, контроль объемов и потерь.</textarea>
+              <label>Примечание по буровому раствору</label><textarea id="mr_chem_note">Отклонения по системе раствора отсутствуют. Корректировки и контроль выполнялись по плану.</textarea>
+              <div class="row" style="margin-top:10px">
+                <button class="btn" onclick="buildMudReport()">Собрать суточный рапорт</button>
+                <button class="btn" onclick="openMudReportPrintView()">Открыть версию для печати</button>
+                <button class="btn main" onclick="downloadMudReportPdf()">Скачать PDF</button>
+              </div>
+              <div id="mr_out" class="out" style="display:none"></div>
+            </div>
+            <div class="card">
+              <h3>Сводка по готовности</h3>
+              <div class="small">Рапорт собирается автоматически из Well Data, Fluid Sets &amp; Properties, Time Breakdown, Inventory &amp; Costing, Volumes / Losses &amp; Gains, Hydraulics и текущих емкостей.</div>
+              <div class="mud-report-stat-grid">
+                <div><label>Коэффициент обработки (AUTO, %)</label><input id="mr_util_auto" class="ro" readonly value="0.0"></div>
+                <div><label>Поступило материалов за сутки (AUTO)</label><input id="mr_products_received_auto" class="ro" readonly value="0.000"></div>
+                <div><label>Израсходовано материалов за сутки (AUTO)</label><input id="mr_products_used_auto" class="ro" readonly value="0.000"></div>
+                <div><label>Суточные затраты (AUTO, р)</label><input id="mr_daily_cost_auto" class="ro" readonly value="0.00 р"></div>
+                <div><label>Баланс по объемам (AUTO)</label><input id="mr_balance_auto" class="ro" readonly value="PENDING"></div>
+                <div><label>Статус рапорта (AUTO)</label><input id="mr_status_auto" class="ro" readonly value="PENDING"></div>
+              </div>
+              <div class="small" style="margin-top:10px">Если автоматический PDF недоступен в браузере, кнопка экспорта откроет печатную версию, которую можно сохранить как PDF через системный диалог.</div>
+            </div>
+          </div>
+          <div class="card mud-report-preview-card">
+            <h3>Готовый суточный рапорт</h3>
+            <div id="mr_preview" class="mud-report-preview">
+              <div class="mud-report-placeholder">Нажмите «Собрать суточный рапорт», чтобы сформировать сводный лист по буровым растворам и затем скачать его в PDF.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="m_audit" class="module">
+        <h2>Post Well Audit</h2>
+        <div class="grid2">
+          <div class="card">
+            <h3>Intervals recap</h3>
+            <table>
+              <tr><th>Interval</th><th>From</th><th>To</th><th>Cost USD</th></tr>
+              <tr><td>12-1/4" OH</td><td><input id="au_f1" type="number" value="2500"></td><td><input id="au_t1" type="number" value="3200"></td><td><input id="au_c1" type="number" value="82400"></td></tr>
+              <tr><td>8-1/2" OH</td><td><input id="au_f2" type="number" value="3200"></td><td><input id="au_t2" type="number" value="3667"></td><td><input id="au_c2" type="number" value="76800"></td></tr>
+            </table>
+            <div class="row"><div><label>Interval meters (AUTO)</label><input id="au_m_auto" class="ro" readonly value="0.0"></div><div><label>Total cost (AUTO)</label><input id="au_total_auto" class="ro" readonly value="0.00"></div></div>
+            <label>Average cost (AUTO, USD/m)</label><input id="au_cpm_auto" class="ro" readonly value="0.00">
+            <button class="btn" onclick="buildAudit()">Build recap</button>
+            <div id="audit_out" class="out" style="display:none"></div>
+          </div>
+          <div class="card">
+            <h3>Conclusions</h3>
+            <label>Engineering summary</label>
+            <textarea id="au_sum">Mud system stable, losses controlled, ECD within operational envelope.</textarea>
+            <label>Recommendations</label>
+            <textarea id="au_rec">Maintain solids control efficiency and monitor annular pressure trend.</textarea>
+          </div>
+        </div>
+      </div>
+
+      <div id="m_data" class="module">
+        <h2>Data Management</h2>
+        <div class="grid2">
+          <div class="card">
+            <h3>Exchange Data with Server</h3>
+            <div class="row"><div><label>Server profile</label><input id="dm_profile" value="Field-Server-A"></div><div><label>Well package</label><input id="dm_pkg" value="Well-12_North.pkg"></div></div>
+            <div class="row"><div><label>Last sync</label><input id="dm_last" value="2026-02-24 07:40"></div><div><label>Status</label><select id="dm_status"><option selected>Ready</option><option>Pending</option><option>Error</option></select></div></div>
+            <div class="row" style="margin-top:8px">
+              <button class="btn" onclick="exchangeServer('Download Well Data')">Download Well Data</button>
+              <button class="btn" onclick="exchangeServer('Retrieve Well Data')">Retrieve Well Data</button>
+            </div>
+            <div class="row" style="margin-top:8px">
+              <button class="btn" onclick="exchangeServer('Upload Daily Reports')">Upload Daily Reports</button>
+              <button class="btn" onclick="exportDIMS()">Export to DIMS</button>
+            </div>
+            <div id="dm_out" class="out" style="display:none"></div>
+          </div>
+          <div class="card">
+            <h3>Backup / Restore</h3>
+            <div class="row">
+              <button class="btn" onclick="backupData()">Backup local data</button>
+              <button class="btn" onclick="restoreData()">Restore local data</button>
+            </div>
+            <div class="small" style="margin-top:8px">Имитация операций управления данными WELLSIGHT: server exchange, восстановление, контроль статуса передачи.</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="m_print" class="module">
+        <h2>Print Manager</h2>
+        <div class="grid2">
+          <div class="card">
+            <h3>Пакет печати</h3>
+            <label>Output folder</label><input id="pm_path" value="C:/Baroid/WELLSIGHT/Reports/Report Manager/Report_Documents/">
+            <label>Include sections</label>
+            <select id="pm_pack"><option selected>Daily + Summary + Recap</option><option>Daily only</option><option>Post Well Audit only</option></select>
+            <div class="row" style="margin-top:8px">
+              <button class="btn" onclick="openReportManager()">Launch Report Manager</button>
+              <button class="btn" onclick="printPDF(collectReportData())">Print current report</button>
+            </div>
+            <div id="pm_out" class="out" style="display:none"></div>
+          </div>
+          <div class="card">
+            <h3>Точки запуска Report Manager</h3>
+            <table>
+              <tr><th>Экран</th><th>Доступ</th></tr>
+              <tr><td>Well Data</td><td>Через верхнюю панель</td></tr>
+              <tr><td>Mud Reports</td><td>Кнопка Open Report Manager</td></tr>
+              <tr><td>Post Well Audit</td><td>Кнопка Launch в модуле</td></tr>
+              <tr><td>Print Manager</td><td>Launch Report Manager</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div id="m_report" class="module">
+        <h2>Report Manager</h2>
+        <div class="grid2">
+          <div class="card">
+            <h3>Экран 1: Task Selection</h3>
+            <label>Task</label>
+            <select id="rp_task">
+              <option selected>Create New Report</option>
+              <option>Use Existing Report</option>
+            </select>
+            <h3>Экран 2: Report Type Selection</h3>
+            <label>Report type</label>
+            <select id="rp_type">
+              <option>Daily Report</option>
+              <option>Summary Report</option>
+              <option>Recap Costs</option>
+              <option>Recap Volumes</option>
+            </select>
+            <div class="row">
+              <div>
+                <label>Format</label>
+                <select id="rp_format">
+                  <option>TXT</option>
+                  <option>CSV</option>
+                  <option>XLS</option>
+                  <option>Print-PDF</option>
+                </select>
+              </div>
+              <div>
+                <label>Language</label>
+                <select id="rp_lang">
+                  <option>Русский</option>
+                  <option>English</option>
+                  <option>Español</option>
+                  <option>Deutsch</option>
+                  <option>Português</option>
+                </select>
+              </div>
+            </div>
+            <h3>Экран 3: Report Selection</h3>
+            <label>Template name</label>
+            <input id="rp_template_name" value="Default Daily Template">
+            <div class="row" style="margin-top:8px">
+              <button class="btn" onclick="saveTemplate()">Save Template</button>
+              <button class="btn" onclick="generateReport()">Generate</button>
+            </div>
+            <div class="row" style="margin-top:8px">
+              <button class="btn" onclick="exportTemplates()">Export Templates</button>
+              <button class="btn" onclick="el('rp_template_file').click()">Import Templates</button>
+            </div>
+            <input id="rp_template_file" type="file" accept="application/json" style="display:none" onchange="importTemplates(event)">
+            <div id="rp_out" class="out" style="display:none"></div>
+          </div>
+          <div class="card">
+            <h3>Экран 4: Results</h3>
+            <div class="small">Результаты генерации, путь сохранения и предпросмотр.</div>
+            <label>Report output path</label>
+            <input id="rp_path" value="C:/Baroid/WELLSIGHT/Reports/Report Manager/Report/">
+            <h3>Сохраненные шаблоны</h3>
+            <label>Template list</label>
+            <select id="rp_template_list" size="8" style="min-height:170px"></select>
+            <div class="row" style="margin-top:8px">
+              <button class="btn" onclick="applyTemplate()">Apply</button>
+              <button class="btn" onclick="deleteTemplate()">Delete</button>
+            </div>
+            <h3>Предпросмотр</h3>
+            <div id="rp_preview" class="out">Нет данных для preview.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<script>
+const LEGACY_KEY='ws2000SiteEditionStateV1';
+const LEGACY_TEMPLATE_KEY='ws2000SiteEditionTemplatesV1';
+const params=new URLSearchParams(window.location.search);
+const mode=params.get('mode')||'';
+const isStandaloneCalculator=mode==='calculator';
+const projectName=params.get('name')|| (isStandaloneCalculator ? '' : 'Проект');
+const wellName=params.get('well')||'9301';
+const workDate=params.get('date')||'14.04.2026';
+const dmrId=params.get('dmr')|| (isStandaloneCalculator ? '' : 'DMR-1');
+const storageProjectName=isStandaloneCalculator ? 'WS2000 Program' : projectName;
+const storageDmrId=isStandaloneCalculator ? 'CALC' : (dmrId || 'DMR-1');
+const dmrMatch=storageDmrId.match(/(\d+)$/);
+const dmrIndex=dmrMatch?Number(dmrMatch[1]):1;
+const KEY=`ws2000SiteEditionStateV2-${storageProjectName}-${wellName}-${workDate}-${storageDmrId}`;
+const TEMPLATE_KEY=`ws2000SiteEditionTemplatesV2-${storageProjectName}-${wellName}-${workDate}`;
+const state={wellOk:false,volDelta:null,docDelta:null,costTotal:null,auditReady:false,autoCalc:true};
+const CONSTRUCTION_DEFAULTS={
+  'Уренгойское месторождение (Новатэк)':{
+    '9301':{
+      casing:[
+        {od:339.72,id:320.42,tvd:450},
+        {od:244.48,id:226.6,tvd:1500},
+        {od:177.8,id:157.08,tvd:3549.6},
+        {od:114.3,id:97.18,tvd:3644.7}
+      ],
+      sections:[
+        {from:0,to:450,diameter:406},
+        {from:0,to:1689,diameter:311.15},
+        {from:0,to:4391,diameter:222.3},
+        {from:4356,to:6129.2,diameter:155.6}
+      ]
+    }
+  }
+};
+const MUD_PRODUCT_SG={
+  'SAPP':1.80,
+  'Асфальтен':1.10,
+  'Барит':4.20,
+  'Бентонит':2.40,
+  'Бикарбонат натрия':2.20,
+  'Гильсонит':1.07,
+  'ГКК':1.10,
+  'Детергент':1.02,
+  'Известь':2.20,
+  'Каустическая сода':2.13,
+  'Кальций хлористый':2.15,
+  'Кальцинированная сода':2.54,
+  'Ксантановая смола':1.52,
+  'Лигносульфонат':1.40,
+  'Лубрикант':0.95,
+  'Минеральное масло':0.84,
+  'Модификатор реологии':1.65,
+  'Модифицированный лигнин':1.35,
+  'Органобентонит':1.70,
+  'ПАЦ':1.50,
+  'ПАЦ ВВ':1.50,
+  'ПАЦ НВ':1.50,
+  'Пеногаситель':0.95,
+  'Полиакриламид':1.30,
+  'Полиакрилат натрия':1.20,
+  'Силикат калия':1.40,
+  'Смачивающий агент':0.92,
+  'Техническая вода':1.00,
+  'Эмульгатор':0.96,
+  'CaCO₃':2.71
+};
+const MUD_CHEMICAL_CATALOG=[
+  {name:'Бентонит',purpose:'Структурообразователь',unit:'кг'},
+  {name:'Барит',purpose:'Утяжелитель',unit:'кг'},
+  {name:'ПАЦ',purpose:'Понизитель водоотдачи',unit:'кг'},
+  {name:'ГКК',purpose:'Ингибитор, гидрофобизатор',unit:'кг'},
+  {name:'Бикарбонат натрия',purpose:'Контроль pH и жесткости',unit:'кг'},
+  {name:'Полиакриламид',purpose:'Инкапсулятор, ингибитор',unit:'кг'},
+  {name:'SAPP',purpose:'Разжижитель',unit:'кг'},
+  {name:'Каустическая сода',purpose:'Регулятор pH',unit:'кг'},
+  {name:'Детергент',purpose:'Противосальниковая добавка',unit:'кг'},
+  {name:'Техническая вода',purpose:'Базовая жидкость',unit:'л'},
+  {name:'CaCO₃',purpose:'Кольматант',unit:'кг'},
+  {name:'Пеногаситель',purpose:'Пеногаситель',unit:'кг'},
+  {name:'Лигносульфонат',purpose:'Высокотемпературный стабилизатор',unit:'кг'},
+  {name:'ПАЦ ВВ',purpose:'Понизитель водоотдачи',unit:'кг'},
+  {name:'ПАЦ НВ',purpose:'Понизитель водоотдачи',unit:'кг'},
+  {name:'Ксантановая смола',purpose:'Биополимер',unit:'кг'},
+  {name:'Лубрикант',purpose:'Смазочная добавка',unit:'л'},
+  {name:'Силикат калия',purpose:'Ингибитор',unit:'кг'},
+  {name:'Кальцинированная сода',purpose:'Нейтрализатор Ca++',unit:'кг'},
+  {name:'Асфальтен',purpose:'Стабилизатор глин',unit:'кг'},
+  {name:'Модифицированный лигнин',purpose:'Высокотемпературный стабилизатор',unit:'кг'},
+  {name:'Полиакрилат натрия',purpose:'Полимер',unit:'кг'},
+  {name:'Минеральное масло',purpose:'Базовая жидкость',unit:'л'},
+  {name:'Органобентонит',purpose:'Контроль реологии',unit:'кг'},
+  {name:'Эмульгатор',purpose:'Создание эмульсии',unit:'кг'},
+  {name:'Смачивающий агент',purpose:'Гидрофобизатор',unit:'л'},
+  {name:'Модификатор реологии',purpose:'Модификатор реологии',unit:'кг'},
+  {name:'Известь',purpose:'Активатор эмульгаторов, контроль щелочности',unit:'кг'},
+  {name:'Кальций хлористый',purpose:'Ингибитор',unit:'кг'},
+  {name:'Гильсонит',purpose:'Понизитель фильтрации',unit:'кг'}
+].sort((a,b)=>a.name.localeCompare(b.name,'ru'));
+
+function el(id){return document.getElementById(id);} 
+function fv(id){return el(id).value;}
+function fn(id){return Number(el(id).value||0);} 
+function row(k,v,c=''){return `<div class="orow"><span>${k}</span><span class="mono">${v} ${c}</span></div>`;}
+function sx(id, fallback=''){
+  const node=el(id);
+  if(!node) return fallback;
+  return node.type==='checkbox' ? (node.checked?'Да':'Нет') : String(node.value ?? fallback);
+}
+function sn(id, fallback=0){
+  const node=el(id);
+  if(!node) return fallback;
+  return Number(String(node.value ?? fallback).replace(',','.')) || fallback;
+}
+function escapeHtml(value){
+  return String(value ?? '').replace(/[&<>"']/g,(char)=>({
+    '&':'&amp;',
+    '<':'&lt;',
+    '>':'&gt;',
+    '"':'&quot;',
+    "'":'&#39;'
+  }[char]));
+}
+function sanitizeFileNamePart(value){
+  return String(value || 'report').replace(/[<>:"/\\|?*\x00-\x1F]+/g,' ').replace(/\s+/g,'_').trim() || 'report';
+}
+function mudReportDateFromWorkDate(value){
+  const match=String(value || '').match(/^(\d{2})\.(\d{2})\.(\d{4})$/);
+  return match ? `${match[3]}-${match[2]}-${match[1]}` : '';
+}
+function ensureMudReportDateValue(){
+  const input=el('mr_date');
+  if(!input) return '';
+  if(!input.value){
+    input.value=mudReportDateFromWorkDate(workDate);
+  }
+  return input.value;
+}
+function formatDisplayDateFromIso(value){
+  if(!value) return workDate;
+  const match=String(value).match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  return match ? `${match[3]}.${match[2]}.${match[1]}` : value;
+}
+function formatDecimal(value,digits=2){
+  const number=Number(value);
+  return Number.isFinite(number)?number.toFixed(digits):'';
+}
+function parseCurrencyValue(value){
+  const normalized=String(value??'').replace(/[^\d.,-]/g,'').replace(/,/g,'');
+  const number=Number(normalized);
+  return Number.isFinite(number)?number:0;
+}
+function formatRubCurrency(value){
+  const number=Number(value);
+  if(!Number.isFinite(number)) return '';
+  return `${new Intl.NumberFormat('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}).format(number)} р`;
+}
+function normalizeChemicalName(name){
+  return String(name||'').replace(/\s*\([^)]*\)$/u,'').trim();
+}
+function canonicalChemicalName(name){
+  const normalized=normalizeChemicalName(name).toLowerCase();
+  const aliases={
+    'barite':'барит',
+    'barium sulfate':'барит',
+    'lime':'известь',
+    'caustic soda':'каустическая сода',
+    'soda ash':'кальцинированная сода',
+    'bentonite':'бентонит',
+    'calcium chloride':'кальций хлористый',
+    'water':'техническая вода',
+    'fresh water':'техническая вода',
+    'detergent':'детергент',
+    'gilsonite':'гильсонит',
+    'emulsifier':'эмульгатор'
+  };
+  return aliases[normalized] || normalized;
+}
+function defaultPackaging(name,unit){
+  const lowered=String(name||'').toLowerCase();
+  if(unit==='л' || /масло|лубрикант|агент|эмульгатор|вода/i.test(lowered)) return 'бочка';
+  if(/барит|caco|кальций хлористый/i.test(lowered)) return 'биг-бэг';
+  return 'мешок';
+}
+function defaultPackageWeight(packaging){
+  if(packaging==='мешок') return 25;
+  if(packaging==='бочка') return 200;
+  return 1000;
+}
+function getMudPriceSettingsKey(name,unit){
+  return `${normalizeChemicalName(name)}__${unit}`;
+}
+function getSharedMudPriceCatalog(){
+  const fallback={};
+  MUD_CHEMICAL_CATALOG.forEach((item)=>{
+    const packaging=defaultPackaging(item.name,item.unit);
+    fallback[getMudPriceSettingsKey(item.name,item.unit)]={
+      packaging,
+      packageWeight:defaultPackageWeight(packaging),
+      pricePerTon:''
+    };
+  });
+  const raw=localStorage.getItem(`nexus-price-list-${storageProjectName}-${wellName}`);
+  if(!raw) return fallback;
+  try{
+    return {...fallback,...JSON.parse(raw)};
+  }catch(error){
+    console.warn('Failed to parse mud price list',error);
+    return fallback;
+  }
+}
+function computePricePerUnit(weight,pricePerTon){
+  const packageWeight=Number(weight);
+  const tonPrice=parseCurrencyValue(pricePerTon);
+  if(!(packageWeight>0) || !(tonPrice>0)) return '';
+  return (packageWeight/1000)*tonPrice;
+}
+function updateProductCatalogPriceRow(row){
+  const packaging=row.querySelector('[data-role="pl-packaging"]');
+  const weight=row.querySelector('[data-role="pl-package-weight"]');
+  const price=row.querySelector('[data-role="pl-price-ton"]');
+  const unit=row.querySelector('[data-role="pl-price-unit"]');
+  if(!packaging || !weight || !price || !unit) return;
+  if(!weight.dataset.touched){
+    weight.value=String(defaultPackageWeight(packaging.value));
+  }
+  const pricePerUnit=computePricePerUnit(weight.value,price.value);
+  unit.value=pricePerUnit ? formatRubCurrency(pricePerUnit) : '';
+}
+function refreshProductCatalogPriceRows(){
+  document.querySelectorAll('#productCatalogBody tr').forEach((row)=>updateProductCatalogPriceRow(row));
+}
+function bindProductCatalogRow(row){
+  const packaging=row.querySelector('[data-role="pl-packaging"]');
+  const weight=row.querySelector('[data-role="pl-package-weight"]');
+  const price=row.querySelector('[data-role="pl-price-ton"]');
+  if(packaging){
+    packaging.addEventListener('change',()=>{
+      if(weight && !weight.dataset.touched){
+        weight.value=String(defaultPackageWeight(packaging.value));
+      }
+      updateProductCatalogPriceRow(row);
+      calcProductList();
+    });
+  }
+  if(weight){
+    weight.addEventListener('input',()=>{
+      weight.dataset.touched='true';
+      updateProductCatalogPriceRow(row);
+    });
+  }
+  if(price){
+    price.addEventListener('focus',()=>{
+      const numeric=parseCurrencyValue(price.value);
+      if(numeric>0) price.value=numeric.toFixed(2);
+    });
+    price.addEventListener('input',()=>updateProductCatalogPriceRow(row));
+    price.addEventListener('blur',()=>{
+      const numeric=parseCurrencyValue(price.value);
+      price.value=numeric>0 ? formatRubCurrency(numeric) : '';
+      updateProductCatalogPriceRow(row);
+    });
+  }
+  row.querySelectorAll('input,select').forEach(bindElementAutoCalc);
+  updateProductCatalogPriceRow(row);
+}
+function renderProductCatalogModule(){
+  const body=el('productCatalogBody');
+  if(!body) return;
+  const sharedCatalog=getSharedMudPriceCatalog();
+  body.innerHTML=MUD_CHEMICAL_CATALOG.map((item,index)=>{
+    const sg=MUD_PRODUCT_SG[item.name] ?? '';
+    const saved=sharedCatalog[getMudPriceSettingsKey(item.name,item.unit)] || {};
+    const packaging=saved.packaging || defaultPackaging(item.name,item.unit);
+    const packageWeight=saved.packageWeight || defaultPackageWeight(packaging);
+    const pricePerTon=saved.pricePerTon || '';
+    return `<tr>
+      <td><input id="pl_n${index+1}" value="${item.name}"></td>
+      <td><input id="pl_c${index+1}" value="${item.purpose}"></td>
+      <td><input id="pl_u${index+1}" value="${item.unit}"></td>
+      <td><input id="pl_sg${index+1}" data-role="pl-sg" type="number" step="0.01" value="${sg !== '' ? formatDecimal(sg,2) : ''}"></td>
+      <td>
+        <select id="pl_pack${index+1}" data-role="pl-packaging">
+          <option value="мешок"${packaging==='мешок'?' selected':''}>мешок</option>
+          <option value="бочка"${packaging==='бочка'?' selected':''}>бочка</option>
+          <option value="биг-бэг"${packaging==='биг-бэг'?' selected':''}>биг-бэг</option>
+        </select>
+      </td>
+      <td><input id="pl_pw${index+1}" data-role="pl-package-weight" type="number" step="0.1" value="${packageWeight}"></td>
+      <td><input id="pl_pt${index+1}" data-role="pl-price-ton" value="${pricePerTon ? formatRubCurrency(pricePerTon) : ''}"></td>
+      <td><input id="pl_pu${index+1}" data-role="pl-price-unit" class="ro" readonly value=""></td>
+    </tr>`;
+  }).join('');
+  body.querySelectorAll('tr').forEach(bindProductCatalogRow);
+  refreshProductCatalogPriceRows();
+}
+function placeProductListsAfterRig(){
+  const rigButton=document.querySelector('.mod-btn[data-mod="rig"]');
+  const productButton=document.querySelector('.mod-btn[data-mod="products"]');
+  if(rigButton && productButton && rigButton.nextElementSibling!==productButton){
+    rigButton.insertAdjacentElement('afterend',productButton);
+  }
+  const rigModule=el('m_rig');
+  const productModule=el('m_products');
+  if(rigModule && productModule && rigModule.nextElementSibling!==productModule){
+    rigModule.insertAdjacentElement('afterend',productModule);
+  }
+}
+function getConstructionDefaults(){
+  return CONSTRUCTION_DEFAULTS[projectName]?.[wellName] || null;
+}
+
+function applyConstructionDefaults(){
+  const defaults=getConstructionDefaults();
+  if(!defaults) return;
+  defaults.casing.forEach((item,index)=>{
+    const idx=index+1;
+    if(el(`cs_od${idx}`)) el(`cs_od${idx}`).value=String(item.od);
+    if(el(`cs_id${idx}`)) el(`cs_id${idx}`).value=String(item.id || '');
+    if(el(`cs_tv${idx}`)) el(`cs_tv${idx}`).value=String(item.tvd);
+  });
+  defaults.sections.forEach((item,index)=>{
+    const idx=index+1;
+    if(el(`sec_f${idx}`)) el(`sec_f${idx}`).value=String(item.from);
+    if(el(`sec_t${idx}`)) el(`sec_t${idx}`).value=String(item.to);
+    if(el(`sec_d${idx}`)) el(`sec_d${idx}`).value=String(item.diameter);
+  });
+}
+function dmrKey(id){return `ws2000SiteEditionStateV2-${storageProjectName}-${wellName}-${workDate}-${id}`;}
+function previousDmrId(){return isStandaloneCalculator ? null : dmrIndex>1?`DMR-${dmrIndex-1}`:null;}
+
+function setDmrContext(){
+  if(isStandaloneCalculator){
+    document.title=`WS2000 Site Edition · Расчетная программа · Скв. ${wellName} · ${workDate}`;
+    if(el('brandTitle')) el('brandTitle').innerHTML='<span>WS2000</span> Site Edition · Расчетная программа';
+    if(el('workspaceTitle')) el('workspaceTitle').textContent='Расчетная программа';
+    if(el('workspaceSub')) el('workspaceSub').textContent=`Скважина ${wellName} · ${workDate}. Отдельный расчетный режим без привязки к месторождению и DMR.`;
+    if(el('loadButton')) el('loadButton').textContent='Загрузить расчет';
+    if(el('saveButton')) el('saveButton').textContent='Сохранить расчет';
+    return;
+  }
+  document.title=`${projectName} · Скв. ${wellName} · ${dmrId} · ${workDate}`;
+  if(el('brandTitle')) el('brandTitle').innerHTML=`<span>WS2000</span> Site Edition · ${dmrId}`;
+  if(el('workspaceTitle')) el('workspaceTitle').textContent=dmrId;
+  if(el('workspaceSub')) el('workspaceSub').textContent=`${projectName} · скважина ${wellName} · ${workDate}. Каждый следующий DMR можно открыть на базе сохранения предыдущего.`;
+  if(el('loadButton')) el('loadButton').textContent=`Загрузить ${dmrId}`;
+  if(el('saveButton')) el('saveButton').textContent=`Сохранить ${dmrId}`;
+}
+
+function attachModuleSaveButtons(){
+  document.querySelectorAll('.module').forEach((module)=>{
+    const title=module.querySelector('h2');
+    if(!title) return;
+    let toolbar=title.nextElementSibling;
+    if(!toolbar || !toolbar.classList.contains('module-toolbar')){
+      toolbar=document.createElement('div');
+      toolbar.className='module-toolbar';
+      title.insertAdjacentElement('afterend',toolbar);
+    }
+    if(toolbar.querySelector('[data-role="module-save"]')) return;
+    const button=document.createElement('button');
+    button.type='button';
+    button.className='btn';
+    button.textContent='Сохранить';
+    button.dataset.role='module-save';
+    button.addEventListener('click',saveState);
+    toolbar.appendChild(button);
+  });
+}
+
+function bindElementAutoCalc(element){
+  if(!element || element.dataset.autoCalcBound==='1') return;
+  element.addEventListener('input',scheduleAutoCalc);
+  element.addEventListener('change',scheduleAutoCalc);
+  element.dataset.autoCalcBound='1';
+}
+
+function bindAutoCalcInContainer(container){
+  if(!container) return;
+  container.querySelectorAll('input,select,textarea').forEach(bindElementAutoCalc);
+}
+
+function getRigPitRowCount(){
+  return el('rigPitTableBody')?.querySelectorAll('tr').length || 0;
+}
+
+function getRigSolidControlRowCount(){
+  return el('rigSolidsTableBody')?.querySelectorAll('tr').length || 0;
+}
+
+function getBhaRowCount(){
+  return el('bhaTableBody')?.querySelectorAll('tr').length || 0;
+}
+
+function getFluidAdditionalRowCount(){
+  const total=el('fluidAdditionalBody')?.querySelectorAll('tr').length || 0;
+  return Math.max(0,total-4);
+}
+
+function getInventoryRowCount(){
+  return el('inventoryProductBody')?.querySelectorAll('tr').length || 0;
+}
+
+function getAdditionalChargeRowCount(){
+  return el('additionalCostBody')?.querySelectorAll('tr').length || 0;
+}
+
+function getProductCatalogEntries(){
+  return [...document.querySelectorAll('#productCatalogBody tr')].map((row)=>{
+    const cells=row.querySelectorAll('td');
+    const name=cells[0]?.querySelector('input')?.value?.trim() || '';
+    const packaging=row.querySelector('[data-role="pl-packaging"]')?.value || '';
+    const packageWeight=Number(row.querySelector('[data-role="pl-package-weight"]')?.value || 0);
+    const pricePerTon=parseCurrencyValue(row.querySelector('[data-role="pl-price-ton"]')?.value || 0);
+    const pricePerUnitRaw=parseCurrencyValue(row.querySelector('[data-role="pl-price-unit"]')?.value || 0);
+    const unit=cells[2]?.querySelector('input')?.value?.trim() || '';
+    const normalizedName=canonicalChemicalName(name);
+    const resolvedPackaging=packaging || defaultPackaging(name,unit);
+    const resolvedWeight=packageWeight || defaultPackageWeight(resolvedPackaging);
+    const resolvedPricePerUnit=pricePerUnitRaw || computePricePerUnit(resolvedWeight, pricePerTon) || 0;
+    return {name,normalizedName,unit,packaging:resolvedPackaging,packageWeight:resolvedWeight,pricePerTon,pricePerUnit:resolvedPricePerUnit};
+  }).filter((item)=>item.name);
+}
+
+function getProductCatalogEntryByName(name){
+  const normalizedTarget=canonicalChemicalName(name);
+  return getProductCatalogEntries().find((item)=>item.name===name || item.normalizedName===normalizedTarget) || null;
+}
+
+function inventoryProductOptions(selected=''){
+  const options=['<option value="">Выберите продукт</option>'];
+  getProductCatalogEntries().forEach((item)=>{
+    const isSelected=item.name===selected ? ' selected' : '';
+    options.push(`<option value="${item.name}"${isSelected}>${item.name}</option>`);
+  });
+  return options.join('');
+}
+
+function createInventoryRow(index, values={}){
+  const product=values.product || '';
+  const packaging=values.packaging || '';
+  const start=values.start ?? 0;
+  const received=values.received ?? 0;
+  const receivedPrice=values.receivedPrice ?? 0;
+  const used=values.used ?? 0;
+  const rmnd=values.rmnd ?? 0;
+  const end=values.end ?? 0;
+  const reportCost=values.reportCost ?? 0;
+  const baseStart=values.baseStart ?? 0;
+  const mode=values.mode || 'initial';
+  return `<tr data-index="${index}">
+    <td>
+      <select id="inv_prod${index}" data-role="inv-product">${inventoryProductOptions(product)}</select>
+      <input id="inv_base${index}" type="hidden" value="${baseStart}">
+      <input id="inv_mode${index}" type="hidden" value="${mode}">
+    </td>
+    <td><input id="inv_pack${index}" class="ro" readonly value="${packaging}"></td>
+    <td><input id="inv_start${index}" class="ro" readonly value="${Number(start).toFixed(3)}"></td>
+    <td><input id="inv_recv${index}" type="number" step="0.001" value="${received}"></td>
+    <td><input id="inv_price${index}" class="ro" readonly value="${receivedPrice ? formatRubCurrency(receivedPrice) : ''}"></td>
+    <td><input id="inv_used${index}" type="number" step="0.001" value="${used}"></td>
+    <td><input id="inv_rmnd${index}" type="number" step="0.001" value="${rmnd}"></td>
+    <td><input id="inv_end${index}" class="ro" readonly value="${Number(end).toFixed(3)}"></td>
+    <td><input id="inv_cost${index}" class="ro" readonly value="${formatRubCurrency(Number(reportCost)||0)}"></td>
+  </tr>`;
+}
+
+function createAdditionalChargeRow(index, values={}){
+  const charge=values.charge || '';
+  const fluidSet=values.fluidSet || fv('fl_type') || '';
+  const quantity=values.quantity ?? 1;
+  const units=values.units || 'day(s)';
+  const unitPrice=values.unitPrice ?? 0;
+  const dailyCost=values.dailyCost ?? 0;
+  const breakdown=values.breakdown || 'Engineering/Services';
+  return `<tr data-index="${index}">
+    <td><input id="adc_charge${index}" value="${charge}"></td>
+    <td><input id="adc_fluid${index}" value="${fluidSet}"></td>
+    <td><input id="adc_qty${index}" type="number" step="0.01" value="${quantity}"></td>
+    <td><input id="adc_units${index}" value="${units}"></td>
+    <td><input id="adc_price${index}" value="${unitPrice ? formatRubCurrency(unitPrice) : ''}"></td>
+    <td><input id="adc_cost${index}" class="ro" readonly value="${formatRubCurrency(Number(dailyCost)||0)}"></td>
+    <td><input id="adc_breakdown${index}" value="${breakdown}"></td>
+  </tr>`;
+}
+
+function bindInventoryRow(row){
+  if(!row) return;
+  const productSelect=row.querySelector('[data-role="inv-product"]');
+  if(productSelect && productSelect.dataset.inventoryBound!=='1'){
+    productSelect.addEventListener('change',()=>{
+      syncInventoryRowProduct(row);
+      if(state.autoCalc) scheduleAutoCalc();
+    });
+    productSelect.dataset.inventoryBound='1';
+  }
+  bindAutoCalcInContainer(row);
+}
+
+function bindAdditionalChargeRow(row){
+  if(!row) return;
+  const index=row.dataset.index;
+  const priceInput=el(`adc_price${index}`);
+  if(priceInput && priceInput.dataset.additionalCurrencyBound!=='1'){
+    priceInput.addEventListener('focus',()=>{
+      const numeric=parseCurrencyValue(priceInput.value);
+      if(numeric>0) priceInput.value=numeric.toFixed(2);
+    });
+    priceInput.addEventListener('blur',()=>{
+      const numeric=parseCurrencyValue(priceInput.value);
+      priceInput.value=numeric>0 ? formatRubCurrency(numeric) : '';
+      checkInventory();
+    });
+    priceInput.dataset.additionalCurrencyBound='1';
+  }
+  bindAutoCalcInContainer(row);
+}
+
+function syncInventoryRowProduct(row){
+  if(!row) return;
+  const index=row.dataset.index;
+  const product=fv(`inv_prod${index}`);
+  const catalog=getProductCatalogEntryByName(product);
+  if(catalog){
+    el(`inv_pack${index}`).value=catalog.packaging || '';
+    el(`inv_price${index}`).value=catalog.pricePerUnit ? formatRubCurrency(catalog.pricePerUnit) : '';
+  }
+  else{
+    el(`inv_pack${index}`).value='';
+    el(`inv_price${index}`).value='';
+  }
+}
+
+function addInventoryRow(values={}){
+  const body=el('inventoryProductBody');
+  if(!body) return;
+  const index=getInventoryRowCount()+1;
+  body.insertAdjacentHTML('beforeend', createInventoryRow(index, values));
+  const row=body.lastElementChild;
+  bindInventoryRow(row);
+  syncInventoryRowProduct(row);
+  checkInventory();
+}
+
+function addAdditionalChargeRow(values={}){
+  const body=el('additionalCostBody');
+  if(!body) return;
+  const index=getAdditionalChargeRowCount()+1;
+  body.insertAdjacentHTML('beforeend', createAdditionalChargeRow(index, values));
+  const row=body.lastElementChild;
+  bindAdditionalChargeRow(row);
+  checkInventory();
+}
+
+function getInventoryRowsFromData(data){
+  const meta=data._meta||{};
+  let rowCount=Number(meta.inventoryRowCount||0);
+  if(!rowCount){
+    rowCount=Object.keys(data).filter((key)=>/^inv_prod\d+$/.test(key)).length;
+  }
+  return Array.from({length:rowCount},(_,offset)=>{
+    const index=offset+1;
+    return {
+      product:data[`inv_prod${index}`] || '',
+      packaging:data[`inv_pack${index}`] || '',
+      start:Number(data[`inv_start${index}`] || 0),
+      received:Number(data[`inv_recv${index}`] || 0),
+      receivedPrice:parseCurrencyValue(data[`inv_price${index}`] || 0),
+      used:Number(data[`inv_used${index}`] || 0),
+      rmnd:Number(data[`inv_rmnd${index}`] || 0),
+      end:Number(data[`inv_end${index}`] || 0),
+      reportCost:parseCurrencyValue(data[`inv_cost${index}`] || 0)
+    };
+  }).filter((item)=>item.product);
+}
+
+function getAdditionalChargeRowsFromData(data){
+  const meta=data._meta||{};
+  let rowCount=Number(meta.additionalChargeRowCount||0);
+  if(!rowCount){
+    rowCount=Object.keys(data).filter((key)=>/^adc_charge\d+$/.test(key)).length;
+  }
+  return Array.from({length:rowCount},(_,offset)=>{
+    const index=offset+1;
+    return {
+      charge:data[`adc_charge${index}`] || '',
+      fluidSet:data[`adc_fluid${index}`] || '',
+      quantity:Number(data[`adc_qty${index}`] || 0),
+      units:data[`adc_units${index}`] || '',
+      unitPrice:parseCurrencyValue(data[`adc_price${index}`] || 0),
+      dailyCost:parseCurrencyValue(data[`adc_cost${index}`] || 0),
+      breakdown:data[`adc_breakdown${index}`] || ''
+    };
+  }).filter((item)=>item.charge || item.unitPrice || item.quantity || item.breakdown);
+}
+
+function rollForwardInventoryFromData(data){
+  const rows=getInventoryRowsFromData(data);
+  while(getInventoryRowCount()<rows.length) addInventoryRow();
+  rows.forEach((item,offset)=>{
+    const index=offset+1;
+    const row=el('inventoryProductBody')?.querySelectorAll('tr')[offset];
+    if(!row) return;
+    el(`inv_prod${index}`).value=item.product;
+    el(`inv_base${index}`).value=item.end.toFixed(3);
+    el(`inv_mode${index}`).value='carryover';
+    el(`inv_recv${index}`).value='0';
+    el(`inv_used${index}`).value='0';
+    el(`inv_rmnd${index}`).value='0';
+    el(`inv_start${index}`).value=item.end.toFixed(3);
+    el(`inv_end${index}`).value=item.end.toFixed(3);
+    el(`inv_cost${index}`).value=formatRubCurrency(0);
+    syncInventoryRowProduct(row, false);
+  });
+  const additionalBody=el('additionalCostBody');
+  if(additionalBody) additionalBody.innerHTML='';
+  addAdditionalChargeRow();
+  el('cost_prev_products_cumulative').value=parseCurrencyValue(data.cost_products_cumulative_auto || data.inv_cumulative_auto || 0);
+  el('cost_prev_additional_cumulative').value=parseCurrencyValue(data.cost_additional_cumulative_auto || 0);
+  el('cost_prev_total_cumulative').value=parseCurrencyValue(data.cost_total_cumulative_auto || data.co_total_auto || 0);
+  checkInventory();
+}
+
+function createRigPitRow(index, values={}){
+  const name=values.name || `Емкость ${index}`;
+  const direct=values.direct || 'Да';
+  const shape=values.shape || 'Прямоугольная';
+  const volume=values.volume ?? 12;
+  return `<tr><td>${index}</td><td><input id="rig_pit_name${index}" value="${name}"></td><td><select id="rig_pit_direct${index}"><option${direct==='Да'?' selected':''}>Да</option><option${direct==='Нет'?' selected':''}>Нет</option></select></td><td><input id="rig_pit_shape${index}" value="${shape}"></td><td><input id="rig_pit_vol${index}" type="number" step="0.1" value="${volume}"></td></tr>`;
+}
+
+function createRigSolidControlRow(index, values={}){
+  const type=values.type || 'Шейкер';
+  const make=values.make || 'Производитель';
+  const model=values.model || `Модель ${index}`;
+  const cones=values.cones ?? 0;
+  const coneSize=values.coneSize ?? 0;
+  const screens=values.screens ?? 0;
+  const layout=values.layout || 'Линейно';
+  return `<tr><td>${index}</td><td><input id="rig_sc_type${index}" value="${type}"></td><td><input id="rig_sc_make${index}" value="${make}"></td><td><input id="rig_sc_model${index}" value="${model}"></td><td><input id="rig_sc_cones${index}" type="number" value="${cones}"></td><td><input id="rig_sc_cone_size${index}" type="number" value="${coneSize}"></td><td><input id="rig_sc_screens${index}" type="number" value="${screens}"></td><td><input id="rig_sc_layout${index}" value="${layout}"></td></tr>`;
+}
+
+function addRigPitRow(values={}){
+  const body=el('rigPitTableBody');
+  if(!body) return;
+  const index=getRigPitRowCount()+1;
+  body.insertAdjacentHTML('beforeend', createRigPitRow(index, values));
+  bindAutoCalcInContainer(body.lastElementChild);
+  ensureVolumePitVisualization();
+  if(state.autoCalc) scheduleAutoCalc();
+}
+
+function addRigSolidControlRow(values={}){
+  const body=el('rigSolidsTableBody');
+  if(!body) return;
+  const index=getRigSolidControlRowCount()+1;
+  body.insertAdjacentHTML('beforeend', createRigSolidControlRow(index, values));
+  bindAutoCalcInContainer(body.lastElementChild);
+  if(state.autoCalc) scheduleAutoCalc();
+}
+
+function createBhaRow(index, values={}){
+  const type=values.type || `Элемент ${index}`;
+  const length=values.length ?? 1;
+  const od=values.od ?? 127;
+  const id=values.id ?? 0;
+  return `<tr><td>${index}</td><td><input id="bha_type${index}" value="${type}"></td><td><input id="bha_len${index}" type="number" step="0.01" value="${length}"></td><td><input id="bha_od${index}" type="number" step="0.01" value="${od}"></td><td><input id="bha_id${index}" type="number" step="0.01" value="${id}"></td></tr>`;
+}
+
+function addBhaRow(values={}){
+  const body=el('bhaTableBody');
+  if(!body) return;
+  const index=getBhaRowCount()+1;
+  body.insertAdjacentHTML('beforeend', createBhaRow(index, values));
+  bindAutoCalcInContainer(body.lastElementChild);
+  if(state.autoCalc) scheduleAutoCalc();
+}
+
+function createFluidAdditionalRow(index, values={}){
+  const name=values.name || `Доп. параметр ${index}`;
+  const value=values.value || '';
+  const unit=values.unit || '';
+  return `<tr><td><input id="fl_add_name${index}" value="${name}"></td><td><input id="fl_add_value${index}" value="${value}"></td><td><input id="fl_add_unit${index}" value="${unit}"></td></tr>`;
+}
+
+function addFluidAdditionalRow(values={}){
+  const body=el('fluidAdditionalBody');
+  if(!body) return;
+  const index=getFluidAdditionalRowCount()+1;
+  body.insertAdjacentHTML('beforeend', createFluidAdditionalRow(index, values));
+  bindAutoCalcInContainer(body.lastElementChild);
+}
+
+function getLoadCandidates(includePrevious=true){
+  const candidates=[{key:KEY,label:isStandaloneCalculator ? 'calculator' : dmrId}];
+  const prevId=previousDmrId();
+  if(includePrevious && prevId) candidates.push({key:dmrKey(prevId),label:prevId});
+  if(includePrevious && dmrIndex===1) candidates.push({key:LEGACY_KEY,label:'legacy'});
+  return candidates;
+}
+
+function loadStateFromCandidates(candidates, silent=false){
+  for(const candidate of candidates){
+    const raw=localStorage.getItem(candidate.key);
+    if(!raw) continue;
+    try{
+      const data=JSON.parse(raw);
+      applyState(data);
+      if(candidate.key!==KEY) rollForwardInventoryFromData(data);
+      if(el('auto_calc')) el('auto_calc').checked=state.autoCalc;
+      runQC();
+      if(state.autoCalc) scheduleAutoCalc();
+      if(!silent){
+        const message=isStandaloneCalculator
+          ? (candidate.key===KEY ? 'Расчетная программа загружена.' : `Расчетная программа инициализирована из ${candidate.label}.`)
+          : (candidate.key===KEY ? `${dmrId} загружен.` : `${dmrId} инициализирован из ${candidate.label}.`);
+        alert(message);
+      }
+      return true;
+    }
+    catch(e){
+      if(!silent) alert('Ошибка загрузки state.');
+      return false;
+    }
+  }
+  if(!silent) alert('Сохранение не найдено.');
+  return false;
+}
+
+function openMod(id,btn){
+  document.querySelectorAll('.module').forEach(m=>m.classList.remove('active'));
+  document.querySelectorAll('.mod-btn').forEach(b=>b.classList.remove('active'));
+  el('m_'+id).classList.add('active'); btn.classList.add('active');
+}
+
+function openModById(id){
+  const btn=[...document.querySelectorAll('.mod-btn')].find(b=>b.dataset.mod===id);
+  if(btn) openMod(id,btn);
+}
+
+function tagButtonsByRole(){
+  const autoKeywords=['calc','check','validate','reconcile','build','run','generateReport','exchangeServer','exportDIMS','printPDF','downloadMudReportPdf','openMudReportPrintView'];
+  document.querySelectorAll('button.btn').forEach(b=>{
+    b.classList.remove('tag-edit','tag-auto');
+    const action=(b.getAttribute('onclick')||'').toLowerCase();
+    const isAuto=autoKeywords.some(k=>action.includes(k.toLowerCase()));
+    b.classList.add(isAuto?'tag-auto':'tag-edit');
+    b.title=isAuto?'Автоматический расчет/проверка':'Редактируемое действие';
+  });
+}
+
+let autoCalcTimer=null;
+function scheduleAutoCalc(){
+  if(!state.autoCalc) return;
+  if(autoCalcTimer) clearTimeout(autoCalcTimer);
+  autoCalcTimer=setTimeout(()=>{
+    validateWell();
+    calcGeometry();
+    runTestingCheck();
+    calcBit();
+    calcTimeBreakdown();
+    calcBitHydraulics();
+    calcWaterBaseProperties();
+    calcAdditionalFluidProperties();
+    checkFluidProps();
+    calcProductList();
+    checkInventory();
+    calcCosting();
+    calcVolumeDelta();
+    reconcileLG();
+    ensureVolumePitVisualization();
+    calcHyd();
+    runZeroDefects();
+    buildMudReport();
+    buildAudit();
+    runQC();
+  },200);
+}
+
+function bindAutoCalc(){
+  const selectors=[
+    '#m_well input,#m_well select',
+    '#m_rig input,#m_rig select,#m_rig textarea',
+    '#m_casing input,#m_casing select',
+    '#m_testing input,#m_testing select,#m_testing textarea',
+    '#m_bit input,#m_bit select',
+    '#m_bha input,#m_bha select,#m_bha textarea',
+    '#m_fluid input,#m_fluid select',
+    '#m_time input,#m_time select',
+    '#m_products input,#m_products select',
+    '#m_inv input,#m_inv select',
+    '#m_vol input,#m_vol select,#m_vol textarea',
+    '#m_hyd input,#m_hyd select',
+    '#m_zero input,#m_zero select,#m_zero textarea',
+    '#m_mud input,#m_mud select,#m_mud textarea',
+    '#m_audit input,#m_audit select,#m_audit textarea'
+  ];
+  document.querySelectorAll(selectors.join(',')).forEach(bindElementAutoCalc);
+}
+
+function toggleAutoCalc(){
+  state.autoCalc=!!el('auto_calc').checked;
+  if(state.autoCalc) scheduleAutoCalc();
+}
+
+function openReportManager(){
+  openModById('report');
+}
+
+function openPrintManager(){
+  openModById('print');
+}
+
+function validateWell(){
+  const name=fv('well_name').trim(), api=fv('well_api').trim(), op=fv('well_operator').trim();
+  const md=fn('well_md'), tvd=fn('well_tvd');
+  state.wellOk=!!name&&!!api&&!!op&&md>0&&tvd>0&&md>=tvd;
+  const margin=md-tvd;
+  el('well_status_auto').value=state.wellOk?'PASS':'FAIL';
+  el('well_margin_auto').value=margin.toFixed(2);
+  const out=el('well_out'); out.style.display='';
+  out.innerHTML=row('Well',name)+row('API',api)+row('Operator',op)+row('MD/TVD',`${md}/${tvd}`,'m')+
+    `<div class="orow"><span>Validation</span><span class="mono ${state.wellOk?'ok':'bad'}">${state.wellOk?'PASS':'FAIL'}</span></div>`;
+}
+
+function calcGeometry(){
+  const diameters=[fn('sec_d1'),fn('sec_d2'),fn('sec_d3'),fn('sec_d4')].filter(v=>v>0);
+  const valid=diameters.every((diameter,index)=>index===0 || diameters[index-1]>diameter);
+  const out=el('casing_out'); out.style.display='';
+  out.innerHTML=row('Hole diameters',diameters.join(' > '),'mm')+
+    `<div class="orow"><span>Geometry trend</span><span class="mono ${valid?'ok':'warn'}">${valid?'OK':'CHECK'}</span></div>`;
+}
+
+function calcBit(){
+  const from=fn('bit_from'),to=fn('bit_to'),h=fn('bit_h'),npt=fn('bit_npt');
+  const m=Math.max(0,to-from),rop=h>0?m/h:0;
+  el('bit_footage_auto').value=m.toFixed(2);
+  el('bit_rop_auto').value=rop.toFixed(2);
+  const out=el('bit_out'); out.style.display='';
+  out.innerHTML=row('Footage',m.toFixed(1),'m')+row('ROP',rop.toFixed(2),'m/h')+row('NPT',npt.toFixed(1),'h')+
+    `<div class="orow"><span>Performance</span><span class="mono ${rop>=15?'ok':'warn'}">${rop>=15?'GOOD':'WATCH'}</span></div>`;
+}
+
+function parseWorkDateToDate(value){
+  const [day,month,year]=(value||'').split('.').map(Number);
+  if(day && month && year) return new Date(year,month-1,day,23,30,0,0);
+  const fallback=new Date();
+  fallback.setHours(23,30,0,0);
+  return fallback;
+}
+
+function formatRuDateTime(dateValue){
+  const date=dateValue instanceof Date ? dateValue : new Date(dateValue);
+  const day=String(date.getDate()).padStart(2,'0');
+  const month=String(date.getMonth()+1).padStart(2,'0');
+  const year=date.getFullYear();
+  const hours=String(date.getHours()).padStart(2,'0');
+  const minutes=String(date.getMinutes()).padStart(2,'0');
+  return `${day}.${month}.${year} ${hours}:${minutes}`;
+}
+
+function calcTimeBreakdown(){
+  const manualIds=[
+    'tb_rig_up_down','tb_drilling_actual','tb_reaming','tb_coring','tb_cond_mud_circ','tb_tripping',
+    'tb_rig_service','tb_rig_repair','tb_cut_drill_line','tb_dev_survey','tb_wireline_logs','tb_run_casing_cement',
+    'tb_wait_cement','tb_nipple_bop','tb_test_bop','tb_dst','tb_plug_back','tb_squeeze_cement',
+    'tb_fishing','tb_dir_work','tb_safety_meeting','tb_lcm_pill_soak','tb_drill_out','tb_drive_20_csg','tb_misc_time'
+  ];
+  const totalHours=manualIds.reduce((sum,id)=>sum+Math.max(0,fn(id)),0);
+  const rotatingHours=Math.max(0,fn('tb_drilling_actual')+fn('tb_drill_out')+fn('tb_coring')+fn('tb_dir_work'));
+  const effectiveRotating=Math.max(0.0001,rotatingHours-fn('tb_drill_out'));
+  const drilledMeters=Math.max(0,fn('bit_to')-fn('bit_from'));
+  const avgRop=drilledMeters>0 ? drilledMeters/effectiveRotating : 0;
+
+  const reportEnd=parseWorkDateToDate(workDate);
+  const reportStart=new Date(reportEnd.getTime()-24*60*60*1000);
+  const reportHours=(reportEnd.getTime()-reportStart.getTime())/3600000;
+  const balanced=Math.abs(totalHours-reportHours)<=0.1;
+
+  el('tb_rotating_hours_auto').value=rotatingHours.toFixed(2);
+  el('tb_avg_rop_auto').value=avgRop.toFixed(2);
+  el('tb_report_start_auto').value=formatRuDateTime(reportStart);
+  el('tb_report_end_auto').value=formatRuDateTime(reportEnd);
+  el('tb_report_hours_auto').value=reportHours.toFixed(2);
+  el('tb_report_total_auto').value=totalHours.toFixed(2);
+  el('tb_balance_status_auto').value=balanced ? 'OK' : 'ПРОВЕРИТЬ';
+
+  const out=el('tb_out');
+  if(out){
+    out.style.display='block';
+    out.innerHTML=
+      row('Время вращения долота',rotatingHours.toFixed(2),'ч')+
+      row('Средняя ROP',avgRop.toFixed(2),'м/час')+
+      row('Часы отчета',reportHours.toFixed(2),'ч')+
+      row('Сумма по операциям',totalHours.toFixed(2),'ч')+
+      `<div class="orow"><span>Сходимость суточной сводки</span><span class="mono ${balanced?'ok':'warn'}">${balanced?'OK':'ПРОВЕРИТЬ'}</span></div>`;
+  }
+}
+
+function calcBitHydraulics(){
+  const nozzles=[1,2,3,4].map((index)=>({qty:fn(`bh_qty${index}`),diameter:fn(`bh_dia${index}`)})).filter((item)=>item.qty>0 && item.diameter>0);
+  const totalAreaMm2=nozzles.reduce((sum,item)=>sum + (Math.PI/4)*item.qty*Math.pow(item.diameter,2),0);
+  const totalAreaM2=totalAreaMm2/1000000;
+  const totalAreaCm2=totalAreaMm2/100;
+  const flowLps=fn('hy_q')/60;
+  const flowM3s=flowLps/1000;
+  const annularDpMpa=fn('hy_dp');
+  const density=fn('bh_mud_weight') || (fn('fl_rho')*1000);
+  const dischargeCoefficient=0.95;
+  const jetVelocity=(totalAreaM2>0 && flowM3s>0)?flowM3s/totalAreaM2:0;
+  const bitPressureDrop=(totalAreaM2>0 && flowM3s>0 && density>0)
+    ? ((density/2)*Math.pow(flowM3s/(dischargeCoefficient*totalAreaM2),2))/1000000
+    : 0;
+  const pumpPressure=bitPressureDrop+annularDpMpa;
+  const hydraulicPowerKw=bitPressureDrop*flowLps;
+  const hhsiMetric=totalAreaCm2>0 ? hydraulicPowerKw/totalAreaCm2 : 0;
+  const impactForce=(density>0 && flowM3s>0 && jetVelocity>0) ? density*flowM3s*jetVelocity : 0;
+
+  el('bh_tfa_mm2_auto').value=totalAreaMm2.toFixed(2);
+  el('bh_tfa_cm2_auto').value=totalAreaCm2.toFixed(3);
+  el('bh_pump_output_auto').value=flowLps.toFixed(2);
+  el('bh_pump_pressure_auto').value=pumpPressure.toFixed(2);
+  el('bh_bit_pressure_drop_auto').value=bitPressureDrop.toFixed(2);
+  el('bh_hhsi_auto').value=hhsiMetric.toFixed(3);
+  el('bh_jet_velocity_auto').value=jetVelocity.toFixed(2);
+  el('bh_impact_force_auto').value=impactForce.toFixed(2);
+
+  const out=el('bh_formula_out');
+  if(out){
+    out.style.display='block';
+    out.innerHTML=
+      row('TFA',totalAreaMm2.toFixed(2),'мм²')+
+      row('Расход насосов',flowLps.toFixed(2),'л/с')+
+      row('Скорость струи',jetVelocity.toFixed(2),'м/с')+
+      row('Перепад давления на долоте',bitPressureDrop.toFixed(2),'МПа')+
+      row('Давление на насосе',pumpPressure.toFixed(2),'МПа')+
+      row('Удельная гидромощность',hhsiMetric.toFixed(3),'кВт/см²')+
+      row('Сила удара струи',impactForce.toFixed(2),'Н');
+  }
+}
+
+function calcWaterBaseProperties(){
+  const retortOil=fn('fl_retort_oil');
+  const retortWater=fn('fl_retort_water');
+  const weightMaterialSg=fn('fl_wb_weight_sg') || 4.2;
+  const drilledSolidsSg=fn('fl_wb_drilled_sg') || 2.6;
+  const bariteKgM3=fn('pc1');
+  const limeKgM3=fn('pc3');
+
+  const correctedSolidsPct=Math.max(0, 100-retortOil-retortWater);
+  const hgsPct=Math.max(0, (bariteKgM3/(weightMaterialSg*1000))*100);
+  const lgsPct=Math.max(0, correctedSolidsPct-hgsPct);
+  const hgsMass=hgsPct/100*weightMaterialSg*1000;
+  const lgsMass=lgsPct/100*drilledSolidsSg*1000;
+  const denominator=(hgsPct/100)/Math.max(weightMaterialSg,0.001) + (lgsPct/100)/Math.max(drilledSolidsSg,0.001);
+  const asg=denominator>0 ? (correctedSolidsPct/100)/denominator : 0;
+
+  el('fl_wb_lime_auto').value=limeKgM3.toFixed(2);
+  el('fl_wb_corrected_solids_auto').value=correctedSolidsPct.toFixed(1);
+  el('fl_wb_lgs_pct_auto').value=lgsPct.toFixed(1);
+  el('fl_wb_hgs_pct_auto').value=hgsPct.toFixed(1);
+  el('fl_wb_asg_auto').value=asg.toFixed(3);
+  el('fl_wb_lgs_mass_auto').value=lgsMass.toFixed(2);
+  el('fl_wb_hgs_mass_auto').value=hgsMass.toFixed(2);
+
+  const out=el('fl_wb_out');
+  if(out){
+    out.style.display='block';
+    out.innerHTML=
+      row('Содержание извести',limeKgM3.toFixed(2),'кг/м3')+
+      row('Скорректированная твердая фаза',correctedSolidsPct.toFixed(1),'% об.')+
+      row('LGS',lgsPct.toFixed(1),'% об.')+
+      row('HGS',hgsPct.toFixed(1),'% об.')+
+      row('LGS масса',lgsMass.toFixed(2),'кг/м3')+
+      row('HGS масса',hgsMass.toFixed(2),'кг/м3')+
+      row('ASG',asg.toFixed(3),'SG');
+  }
+}
+
+function calcAdditionalFluidProperties(){
+  const theta600=fn('fl_rheo_600');
+  const theta300=fn('fl_rheo_300');
+  const theta6=fn('fl_rheo_6');
+  const theta3=fn('fl_rheo_3');
+  const pfMfParts=String(fv('fl_wb_pf_mf') || '0 / 0').split('/').map((part)=>Number(String(part).trim().replace(',','.')) || 0);
+  const pf=pfMfParts[0] || 0;
+  const mf=pfMfParts[1] || 0;
+
+  const carbonate=Math.max(0,(mf-pf)*1200000);
+  const tau0=Math.max(0,((2*theta3)-theta6)/6.0);
+  const n=theta600>0 && theta300>0 ? 3.32*Math.log10(theta600/theta300) : 0;
+  const k=n>0 ? theta300/Math.pow(511,n) : 0;
+
+  el('fl_add_carbonate_auto').value=carbonate.toFixed(3);
+  el('fl_add_tau0_auto').value=tau0.toFixed(3);
+  el('fl_add_k_auto').value=k.toFixed(3);
+  el('fl_add_n_auto').value=n.toFixed(3);
+}
+
+function runTestingCheck(){
+  const from=fn('wt_from'),to=fn('wt_to'),p=fn('wt_p'),h=fn('wt_h');
+  const interval=Math.max(0,to-from);
+  const ok=interval>0 && p>0 && h>0;
+  el('wt_int_auto').value=interval.toFixed(2);
+  el('wt_status_auto').value=ok?'PASS':'CHECK';
+  const out=el('wt_out'); out.style.display='';
+  out.innerHTML=row('Interval',interval.toFixed(1),'m')+row('Pressure',p.toFixed(1),'MPa')+row('Duration',h.toFixed(1),'h')+
+    `<div class="orow"><span>Testing status</span><span class="mono ${ok?'ok':'warn'}">${ok?'PASS':'CHECK'}</span></div>`;
+}
+
+function checkFluidProps(){
+  const rho=fn('fl_rho'),flt=fn('fl_flt');
+  const theta600=fn('fl_rheo_600');
+  const theta300=fn('fl_rheo_300');
+  const pv=Math.max(0, theta600-theta300);
+  const ypLbPer100Ft2=Math.max(0, theta300-pv);
+  const lim=17*rho;
+  el('fl_pv').value=pv.toFixed(0);
+  el('fl_yp').value=ypLbPer100Ft2.toFixed(1);
+  el('fl_pv_lim_auto').value=lim.toFixed(2);
+  el('fl_pv_status_auto').value=pv<=lim?'OK':'HIGH';
+  const out=el('fluid_out'); out.style.display='';
+  out.innerHTML=row('Плотность',rho.toFixed(2),'г/см3')+row('Лимит PV',lim.toFixed(1),'cP')+
+    row('PV по реометру',pv.toFixed(0),'cP')+row('YP по реометру',ypLbPer100Ft2.toFixed(1),'lbs/100ft2')+
+    row('Тип раствора',fv('fl_type'))+row('Источник пробы',fv('fl_sample_source'))+
+    `<div class="orow"><span>Проверка PV</span><span class="mono ${pv<=lim?'ok':'warn'}">${pv<=lim?'OK':'HIGH'}</span></div>`+
+    `<div class="orow"><span>Проверка фильтрации</span><span class="mono ${flt<=8?'ok':'warn'}">${flt<=8?'OK':'WATCH'}</span></div>`;
+}
+
+function calcProductList(){
+  const sg=[...document.querySelectorAll('#productCatalogBody [data-role="pl-sg"]')].map((input)=>Number(input.value||0));
+  const missing=sg.filter(v=>!(v>0)).length;
+  const ok=missing===0;
+  el('pl_missing_auto').value=String(missing);
+  el('pl_status_auto').value=ok?'PASS':'FAIL';
+  const out=el('pl_out'); out.style.display='';
+  out.innerHTML=row('Items',String(sg.length))+row('Missing SG',String(missing))+`<div class="orow"><span>WS SG rule</span><span class="mono ${ok?'ok':'bad'}">${ok?'PASS':'FAIL'}</span></div>`;
+}
+
+function checkInventory(){
+  const rows=[...document.querySelectorAll('#inventoryProductBody tr')];
+  const additionalRows=[...document.querySelectorAll('#additionalCostBody tr')];
+  const prevProductsCumulative=parseCurrencyValue(fv('cost_prev_products_cumulative'));
+  const prevAdditionalCumulative=parseCurrencyValue(fv('cost_prev_additional_cumulative'));
+  const prevTotalCumulative=parseCurrencyValue(fv('cost_prev_total_cumulative'));
+  let productDaily=0;
+  rows.forEach((row)=>{
+    const index=row.dataset.index;
+    syncInventoryRowProduct(row);
+    const mode=fv(`inv_mode${index}`) || 'initial';
+    const baseStart=Math.max(0,fn(`inv_base${index}`));
+    const received=Math.max(0,fn(`inv_recv${index}`));
+    const receivedPrice=Math.max(0,parseCurrencyValue(fv(`inv_price${index}`)));
+    const used=Math.max(0,fn(`inv_used${index}`));
+    const rmnd=Math.max(0,fn(`inv_rmnd${index}`));
+    const startQty=mode==='carryover' ? baseStart : received;
+    const endQty=Math.max(0, startQty + (mode==='carryover' ? received : 0) - used - rmnd);
+    const reportCost=received*receivedPrice;
+    el(`inv_start${index}`).value=startQty.toFixed(3);
+    el(`inv_end${index}`).value=endQty.toFixed(3);
+    el(`inv_cost${index}`).value=formatRubCurrency(reportCost);
+    productDaily+=reportCost;
+  });
+
+  let additionalDaily=0;
+  additionalRows.forEach((row)=>{
+    const index=row.dataset.index;
+    const quantity=Math.max(0,fn(`adc_qty${index}`));
+    const unitPrice=Math.max(0,parseCurrencyValue(fv(`adc_price${index}`)));
+    const dailyCost=quantity*unitPrice;
+    el(`adc_cost${index}`).value=formatRubCurrency(dailyCost);
+    additionalDaily+=dailyCost;
+  });
+
+  const productCumulative=prevProductsCumulative+productDaily;
+  const additionalCumulative=prevAdditionalCumulative+additionalDaily;
+  const totalDaily=productDaily+additionalDaily;
+  const totalCumulative=productCumulative+additionalCumulative;
+
+  state.costTotal=totalCumulative;
+  el('cost_products_daily_auto').value=formatRubCurrency(productDaily);
+  el('cost_products_cumulative_auto').value=formatRubCurrency(productCumulative);
+  el('cost_total_daily_auto').value=formatRubCurrency(totalDaily);
+  el('cost_total_cumulative_auto').value=formatRubCurrency(totalCumulative);
+  el('inv_report_total_auto').value=formatRubCurrency(productDaily);
+  el('inv_cumulative_auto').value=formatRubCurrency(productCumulative);
+  el('inv_diff_auto').value='0.00';
+  el('co_total_auto').value=formatRubCurrency(totalCumulative);
+  el('cost_additional_daily_auto').value=formatRubCurrency(additionalDaily);
+  el('cost_additional_cumulative_auto').value=formatRubCurrency(additionalCumulative);
+  const out=el('inv_outbox');
+  out.style.display='';
+  out.innerHTML=row('Строк в inventory',String(rows.length))+row('Продукты за сутки',formatRubCurrency(productDaily))+row('Доп. расходы за сутки',formatRubCurrency(additionalDaily))+row('Total cost за сутки',formatRubCurrency(totalDaily))+
+    `<div class="orow"><span>Инвентарь</span><span class="mono ok">OK</span></div>`;
+  const costOut=el('cost_out');
+  if(costOut){
+    costOut.style.display='';
+    costOut.innerHTML=row('Продукты кумулятивно',formatRubCurrency(productCumulative))+row('Доп. расходы кумулятивно',formatRubCurrency(additionalCumulative))+row('Total cost кумулятивно',formatRubCurrency(totalCumulative));
+  }
+}
+
+function calcCosting(){
+  checkInventory();
+}
+
+function getRigPitVisualizationData(){
+  const pits=[];
+  for(let index=1; index<=getRigPitRowCount(); index++){
+    const nameInput=el(`rig_pit_name${index}`);
+    const volumeInput=el(`rig_pit_vol${index}`);
+    if(!nameInput && !volumeInput) continue;
+    pits.push({
+      index,
+      name:(nameInput?.value || `Емкость ${index}`).trim() || `Емкость ${index}`,
+      capacity:Math.max(0, Number(volumeInput?.value) || 0)
+    });
+  }
+  return pits;
+}
+
+function getPitCurrentInputId(index){
+  return `vo_pit_current${index}`;
+}
+
+function ensureVolumePitVisualization(){
+  const host=el('voPitVisualization');
+  if(!host) return;
+  const pits=getRigPitVisualizationData();
+  const existingIndexes=[...host.querySelectorAll('.pit-visual-card')].map(card=>Number(card.dataset.index));
+  const previousValues={};
+  existingIndexes.forEach(index=>{
+    const input=el(getPitCurrentInputId(index));
+    if(input) previousValues[index]=input.value;
+  });
+  const needsRebuild=existingIndexes.length!==pits.length
+    || pits.some((pit, position)=>existingIndexes[position]!==pit.index || !el(getPitCurrentInputId(pit.index)));
+  if(needsRebuild){
+    if(!pits.length){
+      host.innerHTML='<div class="small">Добавьте емкости в разделе оборудования бурового станка, и здесь появится их визуализация.</div>';
+    }else{
+      host.innerHTML=pits.map(pit=>`
+        <div class="pit-visual-card" data-index="${pit.index}">
+          <div class="pit-visual-head">
+            <div class="pit-visual-name"></div>
+            <div class="pit-visual-capacity mono"></div>
+          </div>
+          <label>Объем, м3</label>
+          <input id="${getPitCurrentInputId(pit.index)}" type="number" step="0.1" min="0" value="${previousValues[pit.index] ?? '0'}">
+          <div class="pit-visual-tank-wrap">
+            <div class="pit-visual-tank">
+              <div class="pit-visual-fill"></div>
+              <div class="pit-visual-level">0%</div>
+            </div>
+          </div>
+          <div class="pit-visual-meta"><span>Текущий: 0.0 м3</span><span>Свободно: 0.0 м3</span></div>
+        </div>`).join('');
+      bindAutoCalcInContainer(host);
+    }
+  }
+  if(!pits.length){
+    if(el('vo_pit_capacity_total_auto')) el('vo_pit_capacity_total_auto').value='0.0';
+    if(el('vo_pit_current_total_auto')) el('vo_pit_current_total_auto').value='0.0';
+    if(el('vo_pit_vs_system_auto')) el('vo_pit_vs_system_auto').value='0.0';
+    return;
+  }
+  const maxCapacity=Math.max(...pits.map(pit=>pit.capacity), 1);
+  let capacityTotal=0;
+  let currentTotal=0;
+  pits.forEach(pit=>{
+    const card=host.querySelector(`.pit-visual-card[data-index="${pit.index}"]`);
+    if(!card) return;
+    const input=el(getPitCurrentInputId(pit.index));
+    const rawCurrent=Math.max(0, Number(input?.value) || 0);
+    const current=Math.min(rawCurrent, pit.capacity || rawCurrent);
+    const fillPct=pit.capacity>0 ? Math.max(0, Math.min(100, current/pit.capacity*100)) : 0;
+    const freeVolume=Math.max(pit.capacity-rawCurrent, 0);
+    const scale=Math.max(0.38, Math.min(1, pit.capacity/maxCapacity));
+    capacityTotal+=pit.capacity;
+    currentTotal+=rawCurrent;
+    card.style.setProperty('--pit-scale', scale.toFixed(3));
+    if(input){
+      if(pit.capacity>0) input.max=String(pit.capacity);
+      else input.removeAttribute('max');
+    }
+    const nameNode=card.querySelector('.pit-visual-name');
+    const capacityNode=card.querySelector('.pit-visual-capacity');
+    const tankNode=card.querySelector('.pit-visual-tank');
+    const levelNode=card.querySelector('.pit-visual-level');
+    const metaNode=card.querySelector('.pit-visual-meta');
+    if(nameNode) nameNode.textContent=pit.name;
+    if(capacityNode) capacityNode.textContent=`${pit.capacity.toFixed(1)} м3`;
+    if(tankNode) tankNode.style.setProperty('--pit-fill', `${fillPct.toFixed(1)}%`);
+    if(levelNode) levelNode.textContent=`${fillPct.toFixed(0)}%`;
+    if(metaNode) metaNode.innerHTML=`<span>Текущий: ${rawCurrent.toFixed(1)} м3</span><span class="${rawCurrent>pit.capacity?'pit-visual-over':''}">Свободно: ${freeVolume.toFixed(1)} м3</span>`;
+  });
+  if(el('vo_pit_capacity_total_auto')) el('vo_pit_capacity_total_auto').value=capacityTotal.toFixed(1);
+  if(el('vo_pit_current_total_auto')) el('vo_pit_current_total_auto').value=currentTotal.toFixed(1);
+  const balance=currentTotal-fn('vo_cur');
+  const balanceField=el('vo_pit_vs_system_auto');
+  if(balanceField){
+    balanceField.value=balance.toFixed(1);
+    balanceField.classList.toggle('fail', Math.abs(balance)>0.1);
+  }
+}
+
+function calcVolumeDelta(){
+  const prev=fn('vo_prev'),cur=fn('vo_cur');
+  state.volDelta=cur-prev;
+  el('vo_delta_auto').value=state.volDelta.toFixed(2);
+  const out=el('vol_out'); out.style.display='';
+  out.innerHTML=row('Prev',prev.toFixed(2),'m3')+row('Current',cur.toFixed(2),'m3')+row('Net change',state.volDelta.toFixed(2),'m3');
+  ensureVolumePitVisualization();
+}
+
+function reconcileLG(){
+  const gain=fn('lg_gain'),loss=fn('lg_loss');
+  state.docDelta=gain-loss;
+  el('lg_doc_auto').value=state.docDelta.toFixed(2);
+  const out=el('lg_out'); out.style.display='';
+  if(state.volDelta===null){ el('lg_diff_auto').value='N/A'; out.innerHTML='<div class="bad">Сначала посчитайте Volumes.</div>'; return; }
+  const diff=Math.abs(state.volDelta-state.docDelta);
+  el('lg_diff_auto').value=diff.toFixed(3);
+  const ok=diff<0.01;
+  out.innerHTML=row('Documented change',state.docDelta.toFixed(2),'m3')+row('Difference',diff.toFixed(3),'m3')+
+    `<div class="orow"><span>Blocking rule</span><span class="mono ${ok?'ok':'bad'}">${ok?'PASS':'FAIL'}</span></div>`;
+}
+
+function getHydSectionAtDepth(depthMd){
+  const sections=[1,2,3,4].map(index=>({
+    from:fn(`sec_f${index}`),
+    to:fn(`sec_t${index}`),
+    diameter:fn(`sec_d${index}`)
+  })).filter(section=>section.diameter>0);
+  const normalized=sections.map(section=>({
+    ...section,
+    start:Math.min(section.from,section.to),
+    end:Math.max(section.from,section.to)
+  }));
+  return normalized.find(section=>depthMd>=section.start && depthMd<=section.end)
+    || normalized.find(section=>depthMd<=section.end)
+    || normalized[normalized.length-1]
+    || {diameter:0,start:0,end:0};
+}
+
+function getHydActiveCasingShoe(depthMd){
+  const shoes=[fn('cs_tv1'),fn('cs_tv2'),fn('cs_tv3'),fn('cs_tv4')].filter(value=>value>0).sort((a,b)=>a-b);
+  return shoes.filter(value=>value<=depthMd).pop() || shoes[shoes.length-1] || 0;
+}
+
+function getHydBhaSummary(holeSizeMm=0){
+  const body=el('bhaTableBody');
+  const rowCount=body ? body.querySelectorAll('tr').length : 0;
+  let totalLen=0;
+  let maxOd=0;
+  let bitOd=fn('bha_od1') || holeSizeMm;
+  let hasMotor=false;
+  for(let index=1; index<=rowCount; index+=1){
+    const type=String(fv(`bha_type${index}`)||'').toLowerCase();
+    const len=fn(`bha_len${index}`);
+    const od=fn(`bha_od${index}`);
+    totalLen+=Math.max(0,len);
+    maxOd=Math.max(maxOd,od);
+    if(index===1 && od>0) bitOd=od;
+    if(type.includes('взд') || type.includes('motor') || type.includes('mud motor')) hasMotor=true;
+  }
+  return {totalLen,maxOd:maxOd||bitOd||holeSizeMm,bitOd:bitOd||holeSizeMm,hasMotor};
+}
+
+function estimateHydDpOd(holeSizeMm){
+  if(holeSizeMm>=250) return 127;
+  if(holeSizeMm>=170) return 127;
+  if(holeSizeMm>=140) return 88.9;
+  return 73;
+}
+
+function estimateHydDpId(holeSizeMm){
+  if(holeSizeMm>=250) return 108.6;
+  if(holeSizeMm>=170) return 108.6;
+  if(holeSizeMm>=140) return 76.2;
+  return 62;
+}
+
+function getHydPumpRows(){
+  return [1,2].map(index=>{
+    const type=String(fv(`hy_pump_type${index}`)||fv(`rig_pump_style${index}`)||'Triplex');
+    const model=String(fv(`hy_pump_model${index}`)||fv(`rig_pump_model${index}`)||'');
+    const liner=fn(`hy_liner${index}`);
+    const efficiency=Math.max(0,fn(`hy_eff${index}`));
+    const spm=Math.max(0,fn(`hy_spm${index}`));
+    const stroke=fn(`rig_pump_stroke${index}`) || 305;
+    const cylinders=type.toLowerCase().includes('duplex') ? 2 : 3;
+    const litersPerStroke=(Math.PI/4)*Math.pow(liner,2)*stroke*cylinders/1000000;
+    const flowLpm=litersPerStroke*spm*(efficiency/100);
+    return {index,type,model,liner,efficiency,spm,stroke,litersPerStroke,flowLpm};
+  });
+}
+
+function calcHyd(){
+  const holeMd=fn('bit_to') || fn('well_md');
+  const section=getHydSectionAtDepth(holeMd);
+  const washout=Math.max(0,fn('hy_washout'));
+  const baseHoleSize=section.diameter || fn('bha_od1') || 0;
+  const effectiveHoleSize=baseHoleSize*(1+washout/100);
+  const bha=getHydBhaSummary(baseHoleSize);
+  const bitSize=bha.bitOd || baseHoleSize;
+  const densityKgM3=(fn('bh_mud_weight') || (fn('fl_rho')*1000) || 1000);
+  const fluidTvd=fn('fl_tvd');
+  const tvd=fluidTvd>0 ? fluidTvd : holeMd;
+  const casingShoe=getHydActiveCasingShoe(holeMd);
+
+  const pumps=getHydPumpRows();
+  pumps.forEach(pump=>{
+    el(`hy_ls${pump.index}_auto`).value=pump.litersPerStroke.toFixed(3);
+    el(`hy_flow${pump.index}_auto`).value=pump.flowLpm.toFixed(1);
+  });
+  const totalFlowLpm=pumps.reduce((sum,pump)=>sum+pump.flowLpm,0);
+  const totalSpm=pumps.reduce((sum,pump)=>sum+pump.spm,0);
+  const flowM3s=totalFlowLpm/60000;
+  const flowM3min=totalFlowLpm/1000;
+
+  const dpOd=estimateHydDpOd(baseHoleSize);
+  const dpId=estimateHydDpId(baseHoleSize);
+  const dcOd=Math.max(bha.maxOd,dpOd);
+  const dpAreaM2=Math.PI*Math.pow(dpId/1000,2)/4;
+  const pipeVelocity=dpAreaM2>0 ? flowM3s/dpAreaM2 : 0;
+
+  const annAreaDp=Math.max(0,Math.PI*(Math.pow(effectiveHoleSize/1000,2)-Math.pow(dpOd/1000,2))/4);
+  const annAreaDc=Math.max(0,Math.PI*(Math.pow(effectiveHoleSize/1000,2)-Math.pow(dcOd/1000,2))/4);
+  const annVelDp=annAreaDp>0 ? flowM3min/annAreaDp : 0;
+  const annVelDc=annAreaDc>0 ? flowM3min/annAreaDc : 0;
+  const riserVelocity=0;
+
+  const n=Math.max(0,Number(fv('fl_add_n_auto')||0));
+  const kMetric=Math.max(0,Number(fv('fl_add_k_auto')||0)*0.478802589);
+  const tau0Metric=Math.max(0,Number(fv('fl_add_tau0_auto')||0)*0.478802589);
+  const rheologyFactor=1+Math.min(3,(kMetric/10)+(tau0Metric/25)+Math.max(0.6-n,0));
+
+  const surfaceLengths=[1,2,3,4].map(index=>fn(`rig_eq_len${index}`));
+  const surfaceIds=[1,2,3,4].map(index=>fn(`rig_eq_id${index}`)*10).filter(value=>value>0);
+  const totalSurfaceLength=surfaceLengths.reduce((sum,value)=>sum+Math.max(0,value),0);
+  const avgSurfaceIdM=(surfaceIds.reduce((sum,value)=>sum+value,0)/Math.max(surfaceIds.length,1))/1000;
+  const surfaceAreaM2=avgSurfaceIdM>0 ? Math.PI*Math.pow(avgSurfaceIdM,2)/4 : 0;
+  const surfaceVelocity=surfaceAreaM2>0 ? flowM3s/surfaceAreaM2 : 0;
+
+  const bhaLength=Math.min(holeMd,bha.totalLen);
+  const dpLength=Math.max(0,holeMd-bhaLength);
+  const surfaceLoss=totalSurfaceLength>0 && avgSurfaceIdM>0
+    ? 0.12*densityKgM3*Math.pow(surfaceVelocity,2)*(totalSurfaceLength/avgSurfaceIdM)/1000000
+    : 0;
+  const pipeLoss=dpLength>0 && dpId>0
+    ? 0.035*densityKgM3*Math.pow(pipeVelocity,2)*(dpLength/(dpId/1000))*rheologyFactor/1000000
+    : 0;
+  const annLossDp=dpLength>0 && annAreaDp>0
+    ? 0.018*densityKgM3*Math.pow(annVelDp/60,2)*(dpLength/Math.max((effectiveHoleSize-dpOd)/1000,0.01))*rheologyFactor/1000000
+    : 0;
+  const annLossDc=bhaLength>0 && annAreaDc>0
+    ? 0.022*densityKgM3*Math.pow(annVelDc/60,2)*(bhaLength/Math.max((effectiveHoleSize-dcOd)/1000,0.01))*rheologyFactor/1000000
+    : 0;
+  const annularLoss=annLossDp+annLossDc;
+  const motorLoss=bha.hasMotor ? Math.max(0.45,totalFlowLpm/4500) : 0;
+  const bitLoss=Math.max(0,Number(fv('bh_bit_pressure_drop_auto')||0));
+  const otherLoss=Math.max(0,fn('hy_loss_other'));
+  const totalLoss=surfaceLoss+pipeLoss+otherLoss+motorLoss+bitLoss+annularLoss;
+  const circPress=Math.max(0,fn('hy_circ_press_auto'));
+  const pressureDelta=Math.abs(circPress-totalLoss);
+
+  const ecdBitKgM3=densityKgM3 + (annularLoss*1000000)/(9.81*Math.max(tvd,1));
+  const shoeRatio=tvd>0 ? Math.min(casingShoe/tvd,1) : 0;
+  const ecdShoeKgM3=densityKgM3 + ((annularLoss*shoeRatio)*1000000)/(9.81*Math.max(casingShoe,1));
+  const mudDensityGcc=densityKgM3/1000;
+  const ecdBit=ecdBitKgM3/1000;
+  const ecdShoe=ecdShoeKgM3/1000;
+  const annularVolume=(dpLength*annAreaDp)+(bhaLength*annAreaDc);
+  const systemVolume=Math.max(fn('vo_cur'),annularVolume);
+  const bottomsUpTime=flowM3min>0 ? annularVolume/flowM3min : 0;
+  const totalTime=flowM3min>0 ? systemVolume/flowM3min : 0;
+  const bottomsUpStrokes=bottomsUpTime*totalSpm;
+  const totalStrokes=totalTime*totalSpm;
+
+  const jetVelocity=Math.max(0,Number(fv('bh_jet_velocity_auto')||0));
+  const hhsi=Math.max(0,Number(fv('bh_hhsi_auto')||0));
+  const impactForce=Math.max(0,Number(fv('bh_impact_force_auto')||0));
+  const maxPressure=fn('hy_max_pressure');
+  const transportThreshold=35 + Math.max(0,fn('bh_hole_angle')-20)*0.35 + Math.max(0,fn('hy_cuttings_diam')-4)*0.8;
+  const transportOk=annVelDc>=transportThreshold || annVelDp>=transportThreshold;
+  const nozzleOk=jetVelocity>=55 && jetVelocity<=95 && circPress<=maxPressure;
+
+  el('hy_q').value=totalFlowLpm.toFixed(0);
+  el('hy_tvd').value=tvd.toFixed(1);
+  el('hy_hole_md_auto').value=holeMd.toFixed(0);
+  el('hy_hole_size_auto').value=effectiveHoleSize.toFixed(1);
+  el('hy_bit_md_auto').value=holeMd.toFixed(0);
+  el('hy_bit_size_auto').value=bitSize.toFixed(1);
+  el('hy_v').value=jetVelocity.toFixed(1);
+  el('hy_ecd_auto').value=ecdBit.toFixed(3);
+  el('hy_ecd_shoe_auto').value=ecdShoe.toFixed(3);
+  el('hy_mw_auto').value=mudDensityGcc.toFixed(3);
+  el('hy_csg_shoe_auto').value=casingShoe.toFixed(1);
+  el('hy_bottoms_up_time_auto').value=bottomsUpTime.toFixed(1);
+  el('hy_total_circ_time_auto').value=totalTime.toFixed(1);
+  el('hy_bottoms_up_strokes_auto').value=bottomsUpStrokes.toFixed(0);
+  el('hy_total_strokes_auto').value=totalStrokes.toFixed(0);
+  el('hy_loss_surf_auto').value=surfaceLoss.toFixed(2);
+  el('hy_loss_pipe_auto').value=pipeLoss.toFixed(2);
+  el('hy_loss_motor_auto').value=motorLoss.toFixed(2);
+  el('hy_loss_bit_auto').value=bitLoss.toFixed(2);
+  el('hy_dp').value=annularLoss.toFixed(2);
+  el('hy_total_loss_auto').value=totalLoss.toFixed(2);
+  el('hy_pressure_balance_auto').value=pressureDelta<=0.5 ? 'OK' : 'ПРОВЕРИТЬ';
+  el('hy_hhsi_auto').value=hhsi.toFixed(3);
+  el('hy_jet_velocity_auto').value=jetVelocity.toFixed(1);
+  el('hy_impact_force_auto').value=impactForce.toFixed(1);
+  el('hy_saved_method_auto').value=fv('hy_eval_method') || 'Herschel-Bulkley';
+  el('hy_check_time_auto').value=fv('fl_check_time') || '00:00';
+  el('hy_n_auto').value=n.toFixed(3);
+  el('hy_k_auto').value=kMetric.toFixed(3);
+  el('hy_tau0_auto').value=tau0Metric.toFixed(3);
+  el('hy_riser_velocity_auto').value=riserVelocity.toFixed(1);
+  el('hy_min_dp_velocity_auto').value=annVelDp.toFixed(1);
+  el('hy_max_dc_velocity_auto').value=annVelDc.toFixed(1);
+  el('hy_transport_status_auto').value=transportOk ? 'OK' : 'КОНТРОЛЬ';
+  el('hy_noz_auto').value=nozzleOk ? 'OK' : (circPress>maxPressure ? 'ПРЕВЫШЕНО' : 'ПРОВЕРИТЬ');
+
+  const nozzleClass=nozzleOk ? 'ok' : (circPress>maxPressure ? 'bad' : 'warn');
+  const transportClass=transportOk ? 'ok' : 'warn';
+  const out=el('hyd_out');
+  out.style.display='';
+  out.innerHTML=
+    row('Расход',totalFlowLpm.toFixed(0),'л/мин')+
+    row('ECD у долота',ecdBit.toFixed(3),'г/см3')+
+    row('ECD на башмаке',ecdShoe.toFixed(3),'г/см3')+
+    row('Давление циркуляции',circPress.toFixed(2),'МПа')+
+    row('Суммарные потери',totalLoss.toFixed(2),'МПа')+
+    row('Отклонение давления',pressureDelta.toFixed(2),'МПа')+
+    row('Скорость струи',jetVelocity.toFixed(1),'м/с')+
+    row('Затрубная скорость по БТ',annVelDp.toFixed(1),'м/мин')+
+    row('Затрубная скорость по УБТ',annVelDc.toFixed(1),'м/мин')+
+    `<div class="orow"><span>Гидравлика долота</span><span class="mono ${nozzleClass}">${el('hy_noz_auto').value}</span></div>`+
+    `<div class="orow"><span>Вынос шлама</span><span class="mono ${transportClass}">${transportOk?'OK':'КОНТРОЛЬ'}</span></div>`;
+}
+
+function runZeroDefects(){
+  const open=fn('zd_open'),critical=fn('zd_critical'),over=fn('zd_overdue'),closed=fn('zd_closed');
+  const score=Math.max(0,100-critical*40-over*25-Math.max(0,open-closed)*10);
+  const ok=critical===0 && over===0;
+  el('zd_score_auto').value=score.toFixed(0);
+  el('zd_status_auto').value=ok?'PASS':'WATCH';
+  const out=el('zd_out'); out.style.display='';
+  out.innerHTML=row('Score',score.toFixed(0),'/100')+row('Open',open)+row('Closed today',closed)+`<div class="orow"><span>Zero Defects</span><span class="mono ${ok?'ok':'warn'}">${ok?'PASS':'WATCH'}</span></div>`;
+}
+
+function mudReportTable(headers, rows, emptyText='Нет данных для отображения.'){
+  const headerHtml=headers.map((item)=>`<th>${escapeHtml(item)}</th>`).join('');
+  const bodyHtml=rows.length
+    ? rows.map((cells)=>`<tr>${cells.map((cell)=>`<td>${escapeHtml(cell)}</td>`).join('')}</tr>`).join('')
+    : `<tr><td colspan="${headers.length}" class="mud-report-empty">${escapeHtml(emptyText)}</td></tr>`;
+  return `<table class="mud-report-table"><thead><tr>${headerHtml}</tr></thead><tbody>${bodyHtml}</tbody></table>`;
+}
+
+function mudReportMetricCards(items){
+  return items.map((item)=>`<div class="mud-report-kpi"><span class="mud-report-kpi-label">${escapeHtml(item.label)}</span><span class="mud-report-kpi-value">${escapeHtml(item.value)}</span></div>`).join('');
+}
+
+function mudReportMetaCard(title, items){
+  return `<div class="mud-report-meta-card"><div class="mud-report-meta-title">${escapeHtml(title)}</div><div class="mud-report-meta-grid">${items.map((item)=>`<div class="mud-report-meta-item"><span>${escapeHtml(item.label)}</span><strong>${escapeHtml(item.value)}</strong></div>`).join('')}</div></div>`;
+}
+
+function getMudReportInventoryRows(){
+  return [...document.querySelectorAll('#inventoryProductBody tr')].map((row)=>{
+    const index=row.dataset.index;
+    return {
+      product:sx(`inv_prod${index}`),
+      packaging:sx(`inv_pack${index}`),
+      start:sn(`inv_start${index}`),
+      received:sn(`inv_recv${index}`),
+      used:sn(`inv_used${index}`),
+      end:sn(`inv_end${index}`),
+      cost:sx(`inv_cost${index}`)
+    };
+  }).filter((item)=>item.product || item.received>0 || item.used>0 || item.end>0);
+}
+
+function getMudReportAdditionalRows(){
+  return [...document.querySelectorAll('#additionalCostBody tr')].map((row)=>{
+    const index=row.dataset.index;
+    return {
+      charge:sx(`adc_charge${index}`),
+      fluid:sx(`adc_fluid${index}`),
+      quantity:sn(`adc_qty${index}`),
+      units:sx(`adc_units${index}`),
+      price:sx(`adc_price${index}`),
+      cost:sx(`adc_cost${index}`),
+      breakdown:sx(`adc_breakdown${index}`)
+    };
+  }).filter((item)=>item.charge || item.quantity>0 || parseCurrencyValue(item.cost)>0);
+}
+
+function getMudReportPitRows(){
+  return getRigPitVisualizationData().map((pit)=>{
+    const current=sn(getPitCurrentInputId(pit.index));
+    const fillPct=pit.capacity>0 ? Math.min(100, (current/pit.capacity)*100) : 0;
+    return {
+      name:pit.name,
+      capacity:pit.capacity,
+      current,
+      fillPct,
+      free:Math.max(pit.capacity-current,0)
+    };
+  }).filter((item)=>item.name || item.capacity>0 || item.current>0);
+}
+
+function buildMudReportData(){
+  const reportDateValue=ensureMudReportDateValue();
+  const reportDate=formatDisplayDateFromIso(reportDateValue);
+  const used=Math.max(0,sn('mr_used'));
+  const treated=Math.max(0,sn('mr_treated'));
+  const treatmentRatio=used>0 ? (treated/used*100) : 0;
+  const inventoryRows=getMudReportInventoryRows();
+  const additionalRows=getMudReportAdditionalRows();
+  const pitRows=getMudReportPitRows();
+  const receivedTotal=inventoryRows.reduce((sum,item)=>sum+item.received,0);
+  const usedTotal=inventoryRows.reduce((sum,item)=>sum+item.used,0);
+  const volumeBalance=Math.abs(sn('vo_pit_vs_system_auto'))<=0.1 ? 'OK' : 'ПРОВЕРИТЬ';
+  const gate=getAutoGateStatus();
+  const status=(sx('well_name') && sx('fl_type') && reportDateValue) ? ((volumeBalance==='OK' && gate.ok) ? 'ГОТОВ' : 'ТРЕБУЕТ ПРОВЕРКИ') : 'НЕПОЛНЫЙ';
+  const intervalFrom=sn('bit_from');
+  const intervalTo=sn('bit_to');
+  const intervalText=(intervalTo>intervalFrom) ? `${intervalFrom.toFixed(1)} - ${intervalTo.toFixed(1)} м MD` : 'Не задан';
+  const timeRows=[
+    ['Чистое время бурения', sn('tb_drilling_actual')],
+    ['Кондиционирование / циркуляция', sn('tb_cond_mud_circ')],
+    ['СПО', sn('tb_tripping')],
+    ['Инклинометрия / survey', sn('tb_dev_survey')],
+    ['Наклонно-направленные работы', sn('tb_dir_work')],
+    ['Разбуривание', sn('tb_drill_out')],
+    ['Выдержка LCM-пилюли', sn('tb_lcm_pill_soak')],
+    ['Прочее время', sn('tb_misc_time')]
+  ].filter((item)=>item[1]>0);
+
+  return {
+    title:'Суточный рапорт по буровым растворам',
+    reportDate,
+    shift:sx('mr_shift','Day'),
+    dmrId:isStandaloneCalculator ? '' : dmrId,
+    projectName:isStandaloneCalculator ? '' : projectName,
+    wellDisplay:sx('well_name') || wellName,
+    treatmentRatio,
+    receivedTotal,
+    usedTotal,
+    dailyCost:sx('cost_total_daily_auto'),
+    volumeBalance,
+    status,
+    summaryCards:[
+      {label:'Смена', value:sx('mr_shift','Day')},
+      {label:'Использовано раствора', value:`${used.toFixed(1)} м3`},
+      {label:'Обработано раствора', value:`${treated.toFixed(1)} м3`},
+      {label:'Средняя ROP', value:`${sx('tb_avg_rop_auto')} м/ч`},
+      {label:'ECD у долота', value:`${sx('hy_ecd_auto')} г/см3`},
+      {label:'Суточные затраты', value:sx('cost_total_daily_auto')},
+      {label:'Баланс по емкостям', value:volumeBalance},
+      {label:'Статус', value:status}
+    ],
+    objectMeta:[
+      {label:'Проект', value:projectName},
+      {label:'DMR', value:dmrId},
+      {label:'Скважина', value:sx('well_name') || wellName},
+      {label:'Месторождение', value:sx('well_field')},
+      {label:'Регион', value:sx('well_region')},
+      {label:'Страна', value:sx('well_country')}
+    ].filter((item)=>item.value),
+    peopleMeta:[
+      {label:'Оператор', value:sx('well_operator')},
+      {label:'Подрядчик', value:sx('well_contractor')},
+      {label:'Буровая', value:sx('well_rig')},
+      {label:'Подготовил', value:sx('mr_prepared_by') || 'Инженер по БР'},
+      {label:'Предст. заказчика', value:sx('mr_customer_rep') || sx('well_operator')},
+      {label:'Тип раствора', value:sx('fl_type')}
+    ],
+    drillingMeta:[
+      {label:'Глубина MD / TVD', value:`${sx('well_md')} / ${sx('well_tvd')} м`},
+      {label:'Интервал за сутки', value:intervalText},
+      {label:'Глубина долота', value:`${sx('vo_bit_depth') || sx('hy_bit_md_auto')} м`},
+      {label:'Открытый ствол', value:`${sx('vo_open_hole_depth')} м`},
+      {label:'ID обсадки', value:`${sx('vo_casing_id')} мм`},
+      {label:'Расход', value:`${sx('hy_q')} л/мин`}
+    ],
+    fluidRows:[
+      ['Тип раствора', sx('fl_type')],
+      ['Источник пробы', sx('fl_sample_source')],
+      ['Время проверки', sx('fl_check_time')],
+      ['Глубина замера', `${sn('fl_md').toFixed(1)} м`],
+      ['TVD', `${sn('fl_tvd').toFixed(1)} м`],
+      ['Плотность', `${sx('fl_rho')} г/см3`],
+      ['Воронка Марша', `${sx('fl_funnel')} с/кварта`],
+      ['PV', `${sx('fl_pv')} cP`],
+      ['YP', `${sx('fl_yp')} lbs/100ft²`],
+      ['Гели 10с/10м/30м', sx('fl_gels')],
+      ['API фильтрация', `${sx('fl_flt')} мл/30 мин`],
+      ['HTHP фильтрация', `${sx('fl_hthp')} мл/30 мин`]
+    ],
+    chemistryRows:[
+      ['pH', sx('fl_wb_ph')],
+      ['Pm', sx('fl_wb_pm')],
+      ['PF / MF', sx('fl_wb_pf_mf')],
+      ['P1 / P2', sx('fl_wb_p1_p2')],
+      ['Хлориды', `${sx('fl_cl') || sx('fl_wb_cl')} мг/л`],
+      ['Общая жесткость', `${sx('fl_wb_hardness')} мг/л`],
+      ['Песок', `${sx('fl_sand')} % об.`],
+      ['Retort Oil', `${sx('fl_retort_oil')} %`],
+      ['Retort Water', `${sx('fl_retort_water')} %`],
+      ['LGS', `${sx('fl_wb_lgs_pct_auto')} % об.`],
+      ['HGS', `${sx('fl_wb_hgs_pct_auto')} % об.`],
+      ['ASG', sx('fl_wb_asg_auto')]
+    ],
+    hydraulicRows:[
+      ['ECD у долота', `${sx('hy_ecd_auto')} г/см3`],
+      ['ECD на башмаке', `${sx('hy_ecd_shoe_auto')} г/см3`],
+      ['Текущая плотность', `${sx('hy_mw_auto')} г/см3`],
+      ['Давление циркуляции', `${sx('hy_circ_press_auto')} МПа`],
+      ['Суммарные потери', `${sx('hy_total_loss_auto')} МПа`],
+      ['Затрубные потери', `${sx('hy_dp')} МПа`],
+      ['Скорость струи', `${sx('hy_v')} м/с`],
+      ['Bottoms up time', `${sx('hy_bottoms_up_time_auto')} мин`],
+      ['Полный цикл', `${sx('hy_total_circ_time_auto')} мин`],
+      ['Nozzle status', sx('hy_noz_auto')]
+    ],
+    volumeRows:[
+      ['Prev system volume', `${sx('vo_prev')} м3`],
+      ['Current system volume', `${sx('vo_cur')} м3`],
+      ['Net change', `${sx('vo_delta_auto')} м3`],
+      ['Документированное изменение', `${sx('lg_doc_auto')} м3`],
+      ['Разница сверки', `${sx('lg_diff_auto')} м3`],
+      ['Суммарная вместимость емкостей', `${sx('vo_pit_capacity_total_auto')} м3`],
+      ['Текущий объем по емкостям', `${sx('vo_pit_current_total_auto')} м3`],
+      ['Разница к системе', `${sx('vo_pit_vs_system_auto')} м3`]
+    ],
+    timeRows,
+    timeSummaryRows:[
+      ['Время вращения долота', `${sx('tb_rotating_hours_auto')} ч`],
+      ['Сумма по операциям', `${sx('tb_report_total_auto')} ч`],
+      ['Начало рапорта', sx('tb_report_start_auto')],
+      ['Конец рапорта', sx('tb_report_end_auto')],
+      ['Статус суточной сводки', sx('tb_balance_status_auto')]
+    ],
+    inventoryRows,
+    additionalRows,
+    pitRows,
+    notes:{
+      operations:sx('mr_ops') || 'Не заполнено.',
+      chemistry:sx('mr_chem_note') || 'Не заполнено.',
+      zeroDefects:sx('zd_note') || 'Не заполнено.',
+      audit:sx('au_sum') || 'Не заполнено.'
+    }
+  };
+}
+
+function renderMudReportPreview(data){
+  const preview=el('mr_preview');
+  if(!preview) return;
+  const subtitle=[data.projectName, data.wellDisplay, data.dmrId, data.reportDate].filter(Boolean).join(' · ');
+  const inventoryTableRows=data.inventoryRows.map((item)=>[
+    item.product || '—',
+    item.packaging || '—',
+    item.start.toFixed(3),
+    item.received.toFixed(3),
+    item.used.toFixed(3),
+    item.end.toFixed(3),
+    item.cost || formatRubCurrency(0)
+  ]);
+  const additionalTableRows=data.additionalRows.map((item)=>[
+    item.charge || '—',
+    item.fluid || '—',
+    `${item.quantity.toFixed(2)} ${item.units || ''}`.trim(),
+    item.price || formatRubCurrency(0),
+    item.cost || formatRubCurrency(0),
+    item.breakdown || '—'
+  ]);
+  const pitTableRows=data.pitRows.map((item)=>[
+    item.name || '—',
+    item.capacity.toFixed(1),
+    item.current.toFixed(1),
+    `${item.fillPct.toFixed(0)}%`,
+    item.free.toFixed(1)
+  ]);
+  const timeTableRows=data.timeRows.map((item)=>[item[0], `${item[1].toFixed(2)} ч`]);
+  preview.innerHTML=`<div id="mr_preview_sheet" class="mud-report-sheet">
+    <div class="mud-report-header">
+      <div>
+        <div class="mud-report-brand">WS2000 Site Edition</div>
+        <div class="mud-report-title">${escapeHtml(data.title)}</div>
+        <div class="mud-report-subtitle">${escapeHtml(subtitle)}</div>
+      </div>
+      <div class="mud-report-badge">
+        <div class="mud-report-badge-label">Смена</div>
+        <div class="mud-report-badge-value">${escapeHtml(data.shift)}</div>
+        <div class="mud-report-badge-note">Статус: ${escapeHtml(data.status)}</div>
+      </div>
+    </div>
+    <div class="mud-report-topline">${mudReportMetricCards(data.summaryCards)}</div>
+    <div class="mud-report-meta">
+      ${mudReportMetaCard('Объект', data.objectMeta)}
+      ${mudReportMetaCard('Участники', data.peopleMeta)}
+      ${mudReportMetaCard('Интервал и режим', data.drillingMeta)}
+    </div>
+    <div class="mud-report-section">
+      <div class="mud-report-section-title">1. Свойства бурового раствора</div>
+      <div class="mud-report-section-grid">
+        <div>${mudReportTable(['Показатель','Значение'], data.fluidRows)}</div>
+        <div>${mudReportTable(['Показатель','Значение'], data.chemistryRows)}</div>
+      </div>
+    </div>
+    <div class="mud-report-section">
+      <div class="mud-report-section-title">2. Гидравлика, объемы и суточное время</div>
+      <div class="mud-report-section-grid">
+        <div>${mudReportTable(['Показатель','Значение'], data.hydraulicRows)}</div>
+        <div>${mudReportTable(['Показатель','Значение'], data.volumeRows)}</div>
+      </div>
+      <div class="mud-report-section-grid">
+        <div>${mudReportTable(['Операция','Время'], timeTableRows, 'Операции за сутки не указаны.')}</div>
+        <div>${mudReportTable(['Итог','Значение'], data.timeSummaryRows)}</div>
+      </div>
+    </div>
+    <div class="mud-report-section">
+      <div class="mud-report-section-title">3. Материалы, обработки и затраты</div>
+      ${mudReportTable(['Продукт','Упаковка','Старт','Приход','Использовано','Остаток','Стоимость'], inventoryTableRows, 'В Inventory нет строк с движением материалов.')}
+      ${mudReportTable(['Доп. расход','Привязка','Количество','Цена','Стоимость','Назначение'], additionalTableRows, 'Дополнительные расходы за сутки не заданы.')}
+    </div>
+    <div class="mud-report-section">
+      <div class="mud-report-section-title">4. Емкости бурового раствора</div>
+      ${mudReportTable(['Емкость','Вместимость, м3','Текущий объем, м3','Заполнение','Свободно, м3'], pitTableRows, 'Емкости не заполнены в разделе оборудования бурового станка.')}
+    </div>
+    <div class="mud-report-section">
+      <div class="mud-report-section-title">5. Комментарии и заключение</div>
+      <div class="mud-report-note-grid">
+        <div class="mud-report-note"><h4>Операционная сводка</h4><p>${escapeHtml(data.notes.operations)}</p></div>
+        <div class="mud-report-note"><h4>Примечание по раствору</h4><p>${escapeHtml(data.notes.chemistry)}</p></div>
+        <div class="mud-report-note"><h4>Zero Defects / риски</h4><p>${escapeHtml(data.notes.zeroDefects)}</p></div>
+        <div class="mud-report-note"><h4>Инженерное заключение</h4><p>${escapeHtml(data.notes.audit)}</p></div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function getMudReportPrintStyles(){
+  return `body{margin:0;padding:16px;background:#ffffff;color:#152132;font-family:Segoe UI,Tahoma,sans-serif} .mud-report-sheet{background:#fff;color:#152132;padding:0} .mud-report-header{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;border-bottom:2px solid #1b3550;padding-bottom:12px;margin-bottom:12px} .mud-report-brand{font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#47698a} .mud-report-title{font-size:26px;line-height:1.1;font-weight:800;color:#10243a;margin-top:4px} .mud-report-subtitle{font-size:12px;color:#5e7084;margin-top:6px} .mud-report-badge{min-width:170px;border:1px solid #c9d7e6;border-radius:10px;background:#f4f8fc;padding:10px 12px;text-align:right} .mud-report-badge-label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#70859a} .mud-report-badge-value{font-size:24px;font-weight:800;color:#17314b;margin-top:4px} .mud-report-badge-note{font-size:11px;color:#5f7387;margin-top:4px} .mud-report-topline{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:12px} .mud-report-kpi{border:1px solid #d9e3ed;border-radius:10px;background:#f7fafc;padding:10px 12px} .mud-report-kpi-label{display:block;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#74879a} .mud-report-kpi-value{display:block;font-size:18px;font-weight:800;color:#13283f;margin-top:6px} .mud-report-meta{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:12px} .mud-report-meta-card{border:1px solid #d9e3ed;border-radius:10px;padding:10px 12px;background:#fff} .mud-report-meta-title{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#70859a;margin-bottom:8px} .mud-report-meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 12px} .mud-report-meta-item span{display:block;font-size:10px;color:#6e8095;text-transform:uppercase;letter-spacing:.08em} .mud-report-meta-item strong{display:block;font-size:13px;color:#13283f;margin-top:4px;word-break:break-word} .mud-report-section{margin-top:14px} .mud-report-section-title{font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#193651;border-top:1px solid #d9e3ed;border-bottom:1px solid #d9e3ed;background:#f5f8fb;padding:8px 10px} .mud-report-section-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:12px;margin-top:10px} .mud-report-table{width:100%;border-collapse:collapse;margin-top:10px} .mud-report-table th,.mud-report-table td{border:1px solid #d4dee8;padding:6px 7px;font-size:11px;color:#12283f;vertical-align:top} .mud-report-table th{background:#eaf1f8;color:#17314b;font-weight:800} .mud-report-note-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px} .mud-report-note{border:1px solid #d8e2ec;border-radius:10px;background:#fbfdff;padding:10px 12px} .mud-report-note h4{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#6e8297;margin-bottom:8px} .mud-report-note p{font-size:12px;line-height:1.55;color:#21364d;white-space:pre-wrap} .mud-report-empty{color:#7f91a5;font-style:italic}`;
+}
+
+function openMudReportPrintView(){
+  const data=buildMudReportData();
+  const reportId=data.dmrId || 'calculator';
+  renderMudReportPreview(data);
+  const sheet=el('mr_preview_sheet');
+  if(!sheet){
+    alert('Сначала соберите суточный рапорт.');
+    return;
+  }
+  const w=window.open('','_blank');
+  if(!w){ alert('Разрешите pop-up для открытия печатной версии рапорта.'); return; }
+  w.document.write(`<html><head><title>Mud Report ${escapeHtml(reportId)}</title><meta charset="utf-8"><style>${getMudReportPrintStyles()}</style>  <script src="../nav-inject.js"></script>
+</head><body>${sheet.outerHTML}
+</body></html>`);
+  w.document.close();
+  w.focus();
+}
+
+function loadExternalScript(src){
+  return new Promise((resolve,reject)=>{
+    const existing=[...document.querySelectorAll('script')].find((item)=>item.src===src);
+    if(existing){
+      if(existing.dataset.loaded==='1') resolve();
+      else existing.addEventListener('load',()=>resolve(),{once:true});
+      return;
+    }
+    const script=document.createElement('script');
+    script.src=src;
+    script.async=true;
+    script.onload=()=>{ script.dataset.loaded='1'; resolve(); };
+    script.onerror=()=>reject(new Error(`Failed to load ${src}`));
+    document.head.appendChild(script);
+  });
+}
+
+async function ensureMudReportPdfLibs(){
+  if(!(window.html2canvas && window.jspdf && window.jspdf.jsPDF)){
+    await loadExternalScript('https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js');
+    await loadExternalScript('https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js');
+  }
+}
+
+async function downloadMudReportPdf(){
+  const data=buildMudReportData();
+  const reportId=data.dmrId || 'calculator';
+  renderMudReportPreview(data);
+  const sheet=el('mr_preview_sheet');
+  if(!sheet){
+    alert('Сначала соберите суточный рапорт.');
+    return;
+  }
+  const host=document.createElement('div');
+  host.style.position='fixed';
+  host.style.left='-20000px';
+  host.style.top='0';
+  host.style.width='1120px';
+  host.style.background='#ffffff';
+  host.style.padding='16px';
+  host.appendChild(sheet.cloneNode(true));
+  document.body.appendChild(host);
+  try {
+    await ensureMudReportPdfLibs();
+    const canvas=await window.html2canvas(host,{scale:2,backgroundColor:'#ffffff',useCORS:true,logging:false});
+    const imgData=canvas.toDataURL('image/png');
+    const pdf=new window.jspdf.jsPDF({orientation:'p',unit:'mm',format:'a4'});
+    const pageWidth=pdf.internal.pageSize.getWidth();
+    const pageHeight=pdf.internal.pageSize.getHeight();
+    const margin=6;
+    const imgWidth=pageWidth-(margin*2);
+    const imgHeight=(canvas.height*imgWidth)/canvas.width;
+    let heightLeft=imgHeight;
+    let position=margin;
+    pdf.addImage(imgData,'PNG',margin,position,imgWidth,imgHeight,undefined,'FAST');
+    heightLeft-=pageHeight-(margin*2);
+    while(heightLeft>0){
+      position=margin-(imgHeight-heightLeft);
+      pdf.addPage();
+      pdf.addImage(imgData,'PNG',margin,position,imgWidth,imgHeight,undefined,'FAST');
+      heightLeft-=pageHeight-(margin*2);
+    }
+    const fileName=`mud_report_${sanitizeFileNamePart(reportId)}_${sanitizeFileNamePart(data.reportDate)}_${sanitizeFileNamePart(data.wellDisplay)}.pdf`;
+    pdf.save(fileName);
+  }
+  catch(error){
+    console.error(error);
+    alert('Не удалось автоматически сформировать PDF. Будет открыта печатная версия, которую можно сохранить в PDF через системный диалог.');
+    openMudReportPrintView();
+  }
+  finally {
+    host.remove();
+  }
+}
+
+function buildMudReport(){
+  const data=buildMudReportData();
+  el('mr_util_auto').value=data.treatmentRatio.toFixed(1);
+  el('mr_products_received_auto').value=data.receivedTotal.toFixed(3);
+  el('mr_products_used_auto').value=data.usedTotal.toFixed(3);
+  el('mr_daily_cost_auto').value=data.dailyCost;
+  el('mr_balance_auto').value=data.volumeBalance;
+  el('mr_status_auto').value=data.status;
+  renderMudReportPreview(data);
+  const out=el('mr_out');
+  out.style.display='';
+  out.innerHTML=
+    row('Дата рапорта',data.reportDate)+
+    row('Смена',data.shift)+
+    row('Коэффициент обработки',data.treatmentRatio.toFixed(1),'%')+
+    row('Поступило материалов',data.receivedTotal.toFixed(3))+
+    row('Израсходовано материалов',data.usedTotal.toFixed(3))+
+    row('Суточные затраты',data.dailyCost)+
+    `<div class="orow"><span>Статус рапорта</span><span class="mono ${data.status==='ГОТОВ'?'ok':'warn'}">${data.status}</span></div>`;
+}
+
+function buildAudit(){
+  const f1=fn('au_f1'),t1=fn('au_t1'),c1=fn('au_c1'),f2=fn('au_f2'),t2=fn('au_t2'),c2=fn('au_c2');
+  const m=(t1-f1)+(t2-f2), c=c1+c2;
+  state.auditReady=(m>0 && c>0);
+  el('au_m_auto').value=m.toFixed(1);
+  el('au_total_auto').value=c.toFixed(2);
+  el('au_cpm_auto').value=(c/Math.max(1,m)).toFixed(2);
+  const out=el('audit_out'); out.style.display='';
+  out.innerHTML=row('Interval meters',m.toFixed(1),'m')+row('Total cost',c.toFixed(2),'USD')+row('Avg cost',(c/Math.max(1,m)).toFixed(2),'USD/m');
+  const p=el('pm_out');
+  if(p){
+    p.style.display='';
+    p.innerHTML=row('Post Well Audit','Prepared')+row('Print package',fv('pm_pack'));
+  }
+}
+
+function exchangeServer(action){
+  const out=el('dm_out');
+  out.style.display='';
+  out.innerHTML=row('Action',action)+row('Profile',fv('dm_profile'))+row('Package',fv('dm_pkg'))+row('Status','SUCCESS')+row('Timestamp',new Date().toLocaleString());
+  el('dm_status').value='Ready';
+  el('dm_last').value=new Date().toLocaleString();
+}
+
+function exportDIMS(){
+  const payload={
+    action:'Export to DIMS',
+    well:fv('well_name'),
+    reportType:el('rp_type')?fv('rp_type'):'Daily Report',
+    generatedAt:new Date().toISOString()
+  };
+  downloadBlob(JSON.stringify(payload,null,2),'application/json','dims_export_payload.json');
+  const out=el('dm_out');
+  out.style.display='';
+  out.innerHTML=row('Action','Export to DIMS')+row('Status','QUEUED');
+}
+
+function backupData(){
+  downloadBlob(JSON.stringify(gatherState(),null,2),'application/json','ws2000_backup.json');
+}
+
+function restoreData(){
+  loadState();
+}
+
+function runQC(){
+  const volOk=(state.volDelta!==null&&state.docDelta!==null&&Math.abs(state.volDelta-state.docDelta)<0.01);
+  const costOk=(state.costTotal!==null && state.costTotal>0);
+  const auditOk=state.auditReady && volOk && costOk;
+  const gate=getAutoGateStatus();
+  const autoGateOk=gate.ok;
+  applyAutoGateHighlights(gate);
+  const p=el('qcPanel');
+  p.innerHTML =
+    `<div class="srow"><span>Well mandatory</span><span class="mono ${state.wellOk?'ok':'bad'}">${state.wellOk?'PASS':'FAIL'}</span></div>`+
+    `<div class="srow"><span>Volume reconciliation</span><span class="mono ${volOk?'ok':'bad'}">${volOk?'PASS':'FAIL'}</span></div>`+
+    `<div class="srow"><span>Cost consistency</span><span class="mono ${costOk?'ok':'warn'}">${costOk?'PASS':'PENDING'}</span></div>`+
+    `<div class="srow"><span>Audit readiness</span><span class="mono ${auditOk?'ok':'warn'}">${auditOk?'READY':'IN PROGRESS'}</span></div>`+
+    `<div class="srow"><span>AUTO cells gate</span><span class="mono ${autoGateOk?'ok':'bad'}">${autoGateOk?'PASS':'FAIL'}</span></div>`;
+  return {volOk,costOk,auditOk,autoGateOk};
+}
+
+function getAutoGateStatus(){
+  const checks=[
+    {name:'MD/TVD check', fieldId:'well_status_auto', ok:fv('well_status_auto')==='PASS'},
+    {name:'Testing status', fieldId:'wt_status_auto', ok:fv('wt_status_auto')==='PASS'},
+    {name:'PV status', fieldId:'fl_pv_status_auto', ok:fv('fl_pv_status_auto')==='OK'},
+    {name:'Product SG rule', fieldId:'pl_status_auto', ok:fv('pl_status_auto')==='PASS'},
+    {name:'Nozzle status', fieldId:'hy_noz_auto', ok:fv('hy_noz_auto')==='OK'},
+    {name:'Zero Defects status', fieldId:'zd_status_auto', ok:fv('zd_status_auto')==='PASS'}
+  ];
+  const invDiff=Math.abs(Number(fv('inv_diff_auto')||0));
+  const lgDiff=Math.abs(Number(fv('lg_diff_auto')||999));
+  checks.push({name:'Inventory difference', fieldId:'inv_diff_auto', ok:invDiff<0.01});
+  checks.push({name:'L/G reconcile difference', fieldId:'lg_diff_auto', ok:lgDiff<0.01});
+
+  const failed=checks.filter(x=>!x.ok).map(x=>x.name);
+  const failedFieldIds=checks.filter(x=>!x.ok).map(x=>x.fieldId).filter(Boolean);
+  return {ok:failed.length===0,failed,failedFieldIds};
+}
+
+function applyAutoGateHighlights(gate){
+  document.querySelectorAll('input.ro.fail').forEach(x=>x.classList.remove('fail'));
+  (gate.failedFieldIds||[]).forEach(id=>{
+    const x=el(id);
+    if(x) x.classList.add('fail');
+  });
+}
+
+function gatherState(){
+  const ids=[...document.querySelectorAll('input,select,textarea')].map(x=>x.id).filter(Boolean);
+  const data={};
+  ids.forEach(id=>{ const x=el(id); data[id]=x.type==='checkbox'?x.checked:x.value; });
+  data._meta={savedAt:new Date().toISOString(),state,rigPitCount:getRigPitRowCount(),rigSolidCount:getRigSolidControlRowCount(),bhaRowCount:getBhaRowCount(),fluidAdditionalCount:getFluidAdditionalRowCount(),inventoryRowCount:getInventoryRowCount(),additionalChargeRowCount:getAdditionalChargeRowCount()};
+  return data;
+}
+
+function applyState(data){
+  const meta=data._meta||{};
+  const rigPitCount=Number(meta.rigPitCount||0);
+  const rigSolidCount=Number(meta.rigSolidCount||0);
+  const bhaRowCount=Number(meta.bhaRowCount||0);
+  const fluidAdditionalCount=Number(meta.fluidAdditionalCount||0);
+  const inventoryRowCount=Number(meta.inventoryRowCount||0);
+  const additionalChargeRowCount=Number(meta.additionalChargeRowCount||0);
+  while(getRigPitRowCount()<rigPitCount) addRigPitRow();
+  while(getRigSolidControlRowCount()<rigSolidCount) addRigSolidControlRow();
+  while(getBhaRowCount()<bhaRowCount) addBhaRow();
+  while(getFluidAdditionalRowCount()<fluidAdditionalCount) addFluidAdditionalRow();
+  while(getInventoryRowCount()<inventoryRowCount) addInventoryRow();
+  while(getAdditionalChargeRowCount()<additionalChargeRowCount) addAdditionalChargeRow();
+  ensureVolumePitVisualization();
+  Object.keys(data).forEach(id=>{
+    if(id==='_meta') return;
+    const x=el(id); if(!x) return;
+    if(x.type==='checkbox') x.checked=!!data[id]; else x.value=data[id];
+  });
+  if(meta.state){ Object.assign(state,meta.state); }
+  ensureVolumePitVisualization();
+}
+
+function saveState(){
+  const snapshot=JSON.stringify(gatherState());
+  localStorage.setItem(KEY,snapshot);
+  if(!isStandaloneCalculator && dmrIndex===1) localStorage.setItem(LEGACY_KEY,snapshot);
+  alert(isStandaloneCalculator ? 'Расчетная программа сохранена.' : `${dmrId} сохранен. Следующий DMR откроется с этими данными.`);
+}
+
+function loadState(){
+  loadStateFromCandidates(getLoadCandidates(true), false);
+}
+
+function exportJSON(){
+  const data=gatherState();
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='ws2000_site_edition_export.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function getTemplates(){
+  const raw=localStorage.getItem(TEMPLATE_KEY);
+  if(!raw){
+    const legacyRaw=localStorage.getItem(LEGACY_TEMPLATE_KEY);
+    if(!legacyRaw) return [];
+    try { return JSON.parse(legacyRaw); } catch(e){ return []; }
+  }
+  try { return JSON.parse(raw); } catch(e){ return []; }
+}
+
+function setTemplates(list){
+  localStorage.setItem(TEMPLATE_KEY, JSON.stringify(list));
+}
+
+function refreshTemplateList(){
+  const sel=el('rp_template_list');
+  if(!sel) return;
+  const list=getTemplates();
+  sel.innerHTML='';
+  list.forEach((t,idx)=>{
+    const o=document.createElement('option');
+    o.value=String(idx);
+    o.textContent=`${t.name} · ${t.type} · ${t.format} · ${t.lang}`;
+    sel.appendChild(o);
+  });
+  if(list.length===0){
+    const o=document.createElement('option');
+    o.value='';
+    o.textContent='(нет сохраненных шаблонов)';
+    sel.appendChild(o);
+  }
+}
+
+function saveTemplate(){
+  const name=fv('rp_template_name').trim() || 'Template';
+  const tpl={
+    name,
+    type:fv('rp_type'),
+    format:fv('rp_format'),
+    lang:fv('rp_lang'),
+    savedAt:new Date().toISOString()
+  };
+  const list=getTemplates();
+  const existing=list.findIndex(t=>t.name===name);
+  if(existing>=0) list[existing]=tpl; else list.push(tpl);
+  setTemplates(list);
+  refreshTemplateList();
+  const out=el('rp_out'); out.style.display='';
+  out.innerHTML=row('Template',name)+row('Status','Saved');
+}
+
+function applyTemplate(){
+  const sel=el('rp_template_list');
+  const idx=Number(sel.value);
+  const list=getTemplates();
+  if(!isFinite(idx) || idx<0 || idx>=list.length) return;
+  const t=list[idx];
+  el('rp_template_name').value=t.name;
+  el('rp_type').value=t.type;
+  el('rp_format').value=t.format;
+  el('rp_lang').value=t.lang;
+  const p=el('rp_preview');
+  p.innerHTML=row('Name',t.name)+row('Type',t.type)+row('Format',t.format)+row('Language',t.lang)+row('Saved',new Date(t.savedAt).toLocaleString());
+}
+
+function deleteTemplate(){
+  const sel=el('rp_template_list');
+  const idx=Number(sel.value);
+  const list=getTemplates();
+  if(!isFinite(idx) || idx<0 || idx>=list.length) return;
+  list.splice(idx,1);
+  setTemplates(list);
+  refreshTemplateList();
+  el('rp_preview').innerHTML='Шаблон удален.';
+}
+
+function exportTemplates(){
+  const list=getTemplates();
+  const blob=new Blob([JSON.stringify(list,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='ws2000_templates.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function importTemplates(event){
+  const f=event.target.files && event.target.files[0];
+  if(!f) return;
+  const r=new FileReader();
+  r.onload=()=>{
+    try {
+      const imported=JSON.parse(String(r.result));
+      if(!Array.isArray(imported)) throw new Error('invalid');
+      const merged=[...getTemplates()];
+      imported.forEach(t=>{
+        if(!t || !t.name) return;
+        const ix=merged.findIndex(x=>x.name===t.name);
+        if(ix>=0) merged[ix]=t; else merged.push(t);
+      });
+      setTemplates(merged);
+      refreshTemplateList();
+      el('rp_preview').innerHTML=`Импортировано шаблонов: ${imported.length}`;
+    } catch(e){
+      alert('Ошибка импорта шаблонов. Проверьте JSON формат.');
+    }
+  };
+  r.readAsText(f,'utf-8');
+  event.target.value='';
+}
+
+function collectReportData(){
+  return {
+    well: fv('well_name'),
+    api: fv('well_api'),
+    operator: fv('well_operator'),
+    md: fv('well_md'),
+    tvd: fv('well_tvd'),
+    fluid: fv('fl_type'),
+    mudWeight: fv('fl_rho'),
+    totalCost: state.costTotal ?? 'N/A',
+    volumeDelta: state.volDelta ?? 'N/A',
+    documentedDelta: state.docDelta ?? 'N/A',
+    summary: fv('au_sum'),
+    recommendations: fv('au_rec'),
+    type: el('rp_type') ? fv('rp_type') : 'Daily Report',
+    format: el('rp_format') ? fv('rp_format') : 'TXT',
+    lang: el('rp_lang') ? fv('rp_lang') : 'Русский'
+  };
+}
+
+function reportLines(d){
+  return [
+    'WS2000 Site Edition Report',
+    `Type: ${d.type}`,
+    `Language: ${d.lang}`,
+    `Well: ${d.well}`,
+    `API: ${d.api}`,
+    `Operator: ${d.operator}`,
+    `MD/TVD: ${d.md}/${d.tvd} m`,
+    `Fluid: ${d.fluid}, MW=${d.mudWeight}`,
+    `Cost Total USD: ${d.totalCost}`,
+    `Volume delta: ${d.volumeDelta}; Documented: ${d.documentedDelta}`,
+    `Audit summary: ${d.summary}`,
+    `Recommendations: ${d.recommendations}`
+  ];
+}
+
+function downloadBlob(content, mime, fileName){
+  const blob=new Blob([content],{type:mime});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=fileName;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function exportCSV(d){
+  const rows=[
+    ['Field','Value'],
+    ['Type',d.type],['Language',d.lang],['Well',d.well],['API',d.api],['Operator',d.operator],
+    ['MD',d.md],['TVD',d.tvd],['Fluid',d.fluid],['MudWeight',d.mudWeight],
+    ['TotalCostUSD',d.totalCost],['VolumeDelta',d.volumeDelta],['DocumentedDelta',d.documentedDelta],
+    ['Summary',d.summary],['Recommendations',d.recommendations]
+  ];
+  const esc=v=>`"${String(v).replace(/"/g,'""')}"`;
+  const csv=rows.map(r=>r.map(esc).join(',')).join('\n');
+  downloadBlob(csv,'text/csv;charset=utf-8','ws2000_report.csv');
+}
+
+function exportXLS(d){
+  const html=`<table border="1"><tr><th>Field</th><th>Value</th></tr>${[
+    ['Type',d.type],['Language',d.lang],['Well',d.well],['API',d.api],['Operator',d.operator],
+    ['MD',d.md],['TVD',d.tvd],['Fluid',d.fluid],['MudWeight',d.mudWeight],
+    ['TotalCostUSD',d.totalCost],['VolumeDelta',d.volumeDelta],['DocumentedDelta',d.documentedDelta],
+    ['Summary',d.summary],['Recommendations',d.recommendations]
+  ].map(r=>`<tr><td>${r[0]}</td><td>${String(r[1]).replace(/</g,'&lt;')}</td></tr>`).join('')}</table>`;
+  downloadBlob(html,'application/vnd.ms-excel','ws2000_report.xls');
+}
+
+function printPDF(d){
+  const w=window.open('','_blank');
+  if(!w){ alert('Разрешите pop-up для печати отчета.'); return; }
+  w.document.write(`<html><head><title>WS2000 Report</title><style>body{font-family:Segoe UI;padding:20px}h1{font-size:20px}table{border-collapse:collapse;width:100%}td,th{border:1px solid #999;padding:6px;text-align:left}</style>  <script src="../nav-inject.js"></script>
+</head><body><h1>WS2000 Site Edition Report</h1><table><tr><th>Field</th><th>Value</th></tr>${[
+    ['Type',d.type],['Language',d.lang],['Well',d.well],['API',d.api],['Operator',d.operator],['MD/TVD',d.md+'/'+d.tvd],
+    ['Fluid',d.fluid],['Mud Weight',d.mudWeight],['Total Cost USD',d.totalCost],['Volume Delta',d.volumeDelta],
+    ['Documented Delta',d.documentedDelta],['Summary',d.summary],['Recommendations',d.recommendations]
+  ].map(r=>`<tr><td>${r[0]}</td><td>${String(r[1]).replace(/</g,'&lt;')}</td></tr>`).join('')}</table>
+</body></html>`);
+  w.document.close();
+  w.focus();
+  w.print();
+}
+
+function generateReport(){
+  const qc=runQC();
+  const gate=getAutoGateStatus();
+  if(!state.wellOk || !qc.volOk || !qc.costOk || !qc.auditOk || !gate.ok){
+    const details=gate.failed.length?`\nAUTO FAIL: ${gate.failed.join(', ')}`:'';
+    alert('Отчет заблокирован: проверьте mandatory fields, Volumes/Losses, Costing/Audit и AUTO-ячейки.'+details);
+    return;
+  }
+  const d=collectReportData();
+  const fmt=(d.format||'TXT').toUpperCase();
+  const lines=reportLines(d);
+  if(fmt==='CSV') exportCSV(d);
+  else if(fmt==='XLS') exportXLS(d);
+  else if(fmt==='PRINT-PDF') printPDF(d);
+  else downloadBlob(lines.join('\n'),'text/plain;charset=utf-8','ws2000_site_report.txt');
+
+  if(el('rp_preview')){
+    el('rp_preview').innerHTML = row('Last generated',new Date().toLocaleString()) + row('Type',d.type) + row('Format',d.format) + row('Language',d.lang);
+  }
+  if(el('rp_out')){
+    const o=el('rp_out'); o.style.display='';
+    o.innerHTML = row('Generation','SUCCESS') + row('Format',d.format) + row('Report type',d.type);
+  }
+}
+
+// initial load if available
+(function(){
+  setDmrContext();
+  placeProductListsAfterRig();
+  renderProductCatalogModule();
+  attachModuleSaveButtons();
+  ensureVolumePitVisualization();
+  applyConstructionDefaults();
+  loadStateFromCandidates(getLoadCandidates(true), true);
+  if(getAdditionalChargeRowCount()===0) addAdditionalChargeRow();
+  refreshProductCatalogPriceRows();
+  calcProductList();
+  ensureMudReportDateValue();
+  if(el('auto_calc')) el('auto_calc').checked=state.autoCalc;
+  tagButtonsByRole();
+  bindAutoCalc();
+  refreshTemplateList();
+  buildMudReport();
+  runQC();
+  if(state.autoCalc) scheduleAutoCalc();
+})();
+</script>
+  <script src="assets/js/global-auth-widget.js"></script>
+</body>
+</html>

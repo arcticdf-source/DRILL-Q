@@ -1,0 +1,93 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>89 · MudGPT Product · PAC</title>
+  <style>
+    :root {
+      --bg: #071116;
+      --panel: rgba(13, 33, 37, 0.82);
+      --line: rgba(147, 255, 233, 0.14);
+      --text: #effffd;
+      --muted: #a9d6d0;
+      --accent: #84ffd7;
+      --accent-2: #c8fff0;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Bahnschrift", "Trebuchet MS", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 14% 18%, rgba(132, 255, 215, 0.2), transparent 26%),
+        radial-gradient(circle at 84% 16%, rgba(98, 210, 255, 0.16), transparent 26%),
+        linear-gradient(160deg, #071116 0%, #0a1b21 42%, #081014 100%);
+    }
+    .page { width: min(1320px, calc(100vw - 40px)); margin: 26px auto 36px; }
+    .topbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+    .topbar-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .topbar a { color: var(--text); text-decoration: none; padding: 10px 14px; border-radius: 14px; border: 1px solid var(--line); background: rgba(255,255,255,0.04); }
+    .admin-edit-button { display: none; color: #06251f; background: linear-gradient(135deg, var(--accent-2), var(--accent)); border-color: rgba(132,255,215,0.34); font-weight: 800; }
+    .admin-edit-button.is-visible { display: inline-flex; }
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 32px;
+      border-radius: 32px;
+      border: 1px solid var(--line);
+      background: linear-gradient(135deg, rgba(15, 38, 43, 0.96), rgba(8, 20, 24, 0.92));
+      box-shadow: 0 28px 80px rgba(0,0,0,0.34);
+    }
+    .hero::after {
+      content: "";
+      position: absolute;
+      right: -60px;
+      top: -40px;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(132,255,215,0.26), transparent 68%);
+    }
+    .eyebrow { color: var(--accent); text-transform: uppercase; letter-spacing: 0.18em; font-size: 13px; margin-bottom: 12px; }
+    h1 { margin: 0; font-size: clamp(42px, 6vw, 82px); line-height: 0.92; letter-spacing: -0.05em; }
+    .lead { max-width: 720px; margin: 16px 0 0; color: var(--muted); line-height: 1.7; font-size: 18px; }
+    .layout { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 18px; margin-top: 20px; }
+    .card { padding: 22px; border-radius: 24px; border: 1px solid var(--line); background: var(--panel); }
+    .card strong { display: block; margin-bottom: 8px; color: var(--accent-2); font-size: 18px; }
+    .card p { margin: 0; color: var(--muted); line-height: 1.65; }
+    .stack { display: grid; gap: 18px; }
+    @media (max-width: 980px) {
+      .page { width: min(1320px, calc(100vw - 20px)); }
+      .hero, .card { padding: 20px; }
+      .layout { grid-template-columns: 1fr; }
+    }
+  </style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+  <main class="page">
+    <div class="topbar">
+      <div class="topbar-actions">
+        <a href="87_mudgpt_chemicals_materials.html">Назад к каталогу</a>
+        <a href="84_drilling_fluids_entry_dashboard.html">К fluids dashboard</a>
+        <a href="65_my_wells_auth.html">Аккаунт / admin access</a>
+      </div>
+      <a class="admin-edit-button is-visible" id="editProductButton" href="#">Изменить продукт</a>
+    </div>
+    <section class="hero">
+      <div class="eyebrow">MudGPT product page</div>
+      <h1>MudGPT - PAC</h1>
+      <p class="lead">Красивый чистый шаблон под продуктовую страницу PAC. Пока без инженерного контента, чтобы дальше наполнить ровно теми данными и логикой, которые ты задашь сам.</p>
+    </section>
+    <section class="layout">
+      <div class="card"><strong>Основной блок</strong><p>Здесь позже появится основной контент по продукту.</p></div>
+      <div class="stack">
+        <div class="card"><strong>Параметры</strong><p>Пустая структура под будущее наполнение.</p></div>
+        <div class="card"><strong>Рабочие заметки</strong><p>Оставлено без данных до твоего следующего шага.</p></div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

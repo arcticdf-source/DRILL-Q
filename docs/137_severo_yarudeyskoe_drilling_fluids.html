@@ -1,0 +1,1004 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>137 · Северо-Ярудейское · Буровые растворы</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap");
+
+    :root {
+      --bg-0:#071019;
+      --bg-1:#112334;
+      --bg-2:#1b344a;
+      --panel:rgba(8,18,29,.88);
+      --panel-soft:rgba(255,255,255,.035);
+      --line:rgba(226,237,255,.15);
+      --line-soft:rgba(226,237,255,.08);
+      --text:#edf5ff;
+      --muted:#9ab0c9;
+      --cyan:#23d8b3;
+      --amber:#ffbf66;
+      --blue:#8db4ff;
+      --violet:#c6a6ff;
+      --green:#7fe3a4;
+      --rose:#ff8a7a;
+      --gold:#f6d986;
+      --ink:#07141f;
+      --shadow:0 26px 64px rgba(0,0,0,.42);
+      --sec-1:linear-gradient(180deg, #ffd987, #ffb859);
+      --sec-2:linear-gradient(180deg, #8de8d3, #36c7af);
+      --sec-3:linear-gradient(180deg, #98beff, #5e87ff);
+      --sec-4:linear-gradient(180deg, #d8c8ff, #9874ff);
+      --sec-5:linear-gradient(180deg, #a9efff, #59bfff);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      font-family: "Manrope", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(860px 420px at 0% -8%, rgba(35,216,179,.18), transparent),
+        radial-gradient(760px 420px at 100% 0%, rgba(255,191,102,.14), transparent),
+        radial-gradient(620px 280px at 50% 0%, rgba(141,180,255,.14), transparent),
+        linear-gradient(145deg, var(--bg-0), var(--bg-1) 46%, var(--bg-2));
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(to right, rgba(255,255,255,.02) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,.02) 1px, transparent 1px);
+      background-size: 38px 38px;
+      mask-image: radial-gradient(circle at 50% 18%, rgba(0,0,0,.96), transparent 72%);
+    }
+
+    .wrap {
+      width: min(1480px, 95vw);
+      margin: 0 auto;
+      padding: 24px 0 56px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .top,
+    .hero,
+    .section,
+    .section-box,
+    .image-frame {
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+    }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 12px 16px;
+      border-radius: 16px;
+      background: rgba(8,14,24,.66);
+      backdrop-filter: blur(10px);
+      position: sticky;
+      top: 12px;
+      z-index: 20;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text);
+      font-family: "Oswald", sans-serif;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      font-size: 20px;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 35% 35%, #defff8, var(--cyan));
+      box-shadow: 0 0 18px rgba(35,216,179,.45);
+    }
+
+    .nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .nav a {
+      text-decoration: none;
+      border-radius: 999px;
+      padding: 9px 14px;
+      font: 800 12px/1 "Manrope", sans-serif;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: #06231f;
+      background: linear-gradient(135deg, #9efcef, var(--cyan));
+      border: 1px solid rgba(35,216,179,.8);
+    }
+
+    .hero,
+    .section {
+      margin-top: 18px;
+      border-radius: 28px;
+      padding: clamp(22px, 3vw, 34px);
+      background: var(--panel);
+    }
+
+    .hero {
+      background:
+        radial-gradient(420px 220px at 0% 0%, rgba(35,216,179,.14), transparent),
+        radial-gradient(520px 260px at 100% 0%, rgba(255,191,102,.12), transparent),
+        linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015)),
+        var(--panel);
+    }
+
+    .eyebrow,
+    .tag,
+    .chip,
+    .state-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 999px;
+      border: 1px solid var(--line-soft);
+      background: rgba(255,255,255,.04);
+      color: #d8e8f8;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      padding: 6px 10px;
+    }
+
+    h1, h2, h3, h4 {
+      margin: 0;
+      font-family: "Oswald", sans-serif;
+      letter-spacing: -.01em;
+    }
+
+    h1 {
+      margin-top: 14px;
+      font-size: clamp(40px, 5.2vw, 68px);
+      line-height: .96;
+      max-width: 1120px;
+    }
+
+    h1 span { color: var(--amber); }
+
+    p, td, th, li {
+      color: #d0dded;
+      line-height: 1.7;
+      font-size: 14px;
+      margin: 0;
+    }
+
+    .lead {
+      max-width: 1040px;
+      font-size: 15px;
+      color: #d7e4f3;
+      margin-top: 10px;
+    }
+
+    .hero-grid,
+    .summary-grid,
+    .focus-grid,
+    .cards-grid,
+    .kpi-grid,
+    .volume-summary,
+    .sources-grid,
+    .oil-grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .hero-grid {
+      margin-top: 18px;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+
+    .summary-grid,
+    .oil-grid {
+      margin-top: 18px;
+      grid-template-columns: 1.08fr .92fr;
+    }
+
+    .focus-grid,
+    .kpi-grid,
+    .volume-summary {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .cards-grid {
+      margin-top: 18px;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    }
+
+    .hero-stat,
+    .section-box,
+    .interval-card,
+    .kpi-card,
+    .volume-card {
+      border: 1px solid var(--line-soft);
+      border-radius: 20px;
+      background: var(--panel-soft);
+      padding: 16px;
+      min-width: 0;
+    }
+
+    .hero-stat strong,
+    .kpi-card strong,
+    .volume-card strong {
+      display: block;
+      font-size: clamp(21px, 2.1vw, 26px);
+      line-height: 1.04;
+      overflow-wrap: anywhere;
+    }
+
+    .hero-stat span,
+    .kpi-card span,
+    .volume-card span,
+    .micro {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .section-head h2 { font-size: 28px; }
+
+    .list {
+      margin: 16px 0 0;
+      padding-left: 18px;
+    }
+
+    .list li + li { margin-top: 8px; }
+
+    .timeline-shell,
+    .density-shell,
+    .volume-bars,
+    .source-note {
+      margin-top: 16px;
+    }
+
+    .timeline-strip {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    .timeline-bar {
+      display: flex;
+      gap: 8px;
+      align-items: stretch;
+      min-height: 88px;
+    }
+
+    .timeline-seg {
+      position: relative;
+      border-radius: 18px;
+      padding: 14px;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      color: var(--ink);
+      overflow: hidden;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.2);
+    }
+
+    .timeline-seg strong {
+      font-size: 18px;
+      line-height: 1;
+      font-family: "Oswald", sans-serif;
+    }
+
+    .timeline-seg small {
+      display: block;
+      margin-top: 4px;
+      font-size: 11px;
+      line-height: 1.45;
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      color: rgba(7,20,31,.72);
+    }
+
+    .timeline-seg span {
+      font-size: 13px;
+      line-height: 1.35;
+      color: rgba(7,20,31,.84);
+      font-weight: 700;
+    }
+
+    .timeline-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .legend-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 11px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.04);
+      border: 1px solid var(--line-soft);
+      color: #d9e6f7;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .legend-chip i {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      display: inline-block;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.25);
+    }
+
+    .interval-card {
+      position: relative;
+      overflow: hidden;
+      display: grid;
+      gap: 14px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.02)),
+        var(--panel-soft);
+    }
+
+    .interval-card::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 5px;
+      background: var(--accent);
+    }
+
+    .interval-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .interval-top h3 { font-size: 24px; }
+
+    .interval-sub {
+      color: #bed0e6;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .metric-pills,
+    .chips {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .metric-pill {
+      display: inline-flex;
+      flex-direction: column;
+      gap: 3px;
+      padding: 10px 12px;
+      border-radius: 16px;
+      border: 1px solid var(--line-soft);
+      background: rgba(255,255,255,.035);
+      min-width: 112px;
+    }
+
+    .metric-pill b {
+      font-size: 16px;
+      color: #f2f7ff;
+    }
+
+    .metric-pill span {
+      margin: 0;
+      font-size: 10px;
+      letter-spacing: .08em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .density-chart svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .density-note {
+      margin-top: 14px;
+      padding: 14px 16px;
+      border-radius: 18px;
+      background: rgba(141,180,255,.08);
+      border: 1px solid rgba(141,180,255,.18);
+      color: #dbe8fb;
+    }
+
+    .param-table,
+    .oil-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+      border-radius: 18px;
+      overflow: hidden;
+    }
+
+    .param-table th,
+    .param-table td,
+    .oil-table th,
+    .oil-table td {
+      border: 1px solid rgba(255,255,255,.08);
+      padding: 10px 12px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .param-table th,
+    .oil-table th {
+      background: rgba(255,255,255,.06);
+      font-size: 11px;
+      color: #dfeaf8;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .param-table td,
+    .oil-table td {
+      font-size: 13px;
+      color: #d1deee;
+    }
+
+    .volume-row {
+      display: grid;
+      grid-template-columns: 96px minmax(0, 1fr) 78px;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .volume-row + .volume-row { margin-top: 12px; }
+
+    .volume-name {
+      font-family: "Oswald", sans-serif;
+      font-size: 18px;
+    }
+
+    .volume-track {
+      height: 20px;
+      border-radius: 999px;
+      overflow: hidden;
+      display: flex;
+      background: rgba(255,255,255,.06);
+      border: 1px solid var(--line-soft);
+    }
+
+    .volume-track span {
+      height: 100%;
+      display: block;
+      min-width: 2px;
+    }
+
+    .volume-total {
+      text-align: right;
+      font-weight: 700;
+      color: #f1f6ff;
+      font-size: 13px;
+    }
+
+    .source-note {
+      color: #b8cbdf;
+    }
+
+    .footer {
+      margin-top: 18px;
+      font-size: 12px;
+      color: #8ea2bc;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    @media (max-width: 1180px) {
+      .hero-grid,
+      .summary-grid,
+      .oil-grid,
+      .focus-grid,
+      .kpi-grid,
+      .volume-summary {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 860px) {
+      .top { position: static; }
+      .hero-grid,
+      .summary-grid,
+      .oil-grid,
+      .focus-grid,
+      .kpi-grid,
+      .volume-summary,
+      .cards-grid {
+        grid-template-columns: 1fr;
+      }
+      .volume-row {
+        grid-template-columns: 1fr;
+      }
+      .volume-total { text-align: left; }
+      .timeline-bar {
+        flex-direction: column;
+      }
+    }
+  </style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+  <main class="wrap">
+    <header class="top">
+      <a class="brand" href="119_severo_yarudeyskoe_project_dashboard.html"><span class="dot" aria-hidden="true"></span><span>Северо-Ярудейское · Буровые растворы</span></a>
+      <nav class="nav">
+        <a href="119_severo_yarudeyskoe_project_dashboard.html">Назад к проекту</a>
+        <a href="56_fields_projects_dashboard.html">Мои месторождения</a>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <span class="eyebrow">Doc 137 · Mud Program</span>
+      <h1>Северо-Ярудейское <span>· буровые растворы</span></h1>
+      <p class="lead">Интервальная mud-программа по Северо-Ярудейскому собрана по пяти секциям: верхний РВО, пилотный РУО, альтернативное окно под 178 мм, РУО на стабилизации и хвостовик. На странице сведены плотностные окна, реология, электростабильность, объемы свежего раствора по фонду 301-308 и требования к минеральному маслу как основе РУО.</p>
+
+      <div class="hero-grid">
+        <article class="hero-stat"><strong>5</strong><span>интервалов БР</span></article>
+        <article class="hero-stat"><strong>5 158 м³</strong><span>свежего раствора по фонду</span></article>
+        <article class="hero-stat"><strong>8</strong><span>скважин 301-308</span></article>
+        <article class="hero-stat"><strong>3 окна РУО</strong><span>пилот, 178 мм, хвостовик</span></article>
+        <article class="hero-stat"><strong>KCl 1,12</strong><span>после спуска хвостовика</span></article>
+      </div>
+
+      <div class="focus-grid" style="margin-top:18px">
+        <article class="section-box">
+          <span class="tag">Переход по системе</span>
+          <h3 style="margin-top:12px;font-size:22px">РВО наверху, РУО в управляемых секциях</h3>
+          <p style="margin-top:10px">Верхний интервал удерживается на полимер-глинистом ингибированном РВО. Дальше программа допускает несколько сценариев РУО: пилот, стабилизация под 178 мм и хвостовик 114 мм.</p>
+        </article>
+        <article class="section-box">
+          <span class="tag">Ключевой контроль</span>
+          <h3 style="margin-top:12px;font-size:22px">Электростабильность и низкая фильтрация</h3>
+          <p style="margin-top:10px">Для РУО удерживается электростабильность не ниже 350 В, фильтрация до 3 мл/30 мин, песок до 0,5 % и корка до 0,5 мм. Верхний РВО работает с pH 8-11 и фильтрацией до 5 мл/30 мин.</p>
+        </article>
+        <article class="section-box">
+          <span class="tag">Особенность фонда</span>
+          <h3 style="margin-top:12px;font-size:22px">Скв. 301 с пилотным стволом</h3>
+          <p style="margin-top:10px">Только по скважине 301 отдельно выделен пилотный ствол на РУО с дополнительным объемом свежего раствора 328 м³. Это основной выброс по fleet demand в сравнении с остальным фондом.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>Карта интервалов по разрезу</h2>
+        <span class="tag">5 секций · цветной mud profile</span>
+      </div>
+      <div class="summary-grid">
+        <article class="section-box">
+          <h3 style="font-size:24px">Последовательность систем</h3>
+          <div class="timeline-shell" id="timelineShell"></div>
+          <div class="timeline-legend" id="timelineLegend"></div>
+        </article>
+        <article class="section-box">
+          <h3 style="font-size:24px">Инженерные акценты</h3>
+          <ul class="list">
+            <li>Для ОК 245 мм плотность зависит от зенитного угла: при отклонении выше 40° окно смещается к 1,20-1,25 г/см³, ниже 40° допустим более легкий режим.</li>
+            <li>РУО на 178 мм используется как отдельный сценарий при стабилизации свыше 45° и держит oil/water ratio 70-80 / 30-20.</li>
+            <li>По хвостовику удерживается наиболее легкое плотностное окно 1,08-1,12 г/см³ с обязательным последующим переводом каждой скважины на KCl 1,12 г/см³.</li>
+            <li>Параметры по плотности уточняются на каждую скважину исходя из траектории и геомеханической модели, поэтому страница показывает проектный коридор, а не фиксированную точку.</li>
+          </ul>
+          <div class="kpi-grid" style="margin-top:16px">
+            <article class="kpi-card"><strong>1,18-1,30</strong><span>рабочее окно верхних секций, г/см³</span></article>
+            <article class="kpi-card"><strong>≤ 3</strong><span>фильтрация РУО, мл/30 мин</span></article>
+            <article class="kpi-card"><strong>70-85%</strong><span>oil/water в секциях РУО</span></article>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>Интервалы и рабочие окна</h2>
+        <span class="tag">плотность · реология · контроль</span>
+      </div>
+      <div class="cards-grid" id="intervalCards"></div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>Цветные диаграммы параметров</h2>
+        <span class="tag">density windows · key limits</span>
+      </div>
+      <div class="summary-grid">
+        <article class="section-box">
+          <h3 style="font-size:24px">Окна плотности по секциям</h3>
+          <div class="density-chart" id="densityChart"></div>
+          <div class="density-note">РУО на хвостовике намеренно выделено отдельным легким коридором 1,08-1,12 г/см³. Верхние секции держат более широкий диапазон до 1,30 г/см³, а ключевое отличие между РВО и РУО проходит не только по плотности, но и по электростабильности, фильтрации и соотношению oil/water.</div>
+        </article>
+        <article class="section-box">
+          <h3 style="font-size:24px">Контрольные ограничения</h3>
+          <table class="param-table">
+            <thead>
+              <tr>
+                <th>Секция</th>
+                <th>Фильтрация</th>
+                <th>ЭС / pH</th>
+                <th>СНС 10 сек / 10 мин</th>
+                <th>Песок / корка</th>
+              </tr>
+            </thead>
+            <tbody id="paramTableBody"></tbody>
+          </table>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>Объемы приготовления по фонду 301-308</h2>
+        <span class="tag">fresh mud demand</span>
+      </div>
+      <div class="summary-grid">
+        <article class="section-box">
+          <h3 style="font-size:24px">Суммарный свежий объем по каждой скважине</h3>
+          <div class="volume-bars" id="volumeBars"></div>
+          <div class="timeline-legend" id="volumeLegend"></div>
+        </article>
+        <article class="section-box">
+          <h3 style="font-size:24px">Сводка по интервалам фонда</h3>
+          <div class="volume-summary" id="volumeSummary"></div>
+          <table class="param-table">
+            <thead>
+              <tr>
+                <th>Скважина</th>
+                <th>Свежий объем, м³</th>
+                <th>Комментарий</th>
+              </tr>
+            </thead>
+            <tbody id="wellSummaryBody"></tbody>
+          </table>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>Основа РУО и требования к минеральному маслу</h2>
+        <span class="tag">ген. заказчик</span>
+      </div>
+      <div class="oil-grid">
+        <article class="section-box">
+          <h3 style="font-size:24px">Технические требования</h3>
+          <table class="oil-table">
+            <thead>
+              <tr>
+                <th>Показатель</th>
+                <th>Норматив</th>
+                <th>Метод испытания</th>
+              </tr>
+            </thead>
+            <tbody id="oilTableBody"></tbody>
+          </table>
+        </article>
+        <article class="section-box">
+          <h3 style="font-size:24px">Что это означает для проекта</h3>
+          <ul class="list">
+            <li>Кинематическая вязкость до 4,5 мм²/с поддерживает предсказуемую реологию РУО при приготовлении и циркуляции.</li>
+            <li>Температура вспышки не ниже 90 °C и температура самовоспламенения выше 200 °C формируют базовый HSE-контур при хранении и работе на кусте.</li>
+            <li>Отсутствие селективных растворителей и хлорорганических соединений снижает риск деградации резинотехнических изделий и нестабильности эмульсии.</li>
+            <li>Отдельное требование по определению ароматических углеводородов прямо указывает, что supply quality должен подтверждаться лабораторно, а не только паспортом поставки.</li>
+          </ul>
+          <div class="kpi-grid" style="margin-top:16px">
+            <article class="kpi-card"><strong>820-870</strong><span>плотность масла при 15 °C, кг/м³</span></article>
+            <article class="kpi-card"><strong>-45 °C</strong><span>температура застывания, не выше</span></article>
+            <article class="kpi-card"><strong>0,01%</strong><span>механические примеси, не более</span></article>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <p class="footer">Северо-Ярудейское · Буровые растворы · Doc 137</p>
+  </main>
+  <script src="assets/js/global-auth-widget.js"></script>
+  <script>
+    const intervals = [
+      {
+        title: 'Кондуктор 245 мм',
+        color: 'var(--sec-1)',
+        type: 'РВО',
+        system: 'Полимер-глинистый ингибированный',
+        range: '0-1022 м',
+        tvd: '0-900 м',
+        bit: '311,2 мм',
+        ok: '245 мм',
+        densityMin: 1.18,
+        densityMax: 1.25,
+        density: '1,18-1,25 г/см³',
+        rheology: 'УВ 40-120 с/кварт, PV до 25, ДНС 15-25',
+        filtration: 'до 5 мл/30 мин',
+        stability: 'pH 8-9',
+        gels: '7-15 / 9-25',
+        solids: 'песок до 1 %, корка до 1 мм',
+        note: 'Для отклонения выше 40° плотность держать в коридоре 1,20-1,25 г/см³.'
+      },
+      {
+        title: 'Пилотный ствол',
+        color: 'var(--sec-2)',
+        type: 'РУО',
+        system: 'Инвертная эмульсия',
+        range: '1022-2410 м',
+        tvd: '900-2098 м',
+        bit: '222,3 мм',
+        ok: 'Пилот',
+        densityMin: 1.25,
+        densityMax: 1.30,
+        density: '1,25-1,30 г/см³',
+        rheology: 'PV до 25, ДНС 10-20',
+        filtration: 'до 3 мл/30 мин',
+        stability: 'ЭС ≥ 350 В',
+        gels: '7-12 / 8-20',
+        solids: 'oil/water 75-85, песок до 0,5 %',
+        note: 'Специальная секция для скважины 301 с максимальным приростом fresh mud.'
+      },
+      {
+        title: 'Эксплуатационная 178 мм',
+        color: 'var(--sec-3)',
+        type: 'РВО',
+        system: 'РВО под 178 мм',
+        range: '1022-2880 м',
+        tvd: '900-1976 м',
+        bit: '222,3 мм',
+        ok: '178 мм',
+        densityMin: 1.25,
+        densityMax: 1.30,
+        density: '1,25-1,30 г/см³',
+        rheology: 'УВ 40-60 с/кварт, PV до 25, ДНС 20-30',
+        filtration: 'до 5 мл/30 мин',
+        stability: 'pH 9-11',
+        gels: '8-15 / 9-25',
+        solids: 'смазка 3 %, песок до 0,5 %',
+        note: 'Сценарий на водной основе для части фонда при сохранении плотности 1,25-1,30 г/см³.'
+      },
+      {
+        title: 'Стабилизация 178 мм',
+        color: 'var(--sec-4)',
+        type: 'РУО',
+        system: 'РУО на стабилизации',
+        range: '1022-2880 м',
+        tvd: '900-1976 м',
+        bit: '222,3 мм',
+        ok: '178 мм',
+        densityMin: 1.25,
+        densityMax: 1.30,
+        density: '1,25-1,30 г/см³',
+        rheology: 'PV до 25, ДНС 10-20',
+        filtration: 'до 3 мл/30 мин',
+        stability: 'ЭС ≥ 350 В',
+        gels: '7-12 / 8-20',
+        solids: 'oil/water 70-80, песок до 0,5 %',
+        note: 'Применение РУО предусмотрено при зенитном угле на стабилизации более 45°.'
+      },
+      {
+        title: 'Хвостовик 114 мм',
+        color: 'var(--sec-5)',
+        type: 'РУО',
+        system: 'РУО под хвостовик',
+        range: '2880-4960 м',
+        tvd: '1976-2025 м',
+        bit: '155,6 мм',
+        ok: '114 мм',
+        densityMin: 1.08,
+        densityMax: 1.12,
+        density: '1,08-1,12 г/см³',
+        rheology: 'PV до 25, ДНС 10-20',
+        filtration: 'до 3 мл/30 мин',
+        stability: 'ЭС ≥ 350 В',
+        gels: '6-12 / 7-20',
+        solids: 'oil/water 70-80, песок до 0,5 %',
+        note: 'После спуска хвостовика каждая скважина переводится на KCl 1,12 г/см³.'
+      }
+    ];
+
+    const wellVolumes = [
+      { well: '301', conductor: 307, section: 130, pilot: 328, tail: 93, note: 'Единственная скважина с пилотным стволом на РУО.' },
+      { well: '302', conductor: 304, section: 154, pilot: 0, tail: 111, note: 'Классическая трехсекционная схема без пилота.' },
+      { well: '303', conductor: 324, section: 188, pilot: 0, tail: 132, note: 'Повышенный расход на интервале ЭК.' },
+      { well: '304', conductor: 324, section: 171, pilot: 0, tail: 96, note: 'Сбалансированная схема с умеренным хвостовиком.' },
+      { well: '305', conductor: 324, section: 234, pilot: 0, tail: 181, note: 'Максимальный спрос на РУО хвостовика в фонде.' },
+      { well: '306', conductor: 324, section: 214, pilot: 0, tail: 170, note: 'Высокая потребность в РУО на ЭК и хвостовике.' },
+      { well: '307', conductor: 324, section: 141, pilot: 0, tail: 99, note: 'Один из самых компактных профилей по fresh volume.' },
+      { well: '308', conductor: 219, section: 194, pilot: 0, tail: 72, note: 'Самый легкий стартовый объем на кондуктор.' }
+    ];
+
+    const oilRequirements = [
+      ['Внешний вид', 'Однородная прозрачная жидкость без видимых посторонних включений', ''],
+      ['Вязкость кинематическая при 40°C', '≤ 4,5 мм²/с', 'ГОСТ 33-2016'],
+      ['Температура вспышки в открытом тигле', '≥ 90 °C', 'ГОСТ 4333-2021'],
+      ['Температура застывания', 'не выше -45 °C', 'ГОСТ 20287, метод Б'],
+      ['Температура самовоспламенения', '> 200 °C', 'ГОСТ 51330.5-99'],
+      ['Анилиновая точка', '72-86 °C', 'ГОСТ 12329-2021'],
+      ['Кислотное число', '0,03 мг KOH на 1 г масла, не выше', 'ASTM D 3242'],
+      ['Плотность при 15 °C', '820-870 кг/м³', 'ГОСТ Р 51069-97'],
+      ['Ароматические углеводороды', 'Не норм., определение обязательно', 'ASTM D 1319'],
+      ['Селективные растворители', 'Отсутствуют', 'ГОСТ 1057-2014'],
+      ['Механические примеси', '0,01 % масс., не более', 'ГОСТ 6370-2018'],
+      ['Хлорорганические соединения', 'Отсутствуют', 'ГОСТ Р 52247']
+    ];
+
+    const palette = ['var(--sec-1)', 'var(--sec-2)', 'var(--sec-3)', 'var(--sec-4)', 'var(--sec-5)'];
+
+    function renderTimeline() {
+      const total = 4960;
+      const shell = document.getElementById('timelineShell');
+      const legend = document.getElementById('timelineLegend');
+      shell.innerHTML = '<div class="timeline-strip"><div class="timeline-bar">' + intervals.map((item) => {
+        const bounds = item.range.replace(/\s|м/g, '').split('-').map(Number);
+        const len = bounds[1] - bounds[0];
+        return '<div class="timeline-seg" style="flex:' + len + ';background:' + item.color + '"><div><strong>' + item.title + '</strong><small>' + item.type + ' · ' + item.range + '</small></div><span>' + item.density + '</span></div>';
+      }).join('') + '</div></div>';
+
+      legend.innerHTML = intervals.map((item) => '<span class="legend-chip"><i style="background:' + item.color + '"></i>' + item.type + ' · ' + item.system + '</span>').join('');
+    }
+
+    function renderIntervalCards() {
+      document.getElementById('intervalCards').innerHTML = intervals.map((item) => {
+        return '<article class="interval-card" style="--accent:' + item.color + '">' +
+          '<div class="interval-top"><div><span class="state-pill">' + item.type + '</span><h3 style="margin-top:12px">' + item.title + '</h3><div class="interval-sub" style="margin-top:6px">' + item.system + ' · ' + item.range + ' · TVD ' + item.tvd + '</div></div><span class="tag">' + item.bit + ' / ' + item.ok + '</span></div>' +
+          '<div class="metric-pills">' +
+            '<div class="metric-pill"><span>Плотность</span><b>' + item.density + '</b></div>' +
+            '<div class="metric-pill"><span>Реология</span><b>' + item.rheology + '</b></div>' +
+            '<div class="metric-pill"><span>Контроль</span><b>' + item.filtration + '</b></div>' +
+          '</div>' +
+          '<div class="chips">' +
+            '<span class="chip">' + item.stability + '</span>' +
+            '<span class="chip">СНС ' + item.gels + '</span>' +
+            '<span class="chip">' + item.solids + '</span>' +
+          '</div>' +
+          '<p>' + item.note + '</p>' +
+        '</article>';
+      }).join('');
+    }
+
+    function renderDensityChart() {
+      const minAxis = 1.05;
+      const maxAxis = 1.32;
+      const width = 760;
+      const rowHeight = 72;
+      const pad = 120;
+      const chartWidth = width - pad - 40;
+      const height = intervals.length * rowHeight + 70;
+      const scale = (value) => pad + ((value - minAxis) / (maxAxis - minAxis)) * chartWidth;
+      const ticks = [1.05, 1.10, 1.15, 1.20, 1.25, 1.30];
+
+      const svg = [
+        '<svg viewBox="0 0 ' + width + ' ' + height + '" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Окна плотности по интервалам">',
+        '<rect x="0" y="0" width="' + width + '" height="' + height + '" rx="24" fill="rgba(255,255,255,0.02)"/>',
+        ticks.map((tick) => {
+          const x = scale(tick);
+          return '<line x1="' + x + '" y1="20" x2="' + x + '" y2="' + (height - 28) + '" stroke="rgba(255,255,255,0.08)"/><text x="' + x + '" y="16" text-anchor="middle" fill="#99aec8" font-size="11">' + tick.toFixed(2).replace('.', ',') + '</text>';
+        }).join('')
+      ];
+
+      intervals.forEach((item, index) => {
+        const y = 42 + index * rowHeight;
+        const x1 = scale(item.densityMin);
+        const x2 = scale(item.densityMax);
+        svg.push('<text x="16" y="' + (y + 22) + '" fill="#e9f2ff" font-size="16" font-family="Oswald">' + item.title + '</text>');
+        svg.push('<text x="16" y="' + (y + 40) + '" fill="#96abc6" font-size="11">' + item.range + '</text>');
+        svg.push('<rect x="' + x1 + '" y="' + y + '" width="' + Math.max(8, x2 - x1) + '" height="20" rx="10" fill="url(#g' + index + ')"/>');
+        svg.push('<text x="' + (x2 + 10) + '" y="' + (y + 14) + '" fill="#f0f6ff" font-size="12">' + item.density.replace(' г/см³', '') + '</text>');
+      });
+
+      svg.push('<defs>');
+      intervals.forEach((item, index) => {
+        let colors = ['#9efcef', '#1ad8b5'];
+        if (index === 0) colors = ['#ffe39b', '#ffb859'];
+        if (index === 2) colors = ['#aed0ff', '#5e87ff'];
+        if (index === 3) colors = ['#e0d4ff', '#9874ff'];
+        if (index === 4) colors = ['#c2f4ff', '#59bfff'];
+        svg.push('<linearGradient id="g' + index + '" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="' + colors[0] + '"/><stop offset="100%" stop-color="' + colors[1] + '"/></linearGradient>');
+      });
+      svg.push('</defs></svg>');
+      document.getElementById('densityChart').innerHTML = svg.join('');
+    }
+
+    function renderParamTable() {
+      document.getElementById('paramTableBody').innerHTML = intervals.map((item) => {
+        return '<tr><td>' + item.title + '</td><td>' + item.filtration + '</td><td>' + item.stability + '</td><td>' + item.gels + '</td><td>' + item.solids + '</td></tr>';
+      }).join('');
+    }
+
+    function renderVolumes() {
+      const totals = wellVolumes.map((item) => item.conductor + item.section + item.pilot + item.tail);
+      const maxTotal = Math.max.apply(null, totals);
+      const bars = document.getElementById('volumeBars');
+      const legend = document.getElementById('volumeLegend');
+      const summary = document.getElementById('volumeSummary');
+      const wellBody = document.getElementById('wellSummaryBody');
+      const intervalTotals = {
+        conductor: 0,
+        section: 0,
+        pilot: 0,
+        tail: 0
+      };
+
+      bars.innerHTML = wellVolumes.map((item) => {
+        const total = item.conductor + item.section + item.pilot + item.tail;
+        intervalTotals.conductor += item.conductor;
+        intervalTotals.section += item.section;
+        intervalTotals.pilot += item.pilot;
+        intervalTotals.tail += item.tail;
+        return '<div class="volume-row"><div class="volume-name">Скв. ' + item.well + '</div><div class="volume-track">' +
+          '<span style="width:' + (item.conductor / maxTotal * 100) + '%;background:var(--sec-1)"></span>' +
+          '<span style="width:' + (item.section / maxTotal * 100) + '%;background:var(--sec-3)"></span>' +
+          '<span style="width:' + (item.pilot / maxTotal * 100) + '%;background:var(--sec-2)"></span>' +
+          '<span style="width:' + (item.tail / maxTotal * 100) + '%;background:var(--sec-5)"></span>' +
+          '</div><div class="volume-total">' + total + ' м³</div></div>';
+      }).join('');
+
+      legend.innerHTML = [
+        ['Кондуктор', 'var(--sec-1)'],
+        ['ЭК / 178 мм', 'var(--sec-3)'],
+        ['Пилот', 'var(--sec-2)'],
+        ['Хвостовик', 'var(--sec-5)']
+      ].map((item) => '<span class="legend-chip"><i style="background:' + item[1] + '"></i>' + item[0] + '</span>').join('');
+
+      summary.innerHTML = [
+        ['Кондуктор', intervalTotals.conductor + ' м³', 'РВО / стартовая секция'],
+        ['ЭК и 178 мм', intervalTotals.section + ' м³', 'основной расход на центральный интервал'],
+        ['Пилот', intervalTotals.pilot + ' м³', 'дополнительная нагрузка только по скв. 301'],
+        ['Хвостовик', intervalTotals.tail + ' м³', 'финальный РУО-контур'],
+        ['Среднее по фонду', Math.round((intervalTotals.conductor + intervalTotals.section + intervalTotals.pilot + intervalTotals.tail) / wellVolumes.length) + ' м³', 'средний fresh volume на скважину'],
+        ['Пиковая скважина', '301 / 858 м³', 'максимум из-за пилотного ствола']
+      ].map((item) => '<article class="volume-card"><strong>' + item[1] + '</strong><span>' + item[0] + '</span><p style="margin-top:10px">' + item[2] + '</p></article>').join('');
+
+      wellBody.innerHTML = wellVolumes.map((item) => {
+        const total = item.conductor + item.section + item.pilot + item.tail;
+        return '<tr><td>Скв. ' + item.well + '</td><td>' + total + '</td><td>' + item.note + '</td></tr>';
+      }).join('');
+    }
+
+    function renderOilTable() {
+      document.getElementById('oilTableBody').innerHTML = oilRequirements.map((item) => '<tr><td>' + item[0] + '</td><td>' + item[1] + '</td><td>' + (item[2] || 'по листу заказчика') + '</td></tr>').join('');
+    }
+
+    renderTimeline();
+    renderIntervalCards();
+    renderDensityChart();
+    renderParamTable();
+    renderVolumes();
+    renderOilTable();
+  </script>
+</body>
+</html>

@@ -1,0 +1,127 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Западно-Лугинецкое — DRILL-Q</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Arial, sans-serif; background: #F5F5F7; color: #1D1D1F; font-size: 15px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+:root { --white:#FFFFFF; --bg:#F5F5F7; --text:#1D1D1F; --text2:#6E6E73; --text3:#AEAEB2; --blue:#2563EB; --blue-l:#EFF6FF; --border:rgba(0,0,0,0.08); --sh-sm:0 1px 4px rgba(0,0,0,0.06); --sh:0 4px 20px rgba(0,0,0,0.08); --r:16px; --r-sm:10px; }
+nav { position:sticky; top:0; z-index:100; background:rgba(255,255,255,0.85); backdrop-filter:saturate(180%) blur(20px); border-bottom:1px solid var(--border); height:56px; display:flex; align-items:center; padding:0 40px; justify-content:space-between; }
+.nav-logo { display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--text); }
+.nav-mark { width:28px; height:28px; border-radius:7px; background:var(--blue); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:#fff; }
+.nav-name { font-size:15px; font-weight:700; letter-spacing:-.4px; }
+.btn-ghost { padding:7px 16px; border-radius:var(--r-sm); border:1px solid var(--border); background:transparent; color:var(--text); font-size:13px; font-weight:500; text-decoration:none; } .btn-ghost:hover { background:var(--bg); }
+.btn-nav { padding:7px 16px; border-radius:var(--r-sm); background:var(--blue); color:#fff; font-size:13px; font-weight:600; text-decoration:none; } .btn-nav:hover { background:#1D4ED8; }
+.nav-right { display:flex; gap:10px; }
+.wrap { width:min(1120px, 92vw); margin:0 auto; padding:48px 0 80px; }
+.breadcrumb { display:flex; align-items:center; gap:6px; font-size:13px; color:var(--text3); margin-bottom:28px; }
+.breadcrumb a { color:var(--text3); text-decoration:none; } .breadcrumb a:hover { color:var(--blue); }
+.hero { background:var(--white); border:1.5px solid var(--border); border-radius:var(--r); padding:40px; margin-bottom:24px; box-shadow:var(--sh-sm); }
+.hero-eyebrow { display:inline-flex; align-items:center; gap:8px; background:var(--blue-l); color:var(--blue); border-radius:99px; padding:4px 14px; font-size:12px; font-weight:600; margin-bottom:16px; }
+.hero h1 { font-size:clamp(26px, 4vw, 42px); font-weight:700; letter-spacing:-.8px; line-height:1.1; margin-bottom:14px; }
+.hero p { color:var(--text2); font-size:15px; max-width:700px; line-height:1.65; margin-bottom:24px; }
+.stats-row { display:grid; grid-template-columns:repeat(4, 1fr); gap:16px; }
+.stat-card { background:var(--bg); border:1px solid var(--border); border-radius:var(--r-sm); padding:16px; }
+.stat-card strong { display:block; font-size:22px; font-weight:700; letter-spacing:-.4px; margin-bottom:4px; }
+.stat-card span { font-size:11px; color:var(--text3); font-weight:500; text-transform:uppercase; letter-spacing:.06em; }
+.section { background:var(--white); border:1.5px solid var(--border); border-radius:var(--r); padding:32px; box-shadow:var(--sh-sm); margin-bottom:24px; }
+.section h2 { font-size:20px; font-weight:700; letter-spacing:-.3px; margin-bottom:6px; }
+.section-sub { color:var(--text2); font-size:14px; margin-bottom:20px; }
+.info-list { display:flex; flex-direction:column; gap:8px; }
+.info-item { background:var(--bg); border:1px solid var(--border); border-radius:var(--r-sm); padding:12px 16px; font-size:13px; color:var(--text2); }
+.cards { display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:16px; }
+.mod-card { background:var(--bg); border:1.5px solid var(--border); border-radius:var(--r-sm); padding:24px; text-decoration:none; color:inherit; display:flex; flex-direction:column; gap:12px; transition:all .2s; position:relative; }
+.mod-card:hover { background:var(--white); border-color:var(--blue); box-shadow:var(--sh), 0 0 0 2px var(--blue); transform:translateY(-2px); }
+.mod-num { width:40px; height:40px; border-radius:10px; background:var(--blue-l); color:var(--blue); display:flex; align-items:center; justify-content:center; font-size:16px; font-weight:700; }
+.mod-card h3 { font-size:16px; font-weight:700; letter-spacing:-.2px; }
+.mod-card p { color:var(--text); font-size:13px; line-height:1.55; flex:1; }
+.mod-chips { display:flex; gap:6px; flex-wrap:wrap; }
+.chip { font-size:11px; font-weight:600; color:var(--text); background:var(--white); border:1px solid var(--border); border-radius:99px; padding:3px 10px; }
+.mod-arrow { position:absolute; right:16px; bottom:16px; font-size:16px; color:var(--text3); transition:color .2s; }
+.mod-card:hover .mod-arrow { color:var(--blue); }
+@media(max-width:640px){ nav{padding:0 20px;} .wrap{padding:32px 0 60px;} .stats-row{grid-template-columns:1fr 1fr;} .cards{grid-template-columns:1fr;} }
+</style>
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="../index.html"><div class="nav-mark">DQ</div><span class="nav-name">DRILL-Q</span></a>
+  <div class="nav-right">
+    <a class="btn-ghost" href="56_fields_projects_dashboard.html">← Все месторождения</a>
+    <a class="btn-nav" href="../app.html">Приложение →</a>
+  </div>
+</nav>
+<div class="wrap">
+  <div class="breadcrumb">
+    <a href="../index.html">DRILL-Q</a> <span>/</span>
+    <a href="56_fields_projects_dashboard.html">Месторождения</a> <span>/</span>
+    <span style="color:var(--text)">Западно-Лугинецкое</span>
+  </div>
+  <div class="hero">
+    <div class="hero-eyebrow">⛽ Месторождение · Томская область</div>
+    <h1>Западно-Лугинецкое месторождение</h1>
+    <p>Открыты 5 рабочих модулей: общие данные по скв. 106ПО, конструкция скважины, литология с нефтеперспективными интервалами, mud-программа по 5 секциям и 3D-профиль ствола с пилотными ветвями.</p>
+    <div class="stats-row">
+      <div class="stat-card"><strong>5</strong><span>активных модулей</span></div>
+      <div class="stat-card"><strong>106ПО</strong><span>объект строительства</span></div>
+      <div class="stat-card"><strong>85 сут</strong><span>бурение по интервалам</span></div>
+      <div class="stat-card"><strong>3D</strong><span>профиль + пилоты</span></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Что включено сейчас</h2>
+    <p class="section-sub">Сводка по открытым модулям</p>
+    <div class="info-list">
+      <div class="info-item">Общая информация — паспорт объекта, авиационные плечи, окно автозимника январь–март и инфографика бурения.</div>
+      <div class="info-item">Конструкция — схема обсадки 101ПО: направление, кондуктор, пилотные стволы, эксплуатационная колонна и хвостовик.</div>
+      <div class="info-item">Литология — цветная стратиграфия до палеозоя, интервалы Ю1, Ю8, Ю15 и М+М1, термобарика и программа отбора керна.</div>
+      <div class="info-item">Буровые растворы — mud-program по 5 секциям: глинистый верх, полимерглинистый кондуктор, полимер-карбонатный блок и схема системы очистки.</div>
+      <div class="info-item">Профиль — пространственная схема: вертикальный верх, точка кондуктора и расходящиеся пилотные ветви в 3D-визуализации.</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Модули проекта</h2>
+    <div class="cards">
+      <a class="mod-card" href="98_zapadno_luginetskoe_general_info.html">
+        <div class="mod-num">1</div>
+        <h3>Общие данные</h3>
+        <p>Паспорт проекта по скв. 106ПО: заказчик, локация, транспортное плечо, вертолётные площадки, график работ и инфографика бурения.</p>
+        <div class="mod-chips"><span class="chip">паспорт</span><span class="chip">вводные</span><span class="chip">инфографика</span></div>
+        <span class="mod-arrow">→</span>
+      </a>
+      <a class="mod-card" href="99_zapadno_luginetskoe_well_constructions.html">
+        <div class="mod-num">2</div>
+        <h3>Конструкция скважин</h3>
+        <p>Инженерный экран по 101ПО: направление, кондуктор, пилотные стволы, эксплуатационная колонна, хвостовик и графическая схема конструкции.</p>
+        <div class="mod-chips"><span class="chip">конструкция</span><span class="chip">схема</span><span class="chip">101ПО</span></div>
+        <span class="mod-arrow">→</span>
+      </a>
+      <a class="mod-card" href="100_zapadno_luginetskoe_lithology.html">
+        <div class="mod-num">3</div>
+        <h3>Литология</h3>
+        <p>Цветной геоэкран: стратиграфия до палеозоя, перспективные интервалы Ю1, Ю8, Ю15 и М+М1, термобарика и программа керна.</p>
+        <div class="mod-chips"><span class="chip">геология</span><span class="chip">разрез</span><span class="chip">инфографика</span></div>
+        <span class="mod-arrow">→</span>
+      </a>
+      <a class="mod-card" href="101_zapadno_luginetskoe_drilling_fluids.html">
+        <div class="mod-num">4</div>
+        <h3>Буровые растворы</h3>
+        <p>Mud-program по секциям 101ПО: параметры БР для всех 5 интервалов и отдельная графика системы очистки.</p>
+        <div class="mod-chips"><span class="chip">mud program</span><span class="chip">интервалы</span><span class="chip">solids control</span></div>
+        <span class="mod-arrow">→</span>
+      </a>
+      <a class="mod-card" href="102_zapadno_luginetskoe_profile.html">
+        <div class="mod-num">5</div>
+        <h3>Профиль ствола</h3>
+        <p>Пространственная схема профиля: вертикальный верх, точка кондуктора и расходящиеся пилотные ветви в формате 3D-визуализации.</p>
+        <div class="mod-chips"><span class="chip">trajectory</span><span class="chip">3D</span><span class="chip">пилоты</span></div>
+        <span class="mod-arrow">→</span>
+      </a>
+    </div>
+  </div>
+</div>
+</body>
+</html>

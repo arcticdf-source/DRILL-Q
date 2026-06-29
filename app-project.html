@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DRILL-Q · Ковыктинское ГКМ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:#F5F5F7; --surface:#FFFFFF; --surface2:#F9F9FB;
+  --border:rgba(0,0,0,.08); --border2:rgba(0,0,0,.05);
+  --text:#1D1D1F; --text2:#6E6E73; --text3:#999;
+  --blue:#2563EB; --blue-light:#EFF6FF;
+  --green:#10B981; --green-light:#ECFDF5;
+  --amber:#F59E0B; --amber-light:#FFFBEB;
+  --red:#EF4444; --red-light:#FEF2F2;
+  --purple:#8B5CF6; --purple-light:#F5F3FF;
+  --sidebar-w:220px; --topbar-h:56px;
+  --radius:12px; --shadow:0 1px 3px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.04);
+}
+body { font-family:'Inter',-apple-system,sans-serif; background:var(--bg); color:var(--text); font-size:14px; line-height:1.5; }
+
+/* TOPBAR */
+.topbar { position:fixed; top:0; left:0; right:0; z-index:100; height:var(--topbar-h); background:rgba(255,255,255,.92); backdrop-filter:blur(20px); border-bottom:1px solid var(--border); display:flex; align-items:center; padding:0 24px; gap:12px; }
+.brand { display:flex; align-items:center; gap:10px; text-decoration:none; }
+.brand-mark { width:28px; height:28px; background:var(--blue); border-radius:7px; display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:500; color:#fff; }
+.brand-name { font-size:14px; font-weight:700; letter-spacing:-.03em; color:var(--text); }
+.breadcrumb { display:flex; align-items:center; gap:6px; font-size:13px; }
+.breadcrumb a { color:var(--text2); text-decoration:none; }
+.breadcrumb a:hover { color:var(--text); }
+.breadcrumb-sep { color:var(--text3); }
+.breadcrumb-cur { color:var(--text); font-weight:500; }
+.topbar-right { margin-left:auto; display:flex; align-items:center; gap:10px; }
+.avatar { width:30px; height:30px; background:linear-gradient(135deg,#2563EB,#7C3AED); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:600; color:#fff; }
+
+/* SIDEBAR */
+.sidebar { position:fixed; top:var(--topbar-h); left:0; bottom:0; width:var(--sidebar-w); background:var(--surface); border-right:1px solid var(--border); overflow-y:auto; z-index:50; padding:12px; }
+.nav-item { display:flex; align-items:center; gap:9px; padding:7px 10px; border-radius:8px; color:var(--text2); text-decoration:none; font-size:13px; transition:all .12s; cursor:pointer; margin-bottom:1px; }
+.nav-item:hover { background:var(--bg); color:var(--text); }
+.nav-item.active { background:var(--blue-light); color:var(--blue); font-weight:500; }
+.nav-icon { width:16px; height:16px; flex-shrink:0; opacity:.7; }
+.nav-item.active .nav-icon { opacity:1; }
+.nav-section { font-size:10px; font-weight:600; color:var(--text3); text-transform:uppercase; letter-spacing:.08em; padding:10px 10px 4px; }
+.nav-divider { height:1px; background:var(--border2); margin:6px 0; }
+.nav-badge { margin-left:auto; padding:1px 6px; background:var(--amber); color:#fff; border-radius:999px; font-size:10px; font-weight:600; }
+.nav-badge.red { background:var(--red); }
+
+/* MAIN */
+.main { margin-left:var(--sidebar-w); margin-top:var(--topbar-h); padding:28px; }
+
+.btn { display:inline-flex; align-items:center; gap:6px; padding:7px 14px; border-radius:8px; font-size:13px; font-weight:500; cursor:pointer; border:none; transition:all .15s; text-decoration:none; font-family:inherit; }
+.btn-primary { background:var(--blue); color:#fff; }
+.btn-primary:hover { background:#1D4ED8; }
+.btn-ghost { background:var(--surface); color:var(--text2); border:1px solid var(--border); }
+.btn-ghost:hover { background:var(--bg); }
+.btn-sm { padding:5px 10px; font-size:12px; }
+
+/* PROJECT HEADER */
+.project-header { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:24px; }
+.ph-left { display:flex; align-items:flex-start; gap:16px; }
+.ph-icon { width:52px; height:52px; border-radius:14px; background:linear-gradient(135deg,#DBEAFE,#EDE9FE); display:flex; align-items:center; justify-content:center; font-size:24px; flex-shrink:0; }
+.ph-title { font-size:22px; font-weight:700; letter-spacing:-.04em; }
+.ph-meta { display:flex; gap:12px; margin-top:4px; flex-wrap:wrap; }
+.ph-tag { display:flex; align-items:center; gap:4px; font-size:12px; color:var(--text2); }
+.ph-actions { display:flex; gap:8px; }
+
+/* TABS */
+.tab-nav { display:flex; gap:0; border-bottom:1px solid var(--border); margin-bottom:24px; }
+.tab-nav-item { padding:10px 16px; font-size:13px; font-weight:500; color:var(--text2); cursor:pointer; border-bottom:2px solid transparent; transition:all .15s; margin-bottom:-1px; }
+.tab-nav-item:hover { color:var(--text); }
+.tab-nav-item.active { color:var(--blue); border-bottom-color:var(--blue); }
+.tab-panel { display:none; }
+.tab-panel.active { display:block; }
+
+/* GRID */
+.grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+
+/* CARD */
+.card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); }
+.card-header { display:flex; align-items:center; justify-content:space-between; padding:16px 20px 0; }
+.card-title { font-size:13px; font-weight:600; }
+.card-body { padding:14px 20px 18px; }
+
+/* WELL CARD */
+.well-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; text-decoration:none; color:inherit; display:block; transition:all .18s; }
+.well-card:hover { border-color:rgba(37,99,235,.3); transform:translateY(-1px); box-shadow:0 4px 20px rgba(37,99,235,.08); }
+.wc-header { padding:16px 20px 12px; display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
+.wc-num { font-family:'JetBrains Mono',monospace; font-size:26px; font-weight:500; letter-spacing:-.03em; line-height:1; }
+.wc-type { font-size:11px; color:var(--text2); margin-top:3px; }
+.wc-status { padding:3px 8px; border-radius:999px; font-size:10px; font-weight:600; flex-shrink:0; }
+.ws-drilling { background:var(--blue-light); color:#1E40AF; }
+.ws-planned { background:var(--bg); color:var(--text3); }
+.ws-complete { background:var(--green-light); color:#065F46; }
+.wc-divider { height:1px; background:var(--border2); margin:0 20px; }
+.wc-body { padding:12px 20px; }
+.wc-progress-label { display:flex; justify-content:space-between; font-size:11px; margin-bottom:5px; }
+.wc-progress-lbl { color:var(--text2); }
+.wc-progress-val { color:var(--text); font-weight:600; font-family:'JetBrains Mono',monospace; }
+.progress-track { height:5px; background:var(--bg); border-radius:3px; overflow:hidden; }
+.progress-fill { height:100%; border-radius:3px; background:linear-gradient(90deg,#3B82F6,#60A5FA); }
+.wc-stats { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-top:12px; }
+.wc-stat { text-align:center; }
+.wc-stat-val { font-size:14px; font-weight:700; font-family:'JetBrains Mono',monospace; }
+.wc-stat-lbl { font-size:10px; color:var(--text3); }
+.wc-footer { padding:10px 20px 14px; display:flex; align-items:center; justify-content:space-between; }
+
+/* DOCUMENT UPLOAD */
+.upload-zone { border:2px dashed var(--border); border-radius:var(--radius); padding:32px; text-align:center; transition:all .18s; cursor:pointer; background:var(--surface2); }
+.upload-zone:hover, .upload-zone.drag { border-color:var(--blue); background:var(--blue-light); }
+.upload-icon { font-size:36px; margin-bottom:10px; }
+.upload-title { font-size:15px; font-weight:600; margin-bottom:4px; }
+.upload-sub { font-size:12px; color:var(--text2); margin-bottom:16px; }
+.upload-formats { display:flex; gap:6px; justify-content:center; flex-wrap:wrap; margin-bottom:16px; }
+.fmt-tag { padding:3px 8px; background:var(--bg); border:1px solid var(--border); border-radius:5px; font-size:11px; font-weight:600; color:var(--text2); font-family:'JetBrains Mono',monospace; }
+.upload-btn-label { display:inline-flex; align-items:center; gap:6px; padding:8px 20px; background:var(--blue); color:#fff; border-radius:8px; font-size:13px; font-weight:500; cursor:pointer; transition:all .15s; }
+.upload-btn-label:hover { background:#1D4ED8; }
+
+/* DOCUMENT LIST */
+.doc-item { display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid var(--border2); }
+.doc-item:last-child { border-bottom:none; }
+.doc-icon { width:36px; height:36px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
+.doc-icon.pdf { background:#FEF2F2; }
+.doc-icon.doc { background:#EFF6FF; }
+.doc-icon.xls { background:#ECFDF5; }
+.doc-icon.rar { background:var(--purple-light); }
+.doc-meta { flex:1; min-width:0; }
+.doc-name { font-size:13px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.doc-detail { font-size:11px; color:var(--text2); margin-top:1px; }
+.doc-status { flex-shrink:0; }
+.doc-badge { padding:2px 8px; border-radius:999px; font-size:10px; font-weight:600; }
+.db-parsed { background:var(--green-light); color:#065F46; }
+.db-parsing { background:var(--blue-light); color:#1E40AF; }
+.db-pending { background:var(--bg); color:var(--text3); }
+.parsing-bar { width:80px; height:4px; background:var(--bg); border-radius:2px; overflow:hidden; margin-top:3px; }
+.parsing-fill { height:100%; background:var(--blue); border-radius:2px; animation:parsing .8s ease-in-out infinite alternate; }
+@keyframes parsing { from{width:20%} to{width:90%} }
+
+/* AI PARSE RESULT */
+.parse-result { background:var(--green-light); border:1px solid rgba(16,185,129,.2); border-radius:10px; padding:14px 16px; margin-top:16px; }
+.pr-title { font-size:12px; font-weight:600; color:#065F46; margin-bottom:8px; display:flex; align-items:center; gap:6px; }
+.pr-items { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
+.pr-item { display:flex; align-items:center; gap:6px; font-size:11px; color:#047857; }
+.pr-item::before { content:'✓'; font-weight:700; color:var(--green); }
+
+/* STRATIGRAPHIC PREVIEW */
+.strat-bar { display:flex; flex-direction:column; gap:3px; }
+.strat-row { display:flex; align-items:center; gap:8px; }
+.strat-color { width:10px; height:10px; border-radius:2px; flex-shrink:0; }
+.strat-name { font-size:11px; color:var(--text2); flex:1; }
+.strat-depth { font-size:10px; color:var(--text3); font-family:'JetBrains Mono',monospace; }
+.strat-risk { padding:1px 5px; border-radius:3px; font-size:9px; font-weight:600; }
+.sr-critical { background:var(--red-light); color:var(--red); }
+.sr-high { background:var(--amber-light); color:#92400E; }
+.sr-low { background:var(--green-light); color:#065F46; }
+
+::-webkit-scrollbar { width:5px; }
+::-webkit-scrollbar-thumb { background:var(--border); border-radius:999px; }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <a class="brand" href="app.html">
+    <div class="brand-mark">DQ</div>
+    <div class="brand-name">DRILL-Q</div>
+  </a>
+  <div class="breadcrumb">
+    <span style="color:var(--border)">›</span>
+    <a href="app.html">Проекты</a>
+    <span class="breadcrumb-sep">›</span>
+    <span class="breadcrumb-cur">Ковыктинское ГКМ</span>
+  </div>
+  <div class="topbar-right">
+    <span style="font-size:13px;color:var(--text2)">Андрей Б.</span>
+    <div class="avatar">АБ</div>
+  </div>
+</header>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="nav-section">Проект</div>
+  <a class="nav-item active">
+    <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+    Обзор
+  </a>
+  <a class="nav-item" href="tools/drilling_command_center.html">
+    <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3"/></svg>
+    Командный центр
+    <span class="nav-badge red">2</span>
+  </a>
+  <a class="nav-item" href="app-input.html">
+    <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+    Ввод параметров
+  </a>
+  <a class="nav-item">
+    <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+    Аналитика
+  </a>
+  <div class="nav-divider"></div>
+  <div class="nav-section">Данные</div>
+  <a class="nav-item">
+    <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+    Документы
+    <span class="nav-badge">6</span>
+  </a>
+  <a class="nav-item">
+    <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
+    База знаний
+  </a>
+  <div class="nav-divider"></div>
+  <a class="nav-item" href="app.html">
+    <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+    Все проекты
+  </a>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- PROJECT HEADER -->
+  <div class="project-header">
+    <div class="ph-left">
+      <div class="ph-icon">⛽</div>
+      <div>
+        <div class="ph-title">Ковыктинское ГКМ</div>
+        <div class="ph-meta">
+          <span class="ph-tag">
+            <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            Жигаловский р-н, Иркутская обл.
+          </span>
+          <span class="ph-tag">
+            <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+            ПАО «Газпром»
+          </span>
+          <span class="ph-tag" style="color:var(--green)">
+            <span style="width:6px;height:6px;background:var(--green);border-radius:50%;display:inline-block"></span>
+            Активный проект
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="ph-actions">
+      <button class="btn btn-ghost btn-sm">Настройки</button>
+      <a class="btn btn-primary btn-sm" href="tools/drilling_command_center.html">
+        Командный центр →
+      </a>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tab-nav">
+    <div class="tab-nav-item active" onclick="switchTab('overview', this)">Обзор</div>
+    <div class="tab-nav-item" onclick="switchTab('wells', this)">Скважины</div>
+    <div class="tab-nav-item" onclick="switchTab('documents', this)">Документы</div>
+    <div class="tab-nav-item" onclick="switchTab('knowledge', this)">База знаний</div>
+  </div>
+
+  <!-- TAB: OVERVIEW -->
+  <div class="tab-panel active" id="tab-overview">
+    <div style="display:grid;grid-template-columns:1fr 1fr 360px;gap:16px">
+
+      <!-- WELLS SUMMARY -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Скважины</div>
+          <button class="btn btn-ghost btn-sm" onclick="switchTab('wells', document.querySelectorAll('.tab-nav-item')[1])">Все →</button>
+        </div>
+        <div class="card-body">
+          <a href="tools/drilling_command_center.html" style="text-decoration:none;color:inherit;display:block;padding:10px;background:var(--blue-light);border:1px solid rgba(37,99,235,.2);border-radius:9px;margin-bottom:8px">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+              <span style="font-size:14px;font-weight:700;font-family:'JetBrains Mono',monospace">Скважина № 73</span>
+              <span style="padding:2px 8px;background:var(--blue);color:#fff;border-radius:999px;font-size:10px;font-weight:600">В БУРЕНИИ</span>
+            </div>
+            <div style="font-size:11px;color:var(--text2);margin-bottom:8px">Разведочная, вертикальная · Кондуктор 60–700 м</div>
+            <div class="progress-track"><div class="progress-fill" style="width:4.4%"></div></div>
+            <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-top:3px"><span>0 м</span><span>156 м / 3540 м</span></div>
+            <div style="margin-top:8px;padding:6px 8px;background:rgba(239,68,68,.08);border-radius:6px;font-size:11px;color:var(--red);font-weight:500">⚠ 2 активных предупреждения</div>
+          </a>
+          <div style="padding:10px;background:var(--bg);border-radius:9px;border:2px dashed var(--border);text-align:center;cursor:pointer" onclick="switchTab('wells', document.querySelectorAll('.tab-nav-item')[1])">
+            <div style="font-size:12px;color:var(--text3)">+ Добавить скважину</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DOCUMENTS SUMMARY -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Документы</div>
+          <button class="btn btn-ghost btn-sm" onclick="switchTab('documents', document.querySelectorAll('.tab-nav-item')[2])">Все →</button>
+        </div>
+        <div class="card-body" style="padding-top:10px">
+          <div class="doc-item">
+            <div class="doc-icon pdf">📄</div>
+            <div class="doc-meta">
+              <div class="doc-name">Программа бурения Ковыктинская 73</div>
+              <div class="doc-detail">PDF · 62 стр. · 7.3 МБ</div>
+            </div>
+            <span class="doc-badge db-parsed">✓ Обработан</span>
+          </div>
+          <div class="doc-item">
+            <div class="doc-icon pdf">📄</div>
+            <div class="doc-meta">
+              <div class="doc-name">ГТН Ковыктинская 73</div>
+              <div class="doc-detail">PDF · 1 стр. · 0.8 МБ</div>
+            </div>
+            <span class="doc-badge db-parsed">✓ Обработан</span>
+          </div>
+          <div class="doc-item">
+            <div class="doc-icon doc">📝</div>
+            <div class="doc-meta">
+              <div class="doc-name">Отчёт Направление</div>
+              <div class="doc-detail">DOCX · 6.9 МБ</div>
+            </div>
+            <span class="doc-badge db-parsed">✓ Обработан</span>
+          </div>
+          <div class="doc-item">
+            <div class="doc-icon doc">📝</div>
+            <div class="doc-meta">
+              <div class="doc-name">Отчёт Кондуктор</div>
+              <div class="doc-detail">DOCX · 5.2 МБ</div>
+            </div>
+            <div>
+              <div class="doc-badge db-parsing">⟳ Обработка...</div>
+              <div class="parsing-bar"><div class="parsing-fill"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STRATIGRAPHY PREVIEW -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Стратиграфия разреза</div>
+        </div>
+        <div class="card-body" style="padding-top:10px">
+          <div class="strat-bar">
+            <div class="strat-row"><div class="strat-color" style="background:#E5E7EB"></div><div class="strat-name">Верхоленская свита</div><div class="strat-depth">0–1020</div><span class="strat-risk sr-critical">Крит.</span></div>
+            <div class="strat-row"><div class="strat-color" style="background:#BAE6FD"></div><div class="strat-name">Литвинцевская</div><div class="strat-depth">1020–1315</div><span class="strat-risk sr-low">Норм.</span></div>
+            <div class="strat-row"><div class="strat-color" style="background:#FDE68A"></div><div class="strat-name">Ангарская (соль)</div><div class="strat-depth">1315–2015</div><span class="strat-risk sr-high">Высок.</span></div>
+            <div class="strat-row"><div class="strat-color" style="background:#D1FAE5"></div><div class="strat-name">Булайская</div><div class="strat-depth">2015–2250</div><span class="strat-risk sr-low">Норм.</span></div>
+            <div class="strat-row"><div class="strat-color" style="background:#FCA5A5"></div><div class="strat-name">Усольская (АВПД)</div><div class="strat-depth">2250–2895</div><span class="strat-risk sr-critical">Крит.</span></div>
+            <div class="strat-row"><div class="strat-color" style="background:#DDD6FE"></div><div class="strat-name">Тэтэрская</div><div class="strat-depth">2895–3180</div><span class="strat-risk sr-high">Высок.</span></div>
+            <div class="strat-row"><div class="strat-color" style="background:#6EE7B7"></div><div class="strat-name">Чорская (Парфёновский)</div><div class="strat-depth">3375–3540</div><span class="strat-risk sr-critical">Крит.</span></div>
+          </div>
+          <div style="margin-top:12px;padding:8px 10px;background:var(--amber-light);border-radius:7px;font-size:11px;color:#92400E">
+            ⚠ Текущая позиция: 156 м — верхоленская свита (обвалы + поглощения)
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- AI SUMMARY CARD -->
+    <div style="margin-top:16px;background:linear-gradient(135deg,#EFF6FF,#F5F3FF);border:1px solid rgba(37,99,235,.15);border-radius:var(--radius);padding:20px 24px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+        <div style="padding:3px 10px;background:var(--blue);color:#fff;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:.04em">DRILL-Q AI · Сводка по проекту</div>
+        <span style="font-size:11px;color:var(--text2)">обновлено только что</span>
+      </div>
+      <div style="font-size:13px;color:var(--text);line-height:1.7;max-width:800px">
+        База знаний загружена из <strong>6 документов</strong>. Проанализировано <strong>7 задокументированных осложнений</strong> на скважине 73. Текущий интервал бурения (156 м) находится в зоне повышенного риска поглощений (верхоленская–кондукторная часть разреза). Критичный интервал 70–700 м с исторически подтверждёнными карстовыми поглощениями 36–60 м³/ч. ВУС 35 м³ в готовности.
+      </div>
+      <div style="display:flex;gap:10px;margin-top:14px">
+        <a class="btn btn-primary btn-sm" href="tools/drilling_command_center.html">Открыть командный центр</a>
+        <a class="btn btn-ghost btn-sm" href="app-input.html">Ввести параметры смены</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: WELLS -->
+  <div class="tab-panel" id="tab-wells">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <div style="font-size:13px;color:var(--text2)">1 скважина в проекте</div>
+      <button class="btn btn-primary btn-sm">+ Добавить скважину</button>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px">
+      <a class="well-card" href="tools/drilling_command_center.html">
+        <div class="wc-header">
+          <div>
+            <div class="wc-num">№ 73</div>
+            <div class="wc-type">Разведочная · Вертикальная · TD 3540 м</div>
+          </div>
+          <div class="wc-status ws-drilling">● В бурении</div>
+        </div>
+        <div class="wc-divider"></div>
+        <div class="wc-body">
+          <div class="wc-progress-label">
+            <span class="wc-progress-lbl">Кондуктор 60–700 м</span>
+            <span class="wc-progress-val">156 м</span>
+          </div>
+          <div class="progress-track"><div class="progress-fill" style="width:22%"></div></div>
+          <div class="wc-stats">
+            <div class="wc-stat"><div class="wc-stat-val">0.94</div><div class="wc-stat-lbl">г/см³ БР</div></div>
+            <div class="wc-stat"><div class="wc-stat-val" style="color:var(--amber)">2</div><div class="wc-stat-lbl">алерта</div></div>
+            <div class="wc-stat"><div class="wc-stat-val">5.5</div><div class="wc-stat-lbl">м/ч МСП</div></div>
+          </div>
+        </div>
+        <div class="wc-divider"></div>
+        <div class="wc-footer">
+          <span style="font-size:11px;color:var(--red);font-weight:500">⚠ Поглощение</span>
+          <a class="btn btn-primary btn-sm">Открыть →</a>
+        </div>
+      </a>
+
+      <div style="background:var(--surface);border:2px dashed var(--border);border-radius:var(--radius);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:40px 20px;cursor:pointer;min-height:200px" onclick="alert('Добавьте новую скважину в этом проекте')">
+        <div style="font-size:32px">+</div>
+        <div style="font-size:13px;font-weight:600;color:var(--text2)">Добавить скважину</div>
+        <div style="font-size:11px;color:var(--text3);text-align:center">Введите данные или загрузите программу бурения</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: DOCUMENTS -->
+  <div class="tab-panel" id="tab-documents">
+    <div style="display:grid;grid-template-columns:1fr 340px;gap:20px">
+      <div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+          <div style="font-size:13px;color:var(--text2)">6 документов · 4 обработаны</div>
+          <label class="upload-btn-label" style="font-size:12px;padding:6px 14px">
+            <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+            Загрузить
+            <input type="file" style="display:none" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.rar,.zip" onchange="simulateParsing(this)">
+          </label>
+        </div>
+
+        <!-- Upload zone -->
+        <div class="upload-zone" id="dropZone" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="handleDrop(event)">
+          <div class="upload-icon">📂</div>
+          <div class="upload-title">Перетащите файлы сюда</div>
+          <div class="upload-sub">Программы бурения, ГТН, суточные рапорта, сводки — любой формат</div>
+          <div class="upload-formats">
+            <span class="fmt-tag">PDF</span>
+            <span class="fmt-tag">DOCX</span>
+            <span class="fmt-tag">DOC</span>
+            <span class="fmt-tag">XLS</span>
+            <span class="fmt-tag">XLSX</span>
+            <span class="fmt-tag">RAR</span>
+            <span class="fmt-tag">ZIP</span>
+          </div>
+          <label class="upload-btn-label">
+            <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+            Выбрать файлы
+            <input type="file" style="display:none" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.rar,.zip" onchange="simulateParsing(this)">
+          </label>
+        </div>
+
+        <!-- Parsed result preview -->
+        <div class="parse-result" id="parseResult" style="display:none">
+          <div class="pr-title">
+            <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="#065F46" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            AI обработал документ · Извлечено:
+          </div>
+          <div class="pr-items" id="parseItems"></div>
+        </div>
+
+        <!-- Document list -->
+        <div class="card" style="margin-top:16px">
+          <div class="card-header"><div class="card-title">Загруженные документы</div></div>
+          <div class="card-body" id="docList">
+            <div class="doc-item">
+              <div class="doc-icon pdf">📄</div>
+              <div class="doc-meta"><div class="doc-name">Программа бурения Ковыктинская 73 от 25.02.19.pdf</div><div class="doc-detail">PDF · 62 стр. · 7.3 МБ · загружен 20 мая</div></div>
+              <span class="doc-badge db-parsed">✓ Обработан</span>
+            </div>
+            <div class="doc-item">
+              <div class="doc-icon pdf">📄</div>
+              <div class="doc-meta"><div class="doc-name">ГТН Ковыктинская 73.pdf</div><div class="doc-detail">PDF · 1 стр. · 0.8 МБ · загружен 20 мая</div></div>
+              <span class="doc-badge db-parsed">✓ Обработан</span>
+            </div>
+            <div class="doc-item">
+              <div class="doc-icon doc">📝</div>
+              <div class="doc-meta"><div class="doc-name">Отчёт Направление Ковыктинская 73.docx</div><div class="doc-detail">DOCX · 6.9 МБ · загружен 20 мая</div></div>
+              <span class="doc-badge db-parsed">✓ Обработан</span>
+            </div>
+            <div class="doc-item">
+              <div class="doc-icon doc">📝</div>
+              <div class="doc-meta">
+                <div class="doc-name">Отчёт Кондуктор Ковыктинская 73.docx</div>
+                <div class="doc-detail">DOCX · 5.2 МБ · загружен 21 мая</div>
+              </div>
+              <div>
+                <div class="doc-badge db-parsing">⟳ Обработка...</div>
+                <div class="parsing-bar"><div class="parsing-fill"></div></div>
+              </div>
+            </div>
+            <div class="doc-item">
+              <div class="doc-icon doc">📝</div>
+              <div class="doc-meta"><div class="doc-name">Отчёт Промежуточная колонна 1.docx</div><div class="doc-detail">DOCX · 4.1 МБ · загружен 21 мая</div></div>
+              <span class="doc-badge db-pending">Ожидает</span>
+            </div>
+            <div class="doc-item">
+              <div class="doc-icon doc">📝</div>
+              <div class="doc-meta"><div class="doc-name">Раздел 5 ИОС Ковыктинская 73.docx</div><div class="doc-detail">DOCX · 6.9 МБ · загружен 22 мая</div></div>
+              <span class="doc-badge db-pending">Ожидает</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: what AI extracts -->
+      <div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Что AI извлекает</div></div>
+          <div class="card-body" style="font-size:12px;color:var(--text2);line-height:1.8">
+            <div style="margin-bottom:12px;font-weight:500;color:var(--text)">Из программы бурения:</div>
+            <div>✓ Конструкция скважины (секции, диаметры)</div>
+            <div>✓ Плановые параметры БР по секциям</div>
+            <div>✓ Режимы бурения (ВОБ, RPM, расход)</div>
+            <div>✓ Карта давлений и АВПД</div>
+            <div>✓ Стратиграфический разрез</div>
+            <div>✓ Программа отбора керна</div>
+            <div style="margin-top:12px;margin-bottom:4px;font-weight:500;color:var(--text)">Из суточных отчётов:</div>
+            <div>✓ Фактические параметры БР</div>
+            <div>✓ История осложнений с глубинами</div>
+            <div>✓ МСП и время бурения</div>
+            <div>✓ Объёмы поглощений/притоков</div>
+            <div>✓ Аварии КНБК и НПВ</div>
+            <div style="margin-top:12px;margin-bottom:4px;font-weight:500;color:var(--text)">Из рапортов (Excel):</div>
+            <div>✓ Параметры смены → в командный центр</div>
+            <div>✓ Автосопоставление с планом</div>
+            <div>✓ Тренды за период</div>
+            <div style="margin-top:14px;padding:10px;background:var(--blue-light);border-radius:8px;font-size:11px;color:var(--blue)">
+              Поддерживаются русский и английский языки. Названия компаний и торговые марки игнорируются — используются только generic-параметры.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: KNOWLEDGE BASE -->
+  <div class="tab-panel" id="tab-knowledge">
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
+      <div class="card"><div class="card-header"><div class="card-title">Плановые параметры БР</div></div><div class="card-body" style="font-size:12px;color:var(--text2)">6 секций · Полибур, ПГ+ТЩР, ПМБР, СХК<br><span style="color:var(--green);font-weight:500">✓ Загружено</span></div></div>
+      <div class="card"><div class="card-header"><div class="card-title">Карта рисков AI</div></div><div class="card-body" style="font-size:12px;color:var(--text2)">7 зон · P=85% для 70–700 м<br><span style="color:var(--green);font-weight:500">✓ Построена</span></div></div>
+      <div class="card"><div class="card-header"><div class="card-title">История осложнений</div></div><div class="card-body" style="font-size:12px;color:var(--text2)">7 случаев задокументировано<br><span style="color:var(--green);font-weight:500">✓ Загружено</span></div></div>
+      <div class="card"><div class="card-header"><div class="card-title">Стратиграфия</div></div><div class="card-body" style="font-size:12px;color:var(--text2)">9 свит · 0–3540 м<br><span style="color:var(--green);font-weight:500">✓ Загружено</span></div></div>
+      <div class="card"><div class="card-header"><div class="card-title">Рецептуры ВУС</div></div><div class="card-body" style="font-size:12px;color:var(--text2)">3 рецептуры под кондуктор и промкол.<br><span style="color:var(--green);font-weight:500">✓ Загружено</span></div></div>
+      <div class="card"><div class="card-header"><div class="card-title">Фактические данные</div></div><div class="card-body" style="font-size:12px;color:var(--text2)">Направление + Кондуктор (частично)<br><span style="color:var(--amber);font-weight:500">⟳ Пополняется</span></div></div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+function switchTab(id, el) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-nav-item').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  if (el) el.classList.add('active');
+}
+
+function simulateParsing(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const docList = document.getElementById('docList');
+  const ext = file.name.split('.').pop().toUpperCase();
+  const iconMap = { PDF:'📄', DOC:'📝', DOCX:'📝', XLS:'📊', XLSX:'📊', RAR:'📦', ZIP:'📦' };
+  const iconClass = { PDF:'pdf', DOC:'doc', DOCX:'doc', XLS:'xls', XLSX:'xls', RAR:'rar', ZIP:'rar' };
+
+  const item = document.createElement('div');
+  item.className = 'doc-item';
+  item.innerHTML = `
+    <div class="doc-icon ${iconClass[ext]||'pdf'}">${iconMap[ext]||'📄'}</div>
+    <div class="doc-meta">
+      <div class="doc-name">${file.name}</div>
+      <div class="doc-detail">${ext} · ${(file.size/1048576).toFixed(1)} МБ · только что</div>
+    </div>
+    <div id="newDocStatus">
+      <div class="doc-badge db-parsing">⟳ Анализ...</div>
+      <div class="parsing-bar"><div class="parsing-fill"></div></div>
+    </div>`;
+  docList.insertBefore(item, docList.firstChild);
+
+  setTimeout(() => {
+    item.querySelector('#newDocStatus').innerHTML = '<span class="doc-badge db-parsed">✓ Обработан</span>';
+    showParseResult(file.name, ext);
+  }, 3000);
+}
+
+function showParseResult(name, ext) {
+  const items = [
+    'Конструкция скважины',
+    'Параметры БР по секциям',
+    'Режимы бурения',
+    'Стратиграфия разреза',
+    'Карта осложнений',
+    'Плановые показатели'
+  ];
+  document.getElementById('parseItems').innerHTML = items.map(i => `<div class="pr-item">${i}</div>`).join('');
+  document.getElementById('parseResult').style.display = 'block';
+  document.getElementById('parseResult').scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('dropZone').classList.remove('drag');
+  const files = e.dataTransfer.files;
+  if (files.length) simulateParsing({ files });
+}
+</script>
+</body>
+</html>

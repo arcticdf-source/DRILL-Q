@@ -1,0 +1,236 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Моя скважина</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap");
+
+    :root {
+      --bg-0: #071018;
+      --bg-1: #102030;
+      --bg-2: #1b3041;
+      --panel: rgba(11, 20, 31, 0.84);
+      --line: rgba(227, 238, 255, 0.14);
+      --line-soft: rgba(227, 238, 255, 0.08);
+      --text: #edf5ff;
+      --muted: #a8bdd2;
+      --cyan: #22d7b4;
+      --amber: #f8bd5f;
+      --blue: #8db4ff;
+      --violet: #c6a6ff;
+      --shadow: 0 20px 48px rgba(0, 0, 0, 0.42);
+    }
+
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      font-family: "Manrope", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(900px 460px at 0% -10%, rgba(34, 215, 180, 0.18), rgba(34, 215, 180, 0)),
+        radial-gradient(760px 420px at 100% 0%, rgba(248, 189, 95, 0.16), rgba(248, 189, 95, 0)),
+        linear-gradient(145deg, var(--bg-0), var(--bg-1) 46%, var(--bg-2));
+    }
+
+    .wrap { width: min(1240px, 92vw); margin: 0 auto; padding: 24px 0 64px; }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid var(--line-soft);
+      border-radius: 14px;
+      padding: 12px 14px;
+      background: rgba(8, 15, 24, 0.66);
+      flex-wrap: wrap;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: "Oswald", sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-size: 20px;
+      color: var(--text);
+      text-decoration: none;
+    }
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 35% 35%, #d6fff7, var(--cyan));
+    }
+    .back-link {
+      text-decoration: none;
+      color: #082922;
+      background: linear-gradient(130deg, #a0f9eb, #22d7b4);
+      border: 1px solid rgba(34, 215, 180, 0.75);
+      border-radius: 10px;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-weight: 800;
+      padding: 8px 12px;
+    }
+    .hero, .panel {
+      margin-top: 18px;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      padding: 24px;
+    }
+    .hero h1 {
+      margin: 0;
+      font-family: "Oswald", sans-serif;
+      font-size: clamp(32px, 5vw, 56px);
+      letter-spacing: -0.01em;
+      text-transform: uppercase;
+    }
+    .hero p {
+      margin: 12px 0 0;
+      color: #c7d7ec;
+      line-height: 1.6;
+      max-width: 80ch;
+    }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+    }
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255,255,255,0.03);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-height: 250px;
+    }
+    .card-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 46px;
+      height: 46px;
+      border-radius: 12px;
+      font-family: "Oswald", sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      border: 1px solid rgba(248, 189, 95, 0.55);
+      color: var(--amber);
+      background: rgba(248, 189, 95, 0.08);
+    }
+    .card h3 {
+      margin: 0;
+      font-size: 20px;
+      letter-spacing: -0.01em;
+      line-height: 1.25;
+    }
+    .card p {
+      margin: 0;
+      color: #b9cae0;
+      font-size: 14px;
+      line-height: 1.6;
+      flex-grow: 1;
+    }
+    .pill-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: auto; }
+    .pill {
+      border-radius: 999px;
+      padding: 5px 9px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      border: 1px solid var(--line-soft);
+      background: rgba(255,255,255,0.04);
+      color: #d6e4f6;
+    }
+    .pill.cyan { border-color: rgba(34, 215, 180, 0.28); color: var(--cyan); }
+    .pill.blue { border-color: rgba(141, 180, 255, 0.28); color: var(--blue); }
+    .pill.amber { border-color: rgba(248, 189, 95, 0.28); color: var(--amber); }
+    .pill.violet { border-color: rgba(198, 166, 255, 0.28); color: var(--violet); }
+    .footer {
+      margin-top: 14px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 12px;
+      text-align: center;
+    }
+  </style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+  <main class="wrap">
+    <header class="top">
+      <a class="brand" href="37_drilling_modules.html"><span class="dot" aria-hidden="true"></span><span>Nexus Oilfield AI</span></a>
+      <a class="back-link" id="backLink" href="66_my_wells.html">Назад к моим скважинам</a>
+    </header>
+
+    <section class="hero">
+      <h1 id="pageTitle">Скважина 9304</h1>
+      <p id="pageDesc">Обзорный дашборд пользовательской скважины. Пока блоки ниже показываются как обзорная структура и не кликаются.</p>
+    </section>
+
+    <section class="panel">
+      <div class="cards" id="sectionsGrid"></div>
+    </section>
+
+    <p class="footer">User well dashboard · Doc 67</p>
+  </main>
+
+  <script>
+    function getParams() {
+      const params = new URLSearchParams(window.location.search);
+      return {
+        projectName: params.get('name') || 'Уренгойское месторождение',
+        wellNumber: params.get('well') || '9304',
+        wellTitle: params.get('title') || 'Пользовательская скважина'
+      };
+    }
+
+    function buildProjectLink(page, name) {
+      const params = new URLSearchParams();
+      params.set('name', name);
+      return `${page}?${params.toString()}`;
+    }
+
+    const { projectName, wellNumber, wellTitle } = getParams();
+    document.title = `${projectName} · Скважина ${wellNumber}`;
+    document.getElementById('pageTitle').textContent = `${projectName} · Скважина ${wellNumber}`;
+    document.getElementById('pageDesc').textContent = `${wellTitle}. Обзорный дашборд по скважине ${wellNumber}; карточки ниже пока выступают как блоки и не открывают внутренние страницы.`;
+    document.getElementById('backLink').href = buildProjectLink('66_my_wells.html', projectName);
+
+    const sections = [
+      { number: '1', title: 'Общие сведения', description: `Базовые вводные по пользовательской скважине ${wellNumber}: объект, цели бурения, глубины и статус исходных данных.`, pills: ['паспорт', 'вводные', `well ${wellNumber}`], pillClasses: ['cyan', 'amber', 'blue'] },
+      { number: '2', title: 'Геология', description: `Литология, стратиграфия, осложнения, давления и температуры с привязкой к строительству скважины ${wellNumber}.`, pills: ['геология', 'риски', 'pressure'], pillClasses: ['blue', 'violet', 'amber'] },
+      { number: '3', title: 'Конструкция скважин', description: `Каркас обсадных колонн, диаметров, глубин и логики цементирования для скважины ${wellNumber}.`, pills: ['casing', 'design', `well ${wellNumber}`], pillClasses: ['blue', 'amber', 'cyan'] },
+      { number: '4', title: 'Профиль ствола скважины', description: `Траектория, MD/TVD, зенитные углы и целевой профиль ствола для скважины ${wellNumber}.`, pills: ['trajectory', 'survey', `well ${wellNumber}`], pillClasses: ['violet', 'blue', 'amber'] },
+      { number: '5', title: 'Буровые растворы', description: `Системы раствора, переходы между интервалами и программа химобработки для скважины ${wellNumber}.`, pills: ['mud', 'chemicals', `well ${wellNumber}`], pillClasses: ['cyan', 'amber', 'blue'] },
+      { number: '6', title: 'Углубление скважины', description: `Режимы бурения, компоновки BHA и параметры проходки для скважины ${wellNumber}.`, pills: ['drilling', 'bha', `well ${wellNumber}`], pillClasses: ['blue', 'amber', 'cyan'] },
+      { number: '7', title: 'Крепление скважины', description: `Интервалы крепления, цементирование и требования к обсадным колоннам по скважине ${wellNumber}.`, pills: ['casing', 'cementing', `well ${wellNumber}`], pillClasses: ['amber', 'cyan', 'blue'] },
+      { number: '8', title: 'Испытание скважины', description: `План испытаний, освоение, отбор проб и критерии готовности скважины ${wellNumber}.`, pills: ['test', 'flow', `well ${wellNumber}`], pillClasses: ['violet', 'amber', 'blue'] },
+      { number: '9', title: 'Продолжительность строительства скважины', description: `Календарный график, длительность фаз и критический путь по скважине ${wellNumber}.`, pills: ['schedule', 'critical path', `well ${wellNumber}`], pillClasses: ['blue', 'violet', 'amber'] },
+      { number: '10', title: 'Автоматизация технологических процессов', description: `Контуры автоматизации, цифровые датчики и автоматизированные решения для скважины ${wellNumber}.`, pills: ['automation', 'sensors', `well ${wellNumber}`], pillClasses: ['cyan', 'violet', 'blue'] },
+      { number: '11', title: 'Мероприятия по предотвращению осложнений', description: `Профилактика поглощений, прихватов, ГНВП и других осложнений для скважины ${wellNumber}.`, pills: ['risks', 'mitigation', `well ${wellNumber}`], pillClasses: ['violet', 'amber', 'cyan'] }
+    ];
+
+    document.getElementById('sectionsGrid').innerHTML = sections.map((section) => `
+      <div class="card">
+        <span class="card-num">${section.number}</span>
+        <h3>${section.title}</h3>
+        <p>${section.description}</p>
+        <div class="pill-row">
+          ${section.pills.map((pill, index) => `<span class="pill ${section.pillClasses[index] || ''}">${pill}</span>`).join('')}
+        </div>
+      </div>
+    `).join('');
+  </script>
+  <script src="assets/js/global-auth-widget.js"></script>
+</body>
+</html>

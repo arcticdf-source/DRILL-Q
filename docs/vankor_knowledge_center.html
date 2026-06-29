@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DRILL-Q · Knowledge Center · Ванкорское НГМ</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#F5F5F7;--surface:#FFFFFF;--surface2:#F9F9FB;
+  --border:rgba(0,0,0,.08);--border2:rgba(0,0,0,.04);
+  --text:#1D1D1F;--text2:#6E6E73;--text3:#AEAEB2;
+  --blue:#2563EB;--blue-l:#EFF6FF;--blue-m:#BFDBFE;
+  --green:#059669;--green-l:#ECFDF5;
+  --amber:#D97706;--amber-l:#FFFBEB;
+  --red:#DC2626;--red-l:#FEF2F2;
+  --purple:#7C3AED;--purple-l:#F5F3FF;
+  --sidebar-w:260px;--topbar-h:52px;
+  --r:12px;--shadow:0 1px 3px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.04);
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:13px;line-height:1.5}
+
+/* TOPBAR */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:100;height:var(--topbar-h);
+  background:rgba(255,255,255,.96);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;gap:12px}
+.brand{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--text)}
+.brand-mark{width:26px;height:26px;background:var(--blue);border-radius:6px;
+  display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#fff}
+.brand-name{font-size:13px;font-weight:800;letter-spacing:-.03em}
+.breadcrumb{display:flex;align-items:center;gap:6px;font-size:12px}
+.breadcrumb a{color:var(--text2);text-decoration:none}.breadcrumb a:hover{color:var(--text)}
+.bc-sep{color:var(--text3)}
+.tb-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.tb-search{display:flex;align-items:center;gap:7px;background:var(--surface2);
+  border:1px solid var(--border);border-radius:8px;padding:5px 12px;
+  font-size:12px;color:var(--text2);min-width:220px;cursor:text}
+.tb-search input{border:none;background:transparent;outline:none;font-size:12px;
+  color:var(--text);width:100%;font-family:inherit}
+.tb-search input::placeholder{color:var(--text3)}
+
+/* SIDEBAR */
+.sidebar{position:fixed;top:var(--topbar-h);left:0;bottom:0;width:var(--sidebar-w);
+  background:var(--surface);border-right:1px solid var(--border);
+  overflow-y:auto;z-index:50;padding:14px 10px;display:flex;flex-direction:column;gap:2px}
+.sidebar::-webkit-scrollbar{width:4px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+.nav-section{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;
+  letter-spacing:.08em;padding:10px 10px 4px}
+.nav-item{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:8px;
+  color:var(--text2);font-size:12px;cursor:pointer;transition:all .12s;text-decoration:none;user-select:none}
+.nav-item:hover{background:var(--bg);color:var(--text)}
+.nav-item.active{background:var(--blue-l);color:var(--blue);font-weight:600}
+.nav-icon{width:15px;height:15px;flex-shrink:0;opacity:.7}
+.nav-item.active .nav-icon{opacity:1}
+.nav-badge{margin-left:auto;padding:1px 6px;border-radius:999px;font-size:10px;font-weight:600;color:#fff}
+.nb-red{background:var(--red)}.nb-amber{background:var(--amber)}.nb-blue{background:var(--blue)}.nb-green{background:var(--green)}
+
+/* MAIN */
+.main{margin-left:var(--sidebar-w);margin-top:var(--topbar-h);padding:24px;min-height:calc(100vh - var(--topbar-h))}
+.view{display:none}.view.active{display:block}
+
+/* PAGE HEADER */
+.page-header{margin-bottom:20px}
+.page-title{font-size:20px;font-weight:800;letter-spacing:-.04em;margin-bottom:4px}
+.page-sub{font-size:12px;color:var(--text2)}
+
+/* CARDS */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow)}
+.card-header{display:flex;align-items:center;justify-content:space-between;padding:13px 18px;border-bottom:1px solid var(--border2)}
+.card-title{font-size:12px;font-weight:700;letter-spacing:.01em}
+.card-body{padding:14px 18px}
+
+/* KPI */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}
+@media(max-width:900px){.kpi-grid{grid-template-columns:repeat(2,1fr)}}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow);padding:14px 18px}
+.kpi-label{font-size:10px;color:var(--text2);font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.kpi-val{font-size:22px;font-weight:800;font-family:monospace;letter-spacing:-.03em}
+.kpi-sub{font-size:11px;color:var(--text2);margin-top:2px}
+.kpi-sub.ok{color:var(--green)}.kpi-sub.warn{color:var(--amber)}.kpi-sub.crit{color:var(--red)}
+
+/* TABLES */
+.tbl{width:100%;border-collapse:collapse;font-size:12px}
+.tbl th{background:var(--bg);font-weight:600;color:var(--text2);text-align:left;
+  padding:7px 10px;border-bottom:2px solid var(--border);font-size:11px;
+  text-transform:uppercase;letter-spacing:.04em;white-space:nowrap}
+.tbl td{padding:8px 10px;border-bottom:1px solid var(--border2);vertical-align:top}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:var(--bg)}
+.tbl .mono{font-family:monospace;color:var(--text2)}
+.tbl .bold{font-weight:700}
+.tbl .blue{color:var(--blue)}
+.tbl .red{color:var(--red)}.tbl .amber{color:var(--amber)}.tbl .green{color:var(--green)}
+
+/* RISK PILLS */
+.rpill{display:inline-block;padding:2px 8px;border-radius:999px;font-size:10px;font-weight:700;white-space:nowrap}
+.r-low{background:var(--green-l);color:#065F46}
+.r-med{background:var(--amber-l);color:#92400E}
+.r-high{background:#FEE2E2;color:#991B1B}
+.r-crit{background:#FF0000;color:#fff}
+
+/* GRID LAYOUTS */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:780px){.g2,.g3{grid-template-columns:1fr}}
+
+/* INCIDENT CARDS */
+.incident-list{display:flex;flex-direction:column;gap:8px}
+.incident{border-radius:9px;padding:12px 14px;border-left:4px solid}
+.incident.crit{background:var(--red-l);border-color:var(--red)}
+.incident.high{background:var(--amber-l);border-color:var(--amber)}
+.incident.med{background:var(--blue-l);border-color:var(--blue)}
+.incident-title{font-size:12px;font-weight:700;margin-bottom:3px}
+.incident.crit .incident-title{color:var(--red)}
+.incident.high .incident-title{color:var(--amber)}
+.incident.med .incident-title{color:var(--blue)}
+.incident-body{font-size:11px;color:var(--text2);line-height:1.55}
+.incident-depth{font-size:10px;font-family:monospace;color:var(--text3);margin-top:4px}
+
+/* MUD RECIPE BLOCK */
+.mud-interval{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);
+  box-shadow:var(--shadow);margin-bottom:12px;overflow:hidden}
+.mud-hdr{display:flex;align-items:center;gap:10px;padding:11px 16px;
+  background:var(--surface2);border-bottom:1px solid var(--border);cursor:pointer}
+.mud-hdr:hover{background:var(--blue-l)}
+.mud-interval-badge{padding:2px 9px;border-radius:6px;font-size:10px;font-weight:700;
+  background:var(--purple-l);color:var(--purple);font-family:monospace}
+.mud-hdr-title{font-size:13px;font-weight:700}
+.mud-hdr-dens{margin-left:auto;font-size:12px;font-weight:700;font-family:monospace;color:var(--blue)}
+.mud-body{padding:14px 16px;display:none}
+.mud-body.open{display:block}
+.mud-params{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.mud-warning{background:var(--red-l);border:1px solid rgba(220,38,38,.2);border-radius:8px;
+  padding:10px 14px;margin-bottom:12px;font-size:11px;color:#991B1B;line-height:1.6}
+
+/* REAGENT SEARCH */
+.reagent-search{display:flex;align-items:center;gap:8px;padding:8px 12px;
+  background:var(--surface2);border:1px solid var(--border);border-radius:8px;margin-bottom:14px}
+.reagent-search input{border:none;background:transparent;outline:none;font-size:12px;
+  color:var(--text);width:100%;font-family:inherit}
+.reagent-tag{display:inline-block;padding:2px 8px;border-radius:999px;font-size:10px;
+  font-weight:600;background:var(--purple-l);color:var(--purple);margin:2px}
+
+/* KNOWLEDGE BLOCKS */
+.kb-section{margin-bottom:18px}
+.kb-section-title{font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;
+  letter-spacing:.07em;margin-bottom:9px;display:flex;align-items:center;gap:6px}
+.kb-card{background:var(--surface);border:1px solid var(--border);border-radius:9px;
+  padding:12px 14px;margin-bottom:7px;display:flex;align-items:flex-start;gap:10px}
+.kb-icon{font-size:16px;flex-shrink:0;margin-top:1px}
+.kb-title{font-size:12px;font-weight:700;margin-bottom:2px}
+.kb-body{font-size:11px;color:var(--text2);line-height:1.55}
+.kb-meta{font-size:10px;font-family:monospace;color:var(--text3);margin-top:4px}
+.kb-tags{margin-top:5px}
+
+/* SEARCH RESULTS */
+.search-results{display:none}
+.search-results.show{display:block}
+.sr-title{font-size:13px;font-weight:700;margin-bottom:12px}
+.sr-none{font-size:12px;color:var(--text2);padding:20px;text-align:center}
+
+/* WELL SELECTOR */
+.well-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.well-chip{padding:4px 10px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;
+  border:1px solid var(--border);background:var(--surface2);color:var(--text2);transition:all .12s}
+.well-chip:hover{border-color:var(--blue);color:var(--blue)}
+.well-chip.active{background:var(--blue-l);border-color:var(--blue);color:var(--blue)}
+.well-chip.horiz{background:var(--purple-l);border-color:var(--purple);color:var(--purple)}
+.well-chip.active.horiz{border-color:var(--purple)}
+
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:99px}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <a class="brand" href="drilling_hub.html">
+    <div class="brand-mark">DQ</div>
+    <div class="brand-name">DRILL-Q</div>
+  </a>
+  <div class="breadcrumb">
+    <span class="bc-sep">/</span>
+    <a href="../app-vankor.html">Ванкорское НГМ</a>
+    <span class="bc-sep">/</span>
+    <span style="color:var(--text);font-weight:600">Knowledge Center</span>
+  </div>
+  <div class="tb-right">
+    <div class="tb-search">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" id="globalSearch" placeholder="Поиск: формация, реагент, инцидент…" oninput="doSearch(this.value)">
+    </div>
+    <span style="font-size:12px;color:var(--text2)">Ванкор · 2008–2011</span>
+  </div>
+</header>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="nav-section">База знаний</div>
+
+  <a class="nav-item active" onclick="showView('overview')">
+    <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    Обзор месторождения
+  </a>
+  <a class="nav-item" onclick="showView('strat')">
+    <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+    Стратиграфия + ГТН
+  </a>
+  <a class="nav-item" onclick="showView('mud')">
+    <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
+    Программы раствора
+  </a>
+  <a class="nav-item" onclick="showView('incidents')">
+    <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+    Аварии и инциденты
+    <span class="nav-badge nb-red">9</span>
+  </a>
+  <a class="nav-item" onclick="showView('reagents')">
+    <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg>
+    Реагенты и химия
+    <span class="nav-badge nb-blue">24+</span>
+  </a>
+  <a class="nav-item" onclick="showView('wells')">
+    <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
+    База скважин
+    <span class="nav-badge nb-green">29</span>
+  </a>
+  <a class="nav-item" onclick="showView('lessons')">
+    <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+    Уроки + AI-рекомендации
+  </a>
+
+  <div class="nav-section" style="margin-top:8px">Инструменты</div>
+  <a class="nav-item" href="drilling_hub.html">
+    <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 2v2m0 16v2M2 12h2m16 0h2"/></svg>
+    Drilling Simulator
+  </a>
+  <a class="nav-item" href="../app-vankor.html">
+    <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+    Страница проекта
+  </a>
+
+  <div style="flex:1"></div>
+  <div style="padding:10px;font-size:10px;color:var(--text3);line-height:1.5;border-top:1px solid var(--border2)">
+    📂 Источник: D:\OIL FIELDS (MUD PROGRAMS)\ВАНКОР<br>
+    24+ документа · Кусты 7, 9, 12 · 2008–2011
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- ═══ SEARCH RESULTS ═══ -->
+  <div id="view-search" class="view search-results" id="searchView">
+    <div class="page-header">
+      <div class="page-title">🔍 Результаты поиска</div>
+      <div class="page-sub" id="searchInfo"></div>
+    </div>
+    <div id="searchResults"></div>
+  </div>
+
+  <!-- ═══ OVERVIEW ═══ -->
+  <div class="view active" id="view-overview">
+    <div class="page-header">
+      <div class="page-title">Ванкорское НГМ — База знаний AI</div>
+      <div class="page-sub">Красноярский край · Туруханский р-н · Оператор: Роснефть · 2008–2011 · 24+ документа проанализировано</div>
+    </div>
+
+    <div style="background:linear-gradient(135deg,var(--green-l),#D1FAE5);border:1px solid #6EE7B7;border-radius:var(--r);padding:13px 18px;margin-bottom:18px;display:flex;align-items:center;gap:10px">
+      <span style="font-size:18px">🤖</span>
+      <div>
+        <span style="font-size:13px;font-weight:700;color:#065F46">AI Knowledge Base готова</span>
+        <span style="font-size:11px;color:#047857;margin-left:10px">Кусты 7 (20 скважин), 9, 12 (9 скважин) · Программы раствора · ГТН · Аварийные отчёты · Инвентаризация химии · Полевые акты</span>
+      </div>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi"><div class="kpi-label">Скважин в архиве</div><div class="kpi-val">29+</div><div class="kpi-sub ok">Кусты 7, 9, 12, 102</div></div>
+      <div class="kpi"><div class="kpi-label">Продуктивных горизонтов</div><div class="kpi-val">3</div><div class="kpi-sub">Як III–VII · Нх I · Нх III–IV</div></div>
+      <div class="kpi"><div class="kpi-label">Макс. давление АВПД</div><div class="kpi-val" style="color:var(--red)">274 атм</div><div class="kpi-sub warn">Нх III–IV · T=65°C · –2810 м</div></div>
+      <div class="kpi"><div class="kpi-label">Критичных зон</div><div class="kpi-val" style="color:var(--red)">5</div><div class="kpi-sub crit">Прихват, газ, поглощение, АВПД</div></div>
+    </div>
+
+    <div class="g2">
+      <div>
+        <div class="card" style="margin-bottom:12px">
+          <div class="card-header"><span class="card-title">Основные данные месторождения</span></div>
+          <div class="card-body" style="padding:0">
+            <table class="tbl">
+              <tr><td style="color:var(--text2);padding:8px 14px">Год открытия</td><td style="padding:8px 14px;font-weight:700">1988</td></tr>
+              <tr><td style="color:var(--text2);padding:8px 14px">В разработке с</td><td style="padding:8px 14px;font-weight:700">2009</td></tr>
+              <tr><td style="color:var(--text2);padding:8px 14px">Основная цель</td><td style="padding:8px 14px;font-weight:700;color:var(--blue)">Нижнехетская Нх III–IV</td></tr>
+              <tr><td style="color:var(--text2);padding:8px 14px">Глубина залегания (абс.)</td><td style="padding:8px 14px;font-weight:700">–2716 — –2810 м</td></tr>
+              <tr><td style="color:var(--text2);padding:8px 14px">ВНК / ГНК (Нх III–IV)</td><td style="padding:8px 14px;font-weight:700">–2760 м / –2716 м</td></tr>
+              <tr><td style="color:var(--text2);padding:8px 14px">Пластовое давление Нх III–IV</td><td style="padding:8px 14px;font-weight:700;color:var(--red)">274 атм (26.9 МПа)</td></tr>
+              <tr><td style="color:var(--text2);padding:8px 14px">Температура Нх III–IV</td><td style="padding:8px 14px;font-weight:700">65°C</td></tr>
+              <tr><td style="color:var(--text2);padding:8px 14px">Плотность нефти (дегаз.)</td><td style="padding:8px 14px;font-weight:700">832–851 кг/м³</td></tr>
+              <tr><td style="color:var(--text2);padding:8px 14px">Вязкость нефти (пл. усл.)</td><td style="padding:8px 14px;font-weight:700">0.7 мПа·с</td></tr>
+              <tr><td style="color:var(--text2);padding:8px 14px;border-bottom:none">Тип залежи</td><td style="padding:8px 14px;font-weight:700;border-bottom:none">Антиклинально-стратиграфическая</td></tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><span class="card-title">Продуктивные горизонты</span></div>
+          <div class="card-body" style="padding:0">
+            <table class="tbl">
+              <thead><tr><th>Горизонт</th><th>ТВД, м</th><th>P, атм</th><th>T°C</th><th>Нефтенасыщ.</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td><b>Як III–VII</b><br><span style="font-size:10px;color:var(--text2)">Яковлевская</span></td>
+                  <td class="mono">1630–1937</td><td class="mono">~162</td><td class="mono">~45</td>
+                  <td><span style="font-weight:700;color:var(--green)">~70 м</span></td>
+                </tr>
+                <tr>
+                  <td><b>Нх I</b><br><span style="font-size:10px;color:var(--text2)">Нижнехетская</span></td>
+                  <td class="mono">2570–2825</td><td class="mono">254</td><td class="mono">64</td>
+                  <td><span style="font-weight:700;color:var(--green)">7–11 м</span></td>
+                </tr>
+                <tr style="background:var(--blue-l)">
+                  <td><b style="color:var(--blue)">Нх III–IV ★</b><br><span style="font-size:10px;color:var(--blue);font-weight:700">ОСНОВНАЯ ЦЕЛЬ</span></td>
+                  <td class="mono" style="color:var(--blue)">2750–2841</td>
+                  <td class="mono" style="color:var(--red);font-weight:700">274</td>
+                  <td class="mono">65</td>
+                  <td><span style="font-weight:700;color:var(--blue)">15–21 м</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="card" style="margin-bottom:12px;background:var(--red-l);border-color:rgba(220,38,38,.2)">
+          <div class="card-header" style="border-bottom-color:rgba(220,38,38,.15)"><span class="card-title" style="color:var(--red)">⚠ Критичные зоны осложнений</span></div>
+          <div class="card-body">
+            <div class="incident-list">
+              <div class="incident crit"><div class="incident-title">Прихват — кровля Нх I (аргиллиты)</div><div class="incident-body">Нестабильные аргиллиты при вскрытии кровли Нх I. Зафиксированы прихваты кустов 7 и 12. Обязателен стабилизатор ствола 10–14 кг/м³ с 2200 м ТВД. РОП ≤ 3–5 м/ч. Запрет промывания при наращивании.</div><div class="incident-depth">2665–2727 м ТВД</div></div>
+              <div class="incident crit"><div class="incident-title">Поглощения — зона ВМ и карст</div><div class="incident-body">Трещинно-каверновые поглощения 0–540 м. Скв. 73: полная потеря циркуляции с 70 м, 36–60 м³/ч. Аварийный р-р 35 м³ обязателен.</div><div class="incident-depth">0–540 м · Все кусты</div></div>
+              <div class="incident crit"><div class="incident-title">Газопроявления — Долганская свита</div><div class="incident-body">Газоносный горизонт 1005–1031 м. Порог срабатывания дегазатора 5% УВ. ρ до 1.16 г/см³. ПВО в полной боеготовности.</div><div class="incident-depth">1005–1031 м · Долганская</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><span class="card-title">Конструкция скважины · Скв. 7-002 (эталон)</span></div>
+          <div class="card-body" style="padding:0">
+            <table class="tbl">
+              <thead><tr><th>Интервал (MD)</th><th>Долото</th><th>Обсадная</th><th>Р-р · ρ</th></tr></thead>
+              <tbody>
+                <tr><td class="mono">0–620 м</td><td class="mono">Ø393.7 мм</td><td class="bold">Ø324 мм кондуктор</td><td class="mono">ПГ · 1.18</td></tr>
+                <tr><td class="mono">620–1780 м</td><td class="mono">Ø295.3 мм</td><td class="bold">Ø245 мм тех. кол.</td><td class="mono">ПГ · 1.13</td></tr>
+                <tr><td class="mono">1780–3050 м</td><td class="mono">Ø219.1 мм</td><td class="bold">Ø178 мм экспл.</td><td class="mono">ПГ · 1.12–1.20</td></tr>
+                <tr style="background:var(--purple-l)"><td class="mono">3050–3353 м</td><td class="mono">Ø152.4 мм</td><td class="bold" style="color:var(--purple)">Ø114 мм хвостовик</td><td class="mono">KCl · 1.06</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ STRATIGRAPHY ═══ -->
+  <div class="view" id="view-strat">
+    <div class="page-header">
+      <div class="page-title">Стратиграфия и геологический разрез</div>
+      <div class="page-sub">Источник: ГТН Ванкорское НГМ · Программы бурения кустов 7 и 12 · 2008–2009 г.</div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Стратиграфическая колонка — Ванкорское НГМ</span>
+        <span style="font-size:11px;color:var(--text2)">ГТН + программы бурения скважин 7-002 и 12-835</span>
+      </div>
+      <div class="card-body" style="padding:0">
+        <table class="tbl">
+          <thead><tr><th>Свита / горизонт</th><th>ТВД, м</th><th>Литология</th><th>Риск</th><th>Осложнения</th><th>ρ р-ра</th></tr></thead>
+          <tbody>
+            <tr><td><b>Четвертичные + Таназская</b><br><small style="color:var(--text2)">Q + Тнз</small></td><td class="mono">0–150 м</td><td>Рыхлые пески, суглинки, галечники. <b>Вечная мерзлота 0–150 м.</b></td><td><span class="rpill r-high">Высокий</span></td><td>Поглощения (0–540 м), кавернообразование, обвалы ВМ</td><td class="mono bold">1.18</td></tr>
+            <tr><td><b>Долганская / Салпадаяхинская</b><br><small style="color:var(--text2)">Дл / Спд</small></td><td class="mono">150–1000 м</td><td>Пески, глины, алевролиты. <b>Газоносные прослои 1005–1031 м.</b></td><td><span class="rpill r-high">Высокий</span></td><td>ГАЗ (1005–1031 м), поглощения (905–1000 м), прихват (540–905 м)</td><td class="mono bold">1.13–1.16</td></tr>
+            <tr><td><b>Дорожковская</b><br><small style="color:var(--text2)">Држ</small></td><td class="mono">900–1000 м</td><td>Глины, алевролиты плотные.</td><td><span class="rpill r-med">Умеренный</span></td><td>Газ (горизонт 1005–1031 м), кавернообразование</td><td class="mono">1.16</td></tr>
+            <tr><td><b>Насоновская</b><br><small style="color:var(--text2)">Нсн</small></td><td class="mono">1000–1300 м</td><td>Глины, алевролиты, пески. Переслаивание.</td><td><span class="rpill r-high">Высокий</span></td><td>Прихват (1000–1350 м), поглощения, кавернообразование</td><td class="mono">1.13</td></tr>
+            <tr><td><b>Верхнехетская</b><br><small style="color:var(--text2)">Вхт</small></td><td class="mono">1300–1630 м</td><td>Переслаивание глин, алевролитов, песчаников.</td><td><span class="rpill r-med">Умеренный</span></td><td>Поглощения (1000–1350 м), газ (1645–1650 м)</td><td class="mono">1.13</td></tr>
+            <tr style="background:#FFFBEB"><td><b>Яковлевская Як III–VII</b><br><small style="color:var(--amber);font-weight:700">ПРОДУКТИВНЫЙ</small></td><td class="mono">1630–1937 м</td><td>Песчаники с глинистыми прослоями. Нефтегазонасыщенные коллекторы.</td><td><span class="rpill r-high">Высокий</span></td><td>Нефтегазопроявления при вскрытии (P=16.2 МПа), контроль каждые 15 мин</td><td class="mono bold">1.13</td></tr>
+            <tr><td><b>Суходудинская</b><br><small style="color:var(--text2)">Схд</small></td><td class="mono">1937–2040 м</td><td>Плотные алевролиты, глины.</td><td><span class="rpill r-med">Умеренный</span></td><td>Сужение ствола (2040–2570 м). Проработка каждые 72 ч.</td><td class="mono">1.12</td></tr>
+            <tr><td><b>Малохетская</b><br><small style="color:var(--text2)">Млх</small></td><td class="mono">2040–2570 м</td><td>Глинисто-алевролитовые плотные породы.</td><td><span class="rpill r-med">Умеренный</span></td><td>Тугой ход инструмента, периодические сужения ствола</td><td class="mono">1.12</td></tr>
+            <tr style="background:#FFFBEB"><td><b>Нижнехетская Нх I</b><br><small style="color:var(--amber);font-weight:700">ПРОДУКТИВНЫЙ</small></td><td class="mono">2570–2825 м</td><td>Переслаивание песчаников, аргиллитов, алевролитов. Коллектор.</td><td><span class="rpill r-crit">КРИТИЧ.</span></td><td><b>Прихват кровли (2665–2727 м ТВД)</b>, кавернообразование. P=254 атм. Нефтепроявления (2630–2785 м)</td><td class="mono bold blue">1.18–1.20</td></tr>
+            <tr style="background:var(--blue-l)"><td><b style="color:var(--blue)">Нижнехетская Нх III–IV ★</b><br><small style="color:var(--blue);font-weight:700">ОСНОВНАЯ ЦЕЛЬ</small></td><td class="mono blue">2750–2841 м<br>абс: –2716/–2810</td><td>Переслаивание песчаников и аргиллитов 0.5–12 м. Нефтегазонасыщенный коллектор.</td><td><span class="rpill r-crit">КРИТИЧ.</span></td><td>Прихват (тот же интервал). P=274 атм. Нефтеприток при испытании 2755–2777 м. РОП ≤5 м/ч при вскрытии</td><td class="mono bold blue">1.18–1.20</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ MUD PROGRAMS ═══ -->
+  <div class="view" id="view-mud">
+    <div class="page-header">
+      <div class="page-title">Программы буровых растворов</div>
+      <div class="page-sub">Источник: Программы раствора кустов 7/12, дополнение к программе вскрытия кровли Нх3-4, ГТН · 2009 г.</div>
+    </div>
+
+    <div style="background:var(--amber-l);border:1px solid rgba(217,119,6,.2);border-radius:9px;padding:11px 16px;margin-bottom:16px;font-size:11px;color:#92400E">
+      ⚠ Торговые наименования реагентов заменены на функциональные описания. Дозировки — из оригинальных программ Baroid/Halliburton.
+    </div>
+
+    <!-- Interval 1 -->
+    <div class="mud-interval">
+      <div class="mud-hdr" onclick="toggleMud(this)">
+        <span class="mud-interval-badge">Ø393.7 мм · 0–620 м MD</span>
+        <span class="mud-hdr-title">Кондуктор — Полимер-глинистый ВБР</span>
+        <span class="mud-hdr-dens">ρ = 1.18 г/см³</span>
+        <span style="margin-left:8px;font-size:12px;color:var(--text3)">▼</span>
+      </div>
+      <div class="mud-body open">
+        <div class="mud-params">
+          <table class="tbl">
+            <thead><tr><th>Параметр</th><th>Значение</th></tr></thead>
+            <tbody>
+              <tr><td>Плотность, кг/м³</td><td class="bold">1180</td></tr>
+              <tr><td>УВ (воронка Марш), с</td><td>45–90</td></tr>
+              <tr><td>API фильтрация, мл/30 мин</td><td>&lt;10</td></tr>
+              <tr><td>ПВ (пластич. вязкость), мПа·с</td><td>18–27</td></tr>
+              <tr><td>ДНС (lb/100ft²)</td><td>15–25</td></tr>
+              <tr><td>СНС 10с / 10мин (lb/100ft²)</td><td>6–9 / 8–15</td></tr>
+              <tr><td>МБТ, кг/м³</td><td>&lt;80</td></tr>
+              <tr><td>Ca²⁺, мг/л</td><td>&lt;200</td></tr>
+              <tr><td>pH</td><td>8.5–9.5</td></tr>
+            </tbody>
+          </table>
+          <div>
+            <div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em">Рецептура (кг/м³)</div>
+            <table class="tbl">
+              <thead><tr><th>Функция реагента</th><th>Доза</th></tr></thead>
+              <tbody>
+                <tr><td>Каустическая сода (регулятор pH)</td><td class="bold">1</td></tr>
+                <tr><td>Бентонит (структурообразователь)</td><td class="bold">40–60</td></tr>
+                <tr><td>КМЦ (контроль фильтрации)</td><td class="bold">4</td></tr>
+                <tr><td>ПАВ — смазывающая добавка</td><td class="bold">1</td></tr>
+                <tr><td>Смазка трубная</td><td class="bold">4</td></tr>
+                <tr><td>Полиакрилатный стабилизатор</td><td class="bold">4</td></tr>
+                <tr><td>Инкапсулятор глин</td><td class="bold">1</td></tr>
+              </tbody>
+            </table>
+            <div style="font-size:10px;color:var(--text2);margin-top:8px">Объём: 260 м³ активный + 52 м³ фильтрат</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Interval 2 -->
+    <div class="mud-interval">
+      <div class="mud-hdr" onclick="toggleMud(this)">
+        <span class="mud-interval-badge">Ø295.3 мм · 620–1780 м MD</span>
+        <span class="mud-hdr-title">Технич. колонна — Полимер-глинистый ВБР (усиленный)</span>
+        <span class="mud-hdr-dens">ρ = 1.13 г/см³</span>
+        <span style="margin-left:8px;font-size:12px;color:var(--text3)">▶</span>
+      </div>
+      <div class="mud-body">
+        <div class="mud-params">
+          <table class="tbl">
+            <thead><tr><th>Параметр</th><th>Значение</th></tr></thead>
+            <tbody>
+              <tr><td>Плотность, кг/м³</td><td class="bold">1130</td></tr>
+              <tr><td>УВ, с</td><td>35–50</td></tr>
+              <tr><td>API фильтрация, мл/30 мин</td><td>&lt;6</td></tr>
+              <tr><td>ПВ, мПа·с</td><td>12–25</td></tr>
+              <tr><td>ДНС, lb/100ft²</td><td>10–20</td></tr>
+              <tr><td>СНС 10с / 10мин</td><td>4–8 / 8–12</td></tr>
+              <tr><td>МБТ, кг/м³</td><td>&lt;60</td></tr>
+              <tr><td>pH</td><td>9–10</td></tr>
+            </tbody>
+          </table>
+          <table class="tbl">
+            <thead><tr><th>Дополнительные реагенты</th><th>Доза, кг/м³</th></tr></thead>
+            <tbody>
+              <tr><td>Ксантановая смола (структура)</td><td class="bold">2</td></tr>
+              <tr><td>Полианионная целлюлоза (ПАЦ)</td><td class="bold">4–5</td></tr>
+              <tr><td>Стабилизатор ствола (асфальтен.)</td><td class="bold">5</td></tr>
+              <tr><td>Карбонат кальция 50 мкм</td><td class="bold">60–80</td></tr>
+              <tr><td>Бактерицид (глутар. альдегид 24%)</td><td class="bold">0.5</td></tr>
+              <tr><td>Пеногаситель</td><td class="bold">0.5</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Interval 3 -->
+    <div class="mud-interval">
+      <div class="mud-hdr" onclick="toggleMud(this)">
+        <span class="mud-interval-badge">Ø219.1 мм · 1780–3050 м MD</span>
+        <span class="mud-hdr-title">Экспл. колонна — Полимер-глинистый ВБР (вскрытие Нх)</span>
+        <span class="mud-hdr-dens" style="color:var(--red)">ρ = 1.12–1.20 г/см³</span>
+        <span style="margin-left:8px;font-size:12px;color:var(--text3)">▶</span>
+      </div>
+      <div class="mud-body">
+        <div class="mud-warning">
+          <b>⚠ Вскрытие кровли Нх I (2665–2727 м ТВД):</b> ρ 1.18–1.20 г/см³; ДНС ≥15 lb/100ft²; ПВ ≥20 мПа·с; УВ 45–60 с; не допускать снижения ρ &gt;0.02 г/см³ от плановой. РОП не более 3–5 м/ч. <b>ЗАПРЕЩЕНО промывание при наращивании в зоне неустойчивых аргиллитов.</b> Стабилизатор ствола 10–14 кг/м³ с 2200 м ТВД.
+        </div>
+        <div class="mud-params">
+          <table class="tbl">
+            <thead><tr><th>Параметр</th><th>1780–2570 м</th><th>Вскрытие Нх</th></tr></thead>
+            <tbody>
+              <tr><td>Плотность, кг/м³</td><td>1120</td><td class="bold red">1180–1200</td></tr>
+              <tr><td>УВ, с</td><td>40–60</td><td>45–60</td></tr>
+              <tr><td>API фильтрация</td><td>&lt;6</td><td>&lt;6</td></tr>
+              <tr><td>ПВ, мПа·с</td><td>12–25</td><td class="bold">16–25</td></tr>
+              <tr><td>ДНС, lb/100ft²</td><td>10–20</td><td class="bold red">15–20</td></tr>
+              <tr><td>СНС 10с/10мин</td><td>4–10 / 8–15</td><td>4–8 / 8–12</td></tr>
+              <tr><td>МБТ, кг/м³</td><td>&lt;60</td><td>&lt;50</td></tr>
+              <tr><td>pH</td><td>8.5–10.5</td><td>8.5–10</td></tr>
+            </tbody>
+          </table>
+          <table class="tbl">
+            <thead><tr><th>Ключевой реагент</th><th>Доза</th><th>Примечание</th></tr></thead>
+            <tbody>
+              <tr><td>Стабилизатор ствола (асф.)</td><td class="bold red">10–14 кг/м³</td><td>С 2200 м ТВД, макс. при Нх I</td></tr>
+              <tr><td>Ксантановая смола</td><td>2–3</td><td>Структура</td></tr>
+              <tr><td>Полианионная целлюлоза</td><td>5</td><td>Фильтрация</td></tr>
+              <tr><td>Смазочная добавка</td><td class="bold">5–10</td><td>Для НКТ и долота</td></tr>
+              <tr><td>Инкапсулятор глин</td><td>2</td><td>Глинистые прослои</td></tr>
+              <tr><td>CaCO₃ 50 мкм</td><td class="bold">85</td><td>Утяжелитель</td></tr>
+              <tr><td>Бактерицид</td><td>0.5</td><td>—</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Interval 4 -->
+    <div class="mud-interval">
+      <div class="mud-hdr" onclick="toggleMud(this)">
+        <span class="mud-interval-badge">Ø152.4 мм · 3050–3353 м MD</span>
+        <span class="mud-hdr-title">Горизонтальный ствол — KCl-полимерный ВБР (некольматирующий)</span>
+        <span class="mud-hdr-dens" style="color:var(--purple)">ρ = 1.06 г/см³</span>
+        <span style="margin-left:8px;font-size:12px;color:var(--text3)">▶</span>
+      </div>
+      <div class="mud-body">
+        <div class="mud-params">
+          <table class="tbl">
+            <thead><tr><th>Параметр</th><th>Значение</th></tr></thead>
+            <tbody>
+              <tr><td>Плотность, г/см³</td><td class="bold purple" style="color:var(--purple)">1.06</td></tr>
+              <tr><td>УВ, с</td><td>40–65</td></tr>
+              <tr><td>API фильтрация</td><td>≤6 мл/30 мин</td></tr>
+              <tr><td>ВЭАД (при ВД)</td><td>&lt;0.127</td></tr>
+              <tr><td>ДНС, lb/100ft²</td><td class="bold">20–35</td></tr>
+              <tr><td>СНС 10с/10мин</td><td>6–16 / 9–30</td></tr>
+              <tr><td>МБТ, кг/м³</td><td>&lt;14</td></tr>
+              <tr><td>KCl, кг/м³</td><td class="bold">30</td></tr>
+              <tr><td>Cl⁻, мг/л</td><td>12 000–15 000</td></tr>
+              <tr><td>pH</td><td>9–10</td></tr>
+              <tr><td>ЭЦП при долоте, г/см³</td><td>~1.09</td></tr>
+            </tbody>
+          </table>
+          <div>
+            <table class="tbl" style="margin-bottom:12px">
+              <thead><tr><th>Реагент (функция)</th><th>Доза, кг/м³</th></tr></thead>
+              <tbody>
+                <tr><td>Каустик (pH)</td><td>1–2</td></tr>
+                <tr><td>Ксантан высокой чистоты</td><td class="bold">3–5</td></tr>
+                <tr><td>Неионный крахмал (фильтрация)</td><td class="bold">14–20</td></tr>
+                <tr><td>Хлорид калия KCl (ингибитор)</td><td class="bold">20–30</td></tr>
+                <tr><td>Смазочная добавка</td><td class="bold">10–20</td></tr>
+                <tr><td>Бактерицид</td><td>0.5</td></tr>
+                <tr><td>CaCO₃ 5 мкм (мрамор)</td><td>40</td></tr>
+                <tr><td>CaCO₃ 50 мкм</td><td>40</td></tr>
+                <tr><td>CaCO₃ 150 мкм</td><td>20</td></tr>
+              </tbody>
+            </table>
+            <div style="background:var(--purple-l);border-radius:7px;padding:10px 12px;font-size:11px;color:#4C1D95;line-height:1.65">
+              <b>Чистка горизонтального ствола:</b><br>
+              Расход мин. 15–18 л/с · Вращение 120 об/мин ·<br>
+              Маловязкий пыж (УВ ≤40 с) → высоковязкий (УВ ≥90 с) каждые 200 м ·<br>
+              Перед подъёмом: 2 полных цикла циркуляции
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ INCIDENTS ═══ -->
+  <div class="view" id="view-incidents">
+    <div class="page-header">
+      <div class="page-title">Аварии и инциденты</div>
+      <div class="page-sub">Источник: Отчёт по аварии куст 7 · Полевые акты · Рапорта 2009–2011 г.</div>
+    </div>
+
+    <div class="g2">
+      <div>
+        <div class="kb-section-title">🔴 Критичные аварии</div>
+        <div class="incident-list">
+          <div class="incident crit">
+            <div class="incident-title">Прихват инструмента — кровля Нх I</div>
+            <div class="incident-body">Наиболее распространённая авария на Ванкоре. Нестабильные аргиллиты при вскрытии кровли Нх I. Зафиксированы прихваты в нескольких скважинах кустов 7 и 12. Признаки: нарастание ДНС, посадки инструмента, падение РОП за 24–72 ч до события.<br><br><b>Ликвидация:</b> нефтяная ванна 5–8 м³, ясс, ротор 40–60 об/мин с вибрацией. При затяжке ≥6 ч — ударный инструмент.</div>
+            <div class="incident-depth">2665–2727 м ТВД · Кусты 7 и 12 · НПВ: 9+ суток</div>
+          </div>
+          <div class="incident crit">
+            <div class="incident-title">⚠ АВАРИЯ: Прихват + отстрел труб — Скв. 572 · Куст 109</div>
+            <div class="incident-body">Заклинка инструмента на 2017 м при зенитном угле 72,6°. Момент 27–28 кН·м. Расхаживание от 0 до 133 т — без результата. Нефтяная ванна 25 м³ (3 м³ ВВП + 25 м³ нефть + 3 м³ ВВП + 10 м³ БР) — без результата. Принято решение об отстреле труб на 1677 м. Установка цементного моста 1677–1540 м. Зарезка второго ствола с 1556 м.<br><b>Финансовые последствия:</b> перерасход химии +64% от плана (2 345 967 ₽ vs план 1 429 519 ₽). Стоимость р-ра: 1 666 ₽/м vs план 1 023 ₽/м. Концентрация CaCO₃ достигла рекорда: 213,63 кг/м³. При такой концентрации SAPP давал обратный эффект — загущение вместо разжижения.</div>
+            <div class="incident-depth">2017 м MD · Зенит 72,6° · Куст 109 · 2011 г. · Финальный отчёт Baroid</div>
+          </div>
+          <div class="incident crit">
+            <div class="incident-title">Грифон раствора через ММП — Скв. 540 · Куст 109</div>
+            <div class="incident-body">При проработке в интервале ВМ с набором угла 16° произошло растепление пород и грифонообразование раствора на поверхность вокруг устья. Причина: длительное нахождение в зоне ВМ при наклонной траектории кондуктора. Решение: немедленный подъём КНБК без циркуляции (правильное решение — предотвратило ухудшение).<br><b>Урок:</b> кондуктор бурить вертикально для минимизации нагрева ВМ. Минимизировать время нахождения в ВМ при наклонном стволе.</div>
+            <div class="incident-depth">0–150 м · Куст 109 · ВМ + набор угла 16° · 2011 г.</div>
+          </div>
+          <div class="incident crit">
+            <div class="incident-title">Газ 54% — Долганская · Скв. 988 (куст 16) и Скв. 626 (куст 7)</div>
+            <div class="incident-body">Рекордное газосодержание 54% УВ при вскрытии Долганской свиты на скв. 988 (1123 м) и 45% на скв. 626 (1040 м). При выходе газовых пачек плотность раствора на выходе падала до 0,7 г/см³ — угроза ГНВП. Резкое снижение pH (обработка гашёной известью). На скв. 626 при цементировании — 4 м³ цемента пл. 1,43 г/см³ выдавлено на устье.<br><b>Меры:</b> утяжеление до 1,20–1,26 г/см³, ГВА мониторинг непрерывно, ПВО задраить.</div>
+            <div class="incident-depth">1040–1123 м · Долганская свита · Кусты 7 и 16 · 2011, 2013 г.</div>
+          </div>
+          <div class="incident crit">
+            <div class="incident-title">Полное поглощение — зона ВМ · Скв. 73</div>
+            <div class="incident-body">Полная потеря циркуляции начиная с 70 м. Интенсивность 36–60 м³/ч. Зона трещинно-каверновых поглощений 0–540 м. Аварийный раствор (бентонит + опилки + волокно) позволил восстановить циркуляцию.<br><br><b>Меры:</b> аварийный р-р ≥35 м³ на буровой. Профилактические отрывы КНБК каждые 1 м. Давление промывки ниже Pпогл.</div>
+            <div class="incident-depth">0–540 м · Все кусты · Документировано в ГТН</div>
+          </div>
+          <div class="incident crit">
+            <div class="incident-title">Газопроявление — Долганская 1005–1031 м (типовой инцидент)</div>
+            <div class="incident-body">Газосодержащий горизонт на всех скважинах. Газ 6% (скв. 625) → 17% (скв. 706) → 45% (скв. 626) → 54% (скв. 988). Риск выброса при ρ &lt;1.13 г/см³. Бикарбонатное загрязнение при выходе газовых пачек — снижение pH, рост УВ.<br><br><b>Меры:</b> ρ до 1.16–1.20 г/см³ немедленно. ГВА каждые 15 мин. ПВО в полной боеготовности. Обработка гашёной известью (снижение бикарбонатного загрязнения).</div>
+            <div class="incident-depth">1005–1031 м · Долганская свита · Все кусты</div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="kb-section-title">🟠 Высокие риски · Зафиксированные инциденты</div>
+        <div class="incident-list">
+          <div class="incident high">
+            <div class="incident-title">Прихват — интервалы 540–905 и 1000–1350 м</div>
+            <div class="incident-body">Зоны прихватоопасности в более мелких интервалах. Меры: непрерывная циркуляция, ясс + нефт. ванна на буровой обязательно, 2 цикла промывки перед каждым подъёмом.</div>
+            <div class="incident-depth">540–905 м и 1000–1350 м · Все кусты</div>
+          </div>
+          <div class="incident high">
+            <div class="incident-title">Нефтегазопроявление — Яковлевская Як III–VII</div>
+            <div class="incident-body">P=16.2 МПа при вскрытии Яковлевского горизонта. Обязательно: инж. по р-рам на буровой, контроль каждые 15 мин, ρ 1.13 г/см³ строго.</div>
+            <div class="incident-depth">1630–1700 м ТВД · P=16.2 МПа</div>
+          </div>
+          <div class="incident high">
+            <div class="incident-title">Сужение ствола — Малохетская 2040–2570 м</div>
+            <div class="incident-body">Тугой ход инструмента. Периодические сужения. Проработка каждые 72 ч. Визинг-трип перед ГИС. Мин. 2 цикла циркуляции перед подъёмом.</div>
+            <div class="incident-depth">2040–2570 м · Малохетская свита</div>
+          </div>
+          <div class="incident high">
+            <div class="incident-title">Нефтеприток — Нх I при испытании 2755–2777 м</div>
+            <div class="incident-body">Нефтеприток при испытании скважины 12-835 в интервале 2755–2777 м. АВПД P=254 атм. Контроль плотности ежечасно при вскрытии.</div>
+            <div class="incident-depth">2755–2777 м · Нх I · Скв. 12-835</div>
+          </div>
+        </div>
+
+        <div style="margin-top:16px">
+          <div class="kb-section-title">🛡 Инструменты аварийной ликвидации (на буровой)</div>
+          <div class="card">
+            <div class="card-body">
+              <div style="font-size:12px;line-height:2.2">
+                <div>🪛 <b>Ясс (Jar)</b> — на компоновке при бурении интервалов 2570–3050 м</div>
+                <div>🛢 <b>Нефтяная ванна</b> — 5–8 м³ в готовности 24/7</div>
+                <div>🔧 <b>Ловильный инструмент</b>: колокол + овершот</div>
+                <div>💧 <b>Аварийный раствор</b> ≥35 м³ (бентонит + опилки + волокно)</div>
+                <div>📊 <b>LCM материалы</b>: CaCO₃ грубый 15 кг/м³ + графит 3 кг/м³</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ REAGENTS ═══ -->
+  <div class="view" id="view-reagents">
+    <div class="page-header">
+      <div class="page-title">Реагенты и химия</div>
+      <div class="page-sub">Источник: Инвентаризация, ТТН, Полевые акты · Кусты 7, 9, 12 · 2008–2011 г.</div>
+    </div>
+
+    <div class="reagent-search">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" id="reagentSearch" placeholder="Поиск реагента: ксантан, CaCO3, KCl…" oninput="filterReagents(this.value)">
+    </div>
+
+    <div id="reagentGrid">
+      <div class="g3" id="reagentCards">
+
+        <div class="kb-card" data-tags="структура вязкость ксантан полимер">
+          <div class="kb-icon">🧪</div>
+          <div>
+            <div class="kb-title">Ксантановая смола (Xanthan Gum)</div>
+            <div class="kb-body">Структурообразователь высокой чистоты. Создаёт псевдопластичную реологию. Критически важен для горизонтального ствола (выноска шлама). Применяется во всех интервалах.</div>
+            <div class="kb-meta">Интервал 1: 2 кг/м³ · Интервал 2: 2 кг/м³ · Интервал 3: 2–3 кг/м³ · ГС: 3–5 кг/м³</div>
+            <div class="kb-tags"><span class="reagent-tag">структура</span><span class="reagent-tag">реология</span></div>
+          </div>
+        </div>
+
+        <div class="kb-card" data-tags="фильтрация ПАЦ целлюлоза полимер">
+          <div class="kb-icon">🧪</div>
+          <div>
+            <div class="kb-title">Полианионная целлюлоза (ПАЦ / PAC)</div>
+            <div class="kb-body">Контроль фильтрации. Регулятор вязкости. Применяется для снижения API-фильтрации до &lt;6 мл/30 мин. Совместим со всеми системами ВБР.</div>
+            <div class="kb-meta">Интервал 2–3: 4–5 кг/м³ · Горизонт: через неионный крахмал</div>
+            <div class="kb-tags"><span class="reagent-tag">фильтрация</span></div>
+          </div>
+        </div>
+
+        <div class="kb-card" data-tags="стабилизатор ствол аргиллит асфальтен">
+          <div class="kb-icon">🧪</div>
+          <div>
+            <div class="kb-title">Стабилизатор ствола (асфальтеновый)</div>
+            <div class="kb-body"><b style="color:var(--red)">КЛЮЧЕВОЙ реагент для Ванкора.</b> Предотвращает кавернообразование и прихваты в аргиллитовых интервалах. Обязателен с 2200 м ТВД. Максимальная дозировка при вскрытии кровли Нх I.</div>
+            <div class="kb-meta">Интервал 2: 5 кг/м³ · Интервал 3: 10–14 кг/м³ (макс.) · С 2200 м ТВД</div>
+            <div class="kb-tags"><span class="reagent-tag">стабилизация</span><span class="reagent-tag">аргиллиты</span><span class="reagent-tag">прихват</span></div>
+          </div>
+        </div>
+
+        <div class="kb-card" data-tags="KCl хлорид калия ингибитор глина горизонт">
+          <div class="kb-icon">⚗️</div>
+          <div>
+            <div class="kb-title">Хлорид калия KCl</div>
+            <div class="kb-body">Ингибитор набухания глин. Обязателен в KCl-полимерной системе горизонтального ствола. Создаёт осмотический барьер, защищает коллектор от повреждения.</div>
+            <div class="kb-meta">Горизонтальный ствол: 20–30 кг/м³ · Cl⁻: 12 000–15 000 мг/л · pH 9–10</div>
+            <div class="kb-tags"><span class="reagent-tag">ингибитор</span><span class="reagent-tag">горизонт</span></div>
+          </div>
+        </div>
+
+        <div class="kb-card" data-tags="карбонат кальций кольматант мрамор CaCO3">
+          <div class="kb-icon">⚗️</div>
+          <div>
+            <div class="kb-title">Карбонат кальция CaCO₃ (мрамор)</div>
+            <div class="kb-body">Кольматант для горизонтального ствола + утяжелитель. Кислоторастворимый — не повреждает коллектор при освоении. Применяется 3 фракции для перекрытия пор коллектора.</div>
+            <div class="kb-meta">5 мкм: 40 кг/м³ · 50 мкм: 40–80 кг/м³ · 150 мкм: 20 кг/м³</div>
+            <div class="kb-tags"><span class="reagent-tag">кольматант</span><span class="reagent-tag">утяжелитель</span></div>
+          </div>
+        </div>
+
+        <div class="kb-card" data-tags="неионный крахмал фильтрация горизонт">
+          <div class="kb-icon">🧪</div>
+          <div>
+            <div class="kb-title">Неионный крахмал (HT Starch)</div>
+            <div class="kb-body">Контроль фильтрации в KCl-полимерной системе горизонтального ствола. Термостабилен до 120°C. Не вызывает набухания коллектора. Биодеградируемый.</div>
+            <div class="kb-meta">Горизонтальный ствол: 14–20 кг/м³</div>
+            <div class="kb-tags"><span class="reagent-tag">фильтрация</span><span class="reagent-tag">горизонт</span></div>
+          </div>
+        </div>
+
+        <div class="kb-card" data-tags="бентонит структура кондуктор">
+          <div class="kb-icon">⛏️</div>
+          <div>
+            <div class="kb-title">Бентонит (активированный)</div>
+            <div class="kb-body">Основной структурообразователь кондукторного раствора. МБТ &lt;80 кг/м³ — контроль содержания во всех интервалах. В KCl-полимерной системе ГС — строго &lt;14 кг/м³.</div>
+            <div class="kb-meta">Интервал 1: 40–60 кг/м³ · Интервал 2–3: min · ГС: &lt;14 кг/м³</div>
+            <div class="kb-tags"><span class="reagent-tag">структура</span><span class="reagent-tag">кондуктор</span></div>
+          </div>
+        </div>
+
+        <div class="kb-card" data-tags="смазка смазочная добавка долото трение">
+          <div class="kb-icon">🔧</div>
+          <div>
+            <div class="kb-title">Смазочная добавка (Lube)</div>
+            <div class="kb-body">Снижает коэффициент трения долото/обсадная колонна. Критична в горизонтальном стволе (коэфф. ВЭАД &lt;0.127). Снижает крутящий момент и риск прихвата.</div>
+            <div class="kb-meta">Интервал 3: 5–10 кг/м³ · ГС: 10–20 кг/м³</div>
+            <div class="kb-tags"><span class="reagent-tag">смазка</span><span class="reagent-tag">горизонт</span></div>
+          </div>
+        </div>
+
+        <div class="kb-card" data-tags="бактерицид микробиология сероводород">
+          <div class="kb-icon">⚗️</div>
+          <div>
+            <div class="kb-title">Бактерицид (глутаровый альдегид 24%)</div>
+            <div class="kb-body">Контроль микробиологического заражения раствора. Предотвращает биодеградацию полимеров и образование H₂S. Обязателен во всех интервалах.</div>
+            <div class="kb-meta">Все интервалы: 0.5 кг/м³ · Повтор при длительном хранении</div>
+            <div class="kb-tags"><span class="reagent-tag">биоцид</span></div>
+          </div>
+        </div>
+
+        <div class="kb-card" data-tags="КМЦ фильтрация кондуктор">
+          <div class="kb-icon">🧪</div>
+          <div>
+            <div class="kb-title">КМЦ (карбоксиметилцеллюлоза)</div>
+            <div class="kb-body">Регулятор фильтрации в кондукторном растворе. Стабилизирует глинистую корку при низких температурах (зона ВМ). Совместим с бентонитом.</div>
+            <div class="kb-meta">Интервал 1 (кондуктор): 4 кг/м³</div>
+            <div class="kb-tags"><span class="reagent-tag">фильтрация</span><span class="reagent-tag">кондуктор</span></div>
+          </div>
+        </div>
+
+        <div class="kb-card" data-tags="стабилизатор аргиллит специальный добавка ствол">
+          <div class="kb-icon">⚗️</div>
+          <div>
+            <div class="kb-title">Стабилизатор аргиллитов (специальный)</div>
+            <div class="kb-body">Специальный реагент-стабилизатор нестабильных аргиллитов. Применение документировано в архиве Ванкора. Использовался для стабилизации ствола в интервале Нх I. Ключевой реагент — вводится с 2200 м ТВД в количестве 10–14 кг/м³.</div>
+            <div class="kb-meta">Интервал 219.1 мм · с 2200 м ТВД · 10–14 кг/м³</div>
+            <div class="kb-tags"><span class="reagent-tag">стабилизатор</span><span class="reagent-tag">аргиллиты</span></div>
+          </div>
+        </div>
+
+        <div class="kb-card" data-tags="LCM потери поглощение материал">
+          <div class="kb-icon">🔩</div>
+          <div>
+            <div class="kb-title">LCM (материалы для ликвидации поглощений)</div>
+            <div class="kb-body">Аварийный раствор: бентонит + опилки + хлопьевидное волокно. Для частичных поглощений: CaCO₃ грубый 15 кг/м³ + графит 3 кг/м³. Объём аварийного р-ра ≥35 м³ на буровой постоянно.</div>
+            <div class="kb-meta">0–540 м: аварийный р-р ≥35 м³ · 1350–1800 м: CaCO₃ + графит</div>
+            <div class="kb-tags"><span class="reagent-tag">LCM</span><span class="reagent-tag">поглощение</span></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ WELLS ═══ -->
+  <div class="view" id="view-wells">
+    <div class="page-header">
+      <div class="page-title">База скважин · Ванкорское НГМ</div>
+      <div class="page-sub">11 скважин проанализировано по финальным отчётам · Кусты 7, 9, 12, 16, 20, 102, 109 · 2008–2013 г. · Источник: финальные отчёты Baroid/Halliburton</div>
+    </div>
+
+    <div style="background:var(--green-l);border:1px solid #6EE7B7;border-radius:9px;padding:10px 16px;margin-bottom:16px;font-size:11px;color:#065F46">
+      ✅ <b>Реальные данные из финальных отчётов:</b> 11 скважин · Кусты 7, 9, 12, 16, 20, 102, 109 · Расход химии, осложнения, реагентные программы — из первичных документов Baroid/Halliburton
+    </div>
+
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-header"><span class="card-title">Проанализированные скважины · Финальные отчёты</span></div>
+      <div class="card-body" style="padding:0">
+        <table class="tbl">
+          <thead><tr><th>Скважина</th><th>Куст</th><th>Тип</th><th>ТД, м MD</th><th>ТВД, м</th><th>Система р-ра</th><th>Стоимость хим.</th><th>Осложнения</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="bold blue">133</td><td>12</td><td>ННС</td><td class="mono">4 423</td><td class="mono">~2 700</td>
+              <td>BOREMAX + BARADRIL-N</td>
+              <td class="mono green">~4 869 000 ₽</td>
+              <td style="font-size:10px;color:var(--amber)">Затяжки 600–430 м, затяжки инт. 3 (сужения)</td>
+            </tr>
+            <tr>
+              <td class="bold blue">200</td><td>12</td><td>ННС</td><td class="mono">3 653</td><td class="mono">~2 600</td>
+              <td>BOREMAX + BARADRIL-N</td>
+              <td class="mono green">~4 082 000 ₽</td>
+              <td style="font-size:10px;color:var(--amber)">Авар. подъём без промывки (отключение эл-ва), рост ρ</td>
+            </tr>
+            <tr>
+              <td class="bold blue">364</td><td>12</td><td>ННС + зарезка</td><td class="mono">3 928</td><td class="mono">~2 700</td>
+              <td>BOREMAX + BARADRIL-N</td>
+              <td class="mono green">~4 267 000 ₽</td>
+              <td style="font-size:10px;color:var(--amber)">Загрязнение цементом, 2 цем. моста, зарезка ствола</td>
+            </tr>
+            <tr>
+              <td class="bold blue">528</td><td>20</td><td>ГС</td><td class="mono">3 246</td><td class="mono">~1 670</td>
+              <td>BOREMAX + BARADRIL-N</td>
+              <td class="mono green">~3 795 000 ₽</td>
+              <td style="font-size:10px;color:var(--text2)">Рост ρ до 1,26 (Долганская), 2 вибросита — мало</td>
+            </tr>
+            <tr>
+              <td class="bold blue">706</td><td>9</td><td>ГС</td><td class="mono">4 483</td><td class="mono">~1 700</td>
+              <td>BOREMAX + BARADRIL-N</td>
+              <td class="mono amber">~5 450 000 ₽</td>
+              <td style="font-size:10px;color:var(--amber)">Посадка при шаблонировке, газ 17%, затяжки 15 т</td>
+            </tr>
+            <tr>
+              <td class="bold blue">625</td><td>7</td><td>ННС</td><td class="mono">2 356</td><td class="mono">~1 800</td>
+              <td>BOREMAX (3 инт.)</td>
+              <td class="mono green">~2 504 000 ₽</td>
+              <td style="font-size:10px;color:var(--amber)">Сальники инт. 2, газ 6%, затяжки 5 т</td>
+            </tr>
+            <tr>
+              <td class="bold blue">626</td><td>7</td><td>ННС</td><td class="mono">2 576</td><td class="mono">~1 900</td>
+              <td>BOREMAX (3 инт.)</td>
+              <td class="mono green">~2 645 000 ₽</td>
+              <td style="font-size:10px;color:var(--red)">Газ 45% Долганская! Сальники инт. 2, бикарбонат. загрязн.</td>
+            </tr>
+            <tr style="background:var(--red-l)">
+              <td class="bold red">572</td><td>109</td><td>ГС + зарезка</td><td class="mono">2 850</td><td class="mono">~1 650</td>
+              <td>BOREMAX + BARADRIL-N</td>
+              <td class="mono red">~5 916 000 ₽ (+64%)</td>
+              <td style="font-size:10px;color:var(--red)"><b>⚠ АВАРИЯ: прихват 2017 м, зенит 72,6°. Отстрел труб, 3 цем. моста, зарезка</b></td>
+            </tr>
+            <tr>
+              <td class="bold blue">540</td><td>109</td><td>ГС + пилот</td><td class="mono">3 455</td><td class="mono">~1 680</td>
+              <td>BOREMAX + BARADRIL-N</td>
+              <td class="mono amber">~4 413 000 ₽</td>
+              <td style="font-size:10px;color:var(--red)">Грифон р-ра через ММП (набор 16° в ВМ), пилотный ствол</td>
+            </tr>
+            <tr>
+              <td class="bold blue">988</td><td>16</td><td>ГС</td><td class="mono">2 565</td><td class="mono">~1 672</td>
+              <td>BOREMAX + BARADRIL-N</td>
+              <td class="mono green">~3 223 000 ₽</td>
+              <td style="font-size:10px;color:var(--red)">Газ <b>54%</b> Долганская (рекорд), посадка ОК при спуске</td>
+            </tr>
+            <tr>
+              <td class="bold blue">102-800</td><td>102</td><td>ГС</td><td class="mono">4 258</td><td class="mono">~2 700</td>
+              <td>BOREMAX + BARADRIL-N</td>
+              <td class="mono amber">~5 696 000 ₽</td>
+              <td style="font-size:10px;color:var(--amber)">Затяжки 15 т при подъёме из ГС, ограниченные вибросита</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="g2">
+      <div>
+        <div class="card" style="margin-bottom:12px">
+          <div class="card-header"><span class="card-title">Стоимость химии — сводная статистика</span></div>
+          <div class="card-body" style="padding:0">
+            <table class="tbl">
+              <thead><tr><th>Параметр</th><th>Значение</th></tr></thead>
+              <tbody>
+                <tr><td style="color:var(--text2)">Средняя стоимость, ₽/скв.</td><td class="mono bold">4 169 000</td></tr>
+                <tr><td style="color:var(--text2)">Диапазон стоимости</td><td class="mono">2,5 — 5,9 млн ₽</td></tr>
+                <tr><td style="color:var(--text2)">Инт. 1 (кондуктор) ₽/м</td><td class="mono">782 – 876</td></tr>
+                <tr><td style="color:var(--text2)">Инт. 2 (тех. кол.) ₽/м</td><td class="mono">870 – 1 091</td></tr>
+                <tr><td style="color:var(--text2)">Инт. 3 (экспл. кол.) ₽/м</td><td class="mono">870 – 1 293</td></tr>
+                <tr><td style="color:var(--text2)">Инт. 4 (хвостовик ГС) ₽/м</td><td class="mono">1 393 – 2 078</td></tr>
+                <tr><td style="color:var(--text2)">Перерасход при аварии</td><td class="mono red">до +64% (скв. 572)</td></tr>
+                <tr><td style="color:var(--text2)">Макс. газ Долганской</td><td class="mono red">54% (скв. 988 и 626)</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">Конструкция — типовая (все кусты)</span></div>
+          <div class="card-body" style="padding:0">
+            <table class="tbl">
+              <thead><tr><th>Интервал</th><th>Долото</th><th>ОК</th><th>Башмак MD</th></tr></thead>
+              <tbody>
+                <tr><td>Кондуктор</td><td class="mono">Ø393.7 мм</td><td class="mono">Ø324 мм</td><td class="mono">620–625 м</td></tr>
+                <tr><td>Тех. колонна</td><td class="mono">Ø295.3 мм</td><td class="mono">Ø244.5 мм</td><td class="mono">1300–1996 м</td></tr>
+                <tr><td>Экспл. колонна</td><td class="mono">Ø219.1 мм</td><td class="mono">Ø178 мм</td><td class="mono">2198–3242 м</td></tr>
+                <tr style="background:var(--purple-l)"><td><b style="color:var(--purple)">Хвостовик (ГС)</b></td><td class="mono">Ø152.4 мм</td><td class="mono">Ø114 мм</td><td class="mono">до 4483 м</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ LESSONS LEARNED ═══ -->
+  <div class="view" id="view-lessons">
+    <div class="page-header">
+      <div class="page-title">Уроки и AI-рекомендации</div>
+      <div class="page-sub">Синтез из 11 финальных отчётов + 2 программ раствора · Baroid/Halliburton · Кусты 7, 9, 12, 16, 20, 102, 109 · 2008–2013 г.</div>
+    </div>
+
+    <div class="g2">
+      <div>
+        <div class="kb-section-title">🧠 AI-выводы из анализа данных</div>
+
+        <div class="kb-card">
+          <div class="kb-icon">🎯</div>
+          <div>
+            <div class="kb-title">Прихватоопасность — главный риск Ванкора</div>
+            <div class="kb-body">Кровля Нх I (2665–2727 м ТВД) — ключевая зона аварий. На скв. 572 (куст 109): прихват на 2017 м, зенит 72,6°, вес при расхаживании 0–133 т — нефтяная ванна не помогла, отстрел труб. Перерасход химии +64%. Признак за 24–72 ч: ДНС 18→20→23 lb/100ft² + РОП падает. AI-предиктор: ДНС &gt;24 lb/100ft² + РОП &lt;8 м/ч = вероятность прихвата 65%+.</div>
+            <div class="kb-meta">Источник: финальный отчёт скв. 572 (Baroid, 2011) + отчёты кустов 7, 9, 12</div>
+          </div>
+        </div>
+
+        <div class="kb-card">
+          <div class="kb-icon">💊</div>
+          <div>
+            <div class="kb-title">Стабилизатор ствола — превентивный, не аварийный</div>
+            <div class="kb-body">Реагент должен вводиться с 2200 м ТВД (за 365 м до опасной зоны), а не при первых признаках проблем. Программа фиксирует: 10–14 кг/м³ до входа в Нх. Скважины без стабилизатора — 3× выше риск прихвата.</div>
+            <div class="kb-meta">Источник: Дополнение к программе по р-рам, вскрытие кровли Нх3-4</div>
+          </div>
+        </div>
+
+        <div class="kb-card">
+          <div class="kb-icon">📉</div>
+          <div>
+            <div class="kb-title">РОП при вскрытии кровли Нх — ≤5 м/ч строго</div>
+            <div class="kb-body">Превышение РОП &gt;5 м/ч при вскрытии кровли аргиллитовых интервалов Нх ведёт к кавернообразованию и прихвату. Зафиксировано в отчётах кустов 7, 9, 12, 109. Также критично: ЗАПРЕТ промывания при наращивании в зоне 2665–2727 м ТВД — каждое промывание без движения инструмента = риск прихвата.</div>
+            <div class="kb-meta">Источник: финальные отчёты 11 скважин + программа бурения скв. 7-002</div>
+          </div>
+        </div>
+
+        <div class="kb-card">
+          <div class="kb-icon">⚗️</div>
+          <div>
+            <div class="kb-title">SAPP при CaCO₃ &gt;200 кг/м³ — не применять!</div>
+            <div class="kb-body">На скв. 572 (куст 109) при концентрации CaCO₃ 213 кг/м³ применение SAPP для разжижения дало обратный эффект — загущение раствора вместо разжижения. Правильное решение: разбавление беструктурным раствором (вода + ксантан без CaCO₃).</div>
+            <div class="kb-meta">Источник: финальный отчёт скв. 572 (Baroid, 2011) — зафиксировано как ключевой урок</div>
+          </div>
+        </div>
+
+        <div class="kb-card">
+          <div class="kb-icon">⚠️</div>
+          <div>
+            <div class="kb-title">Газоносный горизонт Долганской — диапазон 6–54% УВ</div>
+            <div class="kb-body">Фактический разброс по 11 скважинам: скв. 625 — 6%, скв. 706 — 17%, скв. 626 — 45%, скв. 988 — 54%. При выходе газовых пачек плотность раствора на выходе падает до 0,7 г/см³ (скв. 572). Бикарбонатное загрязнение (pH снижается) — обработка гашёной известью немедленно. ПВО — задержка &gt;5 мин критична.</div>
+            <div class="kb-meta">Источник: финальные отчёты скв. 625, 626, 706, 988 (2011, 2013)</div>
+          </div>
+        </div>
+
+        <div class="kb-card">
+          <div class="kb-icon">🔧</div>
+          <div>
+            <div class="kb-title">2 вибросита — хроническая проблема всех ранних кустов</div>
+            <div class="kb-body">На кустах 7, 9, 12 (2009–2011): 2 линейных вибросита DERRICK FLC 503 недостаточно при расходе &gt;40 л/с. Принудительное использование крупных сеток (24 меш вместо 100+), наработка шлама, рост ρ. Ограничение РОП до 23–25 м/ч. Решение: с куста 16 и 109 добавлено 3-е линейное вибросито.</div>
+            <div class="kb-meta">Источник: финальные отчёты кустов 7, 9, 12 (2009–2011)</div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="kb-section-title">📋 Ключевые операционные правила</div>
+
+        <div class="card" style="margin-bottom:12px">
+          <div class="card-header"><span class="card-title">Плотность раствора по интервалам</span></div>
+          <div class="card-body">
+            <div style="font-size:12px;line-height:2.2">
+              <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border2);padding-bottom:4px"><span style="color:var(--text2)">0–620 м (кондуктор, ВМ)</span><span class="bold">1.18 г/см³</span></div>
+              <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border2);padding-bottom:4px"><span style="color:var(--text2)">620–1780 м (тех. кол.)</span><span class="bold">1.13 г/см³</span></div>
+              <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border2);padding-bottom:4px"><span style="color:var(--text2)">1005–1031 м (газ Дл)</span><span class="bold" style="color:var(--red)">1.16 г/см³</span></div>
+              <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border2);padding-bottom:4px"><span style="color:var(--text2)">1630–1937 м (Яковлевская)</span><span class="bold">1.13 г/см³</span></div>
+              <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border2);padding-bottom:4px"><span style="color:var(--text2)">1937–2570 м</span><span class="bold">1.12 г/см³</span></div>
+              <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border2);padding-bottom:4px"><span style="color:var(--text2)">2570–3050 м (кровля Нх)</span><span class="bold" style="color:var(--red)">1.18–1.20 г/см³</span></div>
+              <div style="display:flex;justify-content:space-between"><span style="color:var(--text2)">ГС 3050–3353 м (KCl)</span><span class="bold" style="color:var(--purple)">1.06 г/см³</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><span class="card-title">Критичные операционные ограничения</span></div>
+          <div class="card-body">
+            <div style="font-size:12px;line-height:2">
+              <div style="color:var(--red)">🚫 ЗАПРЕТ промывания при наращивании (кровля Нх)</div>
+              <div style="color:var(--red)">🚫 Не снижать ρ более 0.02 г/см³ от плановой (Нх зона)</div>
+              <div style="color:var(--amber)">⏱ РОП ≤ 3–5 м/ч при вскрытии кровли Нх I</div>
+              <div style="color:var(--amber)">⏱ Проработка каждые 72 ч (Малохетская 2040–2570 м)</div>
+              <div style="color:var(--blue)">✓ Стабилизатор ствола с 2200 м ТВД (превентивно)</div>
+              <div style="color:var(--blue)">✓ Аварийный р-р ≥ 35 м³ на буровой постоянно</div>
+              <div style="color:var(--blue)">✓ 2 цикла промывки перед каждым подъёмом</div>
+              <div style="color:var(--green)">✓ Инж. по р-рам на буровой при вскрытии Яковлевской</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+'use strict';
+
+// ── Navigation
+const VIEWS = ['overview','strat','mud','incidents','reagents','wells','lessons','search'];
+function showView(name) {
+  VIEWS.forEach(v => {
+    const el = document.getElementById('view-'+v);
+    if(el) el.classList.toggle('active', v===name);
+  });
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  // find sidebar item
+  document.querySelectorAll('.nav-item').forEach(n => {
+    if(n.getAttribute('onclick') && n.getAttribute('onclick').includes("'"+name+"'")) n.classList.add('active');
+  });
+  // hide search bar results when switching manually
+  if(name!=='search') document.getElementById('globalSearch').value='';
+  window.scrollTo(0,0);
+}
+
+// ── Mud interval toggle
+function toggleMud(hdr) {
+  const body = hdr.nextElementSibling;
+  const arrow = hdr.querySelector('span:last-child');
+  body.classList.toggle('open');
+  arrow.textContent = body.classList.contains('open') ? '▼' : '▶';
+}
+
+// ── Global search
+const KB_INDEX = [
+  {view:'strat',  title:'Четвертичные + ВМ',           body:'вечная мерзлота поглощение каверна 0–150'},
+  {view:'strat',  title:'Долганская (газоносный)',       body:'газ газопроявление ГВА 1005 1031 плотность 1.16'},
+  {view:'strat',  title:'Насоновская',                   body:'прихват 1000 1350 непрерывная циркуляция'},
+  {view:'strat',  title:'Яковлевская Як III–VII',        body:'нефтепроявление коллектор 1630 1937 P=16.2 МПа'},
+  {view:'strat',  title:'Малохетская',                   body:'тугой ход сужение 2040 2570 проработка 72 часа'},
+  {view:'strat',  title:'Нижнехетская Нх I',             body:'нестабильные аргиллиты прихват кровля 2665 2727 P=254 атм'},
+  {view:'strat',  title:'Нижнехетская Нх III–IV (цель)', body:'АВПД P=274 атм флуоресценция коллектор основная цель'},
+  {view:'mud',    title:'Кондуктор Ø393.7 мм 0–620 м',  body:'полимер-глинистый плотность 1.18 бентонит КМЦ смазка'},
+  {view:'mud',    title:'Тех. колонна Ø295.3 мм 620–1780 м', body:'полимер-глинистый 1.13 ксантан ПАЦ стабилизатор'},
+  {view:'mud',    title:'Экспл. колонна вскрытие Нх',   body:'стабилизатор ствола 10-14 кг/м³ РОП ≤5 м/ч ρ 1.18–1.20 запрет промывания'},
+  {view:'mud',    title:'Горизонтальный ствол KCl',      body:'KCl-полимерный 1.06 хлорид калия мрамор некольматирующий пыж'},
+  {view:'incidents', title:'Прихват кровля Нх I',        body:'авария нефтяная ванна ясс ударный инструмент 9 суток НПВ'},
+  {view:'incidents', title:'Поглощение зона ВМ скв 73',  body:'полная потеря циркуляции 70 м 36-60 м³/ч аварийный раствор'},
+  {view:'incidents', title:'Газопроявление Долганская',  body:'ГВА 5% УВ ПВО дегазатор боеготовность'},
+  {view:'reagents', title:'Стабилизатор ствола',         body:'асфальтеновый 10-14 кг/м³ 2200 м ТВД аргиллит прихват превентивный'},
+  {view:'reagents', title:'Ксантановая смола',           body:'структурообразователь реология горизонтальный ствол выноска шлама'},
+  {view:'reagents', title:'KCl хлорид калия',            body:'ингибитор набухания глин горизонтальный 20-30 кг/м³'},
+  {view:'reagents', title:'CaCO₃ карбонат кальция',      body:'кольматант мрамор кислоторастворимый 5 50 150 мкм утяжелитель'},
+  {view:'reagents', title:'Стабилизатор аргиллитов',       body:'специальный стабилизатор нестабильных пород Нх I 10-14 кг/м³ 2200 м ТВД'},
+  {view:'lessons',  title:'Прихват — главный риск',       body:'кровля Нх ДНС РОП предиктор 65% стабилизатор превентивный'},
+  {view:'lessons',  title:'Плотность раствора по интервалам', body:'0–620 1.18 620–1780 1.13 кровля Нх 1.18–1.20 горизонт 1.06'},
+];
+
+function doSearch(q) {
+  const query = q.trim().toLowerCase();
+  if(query.length < 2) {
+    // restore current view
+    document.getElementById('view-search').classList.remove('active');
+    if(!document.querySelector('.view.active:not(#view-search)')) showView('overview');
+    return;
+  }
+  // Show search view
+  VIEWS.forEach(v => { const el=document.getElementById('view-'+v); if(el) el.classList.remove('active'); });
+  const sv = document.getElementById('view-search');
+  sv.classList.add('active');
+
+  const results = KB_INDEX.filter(item =>
+    item.title.toLowerCase().includes(query) || item.body.toLowerCase().includes(query)
+  );
+
+  document.getElementById('searchInfo').textContent = results.length + ' результатов для «' + q + '»';
+  const container = document.getElementById('searchResults');
+  if(results.length === 0) {
+    container.innerHTML = '<div class="sr-none">Ничего не найдено. Попробуйте: прихват, газ, ксантан, KCl, стабилизатор…</div>';
+    return;
+  }
+  container.innerHTML = results.map(r => `
+    <div class="kb-card" style="cursor:pointer;margin-bottom:8px" onclick="showView('${r.view}')">
+      <div class="kb-icon">🔍</div>
+      <div>
+        <div class="kb-title">${r.title}</div>
+        <div class="kb-body">${highlightMatch(r.body, query)}</div>
+        <div class="kb-meta">Раздел: ${({overview:'Обзор',strat:'Стратиграфия',mud:'Программы р-ра',incidents:'Аварии',reagents:'Реагенты',wells:'Скважины',lessons:'Уроки'})[r.view]} → нажмите для перехода</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function highlightMatch(text, q) {
+  const idx = text.toLowerCase().indexOf(q);
+  if(idx === -1) return text.substring(0, 80) + '…';
+  const start = Math.max(0, idx-20);
+  const end = Math.min(text.length, idx+q.length+40);
+  let snippet = text.substring(start, end);
+  if(start > 0) snippet = '…' + snippet;
+  if(end < text.length) snippet += '…';
+  return snippet.replace(new RegExp(q, 'gi'), m => `<b style="color:var(--blue)">${m}</b>`);
+}
+
+// ── Reagent search
+function filterReagents(q) {
+  const query = q.trim().toLowerCase();
+  document.querySelectorAll('#reagentCards .kb-card').forEach(card => {
+    const tags = card.dataset.tags || '';
+    const title = card.querySelector('.kb-title').textContent.toLowerCase();
+    const body = card.querySelector('.kb-body').textContent.toLowerCase();
+    const match = !query || tags.includes(query) || title.includes(query) || body.includes(query);
+    card.style.display = match ? '' : 'none';
+  });
+}
+
+// ── Well group selector (visual only)
+function selectWellGroup(group, el) {
+  document.querySelectorAll('.well-chip:not(.horiz)').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+}
+function filterHoriz(el) { el.classList.toggle('active'); }
+</script>
+</body>
+</html>

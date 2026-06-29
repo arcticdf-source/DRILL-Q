@@ -1,0 +1,1029 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>127 · Снижение плотности центрифугой</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap");
+
+    :root {
+      --bg-0: #07111a;
+      --bg-1: #102437;
+      --bg-2: #1b3850;
+      --panel: rgba(10, 18, 31, 0.84);
+      --line: rgba(226, 237, 255, 0.1);
+      --text: #edf5ff;
+      --muted: #9bb2c8;
+      --cyan: #20d9b4;
+      --amber: #ffbf66;
+      --blue: #8db4ff;
+      --shadow: 0 24px 58px rgba(0, 0, 0, 0.42);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      font-family: "Manrope", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(820px 420px at 0% -10%, rgba(32,217,180,.18), transparent),
+        radial-gradient(720px 360px at 100% 0%, rgba(141,180,255,.16), transparent),
+        linear-gradient(145deg, var(--bg-0), var(--bg-1) 48%, var(--bg-2));
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(to right, rgba(255,255,255,.022) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,.022) 1px, transparent 1px);
+      background-size: 40px 40px;
+      mask-image: radial-gradient(circle at 50% 12%, rgba(0,0,0,.94), transparent 72%);
+    }
+
+    .wrap {
+      position: relative;
+      z-index: 1;
+      width: min(1320px, 94vw);
+      margin: 0 auto;
+      padding: 24px 0 48px;
+    }
+
+    .topbar,
+    .hero,
+    .panel {
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+    }
+
+    .topbar {
+      position: sticky;
+      top: 12px;
+      z-index: 20;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 12px 16px;
+      border-radius: 16px;
+      background: rgba(7, 13, 23, 0.66);
+      backdrop-filter: blur(10px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: "Oswald", sans-serif;
+      font-size: 20px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 35% 35%, #d8fff7, var(--cyan));
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn,
+    .btn-ghost {
+      text-decoration: none;
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+
+    .btn {
+      color: #07261f;
+      background: linear-gradient(135deg, #9efcef, var(--cyan));
+      border: 1px solid rgba(32, 217, 180, 0.82);
+    }
+
+    .btn-ghost {
+      color: var(--muted);
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.03);
+    }
+
+    .hero {
+      margin-top: 18px;
+      border-radius: 30px;
+      padding: clamp(24px, 3vw, 36px);
+      background:
+        radial-gradient(460px 220px at 4% 0%, rgba(32,217,180,.14), transparent),
+        radial-gradient(540px 240px at 100% 0%, rgba(141,180,255,.14), transparent),
+        linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015)),
+        var(--panel);
+    }
+
+    .eyebrow,
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      padding: 6px 10px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .09em;
+      color: #d5e7f8;
+    }
+
+    h1 {
+      margin: 14px 0 10px;
+      font-family: "Oswald", sans-serif;
+      font-size: clamp(40px, 5vw, 62px);
+      line-height: .97;
+    }
+
+    h1 span { color: var(--amber); }
+
+    .lead {
+      margin: 0;
+      max-width: 980px;
+      color: #cad9eb;
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    .hero-stats {
+      margin-top: 20px;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .stat,
+    .summary-card,
+    .detail-card,
+    .factor-card,
+    .note,
+    .logic-card,
+    .mode-card {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255,255,255,.03);
+      padding: 16px;
+    }
+
+    .stat strong {
+      display: block;
+      font-family: "Oswald", sans-serif;
+      font-size: 28px;
+      line-height: 1;
+      color: #eef7ff;
+    }
+
+    .stat span {
+      display: block;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .layout {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .stack {
+      display: grid;
+      gap: 16px;
+    }
+
+    .panel {
+      border-radius: 24px;
+      padding: 20px;
+      background: rgba(9, 16, 27, 0.8);
+      backdrop-filter: blur(8px);
+    }
+
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+
+    .panel-head h2 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .panel-head p {
+      margin: 6px 0 0;
+      color: #c9d8ea;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .table-card {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      overflow: hidden;
+      background: rgba(255,255,255,.025);
+    }
+
+    .calc-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .calc-table th,
+    .calc-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: middle;
+    }
+
+    .calc-table tr:last-child th,
+    .calc-table tr:last-child td { border-bottom: 0; }
+
+    .calc-table th {
+      width: 58%;
+      text-align: left;
+      font-size: 13px;
+      font-weight: 700;
+      color: #edf5ff;
+    }
+
+    .value-cell {
+      width: 22%;
+      font-weight: 700;
+      color: #eef7ff;
+    }
+
+    .unit-cell {
+      width: 20%;
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+
+    .calc-table input {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(5, 13, 22, 0.9);
+      color: var(--text);
+      font: inherit;
+    }
+
+    .calc-table input:focus {
+      outline: none;
+      border-color: var(--amber);
+    }
+
+    .result-number {
+      font-family: "Oswald", sans-serif;
+      font-size: 28px;
+      color: #eef7ff;
+      line-height: 1;
+    }
+
+    .result-number.emphasis { color: var(--amber); }
+
+    .summary-grid,
+    .detail-grid,
+    .factors-grid,
+    .note-grid,
+    .logic,
+    .mode-grid,
+    .bars {
+      display: grid;
+      gap: 12px;
+    }
+
+    .summary-grid,
+    .detail-grid,
+    .factors-grid,
+    .mode-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+    .note-grid,
+    .logic { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+    .logic { margin-top: 16px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+    .summary-card strong,
+    .detail-card strong,
+    .factor-card strong,
+    .formula strong,
+    .bar-label,
+    .note strong,
+    .mode-card strong {
+      display: block;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--muted);
+    }
+
+    .summary-card .value {
+      margin-top: 8px;
+      font-size: clamp(28px, 3.2vw, 36px);
+      line-height: 1;
+      color: var(--amber);
+    }
+
+    .detail-card .value,
+    .factor-card .value,
+    .mode-card .value {
+      margin-top: 8px;
+      font-size: 26px;
+      line-height: 1.05;
+      color: #eef7ff;
+    }
+
+    .detail-card .sub,
+    .factor-card small,
+    .note p,
+    .logic-card p,
+    .logic-card li,
+    .mode-card p {
+      display: block;
+      margin-top: 8px;
+      font-size: 12px;
+      color: #cad9eb;
+      line-height: 1.6;
+    }
+
+    .actions-row {
+      margin-top: 16px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      color: var(--text);
+      padding: 10px 14px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    button.primary {
+      color: #2a1800;
+      background: linear-gradient(135deg, #ffe4ae, var(--amber));
+      border-color: rgba(255,191,102,.82);
+    }
+
+    .formula {
+      margin-top: 16px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 14px;
+      background: rgba(255,255,255,.025);
+    }
+
+    .formula code {
+      display: block;
+      margin-top: 8px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: #091423;
+      color: #dff7ff;
+      font-size: 12px;
+      line-height: 1.55;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .warning-box {
+      display: none;
+      margin-top: 16px;
+      padding: 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 143, 143, 0.35);
+      background: rgba(255, 143, 143, 0.08);
+    }
+
+    .warning-box.show { display: block; }
+
+    .warning-box strong {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 12px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: #ffc5c5;
+    }
+
+    .warning-box p {
+      margin: 0;
+      color: #ffe5e5;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .bar-row {
+      display: grid;
+      grid-template-columns: 220px 1fr 96px;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .bar-track {
+      position: relative;
+      height: 14px;
+      overflow: hidden;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.05);
+    }
+
+    .bar-fill {
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 0;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--amber), #ffd59b);
+    }
+
+    .bar-fill.blue { background: linear-gradient(90deg, var(--blue), #bcd0ff); }
+    .bar-fill.cyan { background: linear-gradient(90deg, var(--cyan), #8ff6df); }
+    .bar-fill.red { background: linear-gradient(90deg, #ff8f8f, #ffc2c2); }
+
+    .logic-card h3 {
+      margin: 0 0 10px;
+      font-size: 18px;
+    }
+
+    .logic-card ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    .accent-amber { color: var(--amber); }
+    .accent-cyan { color: var(--cyan); }
+
+    @media (max-width: 1080px) {
+      .layout,
+      .hero-stats,
+      .summary-grid,
+      .detail-grid,
+      .factors-grid,
+      .note-grid,
+      .logic,
+      .mode-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .topbar { position: static; }
+      .bar-row { grid-template-columns: 1fr; }
+      .calc-table th,
+      .calc-table td {
+        display: block;
+        width: 100%;
+      }
+      .calc-table td.unit-cell {
+        padding-top: 0;
+        padding-bottom: 14px;
+      }
+    }
+  </style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+  <main class="wrap">
+    <header class="topbar">
+      <div class="brand"><span class="dot" aria-hidden="true"></span><span>Nexus Oilfield AI · Reduce Density</span></div>
+      <div class="actions">
+        <a class="btn-ghost" href="120_drilling_calculations_menu.html">Назад к меню расчетов</a>
+        <a class="btn" href="83_drilling_entry_dashboard.html">Назад к drilling entry</a>
+      </div>
+    </header>
+
+    <section class="hero">
+      <span class="eyebrow">Workbook Sheet 10 · Reduce Density by Centrifuge</span>
+      <h1>Снижение плотности <span>центрифугой</span></h1>
+      <p class="lead">Отдельный экран для sheet 10: насколько большой объём раствора нужно прогнать через centrifuge loop, чтобы снизить плотность с текущей до целевой, и сколько времени на это уйдёт при заданной подаче. Нижний блок сохраняет workbook-логику по массе твердой фазы, влажности пульпы и потерям раствора со шламом.</p>
+
+      <div class="hero-stats">
+        <div class="stat"><strong id="heroFeed">13.3 м³/ч</strong><span>Подача при 12 часах</span></div>
+        <div class="stat"><strong id="heroTime">20.0 ч</strong><span>Время при 8 м³/ч</span></div>
+        <div class="stat"><strong id="heroRemovedMass">12 923 кг</strong><span>Удаляемый шлам</span></div>
+        <div class="stat"><strong id="heroMudLoss">1.73 м³</strong><span>Потери раствора</span></div>
+      </div>
+    </section>
+
+    <section class="layout">
+      <div class="stack">
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>Исходные данные</h2>
+              <p>Этот workbook не привязан к ROP. Здесь логика другая: есть фиксированный объём активной системы, целевая плотность, текущий входной и выходной split на ЦФ, плотность пульпы и доля твердой фазы в системе.</p>
+            </div>
+            <span class="status-pill">Reduce density inputs</span>
+          </div>
+
+          <div class="table-card">
+            <table class="calc-table">
+              <tbody>
+                <tr>
+                  <th>Необходимая плотность раствора</th>
+                  <td class="value-cell"><input id="targetDensity" type="number" step="0.001" value="1.09" /></td>
+                  <td class="unit-cell">г/см³</td>
+                </tr>
+                <tr>
+                  <th>Объём раствора</th>
+                  <td class="value-cell"><input id="mudVolume" type="number" step="1" value="200" /></td>
+                  <td class="unit-cell">м³</td>
+                </tr>
+                <tr>
+                  <th>Плотность раствора на входе ЦФ</th>
+                  <td class="value-cell"><input id="inletDensity" type="number" step="0.001" value="1.13" /></td>
+                  <td class="unit-cell">г/см³</td>
+                </tr>
+                <tr>
+                  <th>Плотность раствора на выходе ЦФ</th>
+                  <td class="value-cell"><input id="outletDensity" type="number" step="0.001" value="1.08" /></td>
+                  <td class="unit-cell">г/см³</td>
+                </tr>
+                <tr>
+                  <th>Плотность пульпы</th>
+                  <td class="value-cell"><input id="pulpDensity" type="number" step="0.01" value="1.7" /></td>
+                  <td class="unit-cell">г/см³</td>
+                </tr>
+                <tr>
+                  <th>Объём твёрдой фазы в растворе</th>
+                  <td class="value-cell"><input id="solidsVolumePct" type="number" step="0.1" value="8" /></td>
+                  <td class="unit-cell">%</td>
+                </tr>
+                <tr>
+                  <th>При заданном времени работы Ц.Ф.</th>
+                  <td class="value-cell"><input id="runHours" type="number" step="0.1" value="12" /></td>
+                  <td class="unit-cell">ч</td>
+                </tr>
+                <tr>
+                  <th>При заданной подаче раствора на Ц.Ф.</th>
+                  <td class="value-cell"><input id="feedRate" type="number" step="0.1" value="8" /></td>
+                  <td class="unit-cell">м³/ч</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="actions-row">
+            <button class="primary" id="recalcBtn" type="button">Пересчитать</button>
+            <button id="resetBtn" type="button">Сбросить пример</button>
+          </div>
+
+          <div class="formula">
+            <strong>Логика reduce density</strong>
+            <code id="formulaBox"></code>
+          </div>
+
+          <div class="warning-box" id="inputWarning">
+            <strong>Проверь входные данные</strong>
+            <p id="inputWarningText"></p>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>Режимы работы</h2>
+              <p>Workbook показывает два равнозначных operational режима: какая подача нужна, если ЦФ должен закончить работу за фиксированное время, и сколько часов потребуется, если подача уже ограничена оборудованием.</p>
+            </div>
+            <span class="status-pill">Two-way planning</span>
+          </div>
+
+          <div class="mode-grid">
+            <div class="mode-card">
+              <strong>При заданном времени работы Ц.Ф.</strong>
+              <span class="value" id="requiredFeedValue">13.3 м³/ч</span>
+              <p>Общий требуемый объём на ЦФ делится на заданные часы работы.</p>
+            </div>
+            <div class="mode-card">
+              <strong>При заданной подаче раствора на Ц.Ф.</strong>
+              <span class="value" id="requiredTimeValue">20.0 ч</span>
+              <p>Тот же общий объём делится на фактическую доступную подачу.</p>
+            </div>
+          </div>
+
+          <div class="table-card" style="margin-top:16px;">
+            <table class="calc-table">
+              <tbody>
+                <tr>
+                  <th>Объём раствора, который нужно прокачать через ЦФ</th>
+                  <td class="value-cell"><span class="result-number emphasis" id="processedVolumeValue">159.6</span></td>
+                  <td class="unit-cell">м³</td>
+                </tr>
+                <tr>
+                  <th>Разница по массе твёрдой фазы между входной и целевой плотностью</th>
+                  <td class="value-cell"><span class="result-number" id="densityGapValue">64.6</span></td>
+                  <td class="unit-cell">кг/м³</td>
+                </tr>
+                <tr>
+                  <th>Концентрация удаляемого шлама на ЦФ</th>
+                  <td class="value-cell"><span class="result-number" id="removedConcentrationValue">80.8</span></td>
+                  <td class="unit-cell">кг/м³</td>
+                </tr>
+                <tr>
+                  <th>Процент удаляемого шлама</th>
+                  <td class="value-cell"><span class="result-number" id="removalPctValue">30.8</span></td>
+                  <td class="unit-cell">%</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+
+      <div class="stack">
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>Масса и потери</h2>
+              <p>Нижний workbook-блок показывает, какой solids inventory вообще есть в системе, сколько шлама реально удалится, сколько раствора уйдет с влажной пульпой и какой итоговый объем влажного шлама нужно учитывать в логистике.</p>
+            </div>
+            <span class="status-pill">Mass balance</span>
+          </div>
+
+          <div class="summary-grid">
+            <div class="summary-card">
+              <strong>Средняя плотность твёрдой фазы</strong>
+              <span class="value" id="avgSolidsDensityValue">2.63 г/см³</span>
+            </div>
+            <div class="summary-card">
+              <strong>Влажность пульпы</strong>
+              <span class="value" id="pulpMoistureValue">35.2 %</span>
+            </div>
+            <div class="summary-card">
+              <strong>Масса твёрдой фазы в растворе</strong>
+              <span class="value" id="solidsMassValue">42 000 кг</span>
+            </div>
+            <div class="summary-card">
+              <strong>Масса удаляемого шлама</strong>
+              <span class="value" id="removedMassValue">12 923 кг</span>
+            </div>
+            <div class="summary-card">
+              <strong>Потери раствора при удалении шлама</strong>
+              <span class="value" id="mudLossValue">1.73 м³</span>
+            </div>
+            <div class="summary-card">
+              <strong>Объём удаляемого влажного шлама</strong>
+              <span class="value" id="wetSludgeValue">6.66 м³</span>
+            </div>
+          </div>
+
+          <div class="bars" style="margin-top:16px;">
+            <div class="bar-row">
+              <div class="bar-label">Сухая твёрдая фаза</div>
+              <div class="bar-track"><div class="bar-fill" id="barDry"></div></div>
+              <div class="bar-value" id="barDryValue">4.92</div>
+            </div>
+            <div class="bar-row">
+              <div class="bar-label">Раствор, уходящий с пульпой</div>
+              <div class="bar-track"><div class="bar-fill blue" id="barMud"></div></div>
+              <div class="bar-value" id="barMudValue">1.73</div>
+            </div>
+            <div class="bar-row">
+              <div class="bar-label">Система, требующая обработки</div>
+              <div class="bar-track"><div class="bar-fill cyan" id="barLoop"></div></div>
+              <div class="bar-value" id="barLoopValue">159.6</div>
+            </div>
+            <div class="bar-row">
+              <div class="bar-label">Весь активный объём раствора</div>
+              <div class="bar-track"><div class="bar-fill red" id="barSystem"></div></div>
+              <div class="bar-value" id="barSystemValue">200</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>Workbook trace</h2>
+              <p>Все промежуточные величины вынесены в явный trace, чтобы было видно, откуда берутся часы, подача и logistics outputs.</p>
+            </div>
+            <span class="status-pill">Trace table</span>
+          </div>
+
+          <div class="table-card">
+            <table class="calc-table">
+              <tbody>
+                <tr>
+                  <th>Допустимая твердая фаза при целевой плотности</th>
+                  <td class="value-cell"><span class="result-number" id="targetSolidsTable">145.4</span></td>
+                  <td class="unit-cell">кг/м³</td>
+                </tr>
+                <tr>
+                  <th>Твёрдая фаза при входной плотности</th>
+                  <td class="value-cell"><span class="result-number" id="inletSolidsTable">210.0</span></td>
+                  <td class="unit-cell">кг/м³</td>
+                </tr>
+                <tr>
+                  <th>Средняя плотность твёрдой фазы</th>
+                  <td class="value-cell"><span class="result-number" id="avgSolidsDensityTable">2.63</span></td>
+                  <td class="unit-cell">г/см³</td>
+                </tr>
+                <tr>
+                  <th>Концентрация удаляемого шлама</th>
+                  <td class="value-cell"><span class="result-number emphasis" id="removedConcentrationTable">80.8</span></td>
+                  <td class="unit-cell">кг/м³</td>
+                </tr>
+                <tr>
+                  <th>Требуемая подача при заданном времени</th>
+                  <td class="value-cell"><span class="result-number emphasis" id="requiredFeedTable">13.3</span></td>
+                  <td class="unit-cell">м³/ч</td>
+                </tr>
+                <tr>
+                  <th>Требуемое время при заданной подаче</th>
+                  <td class="value-cell"><span class="result-number emphasis" id="requiredTimeTable">20.0</span></td>
+                  <td class="unit-cell">ч</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="factors-grid" style="margin-top:16px;">
+            <div class="factor-card">
+              <strong>Вход ЦФ</strong>
+              <span class="value" id="inletDensityValue">1.13 г/см³</span>
+              <small>Текущая плотность грязного потока до прохода через центрифугу.</small>
+            </div>
+            <div class="factor-card">
+              <strong>Выход ЦФ</strong>
+              <span class="value" id="outletDensityValue">1.08 г/см³</span>
+              <small>Плотность очищенного потока после прохода через ЦФ.</small>
+            </div>
+            <div class="factor-card">
+              <strong>Плотность пульпы</strong>
+              <span class="value" id="pulpDensityValue">1.70 г/см³</span>
+              <small>Определяет влагу пульпы и потери раствора вместе с влажным шламом.</small>
+            </div>
+            <div class="factor-card">
+              <strong>Твёрдая фаза в системе</strong>
+              <span class="value" id="solidsVolumePctValue">8.0 %</span>
+              <small>Через этот параметр workbook восстанавливает среднюю плотность solids.</small>
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section class="panel" style="margin-top:16px;">
+      <div class="panel-head">
+        <div>
+          <h2>Инженерная логика</h2>
+          <p>Экран нужен, когда плотность уже надо опустить контролируемо, а не просто удерживать при текущем бурении. Поэтому здесь важнее общий volume-to-process и timing, чем hourly drilling load.</p>
+        </div>
+        <span class="status-pill">How to use it</span>
+      </div>
+
+      <div class="logic">
+        <div class="logic-card">
+          <h3>Что делает workbook</h3>
+          <p><span class="accent-amber">Current inlet density</span> и <span class="accent-cyan">target density</span> переводятся в кг/м³ твердой фазы. Разница между ними показывает, сколько solids нужно убрать из каждого куба системы.</p>
+          <ul>
+            <li>Дальше эта разница умножается на активный объём системы и дает массу удаляемого шлама.</li>
+            <li>Через выходной split на ЦФ workbook оценивает, сколько кг solids снимается с каждого куба обработанного раствора.</li>
+            <li>Отсюда получаются либо требуемая подача, либо время работы, в зависимости от ограничивающего параметра.</li>
+          </ul>
+        </div>
+        <div class="logic-card">
+          <h3>Как читать низ экрана</h3>
+          <p><span class="accent-cyan">Mud loss</span> и <span class="accent-amber">wet sludge volume</span> нужны уже не для гидравлики, а для supply/logistics: сколько раствора нужно будет вернуть в активную систему и какой объем отходов реально уйдет на утилизацию.</p>
+          <ul>
+            <li>Чем плотнее пульпа, тем ниже ее влажность и меньше потери раствора на каждом кубе удаляемого шлама.</li>
+            <li>Чем выше доля твердой фазы в системе, тем выше восстановленная средняя плотность solids и тем сильнее меняется mass gap между текущим и целевым состоянием.</li>
+            <li>Если inlet и outlet плотности ЦФ почти равны, время работы быстро растет, даже если масса удаляемого шлама остается прежней.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="note-grid" style="margin-top:16px;">
+        <div class="note">
+          <strong>Когда применять</strong>
+          <p>Для planned density drop на уже существующем активном объёме раствора, когда нужен целевой operational window по часам или доступной подаче ЦФ.</p>
+        </div>
+        <div class="note">
+          <strong>Что важно проверить</strong>
+          <p>Плотность на входе ЦФ должна быть выше целевой и выше плотности на выходе. Иначе система не снижает плотность, а просто прогоняет раствор через loop без полезного solids cut.</p>
+        </div>
+        <div class="note">
+          <strong>Что логично делать дальше</strong>
+          <p>Следующий логичный экран после кнопки 10 уже выходит из centrifuge ветки и обычно ведет к forecast по наработке твердой фазы в процессе бурения.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      const defaults = {
+        targetDensity: 1.09,
+        mudVolume: 200,
+        inletDensity: 1.13,
+        outletDensity: 1.08,
+        pulpDensity: 1.7,
+        solidsVolumePct: 8,
+        runHours: 12,
+        feedRate: 8
+      };
+
+      const ids = [
+        'targetDensity',
+        'mudVolume',
+        'inletDensity',
+        'outletDensity',
+        'pulpDensity',
+        'solidsVolumePct',
+        'runHours',
+        'feedRate'
+      ];
+
+      function readNumber(id) {
+        const value = Number(document.getElementById(id).value);
+        return Number.isFinite(value) ? value : 0;
+      }
+
+      function fmt(value, digits) {
+        if (!Number.isFinite(value)) {
+          return '0';
+        }
+
+        const factor = 10 ** digits;
+        const rounded = Math.round((value * factor) + 1e-9) / factor;
+        return rounded.toFixed(digits);
+      }
+
+      function fmtInt(value) {
+        return Number.isFinite(value) ? new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 0 }).format(value) : '0';
+      }
+
+      function setText(id, value) {
+        document.getElementById(id).textContent = value;
+      }
+
+      function compute() {
+        const targetDensity = readNumber('targetDensity');
+        const mudVolume = readNumber('mudVolume');
+        const inletDensity = readNumber('inletDensity');
+        const outletDensity = readNumber('outletDensity');
+        const pulpDensity = readNumber('pulpDensity');
+        const solidsVolumePct = readNumber('solidsVolumePct');
+        const runHours = readNumber('runHours');
+        const feedRate = readNumber('feedRate');
+
+        const warning = document.getElementById('inputWarning');
+        const warningText = document.getElementById('inputWarningText');
+
+        if (
+          targetDensity <= 1 ||
+          mudVolume <= 0 ||
+          inletDensity <= targetDensity ||
+          inletDensity <= outletDensity ||
+          outletDensity <= 1 ||
+          pulpDensity <= 1 ||
+          solidsVolumePct <= 0 ||
+          runHours <= 0 ||
+          feedRate <= 0
+        ) {
+          warning.classList.add('show');
+          warningText.textContent = 'Для корректного reduce density расчета нужны положительные объем, время и подача; плотность на входе ЦФ должна быть выше целевой и выше плотности на выходе; доля твердой фазы и плотность пульпы тоже должны быть положительными.';
+          return;
+        }
+
+        const avgSolidsDensity = ((inletDensity - 1) * 100 / solidsVolumePct) + 1;
+
+        if (avgSolidsDensity <= 1 || pulpDensity >= avgSolidsDensity) {
+          warning.classList.add('show');
+          warningText.textContent = 'Средняя плотность твердой фазы должна быть выше 1 и выше плотности пульпы, иначе влажность пульпы и итоговые volume/mass balance теряют физический смысл.';
+          return;
+        }
+
+        const targetSolidsKgM3 = ((targetDensity - 1) / (avgSolidsDensity - 1)) * 1000 * avgSolidsDensity;
+        const inletSolidsKgM3 = ((inletDensity - 1) / (avgSolidsDensity - 1)) * 1000 * avgSolidsDensity;
+        const densityGapKgM3 = inletSolidsKgM3 - targetSolidsKgM3;
+        const removalFraction = (inletDensity - outletDensity) / (avgSolidsDensity - 1);
+        const removalPct = removalFraction * 1000;
+        const removedSolidsConcentrationKgM3 = removalPct * avgSolidsDensity;
+
+        if (densityGapKgM3 <= 0 || removedSolidsConcentrationKgM3 <= 0) {
+          warning.classList.add('show');
+          warningText.textContent = 'С такими входами центрифуга не формирует полезного solids cut для снижения плотности. Проверь целевую плотность и split между входом и выходом ЦФ.';
+          return;
+        }
+
+        warning.classList.remove('show');
+        warningText.textContent = '';
+
+        const solidsMassInMudKg = inletSolidsKgM3 * mudVolume;
+        const removedMassKg = densityGapKgM3 * mudVolume;
+        const dryRemovedVolumeM3 = removedMassKg / avgSolidsDensity * 0.001;
+        const pulpMoisturePct = 100 - (pulpDensity * 100 / avgSolidsDensity);
+        const mudLossM3 = dryRemovedVolumeM3 * pulpMoisturePct / 100;
+        const wetSludgeVolumeM3 = dryRemovedVolumeM3 + mudLossM3;
+        const processedVolumeM3 = removedMassKg / removedSolidsConcentrationKgM3;
+        const requiredFeedM3Hr = processedVolumeM3 / runHours;
+        const requiredTimeHours = processedVolumeM3 / feedRate;
+
+        const barMax = Math.max(mudVolume, processedVolumeM3, wetSludgeVolumeM3, 1);
+
+        setText('heroFeed', `${fmt(requiredFeedM3Hr, 1)} м³/ч`);
+        setText('heroTime', `${fmt(requiredTimeHours, 1)} ч`);
+        setText('heroRemovedMass', `${fmtInt(removedMassKg)} кг`);
+        setText('heroMudLoss', `${fmt(mudLossM3, 2)} м³`);
+
+        setText('requiredFeedValue', `${fmt(requiredFeedM3Hr, 1)} м³/ч`);
+        setText('requiredTimeValue', `${fmt(requiredTimeHours, 1)} ч`);
+        setText('processedVolumeValue', fmt(processedVolumeM3, 1));
+        setText('densityGapValue', fmt(densityGapKgM3, 1));
+        setText('removedConcentrationValue', fmt(removedSolidsConcentrationKgM3, 1));
+        setText('removalPctValue', fmt(removalPct, 1));
+
+        setText('avgSolidsDensityValue', `${fmt(avgSolidsDensity, 2)} г/см³`);
+        setText('pulpMoistureValue', `${fmt(pulpMoisturePct, 1)} %`);
+        setText('solidsMassValue', `${fmtInt(solidsMassInMudKg)} кг`);
+        setText('removedMassValue', `${fmtInt(removedMassKg)} кг`);
+        setText('mudLossValue', `${fmt(mudLossM3, 2)} м³`);
+        setText('wetSludgeValue', `${fmt(wetSludgeVolumeM3, 2)} м³`);
+
+        setText('targetSolidsTable', fmt(targetSolidsKgM3, 1));
+        setText('inletSolidsTable', fmt(inletSolidsKgM3, 1));
+        setText('avgSolidsDensityTable', fmt(avgSolidsDensity, 2));
+        setText('removedConcentrationTable', fmt(removedSolidsConcentrationKgM3, 1));
+        setText('requiredFeedTable', fmt(requiredFeedM3Hr, 1));
+        setText('requiredTimeTable', fmt(requiredTimeHours, 1));
+
+        setText('inletDensityValue', `${fmt(inletDensity, 2)} г/см³`);
+        setText('outletDensityValue', `${fmt(outletDensity, 2)} г/см³`);
+        setText('pulpDensityValue', `${fmt(pulpDensity, 2)} г/см³`);
+        setText('solidsVolumePctValue', `${fmt(solidsVolumePct, 1)} %`);
+
+        document.getElementById('barDry').style.width = `${(dryRemovedVolumeM3 / barMax) * 100}%`;
+        document.getElementById('barMud').style.width = `${(mudLossM3 / barMax) * 100}%`;
+        document.getElementById('barLoop').style.width = `${(processedVolumeM3 / barMax) * 100}%`;
+        document.getElementById('barSystem').style.width = `${(mudVolume / barMax) * 100}%`;
+
+        setText('barDryValue', fmt(dryRemovedVolumeM3, 2));
+        setText('barMudValue', fmt(mudLossM3, 2));
+        setText('barLoopValue', fmt(processedVolumeM3, 1));
+        setText('barSystemValue', fmt(mudVolume, 0));
+
+        document.getElementById('formulaBox').textContent = [
+          `Average solids density = ((ρin - 1) × 100 / Vsolids) + 1 = ${fmt(avgSolidsDensity, 4)} g/cm3`,
+          `Target solids = ((ρtarget - 1) / (ρsolids - 1)) × 1000 × ρsolids = ${fmt(targetSolidsKgM3, 3)} kg/m3`,
+          `Inlet solids = ((ρin - 1) / (ρsolids - 1)) × 1000 × ρsolids = ${fmt(inletSolidsKgM3, 3)} kg/m3`,
+          `Mass gap = Inlet solids - Target solids = ${fmt(densityGapKgM3, 3)} kg/m3`,
+          `Removal percent = ((ρin - ρout) / (ρsolids - 1)) × 1000 = ${fmt(removalPct, 3)} %`,
+          `Removed solids concentration = Removal % × ρsolids = ${fmt(removedSolidsConcentrationKgM3, 3)} kg/m3`,
+          `Removed mass = Mass gap × Vsystem = ${fmt(removedMassKg, 3)} kg`,
+          `Processed volume = Removed mass / Removed solids concentration = ${fmt(processedVolumeM3, 3)} m3`,
+          `Required feed = Vprocessed / Hours = ${fmt(requiredFeedM3Hr, 3)} m3/h`,
+          `Required time = Vprocessed / Feed = ${fmt(requiredTimeHours, 3)} h`,
+          `Dry sludge volume = Removed mass / ρsolids × 0.001 = ${fmt(dryRemovedVolumeM3, 3)} m3`,
+          `Mud loss = Dry sludge volume × Moisture = ${fmt(mudLossM3, 3)} m3`
+        ].join('\n');
+      }
+
+      ids.forEach((id) => {
+        document.getElementById(id).addEventListener('input', compute);
+      });
+
+      document.getElementById('recalcBtn').addEventListener('click', compute);
+      document.getElementById('resetBtn').addEventListener('click', () => {
+        ids.forEach((id) => {
+          document.getElementById(id).value = defaults[id];
+        });
+        compute();
+      });
+
+      compute();
+    }());
+  </script>
+</body>
+</html>

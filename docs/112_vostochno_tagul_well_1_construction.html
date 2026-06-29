@@ -1,0 +1,754 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>112 · Восточно-Тагульский ЛУ · Скважина №1 · Конструкция</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap");
+
+    :root {
+      --bg-0: #071018;
+      --bg-1: #102030;
+      --bg-2: #1b3041;
+      --panel: rgba(11, 20, 31, 0.86);
+      --panel-soft: rgba(255, 255, 255, 0.035);
+      --line: rgba(227, 238, 255, 0.14);
+      --line-soft: rgba(227, 238, 255, 0.08);
+      --text: #edf5ff;
+      --muted: #a8bdd2;
+      --cyan: #22d7b4;
+      --amber: #f8bd5f;
+      --blue: #8db4ff;
+      --violet: #c6a6ff;
+      --green: #7de0a7;
+      --shadow: 0 24px 56px rgba(0, 0, 0, 0.42);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      font-family: "Manrope", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(900px 460px at 0% -10%, rgba(34, 215, 180, 0.18), rgba(34, 215, 180, 0)),
+        radial-gradient(760px 420px at 100% 0%, rgba(248, 189, 95, 0.16), rgba(248, 189, 95, 0)),
+        linear-gradient(145deg, var(--bg-0), var(--bg-1) 46%, var(--bg-2));
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(to right, rgba(255,255,255,.02) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,.02) 1px, transparent 1px);
+      background-size: 38px 38px;
+      mask-image: radial-gradient(circle at 50% 20%, rgba(0,0,0,.95), transparent 72%);
+    }
+
+    .wrap {
+      position: relative;
+      z-index: 1;
+      width: min(1380px, 94vw);
+      margin: 0 auto;
+      padding: 24px 0 64px;
+    }
+
+    .top,
+    .hero,
+    .section {
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+    }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 12px 16px;
+      border-radius: 16px;
+      background: rgba(8, 15, 24, 0.66);
+      position: sticky;
+      top: 12px;
+      z-index: 20;
+      backdrop-filter: blur(10px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: "Oswald", sans-serif;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      font-size: 20px;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 35% 35%, #d6fff7, var(--cyan));
+      box-shadow: 0 0 18px rgba(34, 215, 180, 0.45);
+    }
+
+    .nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .nav a {
+      text-decoration: none;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      font-weight: 800;
+      border-radius: 10px;
+      padding: 8px 12px;
+      color: #082922;
+      background: linear-gradient(130deg, #a0f9eb, #22d7b4);
+      border: 1px solid rgba(34, 215, 180, 0.75);
+    }
+
+    .hero,
+    .section {
+      margin-top: 18px;
+      border-radius: 24px;
+      background: var(--panel);
+      padding: 22px;
+    }
+
+    .hero {
+      background:
+        radial-gradient(480px 260px at 0% 0%, rgba(34, 215, 180, .12), transparent),
+        radial-gradient(520px 280px at 100% 0%, rgba(248, 189, 95, .12), transparent),
+        var(--panel);
+    }
+
+    .eyebrow,
+    .tag,
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line-soft);
+      background: rgba(255,255,255,.04);
+      color: #d8e8f8;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .hero h1,
+    h2,
+    h3 {
+      font-family: "Oswald", sans-serif;
+      letter-spacing: -.01em;
+      margin: 0;
+    }
+
+    .hero h1 {
+      margin: 14px 0 10px;
+      font-size: clamp(34px, 5vw, 60px);
+      line-height: .95;
+      max-width: 1040px;
+    }
+
+    .hero p,
+    .section p,
+    .metric-card p,
+    .callout p,
+    .legend-card p,
+    .note,
+    td {
+      color: #c9d9eb;
+      line-height: 1.65;
+      font-size: 14px;
+    }
+
+    .hero-grid,
+    .overview-grid,
+    .cards-grid,
+    .schematic-grid,
+    .bop-grid,
+    .table-grid,
+    .legend-list,
+    .fact-list {
+      display: grid;
+      gap: 14px;
+    }
+
+    .hero-grid {
+      margin-top: 18px;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .overview-grid {
+      margin-top: 18px;
+      grid-template-columns: 1.08fr .92fr;
+    }
+
+    .cards-grid,
+    .bop-grid {
+      margin-top: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+
+    .schematic-grid {
+      grid-template-columns: minmax(560px, 1.08fr) minmax(280px, .92fr);
+      align-items: start;
+    }
+
+    .table-grid {
+      margin-top: 14px;
+      grid-template-columns: 1fr;
+    }
+
+    .hero-stat,
+    .metric-card,
+    .callout,
+    .schematic-shell,
+    .legend-card,
+    .table-box,
+    .bop-card {
+      border: 1px solid var(--line-soft);
+      border-radius: 18px;
+      background: var(--panel-soft);
+      padding: 16px;
+    }
+
+    .hero-stat strong,
+    .metric-card strong {
+      display: block;
+      font-size: 26px;
+      line-height: 1;
+    }
+
+    .hero-stat span,
+    .metric-card span {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .section-head h2,
+    .schematic-shell h3,
+    .table-box h3 {
+      font-size: 28px;
+    }
+
+    .callout {
+      background: linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.025));
+    }
+
+    .callout h3,
+    .metric-card h3,
+    .bop-card h3,
+    .legend-card strong {
+      font-size: 20px;
+    }
+
+    .fact-list {
+      margin-top: 12px;
+      gap: 10px;
+    }
+
+    .fact-item {
+      border-top: 1px solid var(--line-soft);
+      padding-top: 10px;
+    }
+
+    .fact-item strong {
+      display: block;
+      font-size: 13px;
+      color: #eff6ff;
+      margin-bottom: 4px;
+    }
+
+    .schematic-shell {
+      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+    }
+
+    .schematic-shell svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .caption {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .legend-list {
+      gap: 10px;
+    }
+
+    .legend-card {
+      background: linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.02));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.03);
+    }
+
+    .legend-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    .legend-swatch {
+      width: 14px;
+      height: 14px;
+      border-radius: 999px;
+      flex: none;
+      box-shadow: 0 0 14px currentColor;
+    }
+
+    .legend-meta {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .table-wrap {
+      overflow: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    th, td {
+      border: 1px solid var(--line-soft);
+      padding: 10px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: #bfd3e8;
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .note {
+      margin-top: 14px;
+      border: 1px solid rgba(248,189,95,.24);
+      border-radius: 12px;
+      background: rgba(248,189,95,.08);
+      padding: 12px;
+      color: #f4deba;
+    }
+
+    .footer {
+      margin-top: 16px;
+      font-size: 12px;
+      color: #8ea2bc;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    @media (max-width: 1120px) {
+      .hero-grid,
+      .overview-grid,
+      .cards-grid,
+      .schematic-grid,
+      .bop-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 860px) {
+      .top {
+        position: static;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .hero-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+  <main class="wrap">
+    <header class="top">
+      <a class="brand" href="111_vostochno_tagul_well_1_dashboard.html"><span class="dot" aria-hidden="true"></span><span>Скважина №1 · Well Architecture</span></a>
+      <nav class="nav">
+        <a href="111_vostochno_tagul_well_1_dashboard.html">К дашборду скважины</a>
+        <a href="108_vostochno_tagul_project_dashboard.html">К месторождению</a>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <span class="eyebrow">Doc 112 · Construction cockpit · Восточно-Тагульский ЛУ</span>
+      <h1>Конструкция скважины №1</h1>
+      <p>Экран собран по предоставленной таблице конструкции: три обсадные колонны до 3000 м, двухступенчатое цементирование через МСЦ на промежуточной и эксплуатационной колоннах, плюс отдельный блок по ПВО устья. Графический рисунок ниже показывает вложенность колонн так же наглядно, как в уренгойском construction-screen.</p>
+      <div class="hero-grid">
+        <div class="hero-stat"><strong>3000 м</strong><span>проектная глубина спуска эксплуатационной колонны</span></div>
+        <div class="hero-stat"><strong>3</strong><span>обсадные колонны в каркасе</span></div>
+        <div class="hero-stat"><strong>1100 / 1850 м</strong><span>точки установки МСЦ</span></div>
+        <div class="hero-stat"><strong>350 кгс/см²</strong><span>рабочее давление ПВО</span></div>
+      </div>
+      <div class="overview-grid">
+        <article class="callout">
+          <h3>Каркас крепления</h3>
+          <p>Верхняя опора начинается с кондуктора 323,9 мм до 570 м. Ниже идет промежуточная колонна 244,5 мм до 2000 м с МСЦ на 1100 м, а основной ствол закрывается эксплуатационной колонной 168,3 мм до 3000 м с МСЦ на 1850 м и раздельными секциями по толщине стенки.</p>
+          <div class="fact-list">
+            <div class="fact-item"><strong>Кондуктор</strong><span>323,9 x 8,5 Д, соединение НОРМК, цементирование до устья.</span></div>
+            <div class="fact-item"><strong>Промежуточная</strong><span>244,5 x 10 Е, соединение ОТТМ, подъем цемента до устья через МСЦ-244,5 на 1100 м.</span></div>
+            <div class="fact-item"><strong>Эксплуатационная</strong><span>168,3 x 10,6 Е на верхней секции 570 м и 168,3 x 8,9 Е на нижней секции 2430 м.</span></div>
+          </div>
+        </article>
+        <article class="callout">
+          <h3>Критические точки</h3>
+          <p>По устью заложены четыре сценария ПВО: кондуктор, промежуточная, эксплуатационная и испытание. Рабочее давление на всех схемах принято 350 кгс/см², а для газовых и разведочных условий прямо отмечена необходимость инертирования ПВО азотом при газовом факторе свыше 200 м³/т.</p>
+          <div class="chips">
+            <span class="chip">МСЦ-244,5 · 1100 м</span>
+            <span class="chip">МСЦ-168 · 1850 м</span>
+            <span class="chip">до устья</span>
+            <span class="chip">ПВО 350</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>Графический рисунок конструкции</h2>
+        <span class="tag">вложенность колонн, секции и точки МСЦ</span>
+      </div>
+      <div class="schematic-grid">
+        <div class="schematic-shell">
+          <div id="constructionSchematic"></div>
+          <div class="caption">Схема построена вручную по предоставленной таблице. Масштаб по глубине условно-линейный, чтобы сразу считывались границы кондуктора, промежуточной и эксплуатационной колонн, а также отдельные точки установки МСЦ и верхняя усиленная секция эксплуатационной колонны.</div>
+        </div>
+        <div class="legend-list" id="constructionLegend"></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>Колонны и цементирование</h2>
+        <span class="tag">рабочая интерпретация таблицы 3.1</span>
+      </div>
+      <div class="cards-grid" id="constructionCards"></div>
+      <div class="note">В исходной таблице прямо указано, что глубины бурения и спуска колонн уточняются в процессе строительства скважины. Поэтому экран показывает базовую проектную архитектуру, а не финальный as-built.</div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>Таблица 3.1 · Конструкция скважины</h2>
+        <span class="tag">диаметры, спуск, цементирование, секции</span>
+      </div>
+      <div class="table-grid">
+        <div class="table-box">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Колонна</th>
+                  <th>Диаметр, мм</th>
+                  <th>Глубина по стволу, м</th>
+                  <th>Глубина по вертикали, м</th>
+                  <th>Подъём цемента</th>
+                  <th>Соединение</th>
+                  <th>Труба</th>
+                  <th>Длина секции, м</th>
+                </tr>
+              </thead>
+              <tbody id="constructionTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>Таблица 3.8 · Противовыбросовое оборудование</h2>
+        <span class="tag">устье скважины · схемы 2 и 5</span>
+      </div>
+      <div class="bop-grid" id="bopCards"></div>
+      <div class="note">По примечанию из исходного фрагмента предусмотрено использование азотной компрессорной установки и газосепаратора; ПВО должно опрессовываться и продуваться инертным газом при строительстве газовых, разведочных и нефтяных скважин. Типоразмеры могут уточняться при развитии рабочего проекта, но логика схем 2 и 5 уже зафиксирована на этом экране.</div>
+    </section>
+
+    <p class="footer">Восточно-Тагульский ЛУ · Скважина №1 · Doc 112</p>
+  </main>
+
+  <script>
+    const constructionRows = [
+      ["Кондуктор", "323,9", "570", "570", "До устья", "НОРМК", "323,9 x 8,5 Д", "570"],
+      ["Промежуточная колонна", "244,5", "2000", "2000", "До устья с применением МСЦ-244,5 (1100 м)", "ОТТМ", "244,5 x 10 Е", "2000"],
+      ["Эксплуатационная колонна · верхняя секция", "168,3", "3000", "3000", "До устья с применением МСЦ-168 (1850 м)", "ОТТМ", "168,3 x 10,6 Е", "570"],
+      ["Эксплуатационная колонна · основная секция", "168,3", "3000", "3000", "До устья с применением МСЦ-168 (1850 м)", "ОТТМ", "168,3 x 8,9 Е", "2430"]
+    ];
+
+    const constructionCards = [
+      {
+        title: "Кондуктор 323,9 мм",
+        text: "Спускается до 570 м по вертикали и по стволу. Цементируется до устья и формирует верхнюю опору конструкции.",
+        chips: ["323,9 x 8,5 Д", "НОРМК", "570 м", "до устья"]
+      },
+      {
+        title: "Промежуточная колонна 244,5 мм",
+        text: "Спускается до 2000 м. Подъем цемента до устья выполнен через МСЦ-244,5, установленную на 1100 м.",
+        chips: ["244,5 x 10 Е", "ОТТМ", "2000 м", "МСЦ 1100 м"]
+      },
+      {
+        title: "Эксплуатационная колонна 168,3 мм",
+        text: "Колонна доходит до 3000 м и разделена на две секции: верхняя усиленная 570 м и нижняя основная 2430 м. Цементирование до устья идет через МСЦ-168 на 1850 м.",
+        chips: ["168,3 x 10,6 Е", "168,3 x 8,9 Е", "3000 м", "МСЦ 1850 м"]
+      },
+      {
+        title: "ПВО и устье",
+        text: "На устье заложены схемы 2 и 5 с рабочим давлением 350 кгс/см², включая отдельную компоновку на этап испытания.",
+        chips: ["схема 2", "схема 5", "350 кгс/см²", "испытание"]
+      }
+    ];
+
+    const legendItems = [
+      {
+        title: "Кондуктор",
+        color: "#f8bd5f",
+        text: "323,9 x 8,5 Д. Спуск до 570 м, цементирование до устья.",
+        meta: "НОРМК · верхняя опора конструкции"
+      },
+      {
+        title: "Промежуточная колонна",
+        color: "#67dbc2",
+        text: "244,5 x 10 Е. Спуск до 2000 м, цементирование до устья.",
+        meta: "ОТТМ · МСЦ-244,5 на 1100 м"
+      },
+      {
+        title: "Эксплуатационная · верхняя секция",
+        color: "#8db4ff",
+        text: "168,3 x 10,6 Е. Верхние 570 м эксплуатационной колонны.",
+        meta: "усиленная секция в наиболее нагруженной зоне"
+      },
+      {
+        title: "Эксплуатационная · основная секция",
+        color: "#5d8dff",
+        text: "168,3 x 8,9 Е. Основной интервал 570-3000 м.",
+        meta: "ОТТМ · МСЦ-168 на 1850 м"
+      }
+    ];
+
+    const bopCards = [
+      {
+        title: "Спуск 1 · Кондуктор",
+        tag: "схема 2",
+        equipment: [
+          "ОКК2-35-168 x 245 x 324 x 324 К1 ХЛ",
+          "Оборудование ОП5-350/80 35 К1 ХЛ",
+          "ПШ-2 350 x 35 К1 ХЛ",
+          "ПУГ (ПК)-350 x 35 К1 ХЛ"
+        ],
+        pressure: "350 кгс/см²"
+      },
+      {
+        title: "Спуск 2 · Промежуточная",
+        tag: "схема 5",
+        equipment: [
+          "ОКК2-35-168 x 245 x 324 x 324 К1 ХЛ",
+          "Оборудование ОП5-350/80 35 К1 ХЛ",
+          "ПШ-2 350 x 35 К1 ХЛ",
+          "ПУГ (ПК)-350 x 35 К1 ХЛ"
+        ],
+        pressure: "350 кгс/см²"
+      },
+      {
+        title: "Спуск 3 · Эксплуатационная",
+        tag: "схема 5",
+        equipment: [
+          "ОКК2-35-168 x 245 x 324 К1 ХЛ",
+          "Оборудование ОП5-350/80 35 К1 ХЛ",
+          "ПШ-2 350 x 35 К1 ХЛ",
+          "ПУГ (ПК)-350 x 35 К1 ХЛ"
+        ],
+        pressure: "350 кгс/см²"
+      },
+      {
+        title: "Спуск 4 · Испытание",
+        tag: "схема 2",
+        equipment: [
+          "АФК 6 80/65 x 35 К1 ХЛ",
+          "Оборудование ОП2-180/65 x 35 К1 ХЛ",
+          "2 x ППГ-180 x 35 или один ПШ-2"
+        ],
+        pressure: "350 кгс/см²"
+      }
+    ];
+
+    function createConstructionSchematic() {
+      const width = 820;
+      const height = 1120;
+      const centerX = 288;
+      const topY = 150;
+      const baseY = 1010;
+      const maxDepth = 3000;
+      const maxDiameter = 360;
+      const scaleDepth = (depth) => topY + (depth / maxDepth) * (baseY - topY);
+      const scaleHalfWidth = (diameter) => (diameter / maxDiameter) * 145;
+
+      const tower = `
+        <g opacity="0.96">
+          <rect x="228" y="24" width="120" height="24" rx="3" fill="rgba(255,255,255,0.92)" stroke="rgba(7,16,24,0.55)" />
+          <path d="M250 50 L326 50 L350 118 L226 118 Z" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.88)" stroke-width="2" />
+          <path d="M264 50 L312 118 M312 50 L264 118 M240 84 L336 84" stroke="rgba(255,255,255,0.68)" stroke-width="2" />
+          <rect x="214" y="118" width="148" height="22" rx="4" fill="rgba(255,255,255,0.92)" stroke="rgba(7,16,24,0.55)" />
+          <rect x="126" y="140" width="324" height="56" rx="4" fill="rgba(255,255,255,0.90)" stroke="rgba(7,16,24,0.55)" />
+        </g>`;
+
+      const borehole = `
+        <defs>
+          <pattern id="soilDots112" width="10" height="10" patternUnits="userSpaceOnUse">
+            <circle cx="2" cy="2" r="1" fill="rgba(255,255,255,0.18)" />
+            <circle cx="7" cy="6" r="1" fill="rgba(255,255,255,0.12)" />
+          </pattern>
+        </defs>
+        <rect x="168" y="196" width="240" height="814" fill="url(#soilDots112)" opacity="0.8" rx="10" />
+      `;
+
+      const depthMarks = [0, 570, 1100, 1850, 2000, 3000].map((depth) => {
+        const y = scaleDepth(depth);
+        return `
+          <line x1="82" y1="${y}" x2="126" y2="${y}" stroke="rgba(255,255,255,0.5)" stroke-dasharray="4 4" />
+          <text x="74" y="${y + 4}" text-anchor="end" font-size="18" fill="#d9e8f8" font-family="Manrope">${depth}</text>`;
+      }).join('');
+
+      const strings = [
+        { label: 'Кондуктор 323,9 мм · 570 м', color: '#f8bd5f', diameter: 323.9, from: 0, to: 570, cementOuter: 138, labelY: scaleDepth(570) - 8 },
+        { label: 'Промежуточная 244,5 мм · 2000 м', color: '#67dbc2', diameter: 244.5, from: 0, to: 2000, cementOuter: 112, labelY: scaleDepth(2000) - 8 },
+        { label: 'Эксплуатационная 168,3 мм · 3000 м', color: '#8db4ff', diameter: 168.3, from: 0, to: 3000, cementOuter: 92, labelY: scaleDepth(3000) - 28 }
+      ].map((section) => {
+        const y1 = scaleDepth(section.from);
+        const y2 = scaleDepth(section.to);
+        const casingHalf = scaleHalfWidth(section.diameter);
+        const shoeY = y2 - 2;
+        return `
+          <g>
+            <rect x="${centerX - section.cementOuter}" y="${Math.max(y1, 196)}" width="${section.cementOuter * 2}" height="${y2 - Math.max(y1, 196)}" fill="${section.color}" opacity="0.10" />
+            <rect x="${centerX - casingHalf}" y="${y1}" width="${casingHalf * 2}" height="${y2 - y1}" fill="none" stroke="${section.color}" stroke-width="8" />
+            <line x1="${centerX - casingHalf + 10}" y1="${y1}" x2="${centerX - casingHalf + 10}" y2="${y2}" stroke="${section.color}" stroke-width="3" opacity="0.75" />
+            <line x1="${centerX + casingHalf - 10}" y1="${y1}" x2="${centerX + casingHalf - 10}" y2="${y2}" stroke="${section.color}" stroke-width="3" opacity="0.75" />
+            <path d="M ${centerX - casingHalf} ${shoeY} L ${centerX - casingHalf - 18} ${shoeY + 18} L ${centerX - casingHalf} ${shoeY + 18} Z" fill="${section.color}" opacity="0.95" />
+            <path d="M ${centerX + casingHalf} ${shoeY} L ${centerX + casingHalf + 18} ${shoeY + 18} L ${centerX + casingHalf} ${shoeY + 18} Z" fill="${section.color}" opacity="0.95" />
+            <line x1="${centerX + section.cementOuter + 10}" y1="${section.labelY}" x2="520" y2="${section.labelY}" stroke="${section.color}" stroke-width="2" />
+            <text x="530" y="${section.labelY - 4}" font-size="16" fill="#ecf5ff" font-family="Manrope" font-weight="700">${section.label}</text>
+          </g>`;
+      }).join('');
+
+      const prodHalf = scaleHalfWidth(168.3);
+      const topSection = `
+        <rect x="${centerX - prodHalf + 16}" y="${scaleDepth(0)}" width="${(prodHalf - 16) * 2}" height="${scaleDepth(570) - scaleDepth(0)}" fill="rgba(141,180,255,.24)" />
+      `;
+      const lowerSection = `
+        <rect x="${centerX - prodHalf + 22}" y="${scaleDepth(570)}" width="${(prodHalf - 22) * 2}" height="${scaleDepth(3000) - scaleDepth(570)}" fill="rgba(93,141,255,.16)" />
+      `;
+
+      const stageLines = [
+        { depth: 1100, title: 'МСЦ-244,5', color: '#67dbc2', endX: 662 },
+        { depth: 1850, title: 'МСЦ-168', color: '#8db4ff', endX: 646 }
+      ].map((stage) => {
+        const y = scaleDepth(stage.depth);
+        return `
+          <g>
+            <line x1="432" y1="${y}" x2="${stage.endX}" y2="${y}" stroke="${stage.color}" stroke-width="2" stroke-dasharray="6 6" />
+            <rect x="${stage.endX}" y="${y - 16}" width="120" height="28" rx="14" fill="rgba(7,16,24,.82)" stroke="${stage.color}" />
+            <text x="${stage.endX + 12}" y="${y + 3}" font-size="13" fill="#edf5ff" font-family="Manrope" font-weight="700">${stage.title} · ${stage.depth} м</text>
+          </g>`;
+      }).join('');
+
+      return `
+        <svg viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Схема конструкции скважины">
+          <rect x="0" y="0" width="${width}" height="${height}" rx="18" fill="rgba(255,255,255,.015)" />
+          ${tower}
+          ${borehole}
+          <line x1="${centerX}" y1="196" x2="${centerX}" y2="1010" stroke="rgba(255,255,255,0.18)" stroke-dasharray="8 8" />
+          ${depthMarks}
+          ${strings}
+          ${topSection}
+          ${lowerSection}
+          ${stageLines}
+          <text x="84" y="182" font-size="14" fill="#a8bdd2" font-family="Manrope" text-anchor="end">Глубина, м</text>
+          <text x="530" y="330" font-size="14" fill="#cfdff1" font-family="Manrope">Верхняя секция 168,3 x 10,6 Е · 570 м</text>
+          <text x="530" y="372" font-size="14" fill="#cfdff1" font-family="Manrope">Нижняя секция 168,3 x 8,9 Е · 2430 м</text>
+        </svg>`;
+    }
+
+    document.getElementById('constructionSchematic').innerHTML = createConstructionSchematic();
+    document.getElementById('constructionLegend').innerHTML = legendItems.map((item) => `
+      <article class="legend-card">
+        <div class="legend-head"><span class="legend-swatch" style="background:${item.color};color:${item.color}"></span><strong>${item.title}</strong></div>
+        <p>${item.text}</p>
+        <span class="legend-meta">${item.meta}</span>
+      </article>
+    `).join('');
+
+    document.getElementById('constructionCards').innerHTML = constructionCards.map((card) => `
+      <article class="metric-card">
+        <h3>${card.title}</h3>
+        <p>${card.text}</p>
+        <div class="chips">${card.chips.map((chip) => `<span class="chip">${chip}</span>`).join('')}</div>
+      </article>
+    `).join('');
+
+    document.getElementById('constructionTableBody').innerHTML = constructionRows.map((row) => `<tr>${row.map((cell) => `<td>${cell}</td>`).join('')}</tr>`).join('');
+
+    document.getElementById('bopCards').innerHTML = bopCards.map((card) => `
+      <article class="bop-card">
+        <span class="tag">${card.tag}</span>
+        <h3>${card.title}</h3>
+        <div class="fact-list">
+          ${card.equipment.map((item) => `<div class="fact-item"><strong>Компоновка</strong><span>${item}</span></div>`).join('')}
+        </div>
+        <p><strong>${card.pressure}</strong> принято как допустимое рабочее давление.</p>
+      </article>
+    `).join('');
+  </script>
+  <script src="assets/js/global-auth-widget.js"></script>
+</body>
+</html>

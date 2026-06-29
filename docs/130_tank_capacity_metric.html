@@ -1,0 +1,883 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>130 · Объемы емкостей</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap");
+
+    :root {
+      --bg-0: #07111a;
+      --bg-1: #102437;
+      --bg-2: #1b3850;
+      --panel: rgba(10, 18, 31, 0.84);
+      --line: rgba(226, 237, 255, 0.1);
+      --text: #edf5ff;
+      --muted: #9bb2c8;
+      --cyan: #20d9b4;
+      --amber: #ffbf66;
+      --blue: #8db4ff;
+      --shadow: 0 24px 58px rgba(0, 0, 0, 0.42);
+      --liquid-1: #37e0c1;
+      --liquid-2: #0e8d74;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      font-family: "Manrope", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(820px 420px at 0% -10%, rgba(32,217,180,.18), transparent),
+        radial-gradient(720px 360px at 100% 0%, rgba(141,180,255,.16), transparent),
+        linear-gradient(145deg, var(--bg-0), var(--bg-1) 48%, var(--bg-2));
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(to right, rgba(255,255,255,.022) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,.022) 1px, transparent 1px);
+      background-size: 40px 40px;
+      mask-image: radial-gradient(circle at 50% 12%, rgba(0,0,0,.94), transparent 72%);
+    }
+
+    .wrap {
+      position: relative;
+      z-index: 1;
+      width: min(1380px, 94vw);
+      margin: 0 auto;
+      padding: 24px 0 48px;
+    }
+
+    .topbar,
+    .hero,
+    .panel {
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+    }
+
+    .topbar {
+      position: sticky;
+      top: 12px;
+      z-index: 20;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 12px 16px;
+      border-radius: 16px;
+      background: rgba(7, 13, 23, 0.66);
+      backdrop-filter: blur(10px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: "Oswald", sans-serif;
+      font-size: 20px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 35% 35%, #d8fff7, var(--cyan));
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn,
+    .btn-ghost {
+      text-decoration: none;
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+
+    .btn {
+      color: #07261f;
+      background: linear-gradient(135deg, #9efcef, var(--cyan));
+      border: 1px solid rgba(32, 217, 180, 0.82);
+    }
+
+    .btn-ghost {
+      color: var(--muted);
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.03);
+    }
+
+    .hero {
+      margin-top: 18px;
+      border-radius: 30px;
+      padding: clamp(24px, 3vw, 36px);
+      background:
+        radial-gradient(460px 220px at 4% 0%, rgba(32,217,180,.14), transparent),
+        radial-gradient(540px 240px at 100% 0%, rgba(141,180,255,.14), transparent),
+        linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015)),
+        var(--panel);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      padding: 6px 10px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .09em;
+      color: #d5e7f8;
+    }
+
+    h1 {
+      margin: 14px 0 10px;
+      font-family: "Oswald", sans-serif;
+      font-size: clamp(40px, 5vw, 62px);
+      line-height: .97;
+    }
+
+    h1 span { color: var(--amber); }
+
+    .lead {
+      margin: 0;
+      max-width: 980px;
+      color: #cad9eb;
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    .hero-stats,
+    .panel-grid,
+    .tank-layout,
+    .summary-grid,
+    .table-stats {
+      display: grid;
+      gap: 12px;
+    }
+
+    .hero-stats { margin-top: 20px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .panel-grid { margin-top: 18px; gap: 16px; }
+    .tank-layout { grid-template-columns: 1.04fr .96fr; align-items: start; }
+    .summary-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .table-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+    .stat,
+    .summary-card,
+    .formula-card,
+    .table-card,
+    .visual-card,
+    .note-card {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255,255,255,.03);
+      padding: 16px;
+    }
+
+    .stat strong {
+      display: block;
+      font-family: "Oswald", sans-serif;
+      font-size: 28px;
+      line-height: 1;
+      color: #eef7ff;
+    }
+
+    .stat span {
+      display: block;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .panel {
+      border-radius: 24px;
+      padding: 20px;
+      background: rgba(9, 16, 27, 0.8);
+      backdrop-filter: blur(8px);
+    }
+
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .panel-head h2 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .panel-head p {
+      margin: 6px 0 0;
+      color: #c9d8ea;
+      font-size: 13px;
+      line-height: 1.6;
+      max-width: 760px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      padding: 6px 10px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .09em;
+      color: #d5e7f8;
+    }
+
+    .calc-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .calc-table th,
+    .calc-table td {
+      padding: 13px 14px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: middle;
+    }
+
+    .calc-table tr:last-child th,
+    .calc-table tr:last-child td { border-bottom: 0; }
+
+    .calc-table th {
+      width: 42%;
+      text-align: left;
+      font-size: 13px;
+      font-weight: 700;
+      color: #edf5ff;
+    }
+
+    .calc-table td.meta {
+      width: 18%;
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+
+    .calc-table input {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(5, 13, 22, 0.9);
+      color: var(--text);
+      font: inherit;
+    }
+
+    .calc-table input:focus {
+      outline: none;
+      border-color: var(--amber);
+    }
+
+    .summary-card strong,
+    .formula-card strong,
+    .table-card strong,
+    .visual-card strong,
+    .note-card strong {
+      display: block;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--muted);
+    }
+
+    .value {
+      margin-top: 8px;
+      font-family: "Oswald", sans-serif;
+      font-size: clamp(28px, 3.1vw, 38px);
+      line-height: 1;
+      color: var(--amber);
+    }
+
+    .subvalue {
+      margin-top: 8px;
+      font-size: 12px;
+      color: #cad9eb;
+      line-height: 1.6;
+    }
+
+    .formula {
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: #091423;
+      color: #dff7ff;
+      font-size: 13px;
+      line-height: 1.65;
+      overflow-wrap: anywhere;
+    }
+
+    .table-stats {
+      margin-top: 14px;
+    }
+
+    .mini {
+      padding: 12px;
+      border-radius: 14px;
+      background: rgba(255,255,255,.025);
+      border: 1px solid rgba(255,255,255,.06);
+    }
+
+    .mini .mini-label {
+      display: block;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--muted);
+    }
+
+    .mini .mini-value {
+      margin-top: 8px;
+      font-size: 24px;
+      font-family: "Oswald", sans-serif;
+      color: #eef7ff;
+      line-height: 1;
+    }
+
+    .visual-card svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .visual-meta {
+      margin-top: 12px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .chip {
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.03);
+      font-size: 11px;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: #d6e4f3;
+    }
+
+    .note-card p,
+    .visual-card p {
+      margin: 8px 0 0;
+      color: #cad9eb;
+      font-size: 12px;
+      line-height: 1.65;
+    }
+
+    .overall {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .warn {
+      color: #ffd6a1;
+    }
+
+    @media (max-width: 1180px) {
+      .hero-stats,
+      .tank-layout,
+      .summary-grid,
+      .overall,
+      .table-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 820px) {
+      .topbar { position: static; }
+      .hero-stats,
+      .tank-layout,
+      .summary-grid,
+      .overall,
+      .table-stats { grid-template-columns: 1fr; }
+      .calc-table th,
+      .calc-table td { padding: 11px 12px; }
+      .calc-table th { width: 40%; }
+    }
+  </style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+  <main class="wrap">
+    <header class="topbar">
+      <div class="brand"><span class="dot" aria-hidden="true"></span><span>Nexus Oilfield AI · Tank Volumes</span></div>
+      <div class="actions">
+        <a class="btn-ghost" href="120_drilling_calculations_menu.html">Назад к меню</a>
+        <a class="btn" href="36_hydraulics_calculator_interactive.html#vol">Открыть live volumes</a>
+      </div>
+    </header>
+
+    <section class="hero">
+      <span class="eyebrow">Metric Only · Tanks And Pits</span>
+      <h1>Объемы <span>емкостей</span></h1>
+      <p class="lead">Отдельный метрический экран для расчета вместимости и текущего объема емкостей. Поддержаны три формы: прямоугольная, цилиндрическая вертикальная и цилиндрическая горизонтальная. Все формулы и схемы выполнены в метрах и кубических метрах.</p>
+
+      <div class="hero-stats">
+        <div class="stat"><strong id="heroRect">54.00</strong><span>прямоугольная емкость, м3</span></div>
+        <div class="stat"><strong id="heroVert">21.60</strong><span>вертикальная емкость, м3</span></div>
+        <div class="stat"><strong id="heroHoriz">21.21</strong><span>горизонтальная емкость, м3</span></div>
+        <div class="stat"><strong id="heroCurrent">64.02</strong><span>текущий объем по трем схемам, м3</span></div>
+      </div>
+    </section>
+
+    <div class="panel-grid">
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <h2>1. Прямоугольная емкость</h2>
+            <p>Классическая циркуляционная емкость или pit с плоским дном и вертикальными стенками. Вместимость считается как произведение длины, ширины и полной высоты. Текущий объем считается по фактическому уровню заполнения.</p>
+          </div>
+          <span class="pill">Rectangular Pit</span>
+        </div>
+
+        <div class="tank-layout">
+          <div class="table-card">
+            <strong>Исходные размеры</strong>
+            <table class="calc-table">
+              <tbody>
+                <tr><th>Длина L</th><td><input id="rectLength" type="number" value="9" step="0.1" /></td><td class="meta">м</td></tr>
+                <tr><th>Ширина W</th><td><input id="rectWidth" type="number" value="4" step="0.1" /></td><td class="meta">м</td></tr>
+                <tr><th>Полная высота H</th><td><input id="rectHeight" type="number" value="1.5" step="0.1" /></td><td class="meta">м</td></tr>
+                <tr><th>Текущий уровень M</th><td><input id="rectLevel" type="number" value="1.15" step="0.01" /></td><td class="meta">м</td></tr>
+              </tbody>
+            </table>
+
+            <div class="table-stats">
+              <div class="mini"><span class="mini-label">Вместимость</span><div class="mini-value" id="rectCapacity">54.00 м3</div></div>
+              <div class="mini"><span class="mini-label">Текущий объем</span><div class="mini-value" id="rectCurrent">41.40 м3</div></div>
+              <div class="mini"><span class="mini-label">Свободный объем</span><div class="mini-value" id="rectFree">12.60 м3</div></div>
+              <div class="mini"><span class="mini-label">Заполнение</span><div class="mini-value" id="rectFillPct">76.7 %</div></div>
+            </div>
+
+            <div class="formula-card">
+              <strong>Формулы</strong>
+              <div class="formula">
+                $V = L \times W \times H$<br />
+                $V_{тек} = L \times W \times M$
+              </div>
+            </div>
+          </div>
+
+          <div class="visual-card">
+            <strong>Схема емкости</strong>
+            <svg viewBox="0 0 520 320" aria-label="Прямоугольная емкость">
+              <defs>
+                <linearGradient id="rectLiquidGradient" x1="0" x2="0" y1="0" y2="1">
+                  <stop offset="0%" stop-color="var(--liquid-1)" stop-opacity="0.95"></stop>
+                  <stop offset="100%" stop-color="var(--liquid-2)" stop-opacity="0.92"></stop>
+                </linearGradient>
+              </defs>
+              <polygon points="140,90 340,90 420,45 220,45" fill="rgba(255,255,255,0.02)" stroke="rgba(220,237,255,0.65)" stroke-width="2"></polygon>
+              <polygon id="rectTankFront" points="140,90 340,90 340,250 140,250" fill="rgba(255,255,255,0.02)" stroke="rgba(220,237,255,0.65)" stroke-width="2"></polygon>
+              <polygon points="340,90 420,45 420,205 340,250" fill="rgba(255,255,255,0.035)" stroke="rgba(220,237,255,0.65)" stroke-width="2"></polygon>
+              <polygon id="rectLiquidFront" points="140,250 340,250 340,130 140,130" fill="url(#rectLiquidGradient)" opacity="0.92"></polygon>
+              <polygon id="rectLiquidSide" points="340,130 420,85 420,205 340,250" fill="url(#rectLiquidGradient)" opacity="0.65"></polygon>
+              <line x1="104" y1="90" x2="104" y2="250" stroke="#f3f8ff" stroke-width="2"></line>
+              <line x1="94" y1="90" x2="114" y2="90" stroke="#f3f8ff" stroke-width="2"></line>
+              <line x1="94" y1="250" x2="114" y2="250" stroke="#f3f8ff" stroke-width="2"></line>
+              <text id="rectHeightLabel" x="74" y="174" fill="#f3f8ff" font-size="16" font-weight="700">H</text>
+              <line x1="140" y1="278" x2="340" y2="278" stroke="#f3f8ff" stroke-width="2"></line>
+              <line x1="140" y1="270" x2="140" y2="286" stroke="#f3f8ff" stroke-width="2"></line>
+              <line x1="340" y1="270" x2="340" y2="286" stroke="#f3f8ff" stroke-width="2"></line>
+              <text id="rectWidthLabel" x="232" y="304" fill="#f3f8ff" font-size="16" font-weight="700">W</text>
+              <line x1="362" y1="270" x2="442" y2="225" stroke="#f3f8ff" stroke-width="2"></line>
+              <line x1="356" y1="264" x2="368" y2="276" stroke="#f3f8ff" stroke-width="2"></line>
+              <line x1="436" y1="219" x2="448" y2="231" stroke="#f3f8ff" stroke-width="2"></line>
+              <text id="rectLengthLabel" x="410" y="266" fill="#f3f8ff" font-size="16" font-weight="700">L</text>
+              <line x1="122" y1="130" x2="122" y2="250" stroke="#ffbf66" stroke-width="2" stroke-dasharray="4 4"></line>
+              <text id="rectLevelLabel" x="90" y="194" fill="#ffbf66" font-size="16" font-weight="700">M</text>
+            </svg>
+            <p id="rectNote">Текущий уровень ниже полной высоты, емкость работает в нормальном диапазоне заполнения.</p>
+            <div class="visual-meta">
+              <span class="chip" id="rectChip1">L = 9.00 м</span>
+              <span class="chip" id="rectChip2">W = 4.00 м</span>
+              <span class="chip" id="rectChip3">H = 1.50 м</span>
+              <span class="chip" id="rectChip4">M = 1.15 м</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <h2>2. Цилиндрическая вертикальная емкость</h2>
+            <p>Используется для химии, воды, раствора или барита. Вместимость определяется по диаметру и полной высоте цилиндра. Текущий объем зависит от фактического уровня материала.</p>
+          </div>
+          <span class="pill">Vertical Tank</span>
+        </div>
+
+        <div class="tank-layout">
+          <div class="table-card">
+            <strong>Исходные размеры</strong>
+            <table class="calc-table">
+              <tbody>
+                <tr><th>Диаметр D</th><td><input id="vertDiameter" type="number" value="3.2" step="0.1" /></td><td class="meta">м</td></tr>
+                <tr><th>Полная высота H</th><td><input id="vertHeight" type="number" value="2.7" step="0.1" /></td><td class="meta">м</td></tr>
+                <tr><th>Текущий уровень M</th><td><input id="vertLevel" type="number" value="1.85" step="0.01" /></td><td class="meta">м</td></tr>
+              </tbody>
+            </table>
+
+            <div class="table-stats">
+              <div class="mini"><span class="mini-label">Вместимость</span><div class="mini-value" id="vertCapacity">21.71 м3</div></div>
+              <div class="mini"><span class="mini-label">Текущий объем</span><div class="mini-value" id="vertCurrent">14.87 м3</div></div>
+              <div class="mini"><span class="mini-label">Свободный объем</span><div class="mini-value" id="vertFree">6.84 м3</div></div>
+              <div class="mini"><span class="mini-label">Заполнение</span><div class="mini-value" id="vertFillPct">68.5 %</div></div>
+            </div>
+
+            <div class="formula-card">
+              <strong>Формулы</strong>
+              <div class="formula">
+                $V = \frac{\pi D^2}{4} \times H$<br />
+                $V_{тек} = \frac{\pi D^2}{4} \times M$
+              </div>
+            </div>
+          </div>
+
+          <div class="visual-card">
+            <strong>Схема емкости</strong>
+            <svg viewBox="0 0 520 320" aria-label="Вертикальная цилиндрическая емкость">
+              <defs>
+                <linearGradient id="vertLiquidGradient" x1="0" x2="0" y1="0" y2="1">
+                  <stop offset="0%" stop-color="var(--liquid-1)" stop-opacity="0.95"></stop>
+                  <stop offset="100%" stop-color="var(--liquid-2)" stop-opacity="0.92"></stop>
+                </linearGradient>
+                <clipPath id="vertTankClip">
+                  <rect x="170" y="65" width="180" height="190" rx="4" ry="4"></rect>
+                </clipPath>
+              </defs>
+              <ellipse cx="260" cy="65" rx="90" ry="26" fill="rgba(255,255,255,0.03)" stroke="rgba(220,237,255,0.65)" stroke-width="2"></ellipse>
+              <path d="M170 65 L170 255" fill="none" stroke="rgba(220,237,255,0.65)" stroke-width="2"></path>
+              <path d="M350 65 L350 255" fill="none" stroke="rgba(220,237,255,0.65)" stroke-width="2"></path>
+              <ellipse cx="260" cy="255" rx="90" ry="26" fill="rgba(255,255,255,0.035)" stroke="rgba(220,237,255,0.65)" stroke-width="2"></ellipse>
+              <g clip-path="url(#vertTankClip)">
+                <rect id="vertLiquidBody" x="170" y="125" width="180" height="130" fill="url(#vertLiquidGradient)" opacity="0.92"></rect>
+              </g>
+              <ellipse id="vertLiquidTop" cx="260" cy="125" rx="90" ry="26" fill="url(#vertLiquidGradient)" opacity="0.88"></ellipse>
+              <line x1="386" y1="65" x2="386" y2="255" stroke="#f3f8ff" stroke-width="2"></line>
+              <line x1="376" y1="65" x2="396" y2="65" stroke="#f3f8ff" stroke-width="2"></line>
+              <line x1="376" y1="255" x2="396" y2="255" stroke="#f3f8ff" stroke-width="2"></line>
+              <text id="vertHeightLabel" x="402" y="165" fill="#f3f8ff" font-size="16" font-weight="700">H</text>
+              <line x1="190" y1="20" x2="330" y2="20" stroke="#f3f8ff" stroke-width="2"></line>
+              <line x1="190" y1="12" x2="190" y2="28" stroke="#f3f8ff" stroke-width="2"></line>
+              <line x1="330" y1="12" x2="330" y2="28" stroke="#f3f8ff" stroke-width="2"></line>
+              <text id="vertDiameterLabel" x="253" y="14" fill="#f3f8ff" font-size="16" font-weight="700">D</text>
+              <line x1="146" y1="125" x2="146" y2="255" stroke="#ffbf66" stroke-width="2" stroke-dasharray="4 4"></line>
+              <text id="vertLevelLabel" x="118" y="195" fill="#ffbf66" font-size="16" font-weight="700">M</text>
+            </svg>
+            <p id="vertNote">Вертикальная емкость заполнена в рабочем диапазоне, запас над уровнем сохранен.</p>
+            <div class="visual-meta">
+              <span class="chip" id="vertChip1">D = 3.20 м</span>
+              <span class="chip" id="vertChip2">H = 2.70 м</span>
+              <span class="chip" id="vertChip3">M = 1.85 м</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <h2>3. Цилиндрическая горизонтальная емкость</h2>
+            <p>Для горизонтального резервуара текущий объем зависит от площади сегмента окружности, поэтому изменение объема по уровню нелинейно. На странице используется корректная метрическая формула для частично заполненного цилиндра.</p>
+          </div>
+          <span class="pill">Horizontal Tank</span>
+        </div>
+
+        <div class="tank-layout">
+          <div class="table-card">
+            <strong>Исходные размеры</strong>
+            <table class="calc-table">
+              <tbody>
+                <tr><th>Диаметр D</th><td><input id="horizDiameter" type="number" value="2.6" step="0.1" /></td><td class="meta">м</td></tr>
+                <tr><th>Длина L</th><td><input id="horizLength" type="number" value="4.0" step="0.1" /></td><td class="meta">м</td></tr>
+                <tr><th>Текущий уровень M</th><td><input id="horizLevel" type="number" value="1.55" step="0.01" /></td><td class="meta">м</td></tr>
+              </tbody>
+            </table>
+
+            <div class="table-stats">
+              <div class="mini"><span class="mini-label">Вместимость</span><div class="mini-value" id="horizCapacity">21.24 м3</div></div>
+              <div class="mini"><span class="mini-label">Текущий объем</span><div class="mini-value" id="horizCurrent">13.87 м3</div></div>
+              <div class="mini"><span class="mini-label">Свободный объем</span><div class="mini-value" id="horizFree">7.37 м3</div></div>
+              <div class="mini"><span class="mini-label">Заполнение</span><div class="mini-value" id="horizFillPct">65.3 %</div></div>
+            </div>
+
+            <div class="formula-card">
+              <strong>Формулы</strong>
+              <div class="formula">
+                $V = \frac{\pi D^2}{4} \times L$<br />
+                $A_{сегм} = r^2 \arccos\left(\frac{r-M}{r}\right) - (r-M)\sqrt{2rM - M^2}$<br />
+                $V_{тек} = A_{сегм} \times L$
+              </div>
+            </div>
+          </div>
+
+          <div class="visual-card">
+            <strong>Схема емкости</strong>
+            <svg viewBox="0 0 520 320" aria-label="Горизонтальная цилиндрическая емкость">
+              <defs>
+                <linearGradient id="horizLiquidGradient" x1="0" x2="0" y1="0" y2="1">
+                  <stop offset="0%" stop-color="var(--liquid-1)" stop-opacity="0.95"></stop>
+                  <stop offset="100%" stop-color="var(--liquid-2)" stop-opacity="0.92"></stop>
+                </linearGradient>
+                <clipPath id="horizTankClip">
+                  <rect x="110" y="90" width="250" height="140" rx="70" ry="70"></rect>
+                </clipPath>
+              </defs>
+              <rect x="110" y="90" width="250" height="140" rx="70" ry="70" fill="rgba(255,255,255,0.03)" stroke="rgba(220,237,255,0.65)" stroke-width="2"></rect>
+              <g clip-path="url(#horizTankClip)">
+                <rect id="horizLiquidRect" x="110" y="140" width="250" height="90" fill="url(#horizLiquidGradient)" opacity="0.92"></rect>
+                <ellipse id="horizLiquidEnd" cx="360" cy="185" rx="70" ry="70" fill="url(#horizLiquidGradient)" opacity="0.42"></ellipse>
+              </g>
+              <ellipse cx="360" cy="160" rx="70" ry="70" fill="none" stroke="rgba(220,237,255,0.65)" stroke-width="2"></ellipse>
+              <ellipse id="horizLiquidSurface" cx="360" cy="185" rx="70" ry="22" fill="rgba(255,255,255,0.12)" opacity="0.5"></ellipse>
+              <line x1="110" y1="60" x2="360" y2="60" stroke="#f3f8ff" stroke-width="2"></line>
+              <line x1="110" y1="52" x2="110" y2="68" stroke="#f3f8ff" stroke-width="2"></line>
+              <line x1="360" y1="52" x2="360" y2="68" stroke="#f3f8ff" stroke-width="2"></line>
+              <text id="horizLengthLabel" x="225" y="54" fill="#f3f8ff" font-size="16" font-weight="700">L</text>
+              <line x1="438" y1="90" x2="438" y2="230" stroke="#f3f8ff" stroke-width="2"></line>
+              <line x1="428" y1="90" x2="448" y2="90" stroke="#f3f8ff" stroke-width="2"></line>
+              <line x1="428" y1="230" x2="448" y2="230" stroke="#f3f8ff" stroke-width="2"></line>
+              <text id="horizDiameterLabel" x="454" y="165" fill="#f3f8ff" font-size="16" font-weight="700">D</text>
+              <line id="horizLevelLine" x1="382" y1="147" x2="382" y2="230" stroke="#ffbf66" stroke-width="2" stroke-dasharray="4 4"></line>
+              <text id="horizLevelLabel" x="392" y="194" fill="#ffbf66" font-size="16" font-weight="700">M</text>
+            </svg>
+            <p id="horizNote">Горизонтальная емкость считает текущий объем по сегменту окружности, а не по линейной доле от высоты.</p>
+            <div class="visual-meta">
+              <span class="chip" id="horizChip1">D = 2.60 м</span>
+              <span class="chip" id="horizChip2">L = 4.00 м</span>
+              <span class="chip" id="horizChip3">M = 1.55 м</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <h2>Сводка по трем схемам</h2>
+            <p>Быстрое сравнение вместимости, текущего объема и остатка до полного заполнения для трех разных типов емкостей.</p>
+          </div>
+        </div>
+
+        <div class="overall">
+          <div class="note-card"><strong>Суммарная вместимость</strong><div class="value" id="overallCapacity">96.95 м3</div><p>Если три емкости рассматривать как общий парк резервуаров.</p></div>
+          <div class="note-card"><strong>Суммарный текущий объем</strong><div class="value" id="overallCurrent">70.14 м3</div><p>Фактический объем при заданных уровнях в каждой схеме.</p></div>
+          <div class="note-card"><strong>Свободный запас</strong><div class="value" id="overallFree">26.81 м3</div><p id="overallNote">Запас по емкостям остается достаточным для приема раствора.</p></div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    function number(id) {
+      return Number(document.getElementById(id).value) || 0;
+    }
+
+    function clamp(value, min, max) {
+      return Math.min(Math.max(value, min), max);
+    }
+
+    function fmt(value, digits) {
+      if (!Number.isFinite(value)) return '—';
+      return Number(value).toFixed(digits);
+    }
+
+    function setText(id, text) {
+      document.getElementById(id).textContent = text;
+    }
+
+    function rectangularModel() {
+      const length = Math.max(number('rectLength'), 0);
+      const width = Math.max(number('rectWidth'), 0);
+      const height = Math.max(number('rectHeight'), 0);
+      const level = clamp(number('rectLevel'), 0, height);
+      const capacity = length * width * height;
+      const current = length * width * level;
+      const free = capacity - current;
+      const fillPct = height > 0 ? level / height * 100 : 0;
+      return { length, width, height, level, capacity, current, free, fillPct };
+    }
+
+    function verticalModel() {
+      const diameter = Math.max(number('vertDiameter'), 0);
+      const height = Math.max(number('vertHeight'), 0);
+      const level = clamp(number('vertLevel'), 0, height);
+      const area = Math.PI * diameter * diameter / 4;
+      const capacity = area * height;
+      const current = area * level;
+      const free = capacity - current;
+      const fillPct = height > 0 ? level / height * 100 : 0;
+      return { diameter, height, level, capacity, current, free, fillPct };
+    }
+
+    function horizontalSegmentArea(radius, level) {
+      if (level <= 0) return 0;
+      if (level >= radius * 2) return Math.PI * radius * radius;
+      return radius * radius * Math.acos((radius - level) / radius) -
+        (radius - level) * Math.sqrt(Math.max(2 * radius * level - level * level, 0));
+    }
+
+    function horizontalModel() {
+      const diameter = Math.max(number('horizDiameter'), 0);
+      const length = Math.max(number('horizLength'), 0);
+      const level = clamp(number('horizLevel'), 0, diameter);
+      const radius = diameter / 2;
+      const capacity = Math.PI * radius * radius * length;
+      const current = horizontalSegmentArea(radius, level) * length;
+      const free = capacity - current;
+      const fillPct = capacity > 0 ? current / capacity * 100 : 0;
+      return { diameter, length, level, radius, capacity, current, free, fillPct };
+    }
+
+    function renderRectangular() {
+      const model = rectangularModel();
+      setText('rectCapacity', `${fmt(model.capacity, 2)} м3`);
+      setText('rectCurrent', `${fmt(model.current, 2)} м3`);
+      setText('rectFree', `${fmt(model.free, 2)} м3`);
+      setText('rectFillPct', `${fmt(model.fillPct, 1)} %`);
+      setText('rectChip1', `L = ${fmt(model.length, 2)} м`);
+      setText('rectChip2', `W = ${fmt(model.width, 2)} м`);
+      setText('rectChip3', `H = ${fmt(model.height, 2)} м`);
+      setText('rectChip4', `M = ${fmt(model.level, 2)} м`);
+      setText('rectHeightLabel', `H ${fmt(model.height, 2)} м`);
+      setText('rectWidthLabel', `W ${fmt(model.width, 2)} м`);
+      setText('rectLengthLabel', `L ${fmt(model.length, 2)} м`);
+      setText('rectLevelLabel', `M ${fmt(model.level, 2)} м`);
+      const fillPct = model.height > 0 ? model.level / model.height : 0;
+      const topY = 250 - 160 * fillPct;
+      document.getElementById('rectLiquidFront').setAttribute('points', `140,250 340,250 340,${topY} 140,${topY}`);
+      document.getElementById('rectLiquidSide').setAttribute('points', `340,${topY} 420,${topY - 45} 420,205 340,250`);
+      const levelLine = document.getElementById('rectLevelLabel');
+      levelLine.setAttribute('y', String(Math.max(topY + 6, 110)));
+      const note = model.level >= model.height
+        ? 'Емкость заполнена до полного уровня. Дальше принимать объем без перелива нельзя.'
+        : model.fillPct > 85
+          ? 'Уровень близок к верху емкости. Следи за запасом свободного объема.'
+          : 'Текущий уровень ниже полной высоты, емкость работает в нормальном диапазоне заполнения.';
+      setText('rectNote', note);
+      return model;
+    }
+
+    function renderVertical() {
+      const model = verticalModel();
+      setText('vertCapacity', `${fmt(model.capacity, 2)} м3`);
+      setText('vertCurrent', `${fmt(model.current, 2)} м3`);
+      setText('vertFree', `${fmt(model.free, 2)} м3`);
+      setText('vertFillPct', `${fmt(model.fillPct, 1)} %`);
+      setText('vertChip1', `D = ${fmt(model.diameter, 2)} м`);
+      setText('vertChip2', `H = ${fmt(model.height, 2)} м`);
+      setText('vertChip3', `M = ${fmt(model.level, 2)} м`);
+      setText('vertHeightLabel', `H ${fmt(model.height, 2)} м`);
+      setText('vertDiameterLabel', `D ${fmt(model.diameter, 2)} м`);
+      setText('vertLevelLabel', `M ${fmt(model.level, 2)} м`);
+      const fillPct = model.height > 0 ? model.level / model.height : 0;
+      const liquidTop = 255 - 190 * fillPct;
+      document.getElementById('vertLiquidBody').setAttribute('y', String(liquidTop));
+      document.getElementById('vertLiquidBody').setAttribute('height', String(255 - liquidTop));
+      document.getElementById('vertLiquidTop').setAttribute('cy', String(liquidTop));
+      const note = model.level >= model.height
+        ? 'Емкость заполнена до верхней образующей. Для работы нужен операционный freeboard.'
+        : model.fillPct > 85
+          ? 'Заполнение высокое. Оставшийся запас над уровнем уже небольшой.'
+          : 'Вертикальная емкость заполнена в рабочем диапазоне, запас над уровнем сохранен.';
+      setText('vertNote', note);
+      return model;
+    }
+
+    function renderHorizontal() {
+      const model = horizontalModel();
+      setText('horizCapacity', `${fmt(model.capacity, 2)} м3`);
+      setText('horizCurrent', `${fmt(model.current, 2)} м3`);
+      setText('horizFree', `${fmt(model.free, 2)} м3`);
+      setText('horizFillPct', `${fmt(model.fillPct, 1)} %`);
+      setText('horizChip1', `D = ${fmt(model.diameter, 2)} м`);
+      setText('horizChip2', `L = ${fmt(model.length, 2)} м`);
+      setText('horizChip3', `M = ${fmt(model.level, 2)} м`);
+      setText('horizLengthLabel', `L ${fmt(model.length, 2)} м`);
+      setText('horizDiameterLabel', `D ${fmt(model.diameter, 2)} м`);
+      setText('horizLevelLabel', `M ${fmt(model.level, 2)} м`);
+      const fillPctByHeight = model.diameter > 0 ? model.level / model.diameter : 0;
+      const top = 230 - 140 * fillPctByHeight;
+      document.getElementById('horizLiquidRect').setAttribute('y', String(top));
+      document.getElementById('horizLiquidRect').setAttribute('height', String(230 - top));
+      document.getElementById('horizLiquidSurface').setAttribute('cy', String(top));
+      document.getElementById('horizLevelLine').setAttribute('y1', String(top));
+      document.getElementById('horizLevelLine').setAttribute('y2', '230');
+      const note = model.fillPct > fillPctByHeight * 100 + 10
+        ? 'Текущий объем уже заметно выше линейной доли уровня: это нормально для горизонтального цилиндра в верхней половине.'
+        : model.fillPct < fillPctByHeight * 100 - 10
+          ? 'Текущий объем ниже линейной доли уровня: это нормально для горизонтального цилиндра в нижней половине.'
+          : 'Горизонтальная емкость считает текущий объем по сегменту окружности, а не по линейной доле от высоты.';
+      setText('horizNote', note);
+      return model;
+    }
+
+    function renderOverall(rect, vert, horiz) {
+      const totalCapacity = rect.capacity + vert.capacity + horiz.capacity;
+      const totalCurrent = rect.current + vert.current + horiz.current;
+      const totalFree = totalCapacity - totalCurrent;
+
+      setText('heroRect', fmt(rect.capacity, 2));
+      setText('heroVert', fmt(vert.capacity, 2));
+      setText('heroHoriz', fmt(horiz.capacity, 2));
+      setText('heroCurrent', fmt(totalCurrent, 2));
+      setText('overallCapacity', `${fmt(totalCapacity, 2)} м3`);
+      setText('overallCurrent', `${fmt(totalCurrent, 2)} м3`);
+      setText('overallFree', `${fmt(totalFree, 2)} м3`);
+
+      const fillPct = totalCapacity > 0 ? totalCurrent / totalCapacity * 100 : 0;
+      const note = fillPct > 85
+        ? 'Общий парк резервуаров близок к заполнению. Операционный запас маленький.'
+        : fillPct > 65
+          ? 'Заполнение парка емкостей умеренно высокое, но свободный объем еще есть.'
+          : 'Запас по емкостям остается достаточным для приема раствора.';
+      setText('overallNote', note);
+    }
+
+    function renderAll() {
+      const rect = renderRectangular();
+      const vert = renderVertical();
+      const horiz = renderHorizontal();
+      renderOverall(rect, vert, horiz);
+    }
+
+    document.querySelectorAll('input').forEach((input) => {
+      input.addEventListener('input', renderAll);
+    });
+
+    renderAll();
+  </script>
+  <script src="assets/js/global-auth-widget.js"></script>
+</body>
+</html>

@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Восточно-Тагульский · Общая информация — DRILL-Q</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Arial, sans-serif; background: #F5F5F7; color: #1D1D1F; font-size: 15px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+:root { --white:#FFFFFF; --bg:#F5F5F7; --text:#1D1D1F; --text2:#6E6E73; --text3:#AEAEB2; --blue:#2563EB; --blue-l:#EFF6FF; --border:rgba(0,0,0,0.08); --sh-sm:0 1px 4px rgba(0,0,0,0.06); --sh:0 4px 20px rgba(0,0,0,0.08); --r:16px; --r-sm:10px; }
+nav { position:sticky; top:0; z-index:100; background:rgba(255,255,255,0.85); backdrop-filter:saturate(180%) blur(20px); border-bottom:1px solid var(--border); height:56px; display:flex; align-items:center; padding:0 40px; justify-content:space-between; }
+.nav-logo { display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--text); }
+.nav-mark { width:28px; height:28px; border-radius:7px; background:var(--blue); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:#fff; }
+.nav-name { font-size:15px; font-weight:700; letter-spacing:-.4px; }
+.btn-ghost { padding:7px 16px; border-radius:var(--r-sm); border:1px solid var(--border); background:transparent; color:var(--text); font-size:13px; font-weight:500; text-decoration:none; } .btn-ghost:hover { background:var(--bg); }
+.btn-nav { padding:7px 16px; border-radius:var(--r-sm); background:var(--blue); color:#fff; font-size:13px; font-weight:600; text-decoration:none; } .btn-nav:hover { background:#1D4ED8; }
+.nav-right { display:flex; gap:10px; }
+.wrap { width:min(1120px, 92vw); margin:0 auto; padding:48px 0 80px; }
+.breadcrumb { display:flex; align-items:center; gap:6px; font-size:13px; color:var(--text3); margin-bottom:28px; flex-wrap:wrap; }
+.breadcrumb a { color:var(--text3); text-decoration:none; } .breadcrumb a:hover { color:var(--blue); }
+
+/* Hero */
+.hero { background:var(--white); border:1.5px solid var(--border); border-radius:var(--r); padding:40px; margin-bottom:24px; box-shadow:var(--sh-sm); }
+.hero-eyebrow { display:inline-flex; align-items:center; gap:8px; background:var(--blue-l); color:var(--blue); border-radius:99px; padding:4px 14px; font-size:12px; font-weight:600; margin-bottom:16px; }
+.hero h1 { font-size:clamp(26px, 4vw, 42px); font-weight:700; letter-spacing:-.8px; line-height:1.1; margin-bottom:10px; }
+.hero-desc { color:var(--text2); font-size:15px; max-width:720px; line-height:1.65; margin-bottom:28px; }
+.stats-row { display:grid; grid-template-columns:repeat(4, 1fr); gap:14px; margin-bottom:28px; }
+.stat-card { background:var(--bg); border:1px solid var(--border); border-radius:var(--r-sm); padding:16px; }
+.stat-card strong { display:block; font-size:22px; font-weight:700; letter-spacing:-.4px; margin-bottom:4px; }
+.stat-card span { font-size:11px; color:var(--text3); font-weight:500; text-transform:uppercase; letter-spacing:.06em; }
+.hero-split { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.info-box { background:var(--bg); border:1px solid var(--border); border-radius:var(--r-sm); padding:20px; }
+.info-box h2 { font-size:15px; font-weight:700; margin-bottom:14px; }
+.info-list { display:flex; flex-direction:column; gap:10px; }
+.info-row { font-size:13px; color:var(--text2); line-height:1.55; border-top:1px solid var(--border); padding-top:10px; }
+.info-row:first-child { border-top:none; padding-top:0; }
+.accent { color:var(--text); font-weight:600; }
+
+/* Sections */
+.section { background:var(--white); border:1.5px solid var(--border); border-radius:var(--r); padding:32px; box-shadow:var(--sh-sm); margin-bottom:24px; }
+.section h2 { font-size:20px; font-weight:700; letter-spacing:-.3px; margin-bottom:6px; }
+.section-desc { color:var(--text2); font-size:14px; margin-bottom:20px; }
+
+/* Grid cards */
+.grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.grid-3 { display:grid; grid-template-columns:repeat(3, 1fr); gap:16px; }
+.card { background:var(--bg); border:1px solid var(--border); border-radius:var(--r-sm); padding:20px; }
+.card-tag { display:inline-flex; background:var(--blue-l); color:var(--blue); border-radius:99px; padding:3px 10px; font-size:11px; font-weight:600; margin-bottom:10px; }
+.card h3 { font-size:15px; font-weight:700; margin-bottom:8px; }
+.card p { font-size:13px; color:var(--text2); line-height:1.55; }
+.card-list { display:flex; flex-direction:column; gap:8px; margin-top:10px; }
+.card-row { font-size:13px; color:var(--text2); border-top:1px solid var(--border); padding-top:8px; }
+.card-row:first-child { border-top:none; padding-top:0; }
+
+/* Route strips */
+.route-strip { display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin:12px 0; }
+.route-node { padding:5px 12px; border-radius:99px; font-size:12px; font-weight:500; border:1px solid var(--border); background:var(--white); color:var(--text); }
+.route-node.blue { background:var(--blue-l); border-color:#BFDBFE; color:var(--blue); }
+.route-node.green { background:#F0FDF4; border-color:#BBF7D0; color:#16A34A; }
+.route-node.amber { background:#FFFBEB; border-color:#FDE68A; color:#D97706; }
+.route-arrow { color:var(--text3); font-size:13px; }
+.route-dist { font-size:12px; color:var(--text3); }
+
+/* Figure */
+.figure-wrap { margin-top:20px; border-radius:var(--r-sm); overflow:hidden; border:1px solid var(--border); }
+.figure-wrap img { display:block; width:100%; height:auto; }
+.figure-caption { padding:14px 16px; background:var(--bg); border-top:1px solid var(--border); }
+.figure-caption strong { font-size:13px; font-weight:700; display:block; margin-bottom:4px; }
+.figure-caption p { font-size:13px; color:var(--text2); }
+
+/* Thermo */
+.thermo { display:flex; flex-direction:column; gap:12px; margin-top:12px; }
+.thermo-row { display:grid; grid-template-columns:180px 1fr 60px; gap:12px; align-items:center; font-size:13px; color:var(--text2); }
+.thermo-track { height:10px; border-radius:99px; background:var(--bg); border:1px solid var(--border); overflow:hidden; }
+.thermo-fill { height:100%; border-radius:99px; }
+.thermo-fill.avg { width:38%; background:linear-gradient(90deg,#93C5FD,#60A5FA); }
+.thermo-fill.summer { width:64%; background:linear-gradient(90deg,#FCD34D,#F59E0B); }
+.thermo-fill.winter { width:92%; background:linear-gradient(90deg,#A5B4FC,#818CF8); }
+.thermo-val { font-weight:700; color:var(--text); text-align:right; }
+
+/* Table */
+table { width:100%; border-collapse:collapse; margin-top:16px; font-size:13px; }
+th { text-align:left; padding:10px 14px; font-size:11px; font-weight:600; color:var(--text2); text-transform:uppercase; letter-spacing:.06em; background:var(--bg); border-bottom:1px solid var(--border); }
+td { padding:10px 14px; color:var(--text2); border-bottom:1px solid var(--border); vertical-align:top; }
+tr:last-child td { border-bottom:none; }
+td:first-child { color:var(--text); font-weight:500; width:42%; }
+
+@media(max-width:768px){
+  nav{padding:0 20px;}
+  .wrap{padding:32px 0 60px;}
+  .stats-row{grid-template-columns:1fr 1fr;}
+  .hero-split,.grid-2,.grid-3{grid-template-columns:1fr;}
+  .thermo-row{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="../index.html"><div class="nav-mark">DQ</div><span class="nav-name">DRILL-Q</span></a>
+  <div class="nav-right">
+    <a class="btn-ghost" href="108_vostochno_tagul_project_dashboard.html">← Проект</a>
+    <a class="btn-ghost" href="56_fields_projects_dashboard.html">Месторождения</a>
+    <a class="btn-nav" href="../app.html">Приложение →</a>
+  </div>
+</nav>
+
+<div class="wrap">
+  <div class="breadcrumb">
+    <a href="../index.html">DRILL-Q</a> <span>/</span>
+    <a href="56_fields_projects_dashboard.html">Месторождения</a> <span>/</span>
+    <a href="108_vostochno_tagul_project_dashboard.html">Восточно-Тагульский ЛУ</a> <span>/</span>
+    <span style="color:var(--text)">Общая информация</span>
+  </div>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-eyebrow">Doc 109 · Паспорт объекта</div>
+    <h1>Восточно-Тагульский ЛУ</h1>
+    <p class="hero-desc">Исходные данные по поисково-оценочной скважине: административное положение, транспортное плечо, климатические ограничения, мерзлотная обстановка и ключевые параметры для старта проектирования строительства.</p>
+    <div class="stats-row">
+      <div class="stat-card"><strong>3 000 м</strong><span>проектная глубина</span></div>
+      <div class="stat-card"><strong>54 м</strong><span>альтитуда площадки</span></div>
+      <div class="stat-card"><strong>0–500 м</strong><span>мощность ММП</span></div>
+      <div class="stat-card"><strong>95 + 96 сут</strong><span>бурение и испытание</span></div>
+    </div>
+    <div class="hero-split">
+      <div class="info-box">
+        <h2>Коротко по объекту</h2>
+        <div class="info-list">
+          <div class="info-row"><span class="accent">Объект строительства:</span> поисково-оценочная скважина.</div>
+          <div class="info-row"><span class="accent">Местоположение:</span> РФ, Таймырский Долгано-Ненецкий муниципальный район.</div>
+          <div class="info-row"><span class="accent">Лицензионный участок:</span> Восточно-Тагульский ЛУ.</div>
+          <div class="info-row"><span class="accent">Тип размещения:</span> суша.</div>
+        </div>
+      </div>
+      <div class="info-box">
+        <h2>Инженерный фокус</h2>
+        <div class="info-list">
+          <div class="info-row">Круглогодичная авиационная доставка персонала через Красноярск, Игарку и Норильск.</div>
+          <div class="info-row">Круглогодичные автодороги отсутствуют — МТР заводятся через Коротчаево и зимнюю схему доставки.</div>
+          <div class="info-row">Основной привод буровой установки принят электрический, резервный — дизельный.</div>
+          <div class="info-row">Климатическая рамка требует работы с длительным отопительным периодом и минимальной зимней температурой до −52,8 °C.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ПАСПОРТ -->
+  <div class="section">
+    <h2>Паспорт площадки</h2>
+    <p class="section-desc">Ключевые атрибуты объекта строительства</p>
+    <div class="grid-3">
+      <div class="card">
+        <span class="card-tag">01 · статус</span>
+        <h3>Объект строительства</h3>
+        <p>Поисково-оценочная скважина как стартовая точка оценки лицензионного участка.</p>
+      </div>
+      <div class="card">
+        <span class="card-tag">02 · регион</span>
+        <h3>Административная привязка</h3>
+        <p>РФ, Таймырский Долгано-Ненецкий муниципальный район.</p>
+      </div>
+      <div class="card">
+        <span class="card-tag">03 · лицензия</span>
+        <h3>Месторождение / ЛУ</h3>
+        <p>Восточно-Тагульский лицензионный участок.</p>
+      </div>
+      <div class="card">
+        <span class="card-tag">04 · размещение</span>
+        <h3>Тип территории</h3>
+        <p>Сухопутная площадка с северной логистикой и автономным режимом снабжения.</p>
+      </div>
+      <div class="card">
+        <span class="card-tag">05 · горизонт</span>
+        <h3>Проектный горизонт</h3>
+        <p>Вилюйская свита, J₃vm, средняя юра.</p>
+      </div>
+      <div class="card">
+        <span class="card-tag">06 · цикл</span>
+        <h3>Строительство скважины</h3>
+        <p>95 суток на бурение и 96 суток на испытание скважины.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ЛОГИСТИКА -->
+  <div class="section">
+    <h2>Сообщение с объектом ведения работ</h2>
+    <p class="section-desc">Схемы доставки персонала и материально-технических ресурсов</p>
+    <div class="grid-2">
+      <div class="card">
+        <span class="card-tag">Воздушное сообщение</span>
+        <h3>Доставка персонала</h3>
+        <p>Действующий период принят круглогодичным. Персонал заводится через авиационные узлы с последующим плечом до скважины.</p>
+        <div class="route-strip">
+          <span class="route-node blue">Красноярск</span>
+          <span class="route-dist">1 320 км</span>
+          <span class="route-arrow">→</span>
+          <span class="route-node green">Игарка</span>
+          <span class="route-dist">110 км</span>
+          <span class="route-arrow">→</span>
+          <span class="route-node amber">скв. №1 ВТ-1 ЛУ</span>
+        </div>
+        <div class="route-strip">
+          <span class="route-node blue">Норильск</span>
+          <span class="route-dist">233 км</span>
+          <span class="route-arrow">→</span>
+          <span class="route-node amber">скв. №1 ВТ ЛУ</span>
+        </div>
+        <p style="margin-top:10px;">Доставка персонала исполнителя на объект и обратно — своими силами и за свой счёт.</p>
+      </div>
+      <div class="card">
+        <span class="card-tag">Автозимник и МТР</span>
+        <h3>Доставка материалов и оборудования</h3>
+        <p>Круглогодичные автодороги до Тагульского ЛУ отсутствуют. Основная схема строится через Коротчаево и зимнюю транспортную цепочку.</p>
+        <div class="route-strip">
+          <span class="route-node blue">п. Коротчаево</span>
+          <span class="route-dist">419 км</span>
+          <span class="route-arrow">→</span>
+          <span class="route-node amber">скв. №1 ВТ-1 ЛУ</span>
+        </div>
+        <div class="route-strip">
+          <span class="route-node green">Т-1</span>
+          <span class="route-dist">32 км</span>
+          <span class="route-arrow">→</span>
+          <span class="route-node green">Т-2</span>
+          <span class="route-dist">4 км</span>
+          <span class="route-arrow">→</span>
+          <span class="route-node amber">скв. №1</span>
+        </div>
+        <p style="margin-top:10px;">Мобилизация и демобилизация — своими силами. Требуется заблаговременная доставка оборудования и материалов в полном объёме.</p>
+      </div>
+    </div>
+    <div class="figure-wrap">
+      <img src="../STUFF/Images/8.JPG" alt="Схема транспортной доступности до объектов ПРБ Восточно-Тагульского лицензионного участка">
+      <div class="figure-caption">
+        <strong>Рисунок 8. Схема транспортной доступности</strong>
+        <p>Карта показывает логистический контур доставки до объектов ПРБ: плечо от Коротчаево, промысловые дороги T-1 и T-2, а также участок к причалу и скважине в районе устья Лодочного. Используется как базовый transport sheet для планирования завоза МТР и сезонной доступности.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ТЕХНИЧЕСКИЕ ПАРАМЕТРЫ -->
+  <div class="section">
+    <h2>Технические параметры строительства</h2>
+    <p class="section-desc">Требования к буровой установке и компоновке</p>
+    <div class="grid-2">
+      <div class="card">
+        <span class="card-tag">Буровой контур</span>
+        <h3>Основные требования</h3>
+        <div class="card-list">
+          <div class="card-row"><span class="accent">Проектная глубина:</span> 3 000 м по вертикали.</div>
+          <div class="card-row"><span class="accent">Проектная альтитуда:</span> 54 м.</div>
+          <div class="card-row"><span class="accent">Тип буровой установки:</span> не ниже 6 класса по ГОСТ 16293-89.</div>
+          <div class="card-row"><span class="accent">Тип вышки:</span> ББ-53-320-320М или аналог.</div>
+        </div>
+      </div>
+      <div class="card">
+        <span class="card-tag">Энергетика и мехчасть</span>
+        <h3>Компоновка установки</h3>
+        <div class="card-list">
+          <div class="card-row"><span class="accent">Буровые насосы:</span> УНБТ или аналог.</div>
+          <div class="card-row"><span class="accent">Вид привода:</span> основной вариант электрический.</div>
+          <div class="card-row"><span class="accent">Резерв:</span> дизельный привод.</div>
+          <div class="card-row"><span class="accent">Многолетнемерзлые породы:</span> интервал 0–500 м.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- КЛИМАТ -->
+  <div class="section">
+    <h2>Климатическое окно</h2>
+    <p class="section-desc">Температурный режим и эксплуатационные ограничения</p>
+    <div class="grid-2">
+      <div class="card">
+        <span class="card-tag">Температурный режим</span>
+        <h3>Воздушная среда</h3>
+        <div class="thermo">
+          <div class="thermo-row">
+            <div>Среднегодовая</div>
+            <div class="thermo-track"><div class="thermo-fill avg"></div></div>
+            <div class="thermo-val">−8 °C</div>
+          </div>
+          <div class="thermo-row">
+            <div>Наибольшая летняя</div>
+            <div class="thermo-track"><div class="thermo-fill summer"></div></div>
+            <div class="thermo-val">+18 °C</div>
+          </div>
+          <div class="thermo-row">
+            <div>Минимальная зимняя</div>
+            <div class="thermo-track"><div class="thermo-fill winter"></div></div>
+            <div class="thermo-val">−52,8 °C</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <span class="card-tag">Эксплуатационная рамка</span>
+        <h3>Северный режим строительства</h3>
+        <div class="card-list">
+          <div class="card-row"><span class="accent">Отопительный период:</span> 303 суток.</div>
+          <div class="card-row"><span class="accent">Автономия:</span> требуется полный завоз критичных материалов до начала работ.</div>
+          <div class="card-row"><span class="accent">Логистика:</span> опора на авиацию и сезонную зимнюю схему доставки МТР.</div>
+          <div class="card-row"><span class="accent">Проектный акцент:</span> морозостойкость энергокомплекса, запас топлива и буфер по снабжению.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- СВОДНАЯ ТАБЛИЦА -->
+  <div class="section">
+    <h2>Сводка исходных данных</h2>
+    <p class="section-desc">Полная таблица параметров объекта</p>
+    <table>
+      <thead>
+        <tr><th>Параметр</th><th>Значение</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Объект строительства</td><td>Поисково-оценочная скважина</td></tr>
+        <tr><td>Местоположение месторождения</td><td>РФ, Таймырский Долгано-Ненецкий муниципальный район</td></tr>
+        <tr><td>Лицензионный участок</td><td>Восточно-Тагульский ЛУ</td></tr>
+        <tr><td>Расположение</td><td>Суша</td></tr>
+        <tr><td>Проектная альтитуда</td><td>54 м</td></tr>
+        <tr><td>Проектный горизонт</td><td>Вилюйская свита, J₃vm, средняя юра</td></tr>
+        <tr><td>Проектная глубина</td><td>3 000 м по вертикали</td></tr>
+        <tr><td>Тип буровой установки</td><td>БУ не ниже 6 класса по ГОСТ 16293-89</td></tr>
+        <tr><td>Тип вышки</td><td>ББ-53-320-320М или аналог</td></tr>
+        <tr><td>Буровые насосы</td><td>УНБТ или аналог</td></tr>
+        <tr><td>Вид привода</td><td>Основной — электрический, резервный — дизельный</td></tr>
+        <tr><td>Температура воздуха</td><td>Среднегодовая −8 °C, наибольшая летняя +18 °C, минимальная зимняя −52,8 °C</td></tr>
+        <tr><td>Продолжительность отопительного периода</td><td>303 суток</td></tr>
+        <tr><td>Многолетнемерзлые породы</td><td>0–500 м</td></tr>
+        <tr><td>Цикл строительства скважины</td><td>95 суток бурение, 96 суток испытание</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</body>
+</html>

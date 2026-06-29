@@ -1,0 +1,1592 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DRILL-Q · Командный центр бурения · Ванкор 7-002</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #F5F5F7;
+  --surface: #FFFFFF;
+  --surface2: #F9F9FB;
+  --border: rgba(0,0,0,.08);
+  --border2: rgba(0,0,0,.05);
+  --text: #1D1D1F;
+  --text2: #6E6E73;
+  --text3: #999;
+  --blue: #2563EB;
+  --blue-light: #EFF6FF;
+  --green: #10B981;
+  --green-light: #ECFDF5;
+  --amber: #F59E0B;
+  --amber-light: #FFFBEB;
+  --red: #EF4444;
+  --red-light: #FEF2F2;
+  --purple: #8B5CF6;
+  --purple-light: #F5F3FF;
+  --sidebar-w: 240px;
+  --topbar-h: 56px;
+  --radius: 12px;
+  --shadow: 0 1px 3px rgba(0,0,0,.06), 0 4px 16px rgba(0,0,0,.04);
+  --shadow-md: 0 2px 8px rgba(0,0,0,.08), 0 8px 32px rgba(0,0,0,.06);
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.5;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── TOPBAR ── */
+.topbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  height: var(--topbar-h);
+  background: rgba(255,255,255,.92);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 0;
+  padding: 0 20px 0 0;
+}
+.topbar-brand {
+  width: var(--sidebar-w);
+  display: flex; align-items: center; gap: 10px;
+  padding: 0 20px;
+  border-right: 1px solid var(--border);
+  height: 100%;
+  flex-shrink: 0;
+}
+.brand-mark {
+  width: 28px; height: 28px;
+  background: var(--blue);
+  border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; font-weight: 500; color: #fff;
+  letter-spacing: -.03em; flex-shrink: 0;
+}
+.brand-text { line-height: 1; }
+.brand-name { font-size: 13px; font-weight: 600; letter-spacing: -.02em; }
+.brand-sub { font-size: 10px; color: var(--text2); margin-top: 1px; }
+.topbar-center { flex: 1; display: flex; align-items: center; gap: 8px; padding: 0 16px; }
+.well-badge {
+  display: flex; align-items: center; gap: 8px;
+  padding: 5px 12px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 13px;
+}
+.well-badge .field { color: var(--text2); }
+.well-badge .sep { color: var(--border); }
+.well-badge .well { font-weight: 600; }
+.status-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 0 3px rgba(16,185,129,.15);
+  animation: pulse-dot 2.5s ease-in-out infinite;
+}
+@keyframes pulse-dot {
+  0%,100%{box-shadow:0 0 0 3px rgba(16,185,129,.15)}
+  50%{box-shadow:0 0 0 5px rgba(16,185,129,.06)}
+}
+.topbar-right { display: flex; align-items: center; gap: 8px; }
+.top-alert-chip {
+  display: flex; align-items: center; gap: 6px;
+  padding: 5px 10px;
+  background: var(--red-light);
+  border: 1px solid rgba(239,68,68,.25);
+  border-radius: 999px;
+  font-size: 12px; font-weight: 500;
+  color: #991B1B;
+  cursor: pointer;
+  transition: all .15s;
+}
+.top-alert-chip:hover { background: #FEE2E2; }
+.top-alert-chip .dot { width: 6px; height: 6px; background: var(--red); border-radius: 50%; animation: blink .7s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+.avatar {
+  width: 30px; height: 30px;
+  background: linear-gradient(135deg, #2563EB, #7C3AED);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 600; color: #fff;
+  cursor: pointer;
+}
+
+/* ── SIDEBAR ── */
+.sidebar {
+  position: fixed; top: var(--topbar-h); left: 0; bottom: 0;
+  width: var(--sidebar-w);
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  overflow-y: auto; z-index: 50;
+}
+.sidebar-section { padding: 12px 12px 4px; }
+.sidebar-label {
+  font-size: 10px; font-weight: 600; color: var(--text3);
+  letter-spacing: .08em; text-transform: uppercase;
+  padding: 0 8px; margin-bottom: 4px;
+}
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 8px;
+  border-radius: 8px;
+  color: var(--text2);
+  text-decoration: none;
+  font-size: 13px;
+  transition: all .12s;
+  cursor: pointer;
+  position: relative;
+}
+.nav-item:hover { background: var(--bg); color: var(--text); }
+.nav-item.active { background: var(--blue-light); color: var(--blue); font-weight: 500; }
+.nav-item .icon { width: 18px; height: 18px; flex-shrink: 0; opacity: .7; }
+.nav-item.active .icon { opacity: 1; }
+.nav-badge {
+  margin-left: auto;
+  padding: 1px 6px;
+  background: var(--red);
+  color: #fff;
+  border-radius: 999px;
+  font-size: 10px; font-weight: 600;
+}
+.nav-badge.amber { background: var(--amber); }
+
+.sidebar-divider { height: 1px; background: var(--border2); margin: 8px 12px; }
+
+.depth-card {
+  margin: 12px;
+  padding: 12px;
+  background: linear-gradient(135deg, #1E3A5F 0%, #1D2951 100%);
+  border-radius: var(--radius);
+  color: #fff;
+}
+.depth-card .label { font-size: 10px; color: rgba(255,255,255,.55); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 4px; }
+.depth-card .value { font-family: 'JetBrains Mono', monospace; font-size: 26px; font-weight: 500; letter-spacing: -.02em; line-height: 1; }
+.depth-card .unit { font-size: 12px; color: rgba(255,255,255,.55); margin-top: 2px; }
+.depth-progress {
+  margin-top: 10px;
+  height: 4px;
+  background: rgba(255,255,255,.15);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.depth-progress-fill {
+  height: 100%; background: linear-gradient(90deg, #3B82F6, #60A5FA);
+  border-radius: 2px;
+  transition: width .5s;
+}
+.depth-pct { font-size: 10px; color: rgba(255,255,255,.4); margin-top: 4px; }
+
+/* ── MAIN ── */
+.main {
+  margin-left: var(--sidebar-w);
+  margin-top: var(--topbar-h);
+  padding: 24px;
+  min-height: calc(100vh - var(--topbar-h));
+}
+
+/* ── PAGE HEADER ── */
+.page-header {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  margin-bottom: 20px;
+}
+.page-title { font-size: 20px; font-weight: 700; letter-spacing: -.03em; }
+.page-subtitle { font-size: 13px; color: var(--text2); margin-top: 2px; }
+.header-actions { display: flex; gap: 8px; }
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 14px;
+  border-radius: 8px;
+  font-size: 13px; font-weight: 500;
+  cursor: pointer; border: none; transition: all .15s;
+  text-decoration: none;
+}
+.btn-primary { background: var(--blue); color: #fff; }
+.btn-primary:hover { background: #1D4ED8; box-shadow: 0 0 0 3px rgba(37,99,235,.15); }
+.btn-ghost {
+  background: var(--surface); color: var(--text2);
+  border: 1px solid var(--border);
+}
+.btn-ghost:hover { background: var(--bg); color: var(--text); }
+
+/* ── GRID ── */
+.grid { display: grid; gap: 16px; }
+.grid-4 { grid-template-columns: repeat(4, 1fr); }
+.grid-3 { grid-template-columns: repeat(3, 1fr); }
+.grid-2 { grid-template-columns: repeat(2, 1fr); }
+.grid-main { grid-template-columns: 1fr 340px; }
+
+/* ── CARD ── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.card-pad { padding: 16px 20px; }
+.card-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 20px 0;
+}
+.card-title { font-size: 13px; font-weight: 600; letter-spacing: -.01em; }
+.card-subtitle { font-size: 11px; color: var(--text2); margin-top: 1px; }
+.card-body { padding: 14px 20px 18px; }
+
+/* ── METRIC TILES ── */
+.metric-tile { padding: 16px 20px; }
+.metric-label { font-size: 11px; color: var(--text2); font-weight: 500; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 6px; }
+.metric-value { font-size: 26px; font-weight: 700; letter-spacing: -.04em; line-height: 1; font-family: 'JetBrains Mono', monospace; }
+.metric-unit { font-size: 13px; font-weight: 400; color: var(--text2); margin-left: 3px; }
+.metric-delta {
+  display: inline-flex; align-items: center; gap: 3px;
+  font-size: 11px; font-weight: 600; margin-top: 5px;
+  padding: 2px 6px; border-radius: 999px;
+}
+.delta-up { color: #059669; background: var(--green-light); }
+.delta-down { color: #DC2626; background: var(--red-light); }
+.delta-warn { color: #92400E; background: var(--amber-light); }
+.delta-neutral { color: var(--text2); background: var(--bg); }
+
+/* ── ALERT PANEL ── */
+.alert-item {
+  display: flex; gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border2);
+}
+.alert-item:last-child { border-bottom: none; padding-bottom: 0; }
+.alert-icon {
+  width: 30px; height: 30px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; font-size: 14px;
+}
+.alert-icon.critical { background: var(--red-light); }
+.alert-icon.warn { background: var(--amber-light); }
+.alert-icon.info { background: var(--blue-light); }
+.alert-content { flex: 1; min-width: 0; }
+.alert-title { font-size: 12px; font-weight: 600; line-height: 1.3; }
+.alert-title.critical { color: var(--red); }
+.alert-title.warn { color: #92400E; }
+.alert-title.info { color: var(--blue); }
+.alert-desc { font-size: 11px; color: var(--text2); margin-top: 2px; line-height: 1.4; }
+.alert-meta { font-size: 10px; color: var(--text3); margin-top: 3px; font-family: 'JetBrains Mono', monospace; }
+.alert-action {
+  font-size: 11px; font-weight: 600;
+  color: var(--blue);
+  cursor: pointer; margin-top: 4px;
+  display: inline-block;
+}
+
+/* ── MUD PARAMS TABLE ── */
+.mud-table { width: 100%; border-collapse: collapse; }
+.mud-table th {
+  font-size: 10px; font-weight: 600; color: var(--text3);
+  text-transform: uppercase; letter-spacing: .06em;
+  text-align: left; padding: 6px 0; border-bottom: 1px solid var(--border);
+}
+.mud-table td {
+  font-size: 12px; padding: 7px 0;
+  border-bottom: 1px solid var(--border2);
+  vertical-align: middle;
+}
+.mud-table tr:last-child td { border-bottom: none; }
+.mud-table td:first-child { color: var(--text2); font-size: 11px; width: 38%; }
+.mud-table .val-planned { color: var(--text2); font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+.mud-table .val-actual { font-weight: 600; font-family: 'JetBrains Mono', monospace; }
+.val-ok { color: var(--green); }
+.val-warn { color: var(--amber); }
+.val-bad { color: var(--red); }
+.param-bar {
+  display: flex; align-items: center; gap: 6px;
+  margin-top: 2px;
+}
+.bar-track {
+  flex: 1; height: 4px;
+  background: var(--bg);
+  border-radius: 2px; position: relative;
+}
+.bar-range {
+  position: absolute; height: 100%;
+  background: rgba(16,185,129,.2);
+  border-radius: 2px;
+}
+.bar-val {
+  position: absolute; width: 3px; height: 8px;
+  background: var(--green);
+  border-radius: 2px;
+  top: -2px;
+  transition: left .5s;
+}
+.bar-val.warn { background: var(--amber); }
+.bar-val.bad { background: var(--red); }
+
+/* ── RISK COLUMN ── */
+.risk-column { position: relative; }
+.risk-track {
+  position: relative;
+  width: 100%; height: 340px;
+  background: linear-gradient(180deg, var(--bg) 0%, var(--bg) 100%);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.risk-zone {
+  position: absolute; left: 0; right: 0;
+  display: flex; align-items: center;
+  padding: 0 10px;
+  font-size: 10px;
+}
+.risk-zone .rz-label { font-weight: 600; font-size: 9px; letter-spacing: .04em; text-transform: uppercase; }
+.risk-zone .rz-depth { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: rgba(0,0,0,.35); margin-left: auto; }
+.rz-critical { background: rgba(239,68,68,.12); color: #991B1B; }
+.rz-high { background: rgba(245,158,11,.1); color: #92400E; }
+.rz-moderate { background: rgba(59,130,246,.08); color: #1E40AF; }
+.rz-low { background: rgba(16,185,129,.08); color: #065F46; }
+.current-depth-line {
+  position: absolute; left: 0; right: 0;
+  height: 2px; background: var(--blue);
+  z-index: 10;
+}
+.current-depth-line::before {
+  content: attr(data-label);
+  position: absolute; right: 8px; top: -9px;
+  font-size: 9px; font-weight: 700;
+  color: var(--blue);
+  font-family: 'JetBrains Mono', monospace;
+  background: var(--surface);
+  padding: 1px 4px;
+  border-radius: 3px;
+  border: 1px solid rgba(37,99,235,.25);
+}
+.warn-ahead-line {
+  position: absolute; left: 0; right: 0;
+  height: 1px; background: rgba(239,68,68,.5);
+  border-top: 1px dashed rgba(239,68,68,.6);
+  z-index: 9;
+}
+.warn-ahead-line::before {
+  content: '⚠ КРОВЛЯ Нх I';
+  position: absolute; right: 8px; top: -8px;
+  font-size: 9px; font-weight: 700;
+  color: var(--red);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* ── AI RECOMMENDATION ── */
+.ai-rec {
+  background: linear-gradient(135deg, #EFF6FF 0%, #F5F3FF 100%);
+  border: 1px solid rgba(37,99,235,.15);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-top: 2px;
+}
+.ai-rec-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.ai-badge {
+  display: flex; align-items: center; gap: 5px;
+  background: var(--blue);
+  color: #fff;
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-size: 10px; font-weight: 700; letter-spacing: .04em;
+}
+.ai-badge::before { content: '▲'; font-size: 8px; }
+.ai-confidence { font-size: 11px; color: var(--text2); margin-left: auto; }
+.ai-rec-text { font-size: 12px; line-height: 1.6; color: var(--text); }
+.ai-rec-text strong { color: var(--red); }
+.ai-actions { display: flex; gap: 6px; margin-top: 10px; }
+.ai-action-btn {
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 11px; font-weight: 600;
+  cursor: pointer; border: none; transition: all .15s;
+}
+.ai-action-primary { background: var(--blue); color: #fff; }
+.ai-action-primary:hover { background: #1D4ED8; }
+.ai-action-ghost { background: rgba(0,0,0,.05); color: var(--text2); }
+.ai-action-ghost:hover { background: rgba(0,0,0,.08); }
+
+/* ── SECTION TIMELINE ── */
+.section-bar {
+  display: flex; gap: 2px; height: 8px;
+  border-radius: 4px; overflow: hidden;
+  margin-bottom: 8px;
+}
+.sb-seg { height: 100%; transition: flex .5s; position: relative; }
+.sb-seg:hover::after {
+  content: attr(data-tip);
+  position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%);
+  background: var(--text); color: #fff;
+  font-size: 10px; font-weight: 500;
+  padding: 3px 7px; border-radius: 5px;
+  white-space: nowrap; z-index: 100;
+}
+.sb-done { background: var(--green); }
+.sb-active { background: var(--blue); animation: sb-pulse .8s ease-in-out infinite alternate; }
+.sb-future { background: var(--border); }
+@keyframes sb-pulse { from{opacity:.7} to{opacity:1} }
+
+/* ── DRILLING LOG ── */
+.log-item {
+  display: flex; gap: 10px; align-items: flex-start;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border2);
+  font-size: 12px;
+}
+.log-item:last-child { border-bottom: none; }
+.log-time { color: var(--text3); font-family: 'JetBrains Mono', monospace; font-size: 10px; flex-shrink: 0; padding-top: 1px; }
+.log-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+.log-dot.green { background: var(--green); }
+.log-dot.amber { background: var(--amber); }
+.log-dot.red { background: var(--red); }
+.log-dot.blue { background: var(--blue); }
+.log-text { flex: 1; color: var(--text2); line-height: 1.4; }
+.log-text .em { color: var(--text); font-weight: 500; }
+
+/* ── TABS ── */
+.tab-row { display: flex; gap: 2px; padding: 14px 20px 0; border-bottom: 1px solid var(--border); }
+.tab {
+  padding: 6px 12px;
+  border-radius: 7px 7px 0 0;
+  font-size: 12px; font-weight: 500;
+  cursor: pointer; color: var(--text2);
+  border: 1px solid transparent;
+  transition: all .12s;
+  margin-bottom: -1px;
+}
+.tab.active {
+  color: var(--blue);
+  background: var(--surface);
+  border-color: var(--border);
+  border-bottom-color: var(--surface);
+}
+.tab:not(.active):hover { background: var(--bg); }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* ── DEMO BANNER ── */
+.demo-banner {
+  background: linear-gradient(90deg, #EFF6FF, #F5F3FF);
+  border: 1px solid rgba(37,99,235,.15);
+  border-radius: var(--radius);
+  padding: 10px 16px;
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 20px;
+  font-size: 12px;
+  color: var(--text2);
+}
+.demo-banner strong { color: var(--blue); }
+
+/* scrollbar */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 999px; }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <div class="topbar-brand">
+    <a href="file:///C:/Users/Andrey/Desktop/NEW/index.html" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;min-width:0">
+      <div class="brand-mark">DQ</div>
+      <div class="brand-text">
+        <div class="brand-name">DRILL-Q</div>
+        <div class="brand-sub">Командный центр</div>
+      </div>
+    </a>
+  </div>
+  <div class="topbar-center">
+    <div class="well-badge">
+      <div class="status-dot"></div>
+      <span class="field">Ванкорское НГМ</span>
+      <span class="sep">/</span>
+      <span class="well">Скв. 7-002 · Куст 7</span>
+    </div>
+    <span style="font-size:12px;color:var(--text3)" id="topbarDepthText">Экспл. кол. · 1780–3050 м · Глубина 2500 м MD</span>
+  </div>
+  <div class="topbar-right">
+    <div class="top-alert-chip" onclick="scrollToAlerts()">
+      <div class="dot"></div>
+      2 активных предупреждения
+    </div>
+    <div class="avatar">АБ</div>
+  </div>
+</header>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div style="padding:10px 12px 6px">
+    <a href="file:///C:/Users/Andrey/Desktop/NEW/app.html"
+       style="display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:9px;
+              background:var(--blue);color:#fff;text-decoration:none;font-size:13px;font-weight:600;
+              transition:background .15s;letter-spacing:-.01em"
+       onmouseover="this.style.background='#1D4ED8'" onmouseout="this.style.background='var(--blue)'">
+      <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" style="flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7h18M3 12h18M3 17h18"/></svg>
+      Мои проекты
+    </a>
+  </div>
+  <div class="depth-card">
+    <div class="label">Текущая глубина (MD)</div>
+    <div class="value" id="sidebarDepthVal">2500<span style="font-size:14px;opacity:.55"> м</span></div>
+    <div class="unit">из 3353 м · Цель: Нх III–IV</div>
+    <div class="depth-progress"><div class="depth-progress-fill" id="depthFill" style="width:74.6%"></div></div>
+    <div class="depth-pct" id="sidebarDepthPct">74.6% пути</div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-label">Командный центр</div>
+    <a class="nav-item active" onclick="showSection('dashboard')">
+      <svg class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+      Командный центр
+    </a>
+    <a class="nav-item" href="../app-input.html">
+      <svg class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+      Ввод параметров
+    </a>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-label">Разделы DWOP</div>
+    <a class="nav-item" onclick="showSection('overview')">
+      <svg class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+      Обзор скважины
+    </a>
+    <a class="nav-item" onclick="showSection('casing')">
+      <svg class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+      Конструкция скважины
+    </a>
+    <a class="nav-item" onclick="showSection('traj')">
+      <svg class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
+      Траектория · ННБ
+    </a>
+    <a class="nav-item" onclick="showSection('bha')">
+      <svg class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 2v2m0 16v2M2 12h2m16 0h2"/></svg>
+      КНБК и долота
+    </a>
+    <a class="nav-item" onclick="showSection('mud')">
+      <svg class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
+      Программа раствора
+      <span class="nav-badge amber">4</span>
+    </a>
+    <a class="nav-item" onclick="showSection('risks')">
+      <svg class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+      Осложнения · Алерты
+      <span class="nav-badge">9</span>
+    </a>
+    <a class="nav-item" onclick="showSection('phases')">
+      <svg class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+      Операционный план
+    </a>
+    <a class="nav-item" onclick="window.open('../docs/vankor_dwop.html','_blank')" style="color:var(--blue);font-size:11px;margin-top:4px">
+      <svg class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+      Открыть полный DWOP →
+    </a>
+  </div>
+
+  <div class="sidebar-divider"></div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-label">Секции скважины</div>
+    <a class="nav-item" style="color:var(--green);font-weight:500;font-size:12px">
+      <svg class="icon" fill="currentColor" viewBox="0 0 20 20"><circle cx="10" cy="10" r="4"/></svg>
+      Кондуктор 0–620 м
+    </a>
+    <a class="nav-item" style="color:var(--green);font-weight:500;font-size:12px">
+      <svg class="icon" fill="currentColor" viewBox="0 0 20 20"><circle cx="10" cy="10" r="4"/></svg>
+      Тех. колонна 620–1780 м
+    </a>
+    <a class="nav-item active" style="font-size:12px">
+      <svg class="icon" fill="currentColor" viewBox="0 0 20 20"><circle cx="10" cy="10" r="4"/></svg>
+      Экспл. кол. 1780–3050 м
+    </a>
+    <a class="nav-item" style="color:var(--text3);font-size:12px">
+      <svg class="icon" fill="none" viewBox="0 0 20 20" stroke="currentColor" stroke-width="1.5"><circle cx="10" cy="10" r="4"/></svg>
+      Горизонт. ствол 3050–3353 м
+    </a>
+  </div>
+
+  <div style="flex:1"></div>
+  <div style="padding:12px 16px 16px;">
+    <a href="../app-vankor-project.html" style="display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;background:var(--bg);color:var(--text2);text-decoration:none;font-size:12px;font-weight:500;transition:background .15s;" onmouseover="this.style.background='#E5E5EA'" onmouseout="this.style.background='var(--bg)'">
+      <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+      Ванкорское НГМ
+    </a>
+    <div style="margin-top:8px;padding:0 10px;font-size:10px;color:var(--text3)">
+      Источник: ГТН + Программа бурения 7-002 · 24 документа · 2009
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- DEMO BANNER -->
+  <div class="demo-banner">
+    <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#2563EB" stroke-width="2"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" d="M12 8v4m0 4h.01"/></svg>
+    <span><strong>Данные Ванкорского НГМ · Скв. 7-002</strong> · Полимер-глинистый ВБР · Интервал 219.1 мм · 1780–3050 м MD · Цель: Нх III–IV. 24 документа проанализировано AI. Параметры из программы бурения и ГТН.</span>
+  </div>
+
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <div>
+      <div class="page-title">Командный центр бурения</div>
+      <div class="page-subtitle">Экспл. колонна Ø219.1 мм · Интервал 1780–3050 м MD · Полимер-глинистый ВБР · ρ=1.18 г/см³</div>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-ghost">Экспорт отчёта</button>
+      <button class="btn btn-primary" onclick="location.href='../app-input.html'">+ Ввести параметры</button>
+    </div>
+  </div>
+
+  <!-- SECTION PROGRESS BAR -->
+  <div class="card card-pad" style="margin-bottom:16px;padding:12px 20px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+      <span style="font-size:12px;font-weight:600">Прогресс строительства скважины · Скв. 7-002</span>
+      <span style="font-size:11px;color:var(--text2)" id="progressDepthText">2500 м из 3353 м (74.6%)</span>
+    </div>
+    <div class="section-bar" id="sectionBar">
+      <div class="sb-seg sb-done" style="flex:620" data-tip="Кондуктор 0–620 м · ✓ завершено"></div>
+      <div class="sb-seg sb-done" style="flex:1160" data-tip="Тех. колонна 620–1780 м · ✓ завершено"></div>
+      <div class="sb-seg sb-active" style="flex:1270" data-tip="Экспл. кол. 1780–3050 м · в работе"></div>
+      <div class="sb-seg sb-future" style="flex:303" data-tip="Горизонт. ствол 3050–3353 м"></div>
+    </div>
+    <div style="display:flex;gap:16px;font-size:10px;color:var(--text3)">
+      <span style="display:flex;align-items:center;gap:4px"><span style="width:8px;height:8px;border-radius:2px;background:var(--green);display:inline-block"></span>Завершено</span>
+      <span style="display:flex;align-items:center;gap:4px"><span style="width:8px;height:8px;border-radius:2px;background:var(--blue);display:inline-block"></span>В работе</span>
+      <span style="display:flex;align-items:center;gap:4px"><span style="width:8px;height:8px;border-radius:2px;background:var(--border);display:inline-block"></span>Предстоит</span>
+    </div>
+  </div>
+
+  <!-- METRICS ROW -->
+  <div class="grid grid-4" style="margin-bottom:16px">
+    <div class="card">
+      <div class="metric-tile">
+        <div class="metric-label">Глубина забоя (MD)</div>
+        <div class="metric-value" id="metricDepth">2500<span class="metric-unit">м</span></div>
+        <div class="metric-delta delta-up" id="metricDepthDelta">↑ +8.2 м/смена</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="metric-tile">
+        <div class="metric-label">Мех. скорость</div>
+        <div class="metric-value" id="metricRop">7.8<span class="metric-unit">м/ч</span></div>
+        <div class="metric-delta delta-neutral">▶ план 6–10 м/ч</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="metric-tile">
+        <div class="metric-label">Плотность БР</div>
+        <div class="metric-value" id="metricDensity">1.17<span class="metric-unit">г/см³</span></div>
+        <div class="metric-delta delta-warn" id="metricDensityDelta">⚠ план 1.18</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="metric-tile">
+        <div class="metric-label">До кровли Нх I</div>
+        <div class="metric-value" id="metricDist" style="color:var(--red)">165<span class="metric-unit" style="font-size:14px">м MD</span></div>
+        <div class="metric-delta delta-down">⚠ нестаб. аргиллиты</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COCKPIT + FACT/PLAN -->
+  <div style="display:grid;grid-template-columns:1fr 340px;gap:16px;margin-bottom:16px">
+
+    <!-- COCKPIT iframe -->
+    <div class="card" style="overflow:hidden;height:480px;padding:0">
+      <div style="padding:10px 16px;border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:8px;flex-shrink:0">
+
+        <!-- ── Строка 1: заголовок + статус + глубина ── -->
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <div>
+            <div class="card-title">Кокпит бурения</div>
+            <div class="card-subtitle" id="cockpitSubtitle">Малохетская → Нх I · 2040–2665 м ТВД</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px">
+            <div class="status-dot" id="simStatusDot"></div>
+            <span style="font-size:12px;font-weight:600;color:var(--green)" id="simStatusLabel">БУРЕНИЕ</span>
+            <span style="font-size:12px;font-family:'JetBrains Mono',monospace;color:var(--blue);font-weight:600" id="cockpitDepth">2500 м</span>
+          </div>
+        </div>
+
+        <!-- ── Строка 2: кнопки управления ── -->
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+
+          <!-- РОП бурения -->
+          <div style="display:flex;align-items:center;gap:4px;background:var(--green-light);border:1px solid rgba(16,185,129,.25);border-radius:7px;padding:4px 8px">
+            <svg width="11" height="11" fill="none" viewBox="0 0 24 24" stroke="var(--green)" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
+            <span style="font-size:10px;font-weight:600;color:var(--green);white-space:nowrap">РОП:</span>
+            <input id="ropInput" type="number" min="1" max="500" value="10"
+              style="width:52px;padding:3px 5px;border-radius:5px;border:1px solid rgba(16,185,129,.3);font-size:12px;font-family:'JetBrains Mono',monospace;text-align:center;background:#fff;color:var(--green);font-weight:600"
+              onchange="setSimRop(this.value)" oninput="setSimRop(this.value)"
+              title="Скорость бурения, м/ч">
+            <span style="font-size:10px;color:var(--green)">м/ч</span>
+          </div>
+
+          <!-- Запустить бурение / Пауза бурения -->
+          <button id="drillBtn" onclick="toggleDrilling()"
+            style="display:inline-flex;align-items:center;gap:5px;padding:6px 14px;
+                   border-radius:8px;border:none;cursor:pointer;font-size:12px;font-weight:600;
+                   background:var(--green);color:#fff;transition:all .2s;white-space:nowrap;min-width:160px;justify-content:center">
+            <span id="drillIcon">⏸</span>
+            <span id="drillLabel">Пауза бурения</span>
+          </button>
+
+
+        </div>
+
+        <!-- ── Строка 3: бегунок глубины ── -->
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:10px;color:var(--text3);white-space:nowrap">0 м</span>
+          <input type="range" id="depthSlider" min="0" max="4650" value="2500" step="10"
+            style="flex:1;height:4px;cursor:pointer;accent-color:var(--blue)"
+            oninput="onDepthSlider(this.value)">
+          <span style="font-size:10px;color:var(--text3);white-space:nowrap">4650 м</span>
+          <span style="font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--blue);min-width:55px;text-align:right" id="sliderDepthLabel">2500 м</span>
+        </div>
+
+      </div>
+      <iframe id="cockpitFrame"
+        src="../docs/vankor_ai_demo.html?light=1"
+        style="width:100%;height:calc(100% - 48px);border:none;display:block"
+        title="Кокпит бурения Ванкор">
+      </iframe>
+    </div>
+
+    <!-- ПРАВАЯ КОЛОНКА: ФАКТ vs ПЛАН + АЛЕРТЫ -->
+    <div style="display:flex;flex-direction:column;gap:12px;min-height:480px">
+
+      <!-- ФАКТ vs ПЛАН -->
+      <div class="card card-pad" style="flex-shrink:0">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+          <div class="card-title">Факт vs План</div>
+          <span style="font-size:10px;color:var(--text3)" id="factPlanUpdated">обновлено 14:32</span>
+        </div>
+        <div id="factPlanRows" style="display:flex;flex-direction:column;gap:7px"></div>
+        <div style="margin-top:10px;padding:8px 10px;border-radius:8px;font-size:11px;line-height:1.5" id="factPlanBanner"></div>
+      </div>
+
+      <!-- АЛЕРТЫ (компактные) -->
+      <div class="card card-pad" style="flex:1;overflow-y:auto">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+          <div class="card-title">Активные алерты</div>
+          <div id="alertBadge" style="padding:2px 8px;background:var(--red-light);border-radius:999px;font-size:11px;font-weight:600;color:var(--red)">2</div>
+        </div>
+        <div class="alert-item">
+          <div class="alert-icon critical">🚨</div>
+          <div class="alert-content">
+            <div class="alert-title critical">Кровля Нх I через 165 м</div>
+            <div class="alert-desc">Нестаб. аргиллиты · Стабилизатор не введён</div>
+          </div>
+        </div>
+        <div class="alert-item">
+          <div class="alert-icon warn">⚠️</div>
+          <div class="alert-content">
+            <div class="alert-title warn">ДНС 22 lb/100ft² · выше плана</div>
+            <div class="alert-desc">Тренд роста · Дефлокулянт рекомендован</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT GRID -->
+  <div class="grid grid-main" style="margin-bottom:16px">
+
+    <!-- LEFT: MUD + ALERTS + LOG -->
+    <div style="display:flex;flex-direction:column;gap:16px">
+
+      <!-- MUD PARAMETERS -->
+      <div class="card" id="mudCard">
+        <div class="tab-row">
+          <div class="tab active" onclick="switchTab(this,'tab-mud')">Буровой раствор</div>
+          <div class="tab" onclick="switchTab(this,'tab-drill')">Режимы бурения</div>
+          <div class="tab" onclick="switchTab(this,'tab-chem')">Реагентная программа</div>
+        </div>
+        <div id="tab-mud" class="tab-content active">
+          <div class="card-body">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+              <div>
+                <div style="font-size:11px;color:var(--text2);margin-bottom:10px;font-weight:500">
+                  Тип: Полимер-глинистый ВБР · Интервал 219.1 мм · 1780–3050 м MD
+                </div>
+                <table class="mud-table">
+                  <thead><tr><th>Параметр</th><th>План</th><th>Факт</th></tr></thead>
+                  <tbody>
+                    <tr><td>Плотность</td><td class="val-planned">1.18–1.20 г/см³</td><td class="val-actual val-warn" id="mudTableDensity">1.17 г/см³</td></tr>
+                    <tr><td>УВ (воронка Марш)</td><td class="val-planned">40–60 с</td><td class="val-actual val-ok" id="mudTableFv">48 с</td></tr>
+                    <tr><td>Пласт. вязкость</td><td class="val-planned">12–25 мПа·с</td><td class="val-actual val-ok" id="mudTablePv">18 мПа·с</td></tr>
+                    <tr><td>ДНС</td><td class="val-planned">10–20 lb/100ft²</td><td class="val-actual val-warn" id="mudTableYp">22 lb/100ft²</td></tr>
+                    <tr><td>СНС 10с / 10мин</td><td class="val-planned">4–10 / 8–15</td><td class="val-actual val-ok">5/10 lb/100ft²</td></tr>
+                    <tr><td>API фильтрация</td><td class="val-planned">&lt;6 мл</td><td class="val-actual val-ok">4.8 мл</td></tr>
+                    <tr><td>Корка</td><td class="val-planned">&lt;2 мм</td><td class="val-actual val-ok">1.0 мм</td></tr>
+                    <tr><td>pH</td><td class="val-planned">8.5–10.5</td><td class="val-actual val-ok">9.8</td></tr>
+                    <tr><td>МВТ</td><td class="val-planned">&lt;60 кг/м³</td><td class="val-actual val-ok">42 кг/м³</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div>
+                <div style="font-size:11px;color:var(--text2);margin-bottom:10px;font-weight:500">Визуализация отклонений</div>
+
+                <div style="display:flex;flex-direction:column;gap:10px">
+                  <!-- Density -->
+                  <div>
+                    <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px">
+                      <span style="color:var(--text2)">Плотность г/см³</span>
+                      <span class="val-warn" style="font-weight:600;font-family:monospace">1.17 ⚠</span>
+                    </div>
+                    <div class="bar-track">
+                      <div class="bar-range" style="left:48%;width:20%;background:rgba(16,185,129,.2)"></div>
+                      <div class="bar-val warn" style="left:44%"></div>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--text3);margin-top:2px"><span>1.10</span><span>план 1.18–1.20</span><span>1.25</span></div>
+                  </div>
+
+                  <!-- УВ -->
+                  <div>
+                    <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px">
+                      <span style="color:var(--text2)">УВ (с)</span>
+                      <span class="val-ok" style="font-weight:600;font-family:monospace">48 ✓</span>
+                    </div>
+                    <div class="bar-track">
+                      <div class="bar-range" style="left:30%;width:25%;background:rgba(16,185,129,.2)"></div>
+                      <div class="bar-val" style="left:47%"></div>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--text3);margin-top:2px"><span>20</span><span>40–60</span><span>90</span></div>
+                  </div>
+
+                  <!-- ДНС -->
+                  <div>
+                    <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px">
+                      <span style="color:var(--text2)">ДНС (lb/100ft²)</span>
+                      <span class="val-warn" style="font-weight:600;font-family:monospace">22 ⚠</span>
+                    </div>
+                    <div class="bar-track">
+                      <div class="bar-range" style="left:20%;width:22%;background:rgba(16,185,129,.2)"></div>
+                      <div class="bar-val warn" style="left:44%"></div>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--text3);margin-top:2px"><span>0</span><span>10–20</span><span>50</span></div>
+                  </div>
+
+                  <!-- API -->
+                  <div>
+                    <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px">
+                      <span style="color:var(--text2)">API фильтрация (мл)</span>
+                      <span class="val-ok" style="font-weight:600;font-family:monospace">4.8 ✓</span>
+                    </div>
+                    <div class="bar-track">
+                      <div class="bar-range" style="left:0%;width:60%;background:rgba(16,185,129,.2)"></div>
+                      <div class="bar-val" style="left:48%"></div>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--text3);margin-top:2px"><span>0</span><span>норма &lt;6</span><span>10</span></div>
+                  </div>
+                </div>
+
+                <div style="margin-top:14px;padding:10px;background:var(--amber-light);border:1px solid rgba(245,158,11,.2);border-radius:8px">
+                  <div style="font-size:11px;font-weight:600;color:#92400E;margin-bottom:3px">⚠ 2 параметра вне нормы</div>
+                  <div style="font-size:11px;color:#78350F;line-height:1.5">
+                    Плотность 1.17 (план 1.18) — до кровли Нх 165 м, поднять ρ<br>
+                    ДНС 22 lb/100ft² — тренд роста, предиктор прихвата
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="tab-drill" class="tab-content">
+          <div class="card-body">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+              <table class="mud-table">
+                <thead><tr><th>Параметр бурения</th><th>Факт</th><th>План</th></tr></thead>
+                <tbody>
+                  <tr><td>МСП (РОП)</td><td class="val-actual val-ok">7.8 м/ч</td><td class="val-planned">6–10 м/ч</td></tr>
+                  <tr><td>ВНД (WOB)</td><td class="val-actual val-ok">65 кН</td><td class="val-planned">55–80 кН</td></tr>
+                  <tr><td>Обороты (RPM)</td><td class="val-actual val-ok">110 об/мин</td><td class="val-planned">100–120</td></tr>
+                  <tr><td>Расход, л/с</td><td class="val-actual val-ok">28 л/с</td><td class="val-planned">25–32 л/с</td></tr>
+                  <tr><td>ΔP на долоте</td><td class="val-actual val-ok">145 бар</td><td class="val-planned">130–160 бар</td></tr>
+                  <tr><td>Крутящий момент</td><td class="val-actual val-warn">14.2 кН·м ⚠</td><td class="val-planned">&lt;12 кН·м</td></tr>
+                  <tr><td>Нагрузка на крюке</td><td class="val-actual val-ok">258 кН</td><td class="val-planned">240–290 кН</td></tr>
+                </tbody>
+              </table>
+              <div>
+                <div style="background:var(--amber-light);border:1px solid rgba(245,158,11,.2);border-radius:8px;padding:10px 12px;margin-bottom:10px">
+                  <div style="font-size:11px;font-weight:700;color:#92400E;margin-bottom:4px">⚠ Повышенный крутящий момент</div>
+                  <div style="font-size:11px;color:#78350F;line-height:1.5">14.2 кН·м при норме &lt;12. Возможная причина: накопление шлама или тугой ход (Малохетская 2040–2570 м). Добавить смазочную добавку, проработка 30 м.</div>
+                </div>
+                <div style="background:var(--green-light);border:1px solid rgba(16,185,129,.2);border-radius:8px;padding:10px 12px">
+                  <div style="font-size:11px;font-weight:700;color:#065F46;margin-bottom:4px">✓ МСП в норме</div>
+                  <div style="font-size:11px;color:#047857;line-height:1.5">РОП 7.8 м/ч · в плане для 219.1 мм, интервал Малохетская–Нх I. Минимум 2 цикла промывки перед следующим подъёмом.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="tab-chem" class="tab-content">
+          <div class="card-body">
+            <div style="font-size:11px;color:var(--text2);margin-bottom:10px;font-weight:500">Реагентная программа · Полимер-глинистый ВБР · Интервал 219.1 мм · 1780–3050 м MD</div>
+            <table class="mud-table">
+              <thead><tr><th>Функциональный тип реагента</th><th>Назначение</th><th>Доза, кг/м³</th><th>Статус</th></tr></thead>
+              <tbody>
+                <tr><td>Каустическая сода</td><td>Регулятор pH (9.8)</td><td>1–2</td><td class="val-ok">✓ Норм.</td></tr>
+                <tr><td>Биополимер ксантановый</td><td>Структурообразователь</td><td>2–3</td><td class="val-ok">✓ Норм.</td></tr>
+                <tr><td>Полианионная целлюлоза НВ</td><td>Контроль фильтрации</td><td>4–5</td><td class="val-ok">✓ Норм.</td></tr>
+                <tr><td>Полианионная целлюлоза ВВ</td><td>Усиленная фильтрация</td><td>2</td><td class="val-warn">⚠ Дефицит</td></tr>
+                <tr><td><b style="color:var(--red)">Стабилизатор аргиллитов</b></td><td>Нестабильные глины / Нх I</td><td style="color:var(--red);font-weight:700">10–14 кг/м³</td><td class="val-bad">✕ НЕ ВВЕДЁН</td></tr>
+                <tr><td>Ингибитор набухания глин</td><td>Предотвращение набухания</td><td>2</td><td class="val-ok">✓ Норм.</td></tr>
+                <tr><td>Смазочная добавка</td><td>Снижение трения долото/НКТ</td><td>5–10</td><td class="val-ok">✓ Норм.</td></tr>
+                <tr><td>Карбонат кальция CaCO₃</td><td>Утяжелитель + кольматант</td><td>85</td><td class="val-ok">✓ Норм.</td></tr>
+                <tr><td>Бактерицид</td><td>Защита полимеров</td><td>0.5</td><td class="val-ok">✓ Норм.</td></tr>
+              </tbody>
+            </table>
+            <div style="margin-top:12px;padding:10px;background:var(--red-light);border:1px solid rgba(239,68,68,.2);border-radius:8px;font-size:11px;color:#991B1B;line-height:1.6">
+              <b>⚠ КРИТИЧНО:</b> Стабилизатор аргиллитов (10–14 кг/м³) не введён. По программе бурения скв. 7-002 — обязателен с 2200 м ТВД. До кровли Нх I осталось 165 м MD. Без него риск прихвата в зоне 2665–2727 м ТВД критический.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ALERTS -->
+      <div class="card" id="alertsSection">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Активные предупреждения</div>
+            <div class="card-subtitle">Сгенерировано AI на основе программы бурения 7-002 + ГТН + данных кустов 7 и 12</div>
+          </div>
+          <div style="padding:3px 8px;background:var(--red-light);border-radius:999px;font-size:11px;font-weight:600;color:var(--red)">2 активных</div>
+        </div>
+        <div class="card-body">
+          <div class="alert-item">
+            <div class="alert-icon critical">🚨</div>
+            <div class="alert-content">
+              <div class="alert-title critical">КРИТИЧНО · Подход к кровле Нх I — нестабильные аргиллиты (165 м MD)</div>
+              <div class="alert-desc">Зона 2665–2727 м ТВД — прихваты зафиксированы в нескольких скважинах кустов 7 и 12. Стабилизатор аргиллитов 10–14 кг/м³ по программе вводится с 2200 м ТВД — уже опаздываем. Также: ρ БР 1.17 ниже плана (1.18). При вскрытии кровли РОП строго ≤5 м/ч, запрет промывания при наращивании.</div>
+              <div class="alert-meta">Кровля Нх I: 2665 м ТВД · Осталось: ~165 м MD · Источник: Программа бурения 7-002 + дополнение к программе по р-рам</div>
+              <span class="alert-action">→ Просмотреть дополнение к программе по растворам</span>
+            </div>
+          </div>
+          <div class="alert-item">
+            <div class="alert-icon warn">⚠️</div>
+            <div class="alert-content">
+              <div class="alert-title warn">ПРЕДУПРЕЖДЕНИЕ · ДНС 22 lb/100ft² — выше плана · тренд роста</div>
+              <div class="alert-desc">ДНС 18→20→22 lb/100ft² за 3 замера (план 10–20). По историческим данным Ванкора: нарастание ДНС + снижение РОП = риск прихвата за 24–72 ч. Дефлокулянт 3–4 кг/м³ рекомендован немедленно. 2 полных цикла промывки перед следующим подъёмом.</div>
+              <div class="alert-meta">ДНС: 18→20→22 · Источник: ГТН + отчёт куст 7</div>
+              <span class="alert-action">→ Ввести дефлокулянт</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DRILLING LOG -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Журнал событий</div>
+          <div style="font-size:11px;color:var(--text3)">последние 12 ч</div>
+        </div>
+        <div class="card-body">
+          <div class="log-item">
+            <div class="log-time">14:45</div>
+            <div class="log-dot green"></div>
+            <div class="log-text">Достигнута глубина <span class="em">2500 м MD</span>. МСП 7.8 м/ч, расход 28 л/с, ΔP 145 бар.</div>
+          </div>
+          <div class="log-item">
+            <div class="log-time">14:10</div>
+            <div class="log-dot amber"></div>
+            <div class="log-text">Плотность БР снизилась до <span class="em">1.17 г/см³</span> (план 1.18). AI: поднять ρ до входа в Нх.</div>
+          </div>
+          <div class="log-item">
+            <div class="log-time">13:30</div>
+            <div class="log-dot amber"></div>
+            <div class="log-text">ДНС по замеру: <span class="em">22 lb/100ft²</span> (план ≤20). Тенденция роста — 3-й замер подряд. Дефлокулянт рекомендован.</div>
+          </div>
+          <div class="log-item">
+            <div class="log-time">12:00</div>
+            <div class="log-dot blue"></div>
+            <div class="log-text">Плановая проработка. Проработано 30 м без затяжек. Малохетская, нормальная проходимость.</div>
+          </div>
+          <div class="log-item">
+            <div class="log-time">10:20</div>
+            <div class="log-dot red"></div>
+            <div class="log-text">AI-алерт: <span class="em">до кровли Нх I осталось 165 м MD</span>. Стабилизатор аргиллитов не введён — требует немедленного решения.</div>
+          </div>
+          <div class="log-item">
+            <div class="log-time">08:00</div>
+            <div class="log-dot green"></div>
+            <div class="log-text">Спуск КНБК №4 с ясом. Долото PDC 219.1 мм. Проверка моментов затяжки. <span class="em">OK.</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /left -->
+
+    <!-- RIGHT: RISK MAP + AI REC -->
+    <div style="display:flex;flex-direction:column;gap:16px">
+
+      <!-- RISK MAP -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Карта рисков разреза</div>
+            <div class="card-subtitle">На основе данных скв. 7-002 · 29+ скважин кустов 7, 12</div>
+          </div>
+        </div>
+        <div class="card-body" style="padding-top:10px">
+          <div style="position:relative;height:380px;overflow:hidden;border-radius:8px;background:var(--bg)">
+
+            <!-- 0-150m HIGH (ВМ) 0%–4.5% -->
+            <div class="risk-zone rz-high" style="top:0%;height:4.5%;font-size:9px">
+              <span class="rz-label">Высокий · ВМ / Поглощения</span>
+              <span class="rz-depth">0–150 м</span>
+            </div>
+            <!-- 150-905m MODERATE (прихват) 4.5%–27% -->
+            <div class="risk-zone rz-moderate" style="top:4.5%;height:22.4%">
+              <span class="rz-label" style="font-size:9px">Умеренный · Прихват</span>
+              <span class="rz-depth" style="font-size:9px">150–905 м</span>
+            </div>
+            <!-- 905-1050m HIGH (газ) 27%–31.3% -->
+            <div class="risk-zone rz-high" style="top:27%;height:4.3%;font-size:9px">
+              <span class="rz-label">Высокий · Газ 1005–1031 м</span>
+              <span class="rz-depth">905–1050 м</span>
+            </div>
+            <!-- 1050-1630m MODERATE 31.3%–48.6% -->
+            <div class="risk-zone rz-moderate" style="top:31.3%;height:17.3%">
+              <span class="rz-label" style="font-size:9px">Умеренный · Насоновская / Вхт.</span>
+              <span class="rz-depth" style="font-size:9px">1050–1630 м</span>
+            </div>
+            <!-- 1630-1937m HIGH (Яковлевская) 48.6%–57.7% -->
+            <div class="risk-zone rz-high" style="top:48.6%;height:9.1%">
+              <span class="rz-label" style="font-size:9px">Высокий · Яковлевская P=162 атм</span>
+              <span class="rz-depth" style="font-size:9px">1630–1937 м</span>
+            </div>
+            <!-- 1937-2570m MODERATE tight hole 57.7%–76.6% -->
+            <div class="risk-zone rz-moderate" style="top:57.7%;height:18.9%">
+              <div style="width:100%">
+                <div class="rz-label" style="font-size:9px">Умеренный · Тугой ход</div>
+                <div class="rz-depth" style="font-size:9px">1937–2570 м</div>
+              </div>
+            </div>
+            <!-- 2570-2750m CRITICAL (кровля Нх I) 76.6%–82% -->
+            <div class="risk-zone rz-critical" style="top:76.6%;height:5.4%">
+              <div style="width:100%">
+                <div class="rz-label" style="font-size:9px">🔴 КРИТИЧНО · Кровля Нх I</div>
+                <div class="rz-depth" style="font-size:9px">2570–2750 м</div>
+              </div>
+            </div>
+            <!-- 2750-3353m CRITICAL АВПД 82%–100% -->
+            <div class="risk-zone rz-critical" style="top:82%;height:18%">
+              <div style="width:100%">
+                <div class="rz-label" style="font-size:10px">🔴 КРИТИЧНО · АВПД P=254–274 атм</div>
+                <div class="rz-depth" style="font-size:9px">2750–3353 м</div>
+              </div>
+            </div>
+
+            <!-- current depth line: 2500/3353 = 74.56% -->
+            <div class="current-depth-line" id="currentDepthLine" data-label="ЗАБОЙ 2500 м" style="top:74.6%"></div>
+
+            <!-- warn-ahead: 2665/3353 = 79.48% -->
+            <div class="warn-ahead-line" style="top:79.5%"></div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:4px;margin-top:10px">
+            <div style="display:flex;align-items:center;gap:6px;font-size:10px;color:var(--text2)">
+              <span style="width:10px;height:10px;border-radius:2px;background:rgba(239,68,68,.3);display:inline-block"></span>
+              Критично · Прихват / АВПД
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;font-size:10px;color:var(--text2)">
+              <span style="width:10px;height:10px;border-radius:2px;background:rgba(245,158,11,.25);display:inline-block"></span>
+              Высокий · Газ / Нефтепроявление
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;font-size:10px;color:var(--text2)">
+              <span style="width:10px;height:10px;border-radius:2px;background:rgba(59,130,246,.15);display:inline-block"></span>
+              Умеренный
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI RECOMMENDATION -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">AI-советник</div>
+          <div style="font-size:11px;color:var(--text3)">обновлено 14:45</div>
+        </div>
+        <div class="card-body">
+          <div class="ai-rec">
+            <div class="ai-rec-header">
+              <div class="ai-badge">DRILL-Q AI</div>
+              <div class="ai-confidence">Уверенность: 93%</div>
+            </div>
+            <div class="ai-rec-text">
+              До кровли Нх I осталось <strong>165 м MD</strong>. По программе бурения скв. 7-002 стабилизатор аргиллитов (10–14 кг/м³) должен быть введён с 2200 м ТВД — уже опаздываем.<br><br>
+              <strong>Немедленно:</strong> ввести стабилизатор аргиллитов. Поднять ρ до 1.18 г/см³. Ввести дефлокулянт 3–4 кг/м³ (ДНС 22 — выше плана).<br><br>
+              При вскрытии кровли: <strong>РОП ≤ 5 м/ч строго</strong>. Запрет промывания при наращивании в зоне аргиллитов.
+            </div>
+            <div class="ai-actions">
+              <button class="ai-action-btn ai-action-primary">Принять рекомендацию</button>
+              <button class="ai-action-btn ai-action-ghost">Детали</button>
+            </div>
+          </div>
+
+          <div style="margin-top:12px;padding:10px 12px;background:var(--surface2);border-radius:8px;border:1px solid var(--border)">
+            <div style="font-size:11px;font-weight:600;margin-bottom:6px">Следующие ключевые события</div>
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <div style="display:flex;gap:8px;align-items:center;font-size:11px">
+                <span style="width:40px;text-align:right;color:var(--text3);font-family:monospace">2570</span>
+                <span style="width:6px;height:6px;border-radius:50%;background:var(--red);flex-shrink:0"></span>
+                <span style="color:var(--text2)">Кровля Нх I · нач. крит. зоны</span>
+              </div>
+              <div style="display:flex;gap:8px;align-items:center;font-size:11px">
+                <span style="width:40px;text-align:right;color:var(--text3);font-family:monospace">2665</span>
+                <span style="width:6px;height:6px;border-radius:50%;background:var(--red);flex-shrink:0"></span>
+                <span style="color:var(--text2)">Нестаб. аргиллиты · РОП ≤5 м/ч</span>
+              </div>
+              <div style="display:flex;gap:8px;align-items:center;font-size:11px">
+                <span style="width:40px;text-align:right;color:var(--text3);font-family:monospace">2750</span>
+                <span style="width:6px;height:6px;border-radius:50%;background:var(--amber);flex-shrink:0"></span>
+                <span style="color:var(--text2)">Нх I · P=254 атм · нефтеприток</span>
+              </div>
+              <div style="display:flex;gap:8px;align-items:center;font-size:11px">
+                <span style="width:40px;text-align:right;color:var(--text3);font-family:monospace">3050</span>
+                <span style="width:6px;height:6px;border-radius:50%;background:var(--blue);flex-shrink:0"></span>
+                <span style="color:var(--text2)">Спуск экспл. колонны Ø178 мм</span>
+              </div>
+              <div style="display:flex;gap:8px;align-items:center;font-size:11px">
+                <span style="width:40px;text-align:right;color:var(--text3);font-family:monospace">3050</span>
+                <span style="width:6px;height:6px;border-radius:50%;background:var(--purple);flex-shrink:0"></span>
+                <span style="color:var(--text2)">Нх III–IV · АВПД P=274 атм</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- АВАРИЙНЫЙ РАСТВОР STATUS -->
+          <div style="margin-top:12px;padding:10px 12px;background:var(--green-light);border:1px solid rgba(16,185,129,.2);border-radius:8px">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+              <div style="font-size:11px;font-weight:600;color:#065F46">Аварийный раствор · Готов к применению</div>
+              <div style="font-size:11px;font-weight:700;color:var(--green);font-family:monospace">35 м³</div>
+            </div>
+            <div style="font-size:10px;color:#047857">Состав: бентонит + опилки + волокно (для поглощений)</div>
+            <div style="font-size:10px;color:#047857;margin-top:2px">Ловильный инструмент: ясс + колокол + овершот — на буровой</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /right -->
+  </div><!-- /grid-main -->
+
+  <!-- KNOWLEDGE BASE SOURCE -->
+  <div class="card card-pad" style="margin-bottom:16px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <div>
+        <div style="font-size:13px;font-weight:600">База знаний · Ванкорское НГМ</div>
+        <div style="font-size:11px;color:var(--text2);margin-top:2px">24 документа · 29+ скважин · 9+ осложнений · Кусты 7, 9, 12 · 2008–2011 г.</div>
+      </div>
+      <button class="btn btn-ghost" style="font-size:12px">Добавить документы</button>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+      <div style="padding:10px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px">
+        <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Источники</div>
+        <div style="font-size:12px;font-weight:600">24 документа</div>
+        <div style="font-size:11px;color:var(--text2);margin-top:2px">Программы бурения · ГТН · Рапорта · Акты</div>
+      </div>
+      <div style="padding:10px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px">
+        <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Осложнения в базе</div>
+        <div style="font-size:12px;font-weight:600">9+ случаев</div>
+        <div style="font-size:11px;color:var(--text2);margin-top:2px">Прихват · Поглощение · Газ · АВПД</div>
+      </div>
+      <div style="padding:10px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px">
+        <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Покрытие разреза</div>
+        <div style="font-size:12px;font-weight:600">10 свит</div>
+        <div style="font-size:11px;color:var(--text2);margin-top:2px">Четвертичные → Нх III–IV (АВПД)</div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+// ── Depth fill ──
+document.getElementById('depthFill').style.width = '74.6%';
+
+// ── Scroll to alerts ──
+function scrollToAlerts() {
+  document.getElementById('alertsSection').scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+// ── Tab switching ──
+function switchTab(el, tabId) {
+  el.closest('.card').querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  el.closest('.card').querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  const t = document.getElementById(tabId);
+  if (t) t.classList.add('active');
+}
+
+// ── ПЛАН значения — интервал 219.1 мм (подход к Нх) ──
+const PLAN = {
+  density: { min: 1.18, max: 1.20, unit: 'г/см³', label: 'Плотность БР' },
+  fv:      { min: 40,   max: 60,   unit: 'с',      label: 'УВ (Марш)' },
+  pv:      { min: 12,   max: 25,   unit: 'мПа·с',  label: 'ПВ' },
+  yp:      { min: 10,   max: 20,   unit: 'lb/100ft²', label: 'ДНС' },
+  rop:     { min: 6,    max: 10,   unit: 'м/ч',    label: 'МСП' },
+  wob:     { min: 55,   max: 80,   unit: 'кН',     label: 'ВНД' },
+  flow:    { min: 25,   max: 32,   unit: 'л/с',    label: 'Расход' },
+};
+
+function getStatus(val, min, max) {
+  if (val < min) return { cls: 'val-warn', icon: '⚠', text: 'ниже' };
+  if (val > max) return { cls: 'val-warn', icon: '⚠', text: 'выше' };
+  return { cls: 'val-ok', icon: '✓', text: 'норма' };
+}
+
+function renderFactPlan(data) {
+  const keys = ['density','fv','pv','yp','rop','wob','flow'];
+  let html = '', warnings = 0;
+
+  keys.forEach(k => {
+    const p = PLAN[k];
+    const val = parseFloat(data[k]);
+    if (isNaN(val)) return;
+    const st = getStatus(val, p.min, p.max);
+    if (st.text !== 'норма') warnings++;
+    const pct = Math.min(100, Math.max(0, ((val - p.min * 0.8) / (p.max * 1.2 - p.min * 0.8)) * 100));
+    html += `
+      <div style="display:flex;align-items:center;gap:8px">
+        <div style="width:78px;font-size:11px;color:var(--text2);flex-shrink:0">${p.label}</div>
+        <div style="flex:1;position:relative;height:16px">
+          <div style="position:absolute;inset:4px 0;background:var(--bg);border-radius:2px;overflow:hidden">
+            <div style="position:absolute;left:${((p.min*0.9)/p.max*100)}%;width:${((p.max-p.min)/p.max*100)}%;height:100%;background:rgba(16,185,129,.18)"></div>
+            <div style="position:absolute;left:${pct}%;width:3px;height:100%;background:${st.text==='норма'?'var(--green)':'var(--amber)'};transform:translateX(-50%);border-radius:2px"></div>
+          </div>
+        </div>
+        <div style="font-size:11px;font-weight:700;font-family:'JetBrains Mono',monospace;width:56px;text-align:right" class="${st.cls}">${val} ${p.unit}</div>
+        <div style="font-size:11px;width:18px;text-align:center">${st.icon}</div>
+      </div>`;
+  });
+
+  document.getElementById('factPlanRows').innerHTML = html || '<div style="font-size:12px;color:var(--text3)">Нет данных — введите параметры</div>';
+
+  const banner = document.getElementById('factPlanBanner');
+  if (warnings > 0) {
+    banner.style.cssText = 'margin-top:10px;padding:8px 10px;border-radius:8px;font-size:11px;line-height:1.5;background:var(--amber-light);border:1px solid rgba(245,158,11,.2);color:#92400E';
+    banner.textContent = `⚠ ${warnings} параметр${warnings>1?'а':''} вне плана — требует внимания`;
+    document.getElementById('alertBadge').textContent = warnings + 2;
+  } else if (html) {
+    banner.style.cssText = 'margin-top:10px;padding:8px 10px;border-radius:8px;font-size:11px;background:var(--green-light);border:1px solid rgba(16,185,129,.2);color:#065F46';
+    banner.textContent = '✓ Все параметры в пределах плана';
+  }
+
+  const tiles = document.querySelectorAll('.metric-value');
+  if (tiles[1] && data.rop) tiles[1].innerHTML = parseFloat(data.rop).toFixed(1) + '<span class="metric-unit">м/ч</span>';
+  if (tiles[2] && data.density) tiles[2].innerHTML = parseFloat(data.density).toFixed(3) + '<span class="metric-unit">г/см³</span>';
+  if (tiles[0] && data.depth) {
+    const d = parseFloat(data.depth);
+    if (!d || d <= 0) { /* skip — live depth will update display */ }
+    else {
+    tiles[0].innerHTML = d.toFixed(0) + '<span class="metric-unit">м</span>';
+    document.getElementById('cockpitDepth').textContent = d.toFixed(0) + ' м';
+    document.getElementById('sidebarDepthVal').innerHTML = d.toFixed(0) + '<span style="font-size:14px;opacity:.55"> м</span>';
+    document.getElementById('sidebarDepthPct').textContent = (d / 3353 * 100).toFixed(1) + '% пути';
+    document.getElementById('depthFill').style.width = (d / 3353 * 100) + '%';
+    document.getElementById('topbarDepthText').textContent = 'Экспл. кол. · 1780–3050 м · Глубина ' + d.toFixed(0) + ' м MD';
+    document.getElementById('progressDepthText').textContent = d.toFixed(0) + ' м из 3353 м (' + (d / 3353 * 100).toFixed(1) + '%)';
+    document.getElementById('currentDepthLine').style.top = (d / 3353 * 100) + '%';
+    document.getElementById('currentDepthLine').setAttribute('data-label', 'ЗАБОЙ ' + d.toFixed(0) + ' м');
+    const dist = Math.max(0, 2665 - d);
+    document.getElementById('metricDist').innerHTML = Math.round(dist) + '<span class="metric-unit" style="font-size:14px">м MD</span>';
+    } // end else d > 0
+  }
+
+  // update mud table
+  const mudFields = [
+    { key:'density', id:'mudTableDensity', min:1.18, max:1.20, unit:'г/см³' },
+    { key:'fv',      id:'mudTableFv',      min:40,   max:60,   unit:'с'     },
+    { key:'pv',      id:'mudTablePv',      min:12,   max:25,   unit:'мПа·с' },
+    { key:'yp',      id:'mudTableYp',      min:10,   max:20,   unit:'lb/100ft²' },
+  ];
+  mudFields.forEach(f => {
+    if (!data[f.key]) return;
+    const el = document.getElementById(f.id);
+    if (!el) return;
+    const v = parseFloat(data[f.key]);
+    const ok = v >= f.min && v <= f.max;
+    el.textContent = v + ' ' + f.unit;
+    el.className = 'val-actual ' + (ok ? 'val-ok' : 'val-warn');
+  });
+
+  const now = new Date();
+  document.getElementById('factPlanUpdated').textContent = `обновлено ${now.getHours()}:${String(now.getMinutes()).padStart(2,'0')}`;
+}
+
+// ── localStorage ──
+function loadFromStorage() {
+  const keys = ['depth','density','fv','pv','yp','rop','wob','flow','torque','rpm','spp'];
+  const data = {};
+  let hasData = false;
+  keys.forEach(k => {
+    const v = localStorage.getItem('dq_' + k);
+    if (v) { data[k] = v; hasData = true; }
+  });
+  if (hasData) renderFactPlan(data);
+}
+
+// ── Обновить все индикаторы глубины из sim_live_depth ──
+function applyLiveDepth(d) {
+  if (!d || d <= 0) return;
+  const tiles = document.querySelectorAll('.metric-value');
+  if (tiles[0]) tiles[0].innerHTML = d + '<span class="metric-unit">м</span>';
+  const cd = document.getElementById('cockpitDepth');
+  if (cd) cd.textContent = d + ' м';
+  const sv = document.getElementById('sidebarDepthVal');
+  if (sv) sv.innerHTML = d + '<span style="font-size:14px;opacity:.55"> м</span>';
+  const sp = document.getElementById('sidebarDepthPct');
+  if (sp) sp.textContent = (d / 3353 * 100).toFixed(1) + '% пути';
+  const df = document.getElementById('depthFill');
+  if (df) df.style.width = (d / 3353 * 100) + '%';
+  const tt = document.getElementById('topbarDepthText');
+  if (tt) tt.textContent = 'Экспл. кол. · 1780–3050 м · Глубина ' + d + ' м MD';
+  const pt = document.getElementById('progressDepthText');
+  if (pt) pt.textContent = d + ' м из 3353 м (' + (d / 3353 * 100).toFixed(1) + '%)';
+  const dl = document.getElementById('currentDepthLine');
+  if (dl) { dl.style.top = (d / 3353 * 100) + '%'; dl.setAttribute('data-label', 'ЗАБОЙ ' + d + ' м'); }
+  const md = document.getElementById('metricDist');
+  if (md) md.innerHTML = Math.max(0, 2665 - d) + '<span class="metric-unit" style="font-size:14px">м MD</span>';
+  const sl = document.getElementById('sliderDepthLabel');
+  if (sl) sl.textContent = d + ' м';
+}
+
+// ── Listen storage events ──
+window.addEventListener('storage', e => {
+  if (e.key === 'sim_live_depth' && e.newValue) applyLiveDepth(parseInt(e.newValue));
+  if (e.key && e.key.startsWith('dq_')) loadFromStorage();
+});
+
+// ── Sim controls ──
+// _mode: 'drilling' | 'pooh' | 'rih' | 'idle'
+let _mode = 'drilling';
+let _simPlaying = true;
+
+function sendSimMsg(data) {
+  const iframe = document.getElementById('cockpitFrame');
+  if (iframe && iframe.contentWindow)
+    iframe.contentWindow.postMessage({ type: 'sim_cmd', ...data }, '*');
+}
+function sendSimCmd(cmd) { sendSimMsg({ cmd }); }
+
+// ── Бурение ──
+function toggleDrilling() {
+  if (_mode !== 'drilling') {
+    _mode = 'drilling';
+    _simPlaying = true;
+    sendSimCmd('play');
+  } else {
+    _simPlaying = !_simPlaying;
+    sendSimCmd(_simPlaying ? 'play' : 'pause');
+  }
+  updateAllBtns();
+}
+
+// ── Подъём инструмента ──
+function togglePooh() {
+  if (_mode !== 'pooh') {
+    // Начать подъём — требуется скорость
+    const input = document.getElementById('tripSpeedInput');
+    const spd = parseFloat(input.value);
+    if (!spd || spd < 50 || spd > 3000) {
+      input.style.borderColor = 'var(--red)';
+      input.focus();
+      setTimeout(() => { input.style.borderColor = 'rgba(124,58,237,.3)'; }, 2000);
+      return;
+    }
+    _mode = 'pooh';
+    _simPlaying = true;
+    sendSimMsg({ cmd: 'startTrip', value: spd });
+  } else {
+    // Пауза / возобновление подъёма
+    _simPlaying = !_simPlaying;
+    sendSimCmd(_simPlaying ? 'play' : 'pause');
+  }
+  updateAllBtns();
+}
+
+// ── Спуск инструмента ──
+function toggleRih() {
+  if (_mode !== 'rih') {
+    // Начать спуск — требуется скорость
+    const input = document.getElementById('rihSpeedInput');
+    const spd = parseFloat(input.value);
+    if (!spd || spd < 50 || spd > 3000) {
+      input.style.borderColor = 'var(--red)';
+      input.focus();
+      setTimeout(() => { input.style.borderColor = 'rgba(14,165,233,.3)'; }, 2000);
+      return;
+    }
+    _mode = 'rih';
+    _simPlaying = true;
+    sendSimMsg({ cmd: 'startRih', value: spd });
+  } else {
+    // Пауза / возобновление спуска
+    _simPlaying = !_simPlaying;
+    sendSimCmd(_simPlaying ? 'play' : 'pause');
+  }
+  updateAllBtns();
+}
+
+function setSimRop(val) {
+  const rop = parseFloat(val);
+  if (!isNaN(rop) && rop > 0) {
+    sendSimMsg({ cmd: 'setRop', value: rop });
+    localStorage.setItem('dq_rop', rop);
+  }
+}
+
+function onDepthSlider(val) {
+  const d = parseInt(val);
+  document.getElementById('sliderDepthLabel').textContent = d + ' м';
+  sendSimMsg({ cmd: 'seekDepth', value: d });
+}
+
+// ── Обновление всех кнопок ──
+function updateAllBtns() {
+  // Бурение
+  const drillBtn   = document.getElementById('drillBtn');
+  const drillIcon  = document.getElementById('drillIcon');
+  const drillLabel = document.getElementById('drillLabel');
+  const dot  = document.getElementById('simStatusDot');
+  const status = document.getElementById('simStatusLabel');
+
+  if (_mode === 'drilling') {
+    drillBtn.style.background = _simPlaying ? 'var(--green)' : 'var(--amber)';
+    drillIcon.textContent  = _simPlaying ? '⏸' : '▶';
+    drillLabel.textContent = _simPlaying ? 'Пауза бурения' : 'Запустить бурение';
+    if (_simPlaying) {
+      dot.style.background = 'var(--green)';
+      status.style.color   = 'var(--green)';
+      status.textContent   = 'БУРЕНИЕ';
+    } else {
+      dot.style.background = 'var(--amber)';
+      status.style.color   = 'var(--amber)';
+      status.textContent   = 'ПАУЗА';
+    }
+  } else {
+    // Не бурим — кнопка Запустить бурение
+    drillBtn.style.background = 'var(--green)';
+    drillIcon.textContent  = '▶';
+    drillLabel.textContent = 'Запустить бурение';
+  }
+
+  // Подъём
+  const poohBtn   = document.getElementById('poohBtn');
+  const poohIcon  = document.getElementById('poohIcon');
+  const poohLabel = document.getElementById('poohLabel');
+  if (_mode === 'pooh') {
+    poohBtn.style.background = _simPlaying ? '#7C3AED' : '#92400E';
+    poohIcon.textContent  = _simPlaying ? '⏸' : '▶';
+    poohLabel.textContent = _simPlaying ? 'Пауза подъёма' : 'Возобновить подъём';
+    dot.style.background = '#7C3AED';
+    status.style.color   = '#7C3AED';
+    status.textContent   = 'ПОДЪЁМ';
+  } else {
+    poohBtn.style.background = '#7C3AED';
+    poohIcon.textContent  = '⬆';
+    poohLabel.textContent = 'Подъём инструмента';
+  }
+
+  // Спуск
+  const rihBtn   = document.getElementById('rihBtn');
+  const rihIcon  = document.getElementById('rihIcon');
+  const rihLabel = document.getElementById('rihLabel');
+  if (_mode === 'rih') {
+    rihBtn.style.background = _simPlaying ? '#0EA5E9' : '#1D4ED8';
+    rihIcon.textContent  = _simPlaying ? '⏸' : '▶';
+    rihLabel.textContent = _simPlaying ? 'Пауза спуска' : 'Возобновить спуск';
+    dot.style.background = '#0EA5E9';
+    status.style.color   = '#0EA5E9';
+    status.textContent   = 'СПУСК';
+  } else {
+    rihBtn.style.background = '#0EA5E9';
+    rihIcon.textContent  = '⬇';
+    rihLabel.textContent = 'Спуск инструмента';
+  }
+}
+
+// Устаревшие функции — оставляем для совместимости
+function toggleSim() { toggleDrilling(); }
+function startTrip() { togglePooh(); }
+function updateSimBtn(playing) { _simPlaying = playing; updateAllBtns(); }
+function setSimSpeed() {} // убраны кнопки скорости
+
+window.addEventListener('message', e => {
+  if (e.data && e.data.type === 'sim_state') {
+    _simPlaying = e.data.playing;
+    updateSimBtn(_simPlaying);
+  }
+});
+
+// ── Init ──
+loadFromStorage();
+const _savedDepth = parseInt(localStorage.getItem('sim_live_depth'));
+if (_savedDepth > 0) {
+  applyLiveDepth(_savedDepth); // immediately populate all depth indicators
+}
+// Синхронизируем слайдер с текущим забоем
+const _initDepth = (_savedDepth > 0 ? _savedDepth : null) || parseInt(localStorage.getItem('dq_depth')) || 2500;
+const _initSlider = document.getElementById('depthSlider');
+if (_initSlider) _initSlider.value = _initDepth;
+document.getElementById('sliderDepthLabel').textContent = _initDepth + ' м';
+// Отправляем seekDepth только если симулятор ещё не запущен (нет живой глубины)
+if (!(_savedDepth > 0)) {
+  const _seekTarget = parseInt(localStorage.getItem('dq_depth')) || 2500;
+  setTimeout(() => { sendSimMsg({ cmd: 'seekDepth', value: _seekTarget }); }, 1500);
+}
+
+// ── Live ROP animation — только при активном бурении ──
+setInterval(() => {
+  if (!_simPlaying) return;  // пауза — цифры не меняются
+  if (!localStorage.getItem('dq_rop')) {
+    const rop = (6.5 + Math.random() * 2.5).toFixed(1);
+    const tiles = document.querySelectorAll('.metric-value');
+    if (tiles[1]) tiles[1].innerHTML = rop + '<span class="metric-unit">м/ч</span>';
+  }
+}, 8000);
+
+// ── Глубина из iframe через localStorage (опрос каждые 500 мс) ──
+setInterval(() => {
+  const d = parseInt(localStorage.getItem('sim_live_depth'));
+  if (d > 0) applyLiveDepth(d);
+}, 500);
+
+// ── showSection — навигация DWOP ──
+const DWOP_SECTIONS = {
+  overview: 'overview', casing: 'casing', traj: 'traj',
+  bha: 'bha', mud: 'mud', risks: 'risks', phases: 'phases'
+};
+function showSection(name) {
+  document.querySelectorAll('.sidebar .nav-item').forEach(el => el.classList.remove('active'));
+  // Пометить активный пункт
+  document.querySelectorAll('.sidebar .nav-item').forEach(el => {
+    if ((el.getAttribute('onclick') || '').includes("'" + name + "'"))
+      el.classList.add('active');
+  });
+  if (name === 'dashboard') return; // командный центр — ничего не делаем
+  // Открываем DWOP в отдельной вкладке на нужной секции
+  window.open('../docs/vankor_dwop.html', 'dwop_window');
+  // Небольшая задержка, затем переключаем секцию через postMessage
+  setTimeout(() => {
+    const w = window.open('', 'dwop_window');
+    if (w) w.postMessage({ type: 'show_view', view: name }, '*');
+  }, 800);
+}
+</script>
+</body>
+</html>

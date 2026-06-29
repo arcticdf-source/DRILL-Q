@@ -1,0 +1,1012 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>125 · Контроль плотности центрифугой</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap");
+
+    :root {
+      --bg-0: #07111a;
+      --bg-1: #102133;
+      --bg-2: #1a3448;
+      --panel: rgba(10, 18, 30, 0.86);
+      --line: rgba(226, 237, 255, 0.14);
+      --line-soft: rgba(226, 237, 255, 0.08);
+      --text: #edf5ff;
+      --muted: #9ab0c7;
+      --cyan: #20d9b4;
+      --blue: #8db4ff;
+      --amber: #ffbf66;
+      --danger: #ff8f8f;
+      --shadow: 0 24px 56px rgba(0, 0, 0, 0.42);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      font-family: "Manrope", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(920px 420px at 0% -10%, rgba(32,217,180,.17), transparent),
+        radial-gradient(760px 360px at 100% 0%, rgba(255,191,102,.14), transparent),
+        linear-gradient(145deg, var(--bg-0), var(--bg-1) 48%, var(--bg-2));
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(to right, rgba(255,255,255,.022) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,.022) 1px, transparent 1px);
+      background-size: 42px 42px;
+      mask-image: radial-gradient(circle at 50% 20%, rgba(0,0,0,.92), transparent 72%);
+    }
+
+    .wrap {
+      position: relative;
+      z-index: 1;
+      width: min(1380px, 94vw);
+      margin: 0 auto;
+      padding: 24px 0 56px;
+    }
+
+    .topbar, .hero, .panel, .note {
+      border: 1px solid var(--line-soft);
+      box-shadow: var(--shadow);
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 12px 16px;
+      border-radius: 16px;
+      background: rgba(7, 12, 20, 0.62);
+      backdrop-filter: blur(10px);
+      position: sticky;
+      top: 12px;
+      z-index: 20;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: "Oswald", sans-serif;
+      font-size: 20px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 35% 35%, #fff2d0, var(--amber));
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn, .btn-ghost, button, input {
+      border-radius: 12px;
+      font: inherit;
+    }
+
+    .btn, .btn-ghost {
+      text-decoration: none;
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+
+    .btn {
+      color: #2a1800;
+      background: linear-gradient(135deg, #ffe4ae, var(--amber));
+      border: 1px solid rgba(255,191,102,.82);
+    }
+
+    .btn-ghost {
+      color: var(--muted);
+      border: 1px solid var(--line-soft);
+      background: rgba(255,255,255,.03);
+    }
+
+    .hero {
+      margin-top: 18px;
+      border-radius: 26px;
+      padding: clamp(22px, 3vw, 34px);
+      background:
+        radial-gradient(520px 240px at 8% 0%, rgba(255,191,102,.14), transparent),
+        radial-gradient(540px 260px at 100% 0%, rgba(32,217,180,.1), transparent),
+        linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015)),
+        var(--panel);
+    }
+
+    .eyebrow, .status-pill {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      border: 1px solid var(--line-soft);
+      background: rgba(255,255,255,.04);
+    }
+
+    .eyebrow {
+      padding: 6px 10px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .09em;
+      color: #d5e7f8;
+    }
+
+    h1 {
+      margin: 14px 0 10px;
+      font-family: "Oswald", sans-serif;
+      font-size: clamp(38px, 5vw, 58px);
+      line-height: .97;
+    }
+
+    h1 span { color: var(--amber); }
+
+    .lead {
+      margin: 0;
+      max-width: 980px;
+      color: #cad9eb;
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    .hero-stats {
+      margin-top: 16px;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .stat, .summary-card, .detail-card, .factor-card, .note {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255,255,255,.03);
+      padding: 14px;
+    }
+
+    .stat strong,
+    .summary-card .value,
+    .detail-card .value,
+    .factor-card .value,
+    .bar-value {
+      display: block;
+      font-family: "Oswald", sans-serif;
+    }
+
+    .stat strong {
+      font-size: 24px;
+      color: var(--amber);
+    }
+
+    .stat span,
+    .formula p,
+    .panel-head p,
+    .table-card p,
+    .logic p,
+    .logic li,
+    .note p,
+    .factor-card small {
+      color: #c9d8ea;
+      line-height: 1.58;
+    }
+
+    .stat span {
+      display: block;
+      margin-top: 5px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--muted);
+    }
+
+    .layout {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: 1.04fr .96fr;
+      gap: 16px;
+    }
+
+    .stack {
+      display: grid;
+      gap: 16px;
+    }
+
+    .panel {
+      border-radius: 22px;
+      background: var(--panel);
+      padding: 18px;
+    }
+
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .panel-head h2 {
+      margin: 0;
+      font-size: 26px;
+    }
+
+    .panel-head p {
+      margin: 6px 0 0;
+      font-size: 13px;
+      max-width: 680px;
+    }
+
+    .status-pill {
+      padding: 6px 10px;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      font-weight: 800;
+      color: #d5e7f8;
+      white-space: nowrap;
+    }
+
+    .table-card {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255,255,255,.03);
+      overflow: hidden;
+    }
+
+    .calc-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .calc-table th,
+    .calc-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line-soft);
+      vertical-align: middle;
+    }
+
+    .calc-table tbody tr:last-child th,
+    .calc-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .calc-table th {
+      width: 56%;
+      text-align: left;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .calc-table td.value-cell {
+      width: 24%;
+    }
+
+    .calc-table td.unit-cell {
+      width: 20%;
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+
+    .calc-table input {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: #091423;
+      color: var(--text);
+      padding: 10px 12px;
+    }
+
+    .calc-table input:focus {
+      outline: none;
+      border-color: var(--amber);
+    }
+
+    .result-number {
+      font-family: "Oswald", sans-serif;
+      font-size: 28px;
+      color: #eef7ff;
+      line-height: 1;
+    }
+
+    .result-number.emphasis {
+      color: var(--amber);
+    }
+
+    .summary-grid,
+    .detail-grid,
+    .factors-grid,
+    .note-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .detail-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .factors-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .note-grid { margin-top: 16px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+    .summary-card strong,
+    .detail-card strong,
+    .factor-card strong,
+    .formula strong,
+    .bar-label,
+    .mini-label {
+      display: block;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--muted);
+    }
+
+    .summary-card .value {
+      margin-top: 8px;
+      font-size: clamp(28px, 3.2vw, 36px);
+      line-height: 1;
+      color: var(--amber);
+    }
+
+    .detail-card .value,
+    .factor-card .value {
+      margin-top: 8px;
+      font-size: 26px;
+      line-height: 1.05;
+      color: #eef7ff;
+    }
+
+    .detail-card .sub,
+    .factor-card small {
+      display: block;
+      margin-top: 8px;
+      font-size: 12px;
+    }
+
+    .actions-row {
+      margin-top: 16px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      color: var(--text);
+      padding: 10px 14px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    button.primary {
+      color: #2a1800;
+      background: linear-gradient(135deg, #ffe4ae, var(--amber));
+      border-color: rgba(255,191,102,.82);
+    }
+
+    .formula {
+      margin-top: 16px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 14px;
+      background: rgba(255,255,255,.025);
+    }
+
+    .formula code {
+      display: block;
+      margin-top: 8px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: #091423;
+      color: #dff7ff;
+      font-size: 12px;
+      line-height: 1.55;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .warning-box {
+      display: none;
+      margin-top: 16px;
+      padding: 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 143, 143, 0.35);
+      background: rgba(255, 143, 143, 0.08);
+    }
+
+    .warning-box.show {
+      display: block;
+    }
+
+    .warning-box strong {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 12px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: #ffc5c5;
+    }
+
+    .warning-box p {
+      margin: 0;
+      color: #ffe5e5;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .bars {
+      display: grid;
+      gap: 12px;
+    }
+
+    .bar-row {
+      display: grid;
+      grid-template-columns: 180px 1fr 84px;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .bar-track {
+      position: relative;
+      height: 14px;
+      overflow: hidden;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.05);
+    }
+
+    .bar-fill {
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 0;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--amber), #ffd59b);
+    }
+
+    .bar-fill.blue { background: linear-gradient(90deg, var(--blue), #bcd0ff); }
+    .bar-fill.cyan { background: linear-gradient(90deg, var(--cyan), #8ff6df); }
+    .bar-fill.red { background: linear-gradient(90deg, #ff8f8f, #ffc2c2); }
+
+    .logic {
+      margin-top: 16px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .logic-card {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255,255,255,.03);
+      padding: 16px;
+    }
+
+    .logic-card h3 {
+      margin: 0 0 10px;
+      font-size: 18px;
+    }
+
+    .logic ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    .accent-amber { color: var(--amber); }
+    .accent-cyan { color: var(--cyan); }
+    .danger { color: var(--danger); }
+
+    @media (max-width: 1080px) {
+      .layout,
+      .hero-stats,
+      .summary-grid,
+      .detail-grid,
+      .factors-grid,
+      .note-grid,
+      .logic {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .topbar { position: static; }
+      .bar-row { grid-template-columns: 1fr; }
+      .calc-table th,
+      .calc-table td {
+        display: block;
+        width: 100%;
+      }
+      .calc-table td.unit-cell {
+        padding-top: 0;
+        padding-bottom: 14px;
+      }
+    }
+  </style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+  <main class="wrap">
+    <header class="topbar">
+      <div class="brand"><span class="dot" aria-hidden="true"></span><span>Nexus Oilfield AI · FCU</span></div>
+      <div class="actions">
+        <a class="btn-ghost" href="120_drilling_calculations_menu.html">Назад к меню расчетов</a>
+        <a class="btn" href="83_drilling_entry_dashboard.html">Назад к drilling entry</a>
+      </div>
+    </header>
+
+    <section class="hero">
+      <span class="eyebrow">Workbook Sheet 8 · Flocculation Method</span>
+      <h1>Контроль плотности <span>центрифугой</span></h1>
+      <p class="lead">Отдельный экран для flocculation-логики из workbook: сколько раствора нужно переработать на FCU, сколько свежего раствора ввести в систему и какие естественные потери заложены на интервал. Интерфейс оставлен в том же визуальном языке, что и остальные расчетные страницы, но вместо Excel-сетки данные собраны в чистые инженерные таблицы и карточки.</p>
+
+      <div class="hero-stats">
+        <div class="stat"><strong id="heroFcu">35.2 м³</strong><span>Переработать на FCU</span></div>
+        <div class="stat"><strong id="heroAdd">46.0 м³</strong><span>Ввести раствора</span></div>
+        <div class="stat"><strong id="heroLoss">10.8 м³</strong><span>Естественные потери</span></div>
+        <div class="stat"><strong id="heroRemain">4 374 кг</strong><span>Оставшийся шлам</span></div>
+      </div>
+    </section>
+
+    <section class="layout">
+      <div class="stack">
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>Исходные данные</h2>
+              <p>Sheet 8 строится вокруг допустимой концентрации твердой фазы при целевой плотности, массы выбуренной породы на интервале и доли шлама, которая все же остается в системе после поверхностной очистки.</p>
+            </div>
+            <span class="status-pill">FCU input table</span>
+          </div>
+
+          <div class="table-card">
+            <table class="calc-table">
+              <tbody>
+                <tr>
+                  <th>Необходимо поддерживать плотность раствора</th>
+                  <td class="value-cell"><input id="targetDensity" type="number" step="0.001" value="1.1" /></td>
+                  <td class="unit-cell">г/см³</td>
+                </tr>
+                <tr>
+                  <th>Размер долота</th>
+                  <td class="value-cell"><input id="bitSize" type="number" step="0.1" value="143.9" /></td>
+                  <td class="unit-cell">мм</td>
+                </tr>
+                <tr>
+                  <th>Количество пробуренных метров</th>
+                  <td class="value-cell"><input id="metersDrilled" type="number" step="1" value="360" /></td>
+                  <td class="unit-cell">м</td>
+                </tr>
+                <tr>
+                  <th>Плотность добавляемого раствора</th>
+                  <td class="value-cell"><input id="addedMudDensity" type="number" step="0.001" value="1.05" /></td>
+                  <td class="unit-cell">г/см³</td>
+                </tr>
+                <tr>
+                  <th>Удельный вес выбуренной породы</th>
+                  <td class="value-cell"><input id="rockDensity" type="number" step="0.01" value="2.6" /></td>
+                  <td class="unit-cell">г/см³</td>
+                </tr>
+                <tr>
+                  <th>Очистка раствора от шлама на поверхности</th>
+                  <td class="value-cell"><input id="surfaceCleaning" type="number" step="1" value="75" /></td>
+                  <td class="unit-cell">%</td>
+                </tr>
+                <tr>
+                  <th>Предполагаемый коэффициент кавернозности</th>
+                  <td class="value-cell"><input id="cavernosity" type="number" step="0.01" value="1.15" /></td>
+                  <td class="unit-cell">коэф.</td>
+                </tr>
+                <tr>
+                  <th>Влажность на ВС и Ц.Ф.</th>
+                  <td class="value-cell"><input id="moisturePct" type="number" step="1" value="50" /></td>
+                  <td class="unit-cell">%</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="actions-row">
+            <button class="primary" id="recalcBtn" type="button">Пересчитать</button>
+            <button id="resetBtn" type="button">Сбросить пример</button>
+          </div>
+
+          <div class="formula">
+            <strong>Логика flocculation</strong>
+            <code id="formulaBox"></code>
+          </div>
+
+          <div class="warning-box" id="inputWarning">
+            <strong>Проверь входные данные</strong>
+            <p id="inputWarningText"></p>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>Баланс потерь</h2>
+              <p>Ниже разложен блок естественных потерь, который workbook прибавляет к объему раствора для ввода. Это удобно, когда нужно быстро объяснить, откуда взялась разница между FCU-объемом и total add volume.</p>
+            </div>
+            <span class="status-pill">Loss breakdown</span>
+          </div>
+
+          <div class="bars">
+            <div class="bar-row">
+              <div class="bar-label">Объем ствола на интервале</div>
+              <div class="bar-track"><div class="bar-fill" id="barHole"></div></div>
+              <div class="bar-value" id="barHoleValue">6.7</div>
+            </div>
+            <div class="bar-row">
+              <div class="bar-label">Влага на удаленном шламе</div>
+              <div class="bar-track"><div class="bar-fill blue" id="barRemoved"></div></div>
+              <div class="bar-value" id="barRemovedValue">2.5</div>
+            </div>
+            <div class="bar-row">
+              <div class="bar-label">Влага на оставшемся шламе</div>
+              <div class="bar-track"><div class="bar-fill cyan" id="barRetained"></div></div>
+              <div class="bar-value" id="barRetainedValue">0.8</div>
+            </div>
+            <div class="bar-row">
+              <div class="bar-label">Сервисный запас workbook</div>
+              <div class="bar-track"><div class="bar-fill red" id="barService"></div></div>
+              <div class="bar-value" id="barServiceValue">0.7</div>
+            </div>
+          </div>
+
+          <div class="table-card" style="margin-top:16px;">
+            <table class="calc-table">
+              <tbody>
+                <tr>
+                  <th>Объем 1 п.м. скважины</th>
+                  <td class="value-cell"><span class="result-number" id="volumePerMeterValue">18.7</span></td>
+                  <td class="unit-cell">л/м</td>
+                </tr>
+                <tr>
+                  <th>Масса породы с 1 п.м.</th>
+                  <td class="value-cell"><span class="result-number" id="massPerMeterValue">48.6</span></td>
+                  <td class="unit-cell">кг/м</td>
+                </tr>
+                <tr>
+                  <th>Масса породы на интервале</th>
+                  <td class="value-cell"><span class="result-number" id="totalRockMassValue">17 497</span></td>
+                  <td class="unit-cell">кг</td>
+                </tr>
+                <tr>
+                  <th>Оставшийся шлам после очистки</th>
+                  <td class="value-cell"><span class="result-number emphasis" id="remainingSolidsValue">4 374</span></td>
+                  <td class="unit-cell">кг</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+
+      <div class="stack">
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>Главные результаты</h2>
+              <p>Workbook выводит два ключевых объема: сколько раствора нужно прогнать через FCU и сколько суммарно ввести раствора с учетом естественных потерь на интервале.</p>
+            </div>
+            <span class="status-pill">Operational outputs</span>
+          </div>
+
+          <div class="summary-grid">
+            <div class="summary-card">
+              <strong>Необходимо переработать раствора на FCU</strong>
+              <span class="value" id="fcuVolume">35.2 м³</span>
+            </div>
+            <div class="summary-card">
+              <strong>Необходимо ввести раствора</strong>
+              <span class="value" id="totalAddVolume">46.0 м³</span>
+            </div>
+            <div class="summary-card">
+              <strong>Естественные потери раствора</strong>
+              <span class="value" id="naturalLossesValue">10.8 м³</span>
+            </div>
+            <div class="summary-card">
+              <strong>Допустимая тверд. фаза при нужной плотности</strong>
+              <span class="value" id="targetSolidsValue">162.5 кг/м³</span>
+            </div>
+          </div>
+
+          <div class="detail-grid" style="margin-top:16px;">
+            <div class="detail-card">
+              <strong>Вода для разбавления оставшегося шлама</strong>
+              <span class="value" id="dilutionWaterValue">26.9 м³</span>
+              <span class="sub">База workbook: сколько жидкости нужно, чтобы оставшийся шлам был совместим с целевой плотностью раствора.</span>
+            </div>
+            <div class="detail-card">
+              <strong>Прирост массы от добавляемого раствора</strong>
+              <span class="value" id="mudMassIncreaseValue">1 346 кг</span>
+              <span class="sub">Вклад добавляемого раствора в общий mass balance при его собственной плотности.</span>
+            </div>
+            <div class="detail-card">
+              <strong>Удаленный шлам</strong>
+              <span class="value" id="removedSolidsValue">13 123 кг</span>
+              <span class="sub">Часть выбуренной породы, которую поверхностная очистка выводит из системы.</span>
+            </div>
+            <div class="detail-card">
+              <strong>Масса для переработки на FCU</strong>
+              <span class="value" id="processMassValue">5 720 кг</span>
+              <span class="sub">Сумма оставшегося шлама и вклада fresh mud, которая переводится в FCU volume.</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>Расчетная таблица</h2>
+              <p>Здесь сохранен инженерный след workbook, но уже в нормальном табличном виде: промежуточные величины собраны рядом с операционными результатами.</p>
+            </div>
+            <span class="status-pill">Workbook trace</span>
+          </div>
+
+          <div class="table-card">
+            <table class="calc-table">
+              <tbody>
+                <tr>
+                  <th>Допустимая тверд. фаза при целевой плотности</th>
+                  <td class="value-cell"><span class="result-number" id="targetSolidsTable">162.5</span></td>
+                  <td class="unit-cell">кг/м³</td>
+                </tr>
+                <tr>
+                  <th>Вода для разбавления оставшегося шлама</th>
+                  <td class="value-cell"><span class="result-number" id="dilutionWaterTable">26.9</span></td>
+                  <td class="unit-cell">м³</td>
+                </tr>
+                <tr>
+                  <th>Прирост массы в разбавленном шламе</th>
+                  <td class="value-cell"><span class="result-number" id="mudMassIncreaseTable">1 346</span></td>
+                  <td class="unit-cell">кг</td>
+                </tr>
+                <tr>
+                  <th>Масса после оставшейся породы</th>
+                  <td class="value-cell"><span class="result-number" id="processMassTable">5 720</span></td>
+                  <td class="unit-cell">кг</td>
+                </tr>
+                <tr>
+                  <th>Необходимо переработать раствора на FCU</th>
+                  <td class="value-cell"><span class="result-number emphasis" id="fcuVolumeTable">35.2</span></td>
+                  <td class="unit-cell">м³</td>
+                </tr>
+                <tr>
+                  <th>Необходимо ввести раствора</th>
+                  <td class="value-cell"><span class="result-number emphasis" id="totalAddVolumeTable">46.0</span></td>
+                  <td class="unit-cell">м³</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section class="panel" style="margin-top:16px;">
+      <div class="panel-head">
+        <div>
+          <h2>Инженерная логика</h2>
+          <p>Модуль нужен для практического ответа на один вопрос: если держим раствор на заданной плотности, сколько объема надо прогнать через FCU и сколько новой жидкости придется подать, чтобы компенсировать solids loading и потери на интервале.</p>
+        </div>
+        <span class="status-pill">How to read it</span>
+      </div>
+
+      <div class="logic">
+        <div class="logic-card">
+          <h3>Что делает workbook</h3>
+          <p><span class="accent-amber">Целевая плотность</span> переводится в допустимое содержание твердой фазы в кг/м³. Затем считается, сколько породы реально образуется на пробуренном интервале с учетом кавернозности.</p>
+          <ul>
+            <li>Поверхностная очистка убирает только часть шлама.</li>
+            <li>Остаток шлама надо разбавить до плотности, которую система должна держать.</li>
+            <li>После этого volume для FCU и total add volume считаются уже из mass balance, а не «на глаз».</li>
+          </ul>
+        </div>
+        <div class="logic-card">
+          <h3>Как читать два главных выхода</h3>
+          <p><span class="accent-cyan">FCU volume</span> показывает нагрузку именно на центрифугу. <span class="accent-amber">Volume to add</span> больше, потому что workbook сверху добавляет естественные потери раствора на интервале.</p>
+          <ul>
+            <li>Если растет кавернозность, оба объема растут почти сразу.</li>
+            <li>Если падает эффективность surface cleaning, возрастает remaining solids и растет FCU demand.</li>
+            <li>Если add mud тяжелее, чем кажется, система требует больший volume balance для удержания целевой плотности.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="note-grid">
+        <div class="note">
+          <strong>Когда применять</strong>
+          <p>Удобно для planning и оперативного сопровождения, когда надо быстро оценить FCU throughput на интервале и объем подпитки по flocculation-сценарию.</p>
+        </div>
+        <div class="note">
+          <strong>Где быть осторожным</strong>
+          <p>Параметр влажности и сервисный запас `2 л/м` приходят прямо из workbook-логики. Это не физическая константа, а рабочее допущение модели.</p>
+        </div>
+        <div class="note">
+          <strong>Что логично делать дальше</strong>
+          <p>После этого расчета обычно имеет смысл смотреть следующий модуль по solid control, если нужно сравнить chemical flocculation against purely mechanical removal.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      const defaults = {
+        targetDensity: 1.1,
+        bitSize: 143.9,
+        metersDrilled: 360,
+        addedMudDensity: 1.05,
+        rockDensity: 2.6,
+        surfaceCleaning: 75,
+        cavernosity: 1.15,
+        moisturePct: 50
+      };
+
+      const ids = [
+        'targetDensity',
+        'bitSize',
+        'metersDrilled',
+        'addedMudDensity',
+        'rockDensity',
+        'surfaceCleaning',
+        'cavernosity',
+        'moisturePct'
+      ];
+
+      function readNumber(id) {
+        const value = Number(document.getElementById(id).value);
+        return Number.isFinite(value) ? value : 0;
+      }
+
+      function clamp(value, min, max) {
+        return Math.min(max, Math.max(min, value));
+      }
+
+      function fmt(value, digits) {
+        return Number.isFinite(value) ? value.toFixed(digits) : '0';
+      }
+
+      function fmtInt(value) {
+        return Number.isFinite(value) ? new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 0 }).format(value) : '0';
+      }
+
+      function setText(id, value) {
+        document.getElementById(id).textContent = value;
+      }
+
+      function compute() {
+        const targetDensity = readNumber('targetDensity');
+        const bitSize = readNumber('bitSize');
+        const metersDrilled = readNumber('metersDrilled');
+        const addedMudDensity = readNumber('addedMudDensity');
+        const rockDensity = readNumber('rockDensity');
+        const surfaceCleaning = clamp(readNumber('surfaceCleaning'), 0, 100);
+        const cavernosity = readNumber('cavernosity');
+        const moisturePct = clamp(readNumber('moisturePct'), 0, 100);
+
+        const warning = document.getElementById('inputWarning');
+        const warningText = document.getElementById('inputWarningText');
+
+        if (targetDensity <= 1 || rockDensity <= 1 || rockDensity <= targetDensity || bitSize <= 0 || metersDrilled < 0 || cavernosity <= 0) {
+          warning.classList.add('show');
+          warningText.textContent = 'Для этого расчета нужны физически согласованные входы: целевая плотность должна быть больше 1.0 г/см³, плотность породы должна быть выше целевой, а размер долота и коэффициент кавернозности должны быть положительными.';
+          return;
+        }
+
+        warning.classList.remove('show');
+        warningText.textContent = '';
+
+        const targetSolidsKgM3 = ((targetDensity - 1) / (rockDensity - 1)) * 1000 * rockDensity;
+        const volumePerMeterLiters = (bitSize * bitSize * 0.785 / 1000) * cavernosity;
+        const massPerMeterKg = volumePerMeterLiters * rockDensity;
+        const totalRockMassKg = massPerMeterKg * metersDrilled;
+        const remainingSolidsKg = totalRockMassKg * (100 - surfaceCleaning) / 100;
+        const removedSolidsKg = totalRockMassKg - remainingSolidsKg;
+        const dilutionWaterLiters = remainingSolidsKg / targetSolidsKgM3 * 1000;
+        const dilutionWaterM3 = dilutionWaterLiters / 1000;
+        const mudMassIncreaseKg = (addedMudDensity - 1) * dilutionWaterLiters;
+        const processMassKg = remainingSolidsKg + mudMassIncreaseKg;
+        const fcuVolumeM3 = processMassKg / targetSolidsKgM3;
+
+        const holeVolumeLossLiters = volumePerMeterLiters * metersDrilled;
+        const removedMoistureLiters = (removedSolidsKg / rockDensity) * moisturePct / 100;
+        const retainedMoistureLiters = (remainingSolidsKg / rockDensity) * moisturePct / 100;
+        const serviceLossLiters = 2 * metersDrilled;
+        const naturalLossesLiters = holeVolumeLossLiters + removedMoistureLiters + retainedMoistureLiters + serviceLossLiters;
+        const naturalLossesM3 = naturalLossesLiters / 1000;
+        const totalAddVolumeM3 = fcuVolumeM3 + naturalLossesM3;
+
+        const maxLossComponent = Math.max(holeVolumeLossLiters, removedMoistureLiters, retainedMoistureLiters, serviceLossLiters, 1);
+
+        setText('heroFcu', `${fmt(fcuVolumeM3, 1)} м³`);
+        setText('heroAdd', `${fmt(totalAddVolumeM3, 1)} м³`);
+        setText('heroLoss', `${fmt(naturalLossesM3, 1)} м³`);
+        setText('heroRemain', `${fmtInt(remainingSolidsKg)} кг`);
+
+        setText('fcuVolume', `${fmt(fcuVolumeM3, 1)} м³`);
+        setText('totalAddVolume', `${fmt(totalAddVolumeM3, 1)} м³`);
+        setText('naturalLossesValue', `${fmt(naturalLossesM3, 1)} м³`);
+        setText('targetSolidsValue', `${fmt(targetSolidsKgM3, 1)} кг/м³`);
+
+        setText('dilutionWaterValue', `${fmt(dilutionWaterM3, 1)} м³`);
+        setText('mudMassIncreaseValue', `${fmtInt(mudMassIncreaseKg)} кг`);
+        setText('removedSolidsValue', `${fmtInt(removedSolidsKg)} кг`);
+        setText('processMassValue', `${fmtInt(processMassKg)} кг`);
+
+        setText('targetSolidsTable', fmt(targetSolidsKgM3, 1));
+        setText('dilutionWaterTable', fmt(dilutionWaterM3, 1));
+        setText('mudMassIncreaseTable', fmtInt(mudMassIncreaseKg));
+        setText('processMassTable', fmtInt(processMassKg));
+        setText('fcuVolumeTable', fmt(fcuVolumeM3, 1));
+        setText('totalAddVolumeTable', fmt(totalAddVolumeM3, 1));
+
+        setText('volumePerMeterValue', fmt(volumePerMeterLiters, 1));
+        setText('massPerMeterValue', fmt(massPerMeterKg, 1));
+        setText('totalRockMassValue', fmtInt(totalRockMassKg));
+        setText('remainingSolidsValue', fmtInt(remainingSolidsKg));
+
+        document.getElementById('barHole').style.width = `${(holeVolumeLossLiters / maxLossComponent) * 100}%`;
+        document.getElementById('barRemoved').style.width = `${(removedMoistureLiters / maxLossComponent) * 100}%`;
+        document.getElementById('barRetained').style.width = `${(retainedMoistureLiters / maxLossComponent) * 100}%`;
+        document.getElementById('barService').style.width = `${(serviceLossLiters / maxLossComponent) * 100}%`;
+
+        setText('barHoleValue', fmt(holeVolumeLossLiters / 1000, 1));
+        setText('barRemovedValue', fmt(removedMoistureLiters / 1000, 1));
+        setText('barRetainedValue', fmt(retainedMoistureLiters / 1000, 1));
+        setText('barServiceValue', fmt(serviceLossLiters / 1000, 1));
+
+        document.getElementById('formulaBox').textContent = [
+          `Target solids = ((ρtarget - 1) / (ρrock - 1)) × 1000 × ρrock = ${fmt(targetSolidsKgM3, 3)} kg/m3`,
+          `Volume per meter = (Bit² × 0.785 / 1000) × Cavernosity = ${fmt(volumePerMeterLiters, 3)} L/m`,
+          `Rock mass per meter = V1m × ρrock = ${fmt(massPerMeterKg, 3)} kg/m`,
+          `Total rock mass = m1m × meters = ${fmt(totalRockMassKg, 3)} kg`,
+          `Remaining solids = Total rock × (100 - cleaning) / 100 = ${fmt(remainingSolidsKg, 3)} kg`,
+          `Dilution water = Remaining solids / Target solids × 1000 = ${fmt(dilutionWaterLiters, 3)} L`,
+          `Mud mass increase = (ρadd - 1) × Dilution water = ${fmt(mudMassIncreaseKg, 3)} kg`,
+          `Process mass = Remaining solids + Mud mass increase = ${fmt(processMassKg, 3)} kg`,
+          `FCU volume = Process mass / Target solids = ${fmt(fcuVolumeM3, 3)} m3`,
+          `Natural losses = Hole volume + Moisture removed + Moisture retained + 2 L/m = ${fmt(naturalLossesLiters, 3)} L`,
+          `Total add volume = FCU volume + Natural losses = ${fmt(totalAddVolumeM3, 3)} m3`
+        ].join('\n');
+      }
+
+      ids.forEach((id) => {
+        document.getElementById(id).addEventListener('input', compute);
+      });
+
+      document.getElementById('recalcBtn').addEventListener('click', compute);
+      document.getElementById('resetBtn').addEventListener('click', () => {
+        ids.forEach((id) => {
+          document.getElementById(id).value = defaults[id];
+        });
+        compute();
+      });
+
+      compute();
+    }());
+  </script>
+</body>
+</html>

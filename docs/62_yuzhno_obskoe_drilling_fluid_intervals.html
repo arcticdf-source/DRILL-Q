@@ -1,0 +1,171 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>62 � ����-������ � ������ 4 � ������� ������� �� ����������</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap");
+    :root{--bg0:#0a1018;--bg1:#15283a;--bg2:#1f3d4f;--text:#ecf4ff;--muted:#acc3d8;--line:rgba(228,238,255,.17);--soft:rgba(228,238,255,.1);--panel:rgba(8,18,30,.86);--accent:#1fd5b0;--accent2:#7ce4cf;--warn:#ffb86f;--shadow:0 24px 56px rgba(0,0,0,.42)}
+    *{box-sizing:border-box} html,body{margin:0;min-height:100%;font-family:"Manrope",sans-serif;color:var(--text);background:radial-gradient(920px 460px at -5% -15%,rgba(31,213,176,.2),transparent),radial-gradient(820px 420px at 100% 0%,rgba(255,184,111,.22),transparent),linear-gradient(145deg,var(--bg0),var(--bg1) 45%,var(--bg2))}
+    .wrap{width:min(1280px,94vw);margin:0 auto;padding:24px 0 64px}.top{display:flex;justify-content:space-between;align-items:center;gap:10px;border:1px solid var(--soft);border-radius:14px;padding:12px 14px;background:rgba(8,15,24,.66);position:sticky;top:12px;z-index:20}
+    .brand{display:flex;align-items:center;gap:10px;font-family:"Oswald",sans-serif;text-transform:uppercase;letter-spacing:.05em;font-size:20px}.dot{width:12px;height:12px;border-radius:999px;background:radial-gradient(circle at 35% 35%,#d6fff7,var(--accent))}
+    .nav{display:flex;flex-wrap:wrap;gap:8px}.nav a{text-decoration:none;font-size:12px;text-transform:uppercase;letter-spacing:.06em;font-weight:800;border-radius:10px;padding:8px 12px;color:#082922;background:linear-gradient(130deg,#a0f9eb,#22d7b4);border:1px solid rgba(34,215,180,.75)}
+    .hero,.panel{margin-top:18px;border:1px solid var(--line);border-radius:22px;background:var(--panel);box-shadow:var(--shadow);padding:22px}.hero h1{margin:0 0 10px;font-family:"Oswald",sans-serif;font-size:clamp(28px,4vw,44px)}.hero p{margin:0;color:#c7d7ec;line-height:1.65}
+    .kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:14px}.kpi{border:1px solid var(--soft);border-radius:14px;padding:10px;background:rgba(255,255,255,.03)}.kpi strong{display:block;font-size:18px}.kpi span{display:block;margin-top:2px;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+    .tabs{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}.tab{border:1px solid var(--soft);background:rgba(255,255,255,.04);color:#d6e6f6;border-radius:999px;padding:8px 14px;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;cursor:pointer}.tab.active{border-color:rgba(31,213,176,.68);background:linear-gradient(130deg,#9ff8e8,#20d5b3);color:#082d25}
+    .tab-panel{display:none}.tab-panel.active{display:block;animation:fade .25s ease}
+    @keyframes fade{from{opacity:.55;transform:translateY(4px)}to{opacity:1;transform:none}}
+    .cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:10px}.card{border:1px solid var(--soft);border-radius:14px;background:rgba(255,255,255,.03);padding:12px}.card h3{margin:0 0 7px;font-size:14px}.card p{margin:0;font-size:13px;color:#cfe0f1;line-height:1.55}
+    table{width:100%;border-collapse:collapse;font-size:14px;margin-top:12px}th,td{border:1px solid var(--soft);padding:10px;text-align:left;vertical-align:top}th{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:#bfd3e8;background:rgba(255,255,255,.04)}td{color:#d7e4f3;line-height:1.45}
+    .warn{margin-top:12px;border:1px solid rgba(255,184,111,.45);background:rgba(255,184,111,.14);color:#ffe1bb;border-radius:12px;padding:10px 12px;font-size:13px;line-height:1.5}
+    .footer{margin-top:14px;color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.08em;text-align:center}
+    @media (max-width:1020px){.cards{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}} @media (max-width:900px){.top{position:static;flex-direction:column;align-items:flex-start}table{display:block;overflow-x:auto}}
+  </style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body data-page="doc62">
+  <main class="wrap">
+    <header class="top">
+      <div class="brand"><span class="dot"></span><span>Nexus Oilfield AI</span></div>
+      <nav class="nav">
+        <a href="58_yuzhno_obskoe_project_dashboard.html" data-i18n="nav.dashboard">К дашборду</a>
+        <a href="60_yuzhno_obskoe_lithology_stratigraphy.html" data-i18n="nav.section2">������ 2</a>
+        <a href="61_yuzhno_obskoe_well_constructions.html" data-i18n="nav.section3">������ 3</a>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <h1 data-i18n="hero.title">������ 4. ������� ������� �� ������� ���������</h1>
+      <p data-i18n="hero.desc">�������� ��������� �� ��������� ��������� ��� � ����: �����������, ���������, ���������������� �������, ���������. ��� ������� ���������: �����, ������� ���������, ������� ��������� � ��������.</p>
+      <div class="kpis">
+        <div class="kpi"><strong data-i18n="kpi.intervals">4 ���������</strong><span data-i18n="kpi.intervals.caption">��������� ����</span></div>
+        <div class="kpi"><strong data-unit-type="density_range_sg" data-unit-value="0.95-1.58">0.95-1.58 SG</strong><span data-i18n="kpi.density.caption">������� �������� ���������</span></div>
+        <div class="kpi"><strong data-unit-type="length_range_m" data-unit-value="35-2630">35-2630 �</strong><span data-i18n="kpi.depth.caption">����� ������� ������</span></div>
+        <div class="kpi"><strong data-i18n="kpi.gnvp">����� ����</strong><span data-i18n="kpi.gnvp.caption">�������� � ������ ���������</span></div>
+      </div>
+      <div class="tabs" role="tablist">
+        <button class="tab active" data-tab="dir" role="tab" data-i18n="tab.dir">�����������</button>
+        <button class="tab" data-tab="cond" role="tab" data-i18n="tab.cond">���������</button>
+        <button class="tab" data-tab="prod" role="tab" data-i18n="tab.prod">�����. �������</button>
+        <button class="tab" data-tab="liner" role="tab" data-i18n="tab.liner">���������</button>
+      </div>
+    </section>
+
+    <section class="panel tab-panel active" id="tab-dir" role="tabpanel">
+      <h2>�������� 35-120 � � �����������</h2>
+      <div class="cards">
+        <article class="card"><h3>��� �������</h3><p>������� ���� + ��������-�������, ������ ��������� � ������� ������� ��� ����������� ECD.</p></article>
+        <article class="card"><h3>������� ���������</h3><p>��������� 0.95-1.03 SG, ���. �������� 35-50 �, ���������� �� 12 ��3/30 ���.</p></article>
+        <article class="card"><h3>�������� �����</h3><p>������ ������, ��������� ������, ������������ ��������� ������.</p></article>
+      </div>
+      <table>
+        <thead><tr><th>��������</th><th>����</th><th>�������� ��������</th></tr></thead>
+        <tbody>
+          <tr><td>���������, SG</td><td>0.95-1.03</td><td>��������� ����������/���������� �����</td></tr>
+          <tr><td>�������� ��������, �</td><td>35-50</td><td>������� 0.2-0.5 ��/�3</td></tr>
+          <tr><td>YP/PV</td><td>8-14 / 6-10</td><td>��������� ������ ���������</td></tr>
+          <tr><td>���������� API</td><td>&lt;= 12</td><td>�������-�������� ���������</td></tr>
+        </tbody>
+      </table>
+      <p class="warn">�����: ���� ROP ��� ���������� �������, ��� ���������� �� ���������.</p>
+    </section>
+
+    <section class="panel tab-panel" id="tab-cond" role="tabpanel">
+      <h2>�������� 120-780 � � ���������</h2>
+      <div class="cards">
+        <article class="card"><h3>��� �������</h3><p>KCL/PHPA ������������ ������� � ��������� ����������������� ��� K2br-K2kz.</p></article>
+        <article class="card"><h3>������� ���������</h3><p>��������� 1.05-1.12 SG, ���������� �� 8 ��3, pH 9.2-10.0.</p></article>
+        <article class="card"><h3>�����</h3><p>������ ����, �������������������, ��������� ���������� �� ���������������.</p></article>
+      </div>
+      <table>
+        <thead><tr><th>��������</th><th>����</th><th>�������� ��������</th></tr></thead>
+        <tbody>
+          <tr><td>���������, SG</td><td>1.05-1.12</td><td>����� �� ������ ��������</td></tr>
+          <tr><td>KCL</td><td>3-5%</td><td>������������ ���������� ������ ���</td></tr>
+          <tr><td>PHPA</td><td>0.3-0.8 ��/�3</td><td>��������� ��������� �����</td></tr>
+          <tr><td>���������� API</td><td>&lt;= 8</td><td>����� starch/CMC</td></tr>
+          <tr><td>LGS</td><td>&lt;= 4%</td><td>��������� ������������� ������� �������</td></tr>
+        </tbody>
+      </table>
+      <p class="warn">� ���� ���� ���������������� ��������� � �������� ���������; ��� ��������� ������� ������� ROP � ��������� �����.</p>
+    </section>
+
+    <section class="panel tab-panel" id="tab-prod" role="tabpanel">
+      <h2>�������� 780-1905 � � ���������������� �������</h2>
+      <div class="cards">
+        <article class="card"><h3>��� �������</h3><p>������������ KCL/PHPA + �������; �������� ���������� � ������������������ ������.</p></article>
+        <article class="card"><h3>������� ���������</h3><p>��������� 1.12-1.32 SG, ���������� �� 6 ��3, ���������� YP/PV ��� ���������� �����.</p></article>
+        <article class="card"><h3>�����</h3><p>���� �������������, ������� � �������, �������� �� �������� 1586+ � 1850+ �.</p></article>
+      </div>
+      <table>
+        <thead><tr><th>��������</th><th>����</th><th>�������� ��������</th></tr></thead>
+        <tbody>
+          <tr><td>���������, SG</td><td>1.12-1.32</td><td>��������� ��������� �� ������ Rpl/GRP</td></tr>
+          <tr><td>YP/PV</td><td>14-22 / 12-20</td><td>��������� ������� + ��������</td></tr>
+          <tr><td>Gel 10s/10m</td><td>4-8 / 8-14</td><td>��������� ��������� ��� �������� surge/swab �������</td></tr>
+          <tr><td>���������� API</td><td>&lt;= 6</td><td>����� �������� ����������</td></tr>
+          <tr><td>����������� (COF)</td><td>&lt;= 0.18</td><td>��������� ����� 1-3%</td></tr>
+        </tbody>
+      </table>
+      <p class="warn">��� ������������� 1.12+ � ��������� ����/���� ��������� ������������ lubricant � ������� ������ high-vis �����.</p>
+    </section>
+
+    <section class="panel tab-panel" id="tab-liner" role="tabpanel">
+      <h2>�������� 1905-2630 � � ��������� (������� + �������)</h2>
+      <div class="cards">
+        <article class="card"><h3>��� �������</h3><p>����������� ������������ ������� � ����������� ����������������� � ��������������� �������.</p></article>
+        <article class="card"><h3>������� ���������</h3><p>��������� 1.32-1.58 SG; ���������� �� 4 ��3; ����������������� �� 90 �C.</p></article>
+        <article class="card"><h3>�����</h3><p>����, ����������, ��������, �������� ����������� ����� 2616-2630 �.</p></article>
+      </div>
+      <table>
+        <thead><tr><th>��������</th><th>����</th><th>�������� ��������</th></tr></thead>
+        <tbody>
+          <tr><td>���������, SG</td><td>1.32-1.58</td><td>����� + �������� ����������� ������ 2-3 ����</td></tr>
+          <tr><td>HPHT ����������</td><td>&lt;= 8</td><td>HPHT �������� ���������</td></tr>
+          <tr><td>������� �����</td><td>����������</td><td>��������� + ������� ������� + ����������� �������</td></tr>
+          <tr><td>����������� (COF)</td><td>&lt;= 0.14</td><td>��������� ����� 2-4%, ����������������� �����</td></tr>
+          <tr><td>ES / ������������ ��������</td><td>���� �� �������</td><td>�������� ������ ���� � ������� �����������</td></tr>
+        </tbody>
+      </table>
+      <table>
+        <thead><tr><th>������������ �����</th><th>��������, �</th><th>���, ���</th><th>T, �C</th><th>�����������</th></tr></thead>
+        <tbody>
+          <tr><td>NP8-0</td><td>2023-2085</td><td>20.3</td><td>65</td><td>������ ������������ ����</td></tr>
+          <tr><td>NP8</td><td>2085-2224</td><td>20.9</td><td>67</td><td>���� �������� �������</td></tr>
+          <tr><td>NP9/NP9-1</td><td>2224-2394</td><td>22.3-22.8</td><td>72-74</td><td>�������� ECD � ����������</td></tr>
+          <tr><td>NP10-NP11</td><td>2394-2501</td><td>24.0-25.1</td><td>78-82</td><td>������� ���������� � ������������������ ������</td></tr>
+          <tr><td>NP12 + ������� �����</td><td>2501-2616</td><td>25.5-26.2</td><td>83-86</td><td>������� � ������������</td></tr>
+          <tr><td>J3tt</td><td>2616-2630</td><td>26.4</td><td>86</td><td>���� ����: ����/�������</td></tr>
+        </tbody>
+      </table>
+      <p class="warn">��� 2501+ �: ���������� ������� ������������� �������� (��������/����������/���) � ������������ ���������� ����/����.</p>
+    </section>
+
+    <p class="footer">�������� 62 � ����-������ � ������ 4 (���� �� ����������)</p>
+  </main>
+
+  <script>
+    (function(){
+      const tabs = Array.from(document.querySelectorAll('.tab'));
+      const panels = {
+        dir: document.getElementById('tab-dir'),
+        cond: document.getElementById('tab-cond'),
+        prod: document.getElementById('tab-prod'),
+        liner: document.getElementById('tab-liner')
+      };
+      tabs.forEach(btn => {
+        btn.addEventListener('click', () => {
+          tabs.forEach(t => t.classList.remove('active'));
+          Object.values(panels).forEach(p => p.classList.remove('active'));
+          btn.classList.add('active');
+          const key = btn.getAttribute('data-tab');
+          if (panels[key]) panels[key].classList.add('active');
+        });
+      });
+    })();
+  </script>
+  <script src="assets/js/site-i18n-units.js"></script>
+  <script src="assets/js/global-auth-widget.js"></script>
+</body>
+</html>

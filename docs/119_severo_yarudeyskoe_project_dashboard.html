@@ -1,0 +1,154 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Северо-Ярудейское — DRILL-Q</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Arial, sans-serif; background: #F5F5F7; color: #1D1D1F; font-size: 15px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+:root { --white:#FFFFFF; --bg:#F5F5F7; --text:#1D1D1F; --text2:#6E6E73; --text3:#AEAEB2; --blue:#2563EB; --blue-l:#EFF6FF; --border:rgba(0,0,0,0.08); --sh-sm:0 1px 4px rgba(0,0,0,0.06); --sh:0 4px 20px rgba(0,0,0,0.08); --r:16px; --r-sm:10px; }
+nav { position:sticky; top:0; z-index:100; background:rgba(255,255,255,0.85); backdrop-filter:saturate(180%) blur(20px); border-bottom:1px solid var(--border); height:56px; display:flex; align-items:center; padding:0 40px; justify-content:space-between; }
+.nav-logo { display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--text); }
+.nav-mark { width:28px; height:28px; border-radius:7px; background:var(--blue); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:#fff; }
+.nav-name { font-size:15px; font-weight:700; letter-spacing:-.4px; }
+.btn-ghost { padding:7px 16px; border-radius:var(--r-sm); border:1px solid var(--border); background:transparent; color:var(--text); font-size:13px; font-weight:500; text-decoration:none; }
+.btn-ghost:hover { background:var(--bg); }
+.btn-nav { padding:7px 16px; border-radius:var(--r-sm); background:var(--blue); color:#fff; font-size:13px; font-weight:600; text-decoration:none; }
+.btn-nav:hover { background:#1D4ED8; }
+.nav-right { display:flex; gap:10px; }
+.wrap { width:min(1120px, 92vw); margin:0 auto; padding:48px 0 80px; }
+.breadcrumb { display:flex; align-items:center; gap:6px; font-size:13px; color:var(--text3); margin-bottom:28px; }
+.breadcrumb a { color:var(--text3); text-decoration:none; } .breadcrumb a:hover { color:var(--blue); }
+.hero { background:var(--white); border:1.5px solid var(--border); border-radius:var(--r); padding:40px; margin-bottom:24px; box-shadow:var(--sh-sm); }
+.hero-eyebrow { display:inline-flex; align-items:center; gap:8px; background:var(--blue-l); color:var(--blue); border-radius:99px; padding:4px 14px; font-size:12px; font-weight:600; margin-bottom:16px; }
+.hero h1 { font-size:clamp(26px, 4vw, 42px); font-weight:700; letter-spacing:-.8px; line-height:1.1; margin-bottom:14px; }
+.hero p { color:var(--text2); font-size:15px; max-width:700px; line-height:1.65; margin-bottom:24px; }
+.stats-row { display:grid; grid-template-columns:repeat(4, 1fr); gap:16px; margin-bottom:24px; }
+.stat-card { background:var(--bg); border:1px solid var(--border); border-radius:var(--r-sm); padding:16px; }
+.stat-card strong { display:block; font-size:22px; font-weight:700; letter-spacing:-.4px; margin-bottom:4px; }
+.stat-card span { font-size:11px; color:var(--text3); font-weight:500; text-transform:uppercase; letter-spacing:.06em; }
+
+/* WELLS PANEL */
+.wells-panel { background:var(--white); border:1.5px solid var(--border); border-radius:var(--r); padding:28px 32px; margin-bottom:24px; box-shadow:var(--sh-sm); }
+.wells-panel h2 { font-size:16px; font-weight:700; margin-bottom:6px; }
+.wells-panel p { color:var(--text2); font-size:13px; margin-bottom:20px; }
+.wells-grid { display:flex; flex-wrap:wrap; gap:10px; }
+.well-pair { display:flex; flex-direction:column; gap:6px; }
+.well-btn { padding:8px 16px; border-radius:var(--r-sm); border:1.5px solid var(--border); background:var(--bg); color:var(--text); font-size:13px; font-weight:600; text-decoration:none; text-align:center; transition:all .15s; white-space:nowrap; }
+.well-btn:hover { border-color:var(--blue); color:var(--blue); background:var(--blue-l); }
+.well-btn.active { background:var(--blue); border-color:var(--blue); color:#fff; }
+.well-sub { padding:6px 12px; border-radius:var(--r-sm); border:1.5px solid var(--border); background:var(--bg); color:var(--text2); font-size:11px; font-weight:500; text-decoration:none; text-align:center; transition:all .15s; }
+.well-sub:hover { border-color:var(--blue); color:var(--blue); }
+
+/* MODULES */
+.section { background:var(--white); border:1.5px solid var(--border); border-radius:var(--r); padding:32px; box-shadow:var(--sh-sm); }
+.section h2 { font-size:20px; font-weight:700; letter-spacing:-.3px; margin-bottom:6px; }
+.section-sub { color:var(--text2); font-size:14px; margin-bottom:24px; }
+.cards { display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:16px; }
+.mod-card { background:var(--bg); border:1.5px solid var(--border); border-radius:var(--r-sm); padding:24px; text-decoration:none; color:inherit; display:flex; flex-direction:column; gap:12px; transition:all .2s; position:relative; }
+.mod-card:hover { background:var(--white); border-color:var(--blue); box-shadow:var(--sh), 0 0 0 2px var(--blue); transform:translateY(-2px); }
+.mod-num { width:40px; height:40px; border-radius:10px; background:var(--blue-l); color:var(--blue); display:flex; align-items:center; justify-content:center; font-size:16px; font-weight:700; }
+.mod-card h3 { font-size:16px; font-weight:700; letter-spacing:-.2px; }
+.mod-card p { color:var(--text); font-size:13px; line-height:1.55; flex:1; }
+.mod-chips { display:flex; gap:6px; flex-wrap:wrap; }
+.chip { font-size:11px; font-weight:600; color:var(--text); background:var(--white); border:1px solid var(--border); border-radius:99px; padding:3px 10px; }
+.mod-arrow { position:absolute; right:16px; bottom:16px; font-size:16px; color:var(--text3); transition:color .2s; }
+.mod-card:hover .mod-arrow { color:var(--blue); }
+@media(max-width:640px){ nav{padding:0 20px;} .wrap{padding:32px 0 60px;} .stats-row{grid-template-columns:1fr 1fr;} .cards{grid-template-columns:1fr;} }
+</style>
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="../index.html"><div class="nav-mark">DQ</div><span class="nav-name">DRILL-Q</span></a>
+  <div class="nav-right">
+    <a class="btn-ghost" href="56_fields_projects_dashboard.html">← Все месторождения</a>
+    <a class="btn-nav" href="../app.html">Приложение →</a>
+  </div>
+</nav>
+<div class="wrap">
+  <div class="breadcrumb">
+    <a href="../index.html">DRILL-Q</a> <span>/</span>
+    <a href="56_fields_projects_dashboard.html">Месторождения</a> <span>/</span>
+    <span style="color:var(--text)">Северо-Ярудейское</span>
+  </div>
+
+  <div class="hero">
+    <div class="hero-eyebrow">⛽ Месторождение · ЯНАО</div>
+    <h1>Им. Подшибякина<br>(Северо-Ярудейское)</h1>
+    <p>Для Северо-Ярудейского участка открыт проектный контур из 6 инженерных модулей: общая информация, конструкция скважин, траектории по фонду 301–308, геология, буровые растворы и модуль ГИС/испытаний.</p>
+    <div class="stats-row">
+      <div class="stat-card"><strong>6</strong><span>активных модулей</span></div>
+      <div class="stat-card"><strong>8</strong><span>скважин (301–308)</span></div>
+      <div class="stat-card"><strong>май 2026</strong><span>старт работ</span></div>
+      <div class="stat-card"><strong>ЯНАО</strong><span>регион строительства</span></div>
+    </div>
+  </div>
+
+  <div class="wells-panel">
+    <h2>Фонд скважин</h2>
+    <p>Выберите скважину чтобы открыть её дашборд</p>
+    <div class="wells-grid">
+      <a class="well-btn active" href="project_well_dashboard.html?name=%D0%A1%D0%B5%D0%B2%D0%B5%D1%80%D0%BE-%D0%AF%D1%80%D1%83%D0%B4%D0%B5%D0%B9%D1%81%D0%BA%D0%BE%D0%B5&well=301">Скважина 301</a>
+      <a class="well-btn" href="project_well_dashboard.html?name=%D0%A1%D0%B5%D0%B2%D0%B5%D1%80%D0%BE-%D0%AF%D1%80%D1%83%D0%B4%D0%B5%D0%B9%D1%81%D0%BA%D0%BE%D0%B5&well=302">Скважина 302</a>
+      <a class="well-btn" href="project_well_dashboard.html?name=%D0%A1%D0%B5%D0%B2%D0%B5%D1%80%D0%BE-%D0%AF%D1%80%D1%83%D0%B4%D0%B5%D0%B9%D1%81%D0%BA%D0%BE%D0%B5&well=303">Скважина 303</a>
+      <a class="well-btn" href="project_well_dashboard.html?name=%D0%A1%D0%B5%D0%B2%D0%B5%D1%80%D0%BE-%D0%AF%D1%80%D1%83%D0%B4%D0%B5%D0%B9%D1%81%D0%BA%D0%BE%D0%B5&well=304">Скважина 304</a>
+      <a class="well-btn" href="project_well_dashboard.html?name=%D0%A1%D0%B5%D0%B2%D0%B5%D1%80%D0%BE-%D0%AF%D1%80%D1%83%D0%B4%D0%B5%D0%B9%D1%81%D0%BA%D0%BE%D0%B5&well=305">Скважина 305</a>
+      <a class="well-btn" href="project_well_dashboard.html?name=%D0%A1%D0%B5%D0%B2%D0%B5%D1%80%D0%BE-%D0%AF%D1%80%D1%83%D0%B4%D0%B5%D0%B9%D1%81%D0%BA%D0%BE%D0%B5&well=306">Скважина 306</a>
+      <a class="well-btn" href="project_well_dashboard.html?name=%D0%A1%D0%B5%D0%B2%D0%B5%D1%80%D0%BE-%D0%AF%D1%80%D1%83%D0%B4%D0%B5%D0%B9%D1%81%D0%BA%D0%BE%D0%B5&well=307">Скважина 307</a>
+      <a class="well-btn" href="project_well_dashboard.html?name=%D0%A1%D0%B5%D0%B2%D0%B5%D1%80%D0%BE-%D0%AF%D1%80%D1%83%D0%B4%D0%B5%D0%B9%D1%81%D0%BA%D0%BE%D0%B5&well=308">Скважина 308</a>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Модули проекта</h2>
+    <p class="section-sub">Кликните на модуль чтобы открыть инженерный экран</p>
+    <div class="cards">
+      <a class="mod-card" href="133_severo_yarudeyskoe_general_info.html">
+        <div class="mod-num">1</div>
+        <h3>Общая информация</h3>
+        <p>Паспорт проекта: тип строительства, фонд скважин 301–308, проектный горизонт, заказчик, логистика, водоснабжение и параметры бурения.</p>
+        <div class="mod-chips"><span class="chip">паспорт</span><span class="chip">логистика</span><span class="chip">строительство</span></div>
+        <span class="mod-arrow">→</span>
+      </a>
+      <a class="mod-card" href="134_severo_yarudeyskoe_well_constructions.html">
+        <div class="mod-num">2</div>
+        <h3>Конструкция скважин</h3>
+        <p>Кондуктор, эксплуатационная колонна, хвостовик с МСГРП и НКТ, схема обсадки и интервалы цементирования.</p>
+        <div class="mod-chips"><span class="chip">обсадка</span><span class="chip">цементирование</span><span class="chip">схема</span></div>
+        <span class="mod-arrow">→</span>
+      </a>
+      <a class="mod-card" href="135_severo_yarudeyskoe_well_trajectories.html">
+        <div class="mod-num">3</div>
+        <h3>Траектории скважин</h3>
+        <p>Профили скважин 301–308: мини-графики, контрольные точки survey, отход, TVD и финальные азимуты.</p>
+        <div class="mod-chips"><span class="chip">trajectory</span><span class="chip">survey</span><span class="chip">profiles</span></div>
+        <span class="mod-arrow">→</span>
+      </a>
+      <a class="mod-card" href="136_severo_yarudeyskoe_geology.html">
+        <div class="mod-num">4</div>
+        <h3>Геология</h3>
+        <p>Цветная стратиграфия, литология, pressure window, криолитозона, флюиды, пласт ЮН2-4 и осложнения по разрезу.</p>
+        <div class="mod-chips"><span class="chip">geology</span><span class="chip">pressure window</span><span class="chip">ЮН2-4</span></div>
+        <span class="mod-arrow">→</span>
+      </a>
+      <a class="mod-card" href="137_severo_yarudeyskoe_drilling_fluids.html">
+        <div class="mod-num">5</div>
+        <h3>Буровые растворы</h3>
+        <p>Интервальный mud-модуль: РВО и РУО, плотностные окна, реология, объёмы по скважинам 301–308 и требования к минеральному маслу.</p>
+        <div class="mod-chips"><span class="chip">mud program</span><span class="chip">интервалы</span><span class="chip">РУО</span></div>
+        <span class="mod-arrow">→</span>
+      </a>
+      <a class="mod-card" href="141_severo_yarudeyskoe_gis_testing.html">
+        <div class="mod-num">6</div>
+        <h3>ГИС / Испытания</h3>
+        <p>Керн и шлам по ЮН2-4, окно испытания 1965–2104 м, пакет ГДК/ОПК/КВД/УВ и программа ГИС по фонду 302Г–308Г.</p>
+        <div class="mod-chips"><span class="chip">ГИС</span><span class="chip">керн</span><span class="chip">испытания</span></div>
+        <span class="mod-arrow">→</span>
+      </a>
+    </div>
+  </div>
+</div>
+</body>
+</html>

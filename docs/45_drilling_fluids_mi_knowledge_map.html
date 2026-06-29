@@ -1,0 +1,425 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>45 · MI Manual · Карта знаний и развитие</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Manrope:wght@400;500;700;800&display=swap");
+
+    :root {
+      --bg-0: #060b12;
+      --bg-1: #0f1a2a;
+      --bg-2: #182840;
+      --panel: rgba(10, 19, 31, 0.78);
+      --text: #edf4ff;
+      --muted: #98abc4;
+      --line: rgba(229, 238, 255, 0.15);
+      --line-soft: rgba(229, 238, 255, 0.08);
+      --cyan: #1ad8b5;
+      --amber: #ffbc4c;
+      --ok: #3fb950;
+      --warn: #d29922;
+      --bad: #f85149;
+      --shadow: 0 20px 48px rgba(0, 0, 0, 0.45);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      font-family: "Manrope", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(860px 420px at 0% -10%, rgba(26, 216, 181, 0.2), rgba(26, 216, 181, 0)),
+        radial-gradient(760px 380px at 100% 0%, rgba(255, 188, 76, 0.18), rgba(255, 188, 76, 0)),
+        linear-gradient(145deg, var(--bg-0), var(--bg-1) 42%, var(--bg-2));
+    }
+
+    .wrap {
+      width: min(1300px, 92vw);
+      margin: 0 auto;
+      padding: 24px 0 60px;
+    }
+
+    .top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border: 1px solid var(--line-soft);
+      border-radius: 14px;
+      background: rgba(9, 15, 24, 0.65);
+      backdrop-filter: blur(8px);
+      padding: 12px 14px;
+      position: sticky;
+      top: 12px;
+      z-index: 20;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: "Oswald", sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-size: 20px;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 35% 35%, #cffff7, var(--cyan));
+    }
+
+    .back-link {
+      text-decoration: none;
+      color: #06231f;
+      background: linear-gradient(130deg, #8df7e7, #1ad8b5);
+      border: 1px solid rgba(26, 216, 181, 0.8);
+      border-radius: 10px;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-weight: 800;
+      padding: 8px 12px;
+    }
+
+    .hero {
+      margin-top: 16px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: linear-gradient(150deg, rgba(26, 216, 181, 0.12), rgba(14, 24, 38, 0.9) 40%, rgba(255, 188, 76, 0.1));
+      box-shadow: var(--shadow);
+      padding: 22px;
+    }
+
+    .hero h1 {
+      margin: 0 0 8px;
+      color: var(--cyan);
+      font-size: clamp(26px, 4.4vw, 40px);
+      font-family: "Oswald", sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .hero p {
+      margin: 0;
+      color: #d9e8ff;
+      line-height: 1.55;
+    }
+
+    .chips {
+      margin-top: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .chip {
+      font-size: 11px;
+      color: var(--muted);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 4px 8px;
+      background: rgba(9, 15, 24, 0.45);
+    }
+
+    .section {
+      margin-top: 16px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(9, 15, 24, 0.6);
+      padding: 14px;
+    }
+
+    .section h2 {
+      margin: 0 0 10px;
+      font-family: "Oswald", sans-serif;
+      font-size: 20px;
+      color: var(--amber);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .stat {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--panel);
+      padding: 10px;
+    }
+
+    .stat .k {
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .stat .v {
+      margin-top: 4px;
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--cyan);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--panel);
+      padding: 10px;
+    }
+
+    .card h3 {
+      margin: 0 0 6px;
+      color: var(--cyan);
+      font-size: 15px;
+    }
+
+    .card p {
+      margin: 0;
+      color: #d6e6ff;
+      line-height: 1.45;
+      font-size: 13px;
+    }
+
+    .list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .li {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: rgba(14, 25, 42, 0.7);
+      padding: 8px;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .ok { color: var(--ok); }
+    .warn { color: var(--warn); }
+    .bad { color: var(--bad); }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+    }
+
+    th, td {
+      border: 1px solid var(--line);
+      padding: 7px;
+      text-align: left;
+      vertical-align: top;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    th {
+      background: rgba(22, 34, 56, 0.7);
+      color: var(--cyan);
+      font-weight: 700;
+    }
+
+    .foot {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 12px;
+      text-align: center;
+    }
+
+    @media (max-width: 980px) {
+      .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .grid, .list { grid-template-columns: 1fr; }
+    }
+  </style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+  <main class="wrap">
+    <div class="top">
+      <div class="brand"><span class="dot"></span>45 · MI Manual · Drilling Fluids</div>
+      <div style="display:flex; gap:8px;">
+        <a class="back-link" href="47_drilling_fluid_system_selection.html">Подбор 47</a>
+        <a class="back-link" href="46_drilling_fluids_system_designer.html">К системе 46</a>
+        <a class="back-link" href="42_drilling_fluids_dashboard.html">← К дашборду</a>
+      </div>
+    </div>
+
+    <section class="hero">
+      <h1>Карта знаний и развитие</h1>
+      <p>
+        Тщательный разбор массива MI Manual (без торговых названий, только химическая природа) показывает,
+        что мы готовы перейти от отдельных калькуляторов к полноценной цифровой системе: расчетный блок в SI,
+        конструктор рецептур растворов, модуль профилактики осложнений и модуль оперативной диагностики рисков.
+      </p>
+      <div class="chips">
+        <span class="chip">Метрическая система</span>
+        <span class="chip">Без торговых марок</span>
+        <span class="chip">WBM / NAF / Synthetic</span>
+        <span class="chip">Risk Prevention</span>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Массив данных</h2>
+      <div class="stats">
+        <div class="stat"><div class="k">Файлов PDF</div><div class="v">21</div></div>
+        <div class="stat"><div class="k">Страниц</div><div class="v">668</div></div>
+        <div class="stat"><div class="k">Символов</div><div class="v">2,015,980</div></div>
+        <div class="stat"><div class="k">Ключевых тем</div><div class="v">15</div></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Где сконцентрирована практика</h2>
+      <table>
+        <tr>
+          <th>Тема</th>
+          <th>Ключевой источник</th>
+          <th>Что это дает в продукте</th>
+        </tr>
+        <tr>
+          <td>Плотность / окно давлений</td>
+          <td>Pressure control</td>
+          <td>Модуль pressure-window: ECD, безопасное окно, контроль surge/swab</td>
+        </tr>
+        <tr>
+          <td>Фильтрация</td>
+          <td>Filtration Control</td>
+          <td>Калькулятор фильтрации + подбор химии снижения fluid loss</td>
+        </tr>
+        <tr>
+          <td>Устойчивость ствола</td>
+          <td>Shale and Wellbore stability</td>
+          <td>Матрица ингибирования: химактивность, осмотика, стабилизация сланцев</td>
+        </tr>
+        <tr>
+          <td>Потери циркуляции</td>
+          <td>Lost Circulation</td>
+          <td>Дерево решений LCM и режимов циркуляции до/после потерь</td>
+        </tr>
+        <tr>
+          <td>Прихваты</td>
+          <td>Stuck Pipe</td>
+          <td>Риск-предиктор differential/mechanical sticking и профилактика</td>
+        </tr>
+        <tr>
+          <td>Контроль твердых фаз</td>
+          <td>Solids Control</td>
+          <td>Баланс твердой фазы, dilution planner, целевые окна LGS</td>
+        </tr>
+        <tr>
+          <td>Полимеры</td>
+          <td>Polymer Chemistry</td>
+          <td>Конструктор химических систем на уровне функциональных классов</td>
+        </tr>
+        <tr>
+          <td>Лабораторный контроль</td>
+          <td>Testing</td>
+          <td>QC-план: тесты по сменам/суткам, автопроверка допусков</td>
+        </tr>
+      </table>
+    </section>
+
+    <section class="section">
+      <h2>Что добавить в систему (по полкам)</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>1) SI Calculation Hub</h3>
+          <p>
+            Полный набор расчетов в SI: плотность (kg/m3), гидростатика (MPa), ECD (kg/m3),
+            AV (m/s), PV/YP/гели, solids %, гидравлические потери, pressure margin к fracture/pore.
+          </p>
+        </div>
+        <div class="card">
+          <h3>2) Конструктор систем растворов</h3>
+          <p>
+            Подбор рецептуры по условиям (T, P, геология, риски): базовая жидкая фаза,
+            утяжелитель, ингибитор, полимерная связка, фильтрационные добавки, лубрикант.
+          </p>
+        </div>
+        <div class="card">
+          <h3>3) Prevention Engine</h3>
+          <p>
+            Профилактика осложнений: потери, прихваты, саг утяжелителя, нестабильность ствола,
+            газопроявления, загрязнение твердыми фазами. Выход: риск-скор + конкретные действия.
+          </p>
+        </div>
+        <div class="card">
+          <h3>4) Lab-to-Field QC</h3>
+          <p>
+            План тестов и интерпретация: mud balance, viscometer, funnel, filter press, retort, MBT.
+            Автосравнение с целями секции и подсказка корректировок дозировок.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Химическая классификация (без брендов)</h2>
+      <div class="list">
+        <div class="li"><b>Вязкостные агенты:</b> ксантановая камедь, ПАЦ/КМЦ, бентонит.</div>
+        <div class="li"><b>Фильтрационный контроль:</b> модифицированные крахмалы, целлюлозные полимеры, смолы.</div>
+        <div class="li"><b>Ингибиторы глин:</b> соли K/Na/Ca, гликоли, поликатионные ингибиторы, известь.</div>
+        <div class="li"><b>Утяжелители:</b> сульфат бария, гематит, карбонат кальция.</div>
+        <div class="li"><b>Материалы LCM:</b> волокнистые, гранулярные, пластинчатые системы.</div>
+        <div class="li"><b>Реологические модификаторы:</b> дисперсанты, дефлокулянты, ПАВы.</div>
+        <div class="li"><b>Антикоррозионный пакет:</b> щелочные буферы, поглотители кислорода, H2S-скэвенджеры.</div>
+        <div class="li"><b>Лубрикация:</b> смазывающие добавки полярной/эфирной природы.</div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Приоритетная дорожная карта</h2>
+      <table>
+        <tr>
+          <th>Этап</th>
+          <th>Что внедряем</th>
+          <th>Практический эффект</th>
+        </tr>
+        <tr>
+          <td>Этап A</td>
+          <td>SI Calculation Hub + тестовые валидации</td>
+          <td class="ok">Быстрое принятие решений на буровой, меньше ручных ошибок</td>
+        </tr>
+        <tr>
+          <td>Этап B</td>
+          <td>Конструктор рецептур WBM/NAF/Synthetic по условиям</td>
+          <td class="ok">Стандартизация подбора систем и химии</td>
+        </tr>
+        <tr>
+          <td>Этап C</td>
+          <td>Risk Prevention (Lost/Stuck/Sag/Stability)</td>
+          <td class="warn">Снижение NPT за счет раннего предупреждения</td>
+        </tr>
+        <tr>
+          <td>Этап D</td>
+          <td>QC-контур с тест-планом и авто-подсказками</td>
+          <td class="ok">Стабильное качество раствора в реальном времени</td>
+        </tr>
+      </table>
+    </section>
+
+    <p class="foot">Doc 45 · MI Manual Drilling Fluids Knowledge Map</p>
+  </main>
+  <script src="assets/js/global-auth-widget.js"></script>
+</body>
+</html>

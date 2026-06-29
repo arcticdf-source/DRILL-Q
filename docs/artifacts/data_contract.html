@@ -1,0 +1,415 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Пакет договоренностей по данным — Бурение Этап 1 | NEXUS OILFIELD AI</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap");
+    :root {
+      --bg:#060a10;--bg1:#0d1522;--panel:rgba(10,16,28,.75);--text:#e8f0ff;
+      --muted:#94a3bb;--cyan:#1ad8b5;--amber:#ffbc4c;--red:#ff7070;
+      --line:rgba(220,235,255,.13);--lines:rgba(220,235,255,.07);--r:14px;--sh:0 18px 44px rgba(0,0,0,.42);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0}
+    html,body{
+      min-height:100%;
+      background:radial-gradient(620px 320px at 5% -8%,rgba(26,216,181,.2),transparent),
+                 radial-gradient(560px 280px at 98% 4%,rgba(255,188,76,.14),transparent),
+                 linear-gradient(148deg,var(--bg),var(--bg1) 55%,#101c32);
+      color:var(--text);font-family:"Manrope",sans-serif;
+    }
+    body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+      background:linear-gradient(to right,rgba(255,255,255,.02) 1px,transparent 1px),
+                 linear-gradient(to bottom,rgba(255,255,255,.02) 1px,transparent 1px);
+      background-size:38px 38px;
+      mask-image:radial-gradient(circle at 50% 20%,rgba(0,0,0,.85),transparent 66%);
+    }
+    .wrap{position:relative;z-index:1;width:min(1080px,94vw);margin:0 auto;padding:26px 0 72px}
+    .topbar{
+      display:flex;align-items:center;justify-content:space-between;gap:16px;
+      padding:11px 16px;border-radius:12px;border:1px solid var(--lines);
+      background:rgba(6,11,20,.55);backdrop-filter:blur(10px);
+      position:sticky;top:14px;z-index:99;
+    }
+    .brand{display:flex;align-items:center;gap:9px;font-family:"Oswald",sans-serif;font-size:16px;letter-spacing:.06em;text-transform:uppercase}
+    .bdot{width:11px;height:11px;border-radius:999px;background:radial-gradient(circle at 30% 30%,#b2fff2,#1ad8b5);box-shadow:0 0 0 0 rgba(26,216,181,.7);animation:pulse 2.4s infinite}
+    .back{font-size:12px;color:var(--muted);text-decoration:none;letter-spacing:.04em;text-transform:uppercase;border:1px solid var(--lines);border-radius:999px;padding:5px 11px;transition:border-color 160ms,color 160ms}
+    .back:hover{border-color:var(--cyan);color:var(--cyan)}
+    .hero{
+      margin-top:22px;border-radius:22px;border:1px solid var(--line);
+      padding:clamp(18px,3vw,36px);
+      background:linear-gradient(140deg,rgba(255,188,76,.09),rgba(12,20,36,.88) 46%,rgba(26,216,181,.07)),var(--panel);
+      box-shadow:var(--sh);position:relative;overflow:hidden;isolation:isolate;
+    }
+    .hero::before{content:"";position:absolute;width:300px;height:300px;right:-80px;bottom:-80px;border-radius:999px;background:radial-gradient(circle,rgba(255,188,76,.18),transparent 70%);filter:blur(16px);z-index:-1}
+    .badge{display:inline-flex;align-items:center;gap:7px;padding:5px 10px;border-radius:999px;border:1px solid var(--lines);background:rgba(255,255,255,.04);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#b8c9e0}
+    .bdot2{width:6px;height:6px;border-radius:999px;background:var(--amber)}
+    .hero h1{margin-top:11px;font-family:"Oswald",sans-serif;font-size:clamp(28px,4vw,50px);line-height:1.02;text-transform:uppercase;letter-spacing:.01em}
+    .hero h1 span{color:var(--amber)}
+    .hero-meta{margin-top:14px;display:flex;flex-wrap:wrap;gap:10px}
+    .meta-pill{border:1px solid var(--lines);border-radius:999px;padding:6px 12px;font-size:12px;color:#c5d4e8;letter-spacing:.04em}
+    .section{margin-top:20px;border:1px solid var(--lines);border-radius:18px;background:var(--panel);box-shadow:var(--sh);padding:18px}
+    .stitle{font-family:"Oswald",sans-serif;font-size:20px;letter-spacing:.06em;text-transform:uppercase;padding-bottom:12px;border-bottom:1px solid var(--lines);margin-bottom:14px}
+    .sdesc{font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.5}
+    .table-wrap{overflow-x:auto;border-radius:12px;border:1px solid var(--lines)}
+    table{width:100%;border-collapse:collapse}
+    thead tr{background:rgba(255,188,76,.09)}
+    th{padding:9px 11px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#d9b86a;text-align:left;white-space:nowrap}
+    td{padding:9px 11px;font-size:13px;color:#c4d2e4;border-top:1px solid var(--lines);vertical-align:top;line-height:1.4}
+    tr:hover td{background:rgba(255,255,255,.02)}
+    td input,td select,td textarea{
+      width:100%;background:rgba(255,255,255,.04);border:1px solid var(--lines);border-radius:8px;
+      color:var(--text);font-family:"Manrope",sans-serif;font-size:12px;padding:5px 8px;
+      transition:border-color 160ms;outline:none;resize:vertical;
+      -webkit-appearance:none;appearance:none;
+    }
+    td input:focus,td select:focus,td textarea:focus{border-color:rgba(255,188,76,.55)}
+    select option{background:#0d1522;color:#e8f0ff}
+    /* STATUS BADGES */
+    .stt{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:999px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;transition:opacity 140ms}
+    .stt-avail{background:rgba(26,216,181,.13);color:#9ae8d6;border:1px solid rgba(26,216,181,.28)}
+    .stt-partial{background:rgba(255,188,76,.13);color:#ffe2a0;border:1px solid rgba(255,188,76,.28)}
+    .stt-missing{background:rgba(255,112,112,.13);color:#ffb3b3;border:1px solid rgba(255,112,112,.28)}
+    /* FREQ CHIP */
+    .freq{display:inline-block;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:700;letter-spacing:.06em;background:rgba(26,216,181,.1);color:#9ae8d6;border:1px solid rgba(26,216,181,.22)}
+    /* SIGN */
+    .sign-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    .sign-box{border:1px solid var(--lines);border-radius:12px;background:rgba(255,255,255,.02);padding:14px}
+    .sign-role{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:8px}
+    .sign-box input{width:100%;background:transparent;border:none;border-bottom:1px solid var(--lines);color:var(--text);font-family:"Manrope",sans-serif;font-size:13px;padding:4px 0 6px;outline:none;transition:border-color 160ms}
+    .sign-box input:focus{border-bottom-color:var(--amber)}
+    .sign-box .field{margin-top:10px}
+    .artifact-sync-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+    .sync-field{display:grid;gap:6px}
+    .sync-field--wide{grid-column:1/-1}
+    .sync-field label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+    .sync-field input,.sync-field select,.sync-field textarea{
+      width:100%;background:rgba(255,255,255,.04);border:1px solid var(--lines);border-radius:8px;
+      color:var(--text);font-family:"Manrope",sans-serif;font-size:12px;padding:7px 9px;outline:none;resize:vertical;
+      -webkit-appearance:none;appearance:none;
+    }
+    .sync-field input:focus,.sync-field select:focus,.sync-field textarea:focus{border-color:rgba(255,188,76,.55)}
+    .btn-row{display:flex;gap:10px;margin-top:16px}
+    .btn{display:inline-flex;align-items:center;gap:7px;padding:10px 18px;border-radius:999px;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:.04em;text-transform:uppercase;border:1px solid rgba(26,216,181,.5);background:rgba(26,216,181,.12);color:var(--cyan);transition:background 160ms;font-family:"Manrope",sans-serif}
+    .btn:hover{background:rgba(26,216,181,.22)}
+    .btn-amber{border-color:rgba(255,188,76,.5);background:rgba(255,188,76,.1);color:var(--amber)}
+    .btn-amber:hover{background:rgba(255,188,76,.2);border-color:var(--amber)}
+    .legend{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+    .footer{margin-top:20px;text-align:center;font-size:11px;color:#4e5f76;letter-spacing:.07em;text-transform:uppercase}
+    @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(26,216,181,.7)}70%{box-shadow:0 0 0 12px rgba(26,216,181,0)}100%{box-shadow:0 0 0 0 rgba(26,216,181,0)}}
+    @media print{body{background:#fff;color:#000}.topbar,.btn-row,.legend{display:none}td input,td select,.sign-box input{border-color:#ccc;color:#000;background:#f9f9f9}}
+    @media(max-width:780px){.sign-grid,.artifact-sync-grid{grid-template-columns:1fr 1fr}.topbar{position:static}}
+    @media(max-width:560px){.artifact-sync-grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<main class="wrap">
+  <header class="topbar">
+    <div class="brand"><span class="bdot"></span>Nexus Oilfield AI</div>
+    <a class="back" href="../19_drilling_stage_1_design.html">← Этап 1</a>
+  </header>
+
+  <section class="hero">
+    <div class="badge"><span class="bdot2"></span>Артефакт 02 из 06</div>
+    <h1>Пакет <span>Данных</span></h1>
+    <div class="hero-meta">
+      <span class="meta-pill">Бурение — Этап 1</span>
+      <span class="meta-pill">Версия: 1.0</span>
+      <span class="meta-pill">Дата: <span id="today"></span></span>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="stitle">Управление артефактом</div>
+    <div class="sdesc">Этот блок синхронизирован с рабочим реестром артефактов Stage 1. Здесь фиксируется управленческий статус A2, а ниже ведется детальная проработка пакета данных.</div>
+    <div class="artifact-sync-grid">
+      <div class="sync-field">
+        <label for="artifactStatus">Статус артефакта</label>
+        <select id="artifactStatus" data-artifact-sync="status">
+          <option value="not_started">Не начат</option>
+          <option value="in_progress">В работе</option>
+          <option value="review">На проверке</option>
+          <option value="approved">Утвержден</option>
+        </select>
+      </div>
+      <div class="sync-field">
+        <label for="artifactOwner">Владелец</label>
+        <input id="artifactOwner" type="text" data-artifact-sync="owner" placeholder="Дата-лид"/>
+      </div>
+      <div class="sync-field sync-field--wide">
+        <label for="artifactNextAction">Ближайшее действие</label>
+        <input id="artifactNextAction" type="text" data-artifact-sync="nextAction" placeholder="Согласовать владельцев, частоты и SLA по критичным каналам."/>
+      </div>
+      <div class="sync-field sync-field--wide">
+        <label for="artifactNote">Рабочая заметка</label>
+        <textarea id="artifactNote" rows="3" data-artifact-sync="note" placeholder="Что мешает подписать пакет данных, где нужен дожим и кто следующий на согласование."></textarea>
+      </div>
+    </div>
+  </section>
+
+  <!-- ИСТОЧНИКИ ДАННЫХ -->
+  <section class="section">
+    <div class="stitle">Источники данных</div>
+    <div class="sdesc">Зафиксируйте каждый источник данных: систему, поля, частоту передачи, владельца и требования к качеству. Статус — отражает текущую доступность данных.</div>
+    <div class="legend">
+      <span class="stt stt-avail">● Доступны</span>
+      <span class="stt stt-partial">● Частично</span>
+      <span class="stt stt-missing">● Отсутствуют</span>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Система / Источник</th>
+            <th>Ключевые поля</th>
+            <th>Частота</th>
+            <th>Владелец</th>
+            <th>Формат</th>
+            <th>Качество / SLA</th>
+            <th>Статус</th>
+            <th>Контакт</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>WITS / WITSML</td>
+            <td><textarea rows="3" placeholder="WOB, ROP, RPM, Hookload, SPP, ECD, T&D…"></textarea></td>
+            <td><span class="freq">Real-time 1 s</span></td>
+            <td><input type="text" placeholder="IT / Drilling Eng."/></td>
+            <td><input type="text" placeholder="WITSML 2.0"/></td>
+            <td><input type="text" placeholder="Пропуски &lt; 2%"/></td>
+            <td>
+              <select>
+                <option value="avail">Доступны</option>
+                <option value="partial">Частично</option>
+                <option value="missing">Отсутствуют</option>
+              </select>
+            </td>
+            <td><input type="text" placeholder="Имя, email"/></td>
+          </tr>
+          <tr>
+            <td>CMMS (Maximo / SAP PM)</td>
+            <td><textarea rows="3" placeholder="Наряды на работы, история отказов, теги оборудования…"></textarea></td>
+            <td><span class="freq">Суточный</span></td>
+            <td><input type="text" placeholder="CMMS Admin"/></td>
+            <td><input type="text" placeholder="CSV / REST API"/></td>
+            <td><input type="text" placeholder="Актуальность D+1"/></td>
+            <td>
+              <select>
+                <option value="avail">Доступны</option>
+                <option value="partial" selected>Частично</option>
+                <option value="missing">Отсутствуют</option>
+              </select>
+            </td>
+            <td><input type="text" placeholder="Имя, email"/></td>
+          </tr>
+          <tr>
+            <td>Геология / LAS</td>
+            <td><textarea rows="3" placeholder="Гамма-каротаж, плотность, пористость, флюидонасыщенность…"></textarea></td>
+            <td><span class="freq">По скважине</span></td>
+            <td><input type="text" placeholder="Геолог-куратор"/></td>
+            <td><input type="text" placeholder="LAS 2.0 / CSV"/></td>
+            <td><input type="text" placeholder="Верификация геологом"/></td>
+            <td>
+              <select>
+                <option value="avail">Доступны</option>
+                <option value="partial">Частично</option>
+                <option value="missing">Отсутствуют</option>
+              </select>
+            </td>
+            <td><input type="text" placeholder="Имя, email"/></td>
+          </tr>
+          <tr>
+            <td>Буровые суточные рапорты</td>
+            <td><textarea rows="3" placeholder="Код NPT, описание события, время (ч), ответственная сторона…"></textarea></td>
+            <td><span class="freq">Суточный</span></td>
+            <td><input type="text" placeholder="Бурильный мастер"/></td>
+            <td><input type="text" placeholder="PDF / Excel / OpenWells"/></td>
+            <td><input type="text" placeholder="Парсинг ручной/auto"/></td>
+            <td>
+              <select>
+                <option value="avail">Доступны</option>
+                <option value="partial">Частично</option>
+                <option value="missing" selected>Отсутствуют</option>
+              </select>
+            </td>
+            <td><input type="text" placeholder="Имя, email"/></td>
+          </tr>
+          <tr>
+            <td>Hydraulics / MWD Mud</td>
+            <td><textarea rows="3" placeholder="Плотность, вязкость, pH, индикаторы потокообразования…"></textarea></td>
+            <td><span class="freq">Сменный</span></td>
+            <td><input type="text" placeholder="Технолог по бурению"/></td>
+            <td><input type="text" placeholder="Excel / Lab report"/></td>
+            <td><input type="text" placeholder="Погрешность &lt; 5%"/></td>
+            <td>
+              <select>
+                <option value="avail">Доступны</option>
+                <option value="partial" selected>Частично</option>
+                <option value="missing">Отсутствуют</option>
+              </select>
+            </td>
+            <td><input type="text" placeholder="Имя, email"/></td>
+          </tr>
+          <!-- BLANK ROWS -->
+          <tr id="add-row-before">
+            <td><input type="text" placeholder="Новый источник…"/></td>
+            <td><textarea rows="2" placeholder="Поля…"></textarea></td>
+            <td><input type="text" placeholder="Частота"/></td>
+            <td><input type="text" placeholder="Владелец"/></td>
+            <td><input type="text" placeholder="Формат"/></td>
+            <td><input type="text" placeholder="Качество"/></td>
+            <td>
+              <select>
+                <option value="avail">Доступны</option>
+                <option value="partial">Частично</option>
+                <option value="missing">Отсутствуют</option>
+              </select>
+            </td>
+            <td><input type="text" placeholder="Контакт"/></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ТРЕБОВАНИЯ К PIPELINE -->
+  <section class="section">
+    <div class="stitle">Требования к интеграции</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Источник</th>
+            <th>Протокол подключения</th>
+            <th>Авт. / Ролевая модель</th>
+            <th>Буфер задержки (latency SLA)</th>
+            <th>Действие при сбое</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>WITS / WITSML</td>
+            <td><input type="text" placeholder="REST / TCP / OPC-UA"/></td>
+            <td><input type="text" placeholder="Service account + mTLS"/></td>
+            <td><input type="text" placeholder="≤ 2 s P99"/></td>
+            <td><input type="text" placeholder="Буферизация 60 с, алерт L2"/></td>
+          </tr>
+          <tr>
+            <td>CMMS</td>
+            <td><input type="text" placeholder="REST API / SFTP"/></td>
+            <td><input type="text" placeholder="API-Key / OAuth2"/></td>
+            <td><input type="text" placeholder="≤ 30 min"/></td>
+            <td><input type="text" placeholder="Retry × 3, алерт Data Owner"/></td>
+          </tr>
+          <tr>
+            <td><input type="text" placeholder="Источник…"/></td>
+            <td><input type="text" placeholder="Протокол…"/></td>
+            <td><input type="text" placeholder="Авторизация…"/></td>
+            <td><input type="text" placeholder="SLA…"/></td>
+            <td><input type="text" placeholder="…"/></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ПОДПИСИ -->
+  <section class="section">
+    <div class="stitle">Ответственные стороны</div>
+    <div class="sign-grid">
+      <div class="sign-box">
+        <div class="sign-role">Заказчик — Data Owner</div>
+        <div class="field"><input type="text" placeholder="ФИО"/></div>
+        <div class="field"><input type="text" placeholder="Должность"/></div>
+        <div class="field"><input type="date"/></div>
+      </div>
+      <div class="sign-box">
+        <div class="sign-role">Исполнитель — Data Engineer</div>
+        <div class="field"><input type="text" placeholder="ФИО"/></div>
+        <div class="field"><input type="text" placeholder="Должность"/></div>
+        <div class="field"><input type="date"/></div>
+      </div>
+      <div class="sign-box">
+        <div class="sign-role">Исполнитель — CDAO</div>
+        <div class="field"><input type="text" placeholder="ФИО"/></div>
+        <div class="field"><input type="text" placeholder="Должность"/></div>
+        <div class="field"><input type="date"/></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="btn-row">
+    <button class="btn" onclick="window.print()">
+      <svg width="14" height="14" fill="none" viewBox="0 0 14 14"><rect x="2" y="5" width="10" height="7" rx="1.5" stroke="#1ad8b5" stroke-width="1.4"/><path d="M4 5V3a1 1 0 011-1h4a1 1 0 011 1v2" stroke="#1ad8b5" stroke-width="1.4"/></svg>
+      Распечатать
+    </button>
+    <button class="btn btn-amber" onclick="saveData(this)">Сохранить черновик</button>
+  </div>
+  <p class="footer">Nexus Oilfield AI — Пакет договоренностей по данным — Бурение Этап 01</p>
+</main>
+<script>
+  document.getElementById("today").textContent = new Date().toLocaleDateString("ru-RU");
+  const DRAFT_KEY = "data_contract_draft";
+  const ARTIFACTS_KEY = "nexus_stage1_artifact_workbench_v1";
+  const ARTIFACT_ID = "a2";
+  const ARTIFACT_DEFAULTS = {
+    status: "not_started",
+    owner: "Дата-лид",
+    nextAction: "Согласовать владельцев, частоты и SLA по критичным каналам.",
+    note: ""
+  };
+
+  function readJson(key) {
+    try {
+      return JSON.parse(localStorage.getItem(key) || "null");
+    } catch (error) {
+      return null;
+    }
+  }
+
+  function saveJson(key, value) {
+    localStorage.setItem(key, JSON.stringify(value));
+  }
+
+  function loadArtifactState() {
+    const state = readJson(ARTIFACTS_KEY) || {};
+    const current = Object.assign({}, ARTIFACT_DEFAULTS, state[ARTIFACT_ID] || {});
+    document.getElementById("artifactStatus").value = current.status;
+    document.getElementById("artifactOwner").value = current.owner;
+    document.getElementById("artifactNextAction").value = current.nextAction;
+    document.getElementById("artifactNote").value = current.note;
+  }
+
+  function saveArtifactState() {
+    const state = readJson(ARTIFACTS_KEY) || {};
+    state[ARTIFACT_ID] = {
+      status: document.getElementById("artifactStatus").value,
+      owner: document.getElementById("artifactOwner").value,
+      nextAction: document.getElementById("artifactNextAction").value,
+      note: document.getElementById("artifactNote").value
+    };
+    saveJson(ARTIFACTS_KEY, state);
+  }
+
+  function saveData(button){
+    saveArtifactState();
+    const inputs = document.querySelectorAll("input,select,textarea");
+    const data={};
+    inputs.forEach((el,i)=>{data[i]=el.value;});
+    localStorage.setItem(DRAFT_KEY,JSON.stringify(data));
+    const orig=button.innerHTML;button.textContent="✓ Сохранено";
+    setTimeout(()=>{button.innerHTML=orig;},1800);
+  }
+  const saved=localStorage.getItem(DRAFT_KEY);
+  if(saved){const data=JSON.parse(saved);document.querySelectorAll("input,select,textarea").forEach((el,i)=>{if(data[i]!==undefined)el.value=data[i];});}
+  loadArtifactState();
+  document.querySelectorAll("[data-artifact-sync]").forEach((node)=>{
+    node.addEventListener("change", saveArtifactState);
+    node.addEventListener("blur", saveArtifactState, true);
+  });
+</script>
+  <script src="../assets/js/global-auth-widget.js"></script>
+</body>
+</html>

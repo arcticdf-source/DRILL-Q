@@ -1,0 +1,683 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>79 · Drilling Manager Brief</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap");
+    :root { --bg-0:#09121d; --bg-1:#102234; --bg-2:#1b3954; --panel:rgba(8,18,31,.88); --panel-soft:rgba(255,255,255,.04); --line:rgba(226,237,255,.14); --line-soft:rgba(226,237,255,.08); --text:#edf5ff; --muted:#9eb4cb; --cyan:#20d9b4; --amber:#ffbf66; --blue:#8db4ff; --violet:#c6a6ff; --green:#79e3a5; --danger:#ff8383; --shadow:0 24px 56px rgba(0,0,0,.38); }
+    * { box-sizing:border-box; }
+    html, body { margin:0; min-height:100%; font-family:"Manrope",sans-serif; color:var(--text); background:radial-gradient(880px 460px at 0% -8%, rgba(32,217,180,.18), transparent),radial-gradient(760px 420px at 100% 0%, rgba(255,191,102,.15), transparent),linear-gradient(145deg,var(--bg-0),var(--bg-1) 48%,var(--bg-2)); }
+    body { padding:24px 0 56px; }
+    .wrap { width:min(1120px,94vw); margin:0 auto; }
+    .topbar, .hero, .section { border:1px solid var(--line); border-radius:24px; background:var(--panel); box-shadow:var(--shadow); }
+    .print-focus-section { break-inside:avoid; }
+    body.morning-focus .hero,
+    body.morning-focus .section:not(.print-focus-section):not(.morning-keep),
+    body.morning-focus .footer {
+      display:none;
+    }
+    body.morning-focus .print-focus-section,
+    body.morning-focus .morning-keep {
+      margin-top:18px;
+    }
+    .topbar { display:flex; align-items:center; justify-content:space-between; gap:14px; padding:14px 16px; position:sticky; top:12px; z-index:10; }
+    .brand { display:flex; align-items:center; gap:10px; font-family:"Oswald",sans-serif; text-transform:uppercase; letter-spacing:.05em; font-size:20px; }
+    .dot { width:12px; height:12px; border-radius:999px; background:radial-gradient(circle at 35% 35%, #d8fff8, var(--cyan)); }
+    .controls { display:flex; flex-wrap:wrap; gap:8px; }
+    .control, .control-button { appearance:none; border:1px solid rgba(34,215,180,.5); border-radius:12px; padding:10px 14px; background:linear-gradient(130deg,#a0f9eb,#22d7b4); color:#07261f; font:800 12px/1 "Manrope",sans-serif; letter-spacing:.05em; text-transform:uppercase; text-decoration:none; cursor:pointer; }
+    .control.secondary { background:rgba(255,255,255,.04); border-color:var(--line-soft); color:var(--text); }
+    .hero { margin-top:18px; padding:24px; background:radial-gradient(460px 220px at 4% 0%, rgba(32,217,180,.14), transparent),radial-gradient(480px 240px at 100% 0%, rgba(255,191,102,.12), transparent),var(--panel); }
+    .hero-top { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+    .hero h1 { margin:12px 0 8px; font-family:"Oswald",sans-serif; font-size:clamp(34px,5vw,56px); line-height:1; }
+    .hero p { margin:0; max-width:840px; color:#cad9ea; font-size:15px; line-height:1.7; }
+    .hero-label, .decision-pill, .priority-chip, .source-chip { display:inline-flex; align-items:center; border-radius:999px; }
+    .hero-label { border:1px solid var(--line-soft); padding:6px 10px; background:rgba(255,255,255,.03); font-size:11px; text-transform:uppercase; letter-spacing:.1em; color:#d5e7f8; }
+    .decision-pill { padding:8px 12px; border:1px solid var(--line-soft); background:rgba(255,255,255,.04); color:#d7e8fa; font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.08em; }
+    .decision-pill.ready { color:#9beddf; border-color:rgba(32,217,180,.34); background:rgba(32,217,180,.12); }
+    .decision-pill.conditional { color:#ffe0a0; border-color:rgba(255,191,102,.34); background:rgba(255,191,102,.12); }
+    .decision-pill.blocked, .decision-pill.at_risk, .decision-pill.backlog { color:#ffc2c2; border-color:rgba(255,131,131,.34); background:rgba(255,131,131,.12); }
+    .metric-grid, .handoff-grid, .signal-grid, .queue-grid, .risk-grid, .today-grid { display:grid; gap:12px; }
+    .metric-grid { margin-top:18px; grid-template-columns:repeat(4,minmax(0,1fr)); }
+    .metric-card, .handoff-card, .signal-card, .queue-card, .owner-card, .risk-card, .today-card { border:1px solid var(--line-soft); border-radius:18px; background:var(--panel-soft); padding:16px; }
+    .metric-card span, .handoff-card h3, .queue-card h3, .section-head span { color:var(--muted); font-size:11px; text-transform:uppercase; letter-spacing:.08em; }
+    .metric-card strong { display:block; margin-top:8px; font-size:28px; }
+    .metric-card small { display:block; margin-top:8px; color:#bfd2e7; font-size:12px; line-height:1.5; }
+    .section { margin-top:18px; padding:20px; }
+    .section-head { display:flex; align-items:flex-end; justify-content:space-between; gap:12px; margin-bottom:14px; }
+    .section-head h2 { margin:0; font-size:24px; }
+    .handoff-grid { grid-template-columns:repeat(3,minmax(0,1fr)); }
+    .handoff-card p, .signal-card p, .queue-card p, .owner-card p { margin:10px 0 0; color:#edf5ff; font-size:14px; line-height:1.6; }
+    .signal-grid { grid-template-columns:repeat(3,minmax(0,1fr)); }
+    .signal-card strong { display:block; font-size:16px; }
+    .today-grid { grid-template-columns:.85fr 1.15fr; }
+    .today-metrics { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
+    .today-card.is-hot { border-color:rgba(255,188,76,.34); background:rgba(255,188,76,.09); }
+    .today-card strong { display:block; font-size:28px; }
+    .today-card p { margin:8px 0 0; color:#d8e5f5; font-size:13px; line-height:1.55; }
+    .today-list { margin:0; padding-left:18px; display:grid; gap:8px; color:#d8e5f5; font-size:13px; line-height:1.55; }
+    .queue-grid { grid-template-columns:1fr 1fr; }
+    .queue-card ul { margin:12px 0 0; padding-left:18px; display:grid; gap:8px; color:#d8e5f5; font-size:13px; line-height:1.55; }
+    .risk-grid { grid-template-columns:repeat(3,minmax(0,1fr)); }
+    .risk-card strong { display:block; font-size:28px; }
+    .risk-card p { margin:8px 0 0; color:#d8e5f5; font-size:13px; line-height:1.55; }
+    .risk-card.is-hot { border-color:rgba(255,131,131,.3); background:rgba(255,131,131,.08); }
+    .risk-list { margin:14px 0 0; padding-left:18px; display:grid; gap:8px; color:#d8e5f5; font-size:13px; line-height:1.55; }
+    .owner-grid { display:grid; gap:10px; }
+    .owner-card-top { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+    .owner-card strong { display:block; font-size:15px; }
+    .owner-meta { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+    .priority-chip, .source-chip { padding:5px 9px; font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:.08em; }
+    .priority-chip.today { color:#2d1404; background:rgba(255,188,76,.95); }
+    .priority-chip.this_week { color:#062922; background:rgba(32,217,180,.92); }
+    .priority-chip.watch { color:#d9e7f8; background:rgba(141,180,255,.24); border:1px solid rgba(141,180,255,.3); }
+    .source-chip { background:rgba(255,255,255,.05); color:#dce8f7; border:1px solid var(--line-soft); }
+    .owner-notes { margin-top:12px; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; }
+    .owner-note { border:1px solid var(--line-soft); border-radius:12px; background:rgba(255,255,255,.025); padding:12px; }
+    .owner-note span { display:block; color:var(--muted); font-size:10px; text-transform:uppercase; letter-spacing:.08em; }
+    .owner-note strong { margin-top:6px; font-size:13px; }
+    .footer { margin-top:14px; color:#8ea2bc; font-size:12px; text-align:center; text-transform:uppercase; letter-spacing:.08em; }
+    @media (max-width:1100px) { .metric-grid, .handoff-grid, .signal-grid, .today-grid, .today-metrics, .queue-grid, .risk-grid, .owner-notes { grid-template-columns:1fr; } }
+    @media (max-width:900px) { .topbar { position:static; flex-direction:column; align-items:flex-start; } }
+    @media print {
+      :root { --panel:#ffffff; --panel-soft:#f5f8fb; --line:rgba(0,0,0,.12); --line-soft:rgba(0,0,0,.08); --text:#122033; --muted:#53657b; --shadow:none; }
+      html, body { background:#ffffff; }
+      body { padding:0; }
+      .topbar { position:static; }
+      .controls { display:none; }
+      .hero, .section, .topbar { box-shadow:none; background:#ffffff; }
+      body.print-morning-cut .hero,
+      body.print-morning-cut .section:not(.print-focus-section),
+      body.print-morning-cut .footer {
+        display:none;
+      }
+      body.print-morning-cut .print-focus-section {
+        margin-top:12px;
+        page-break-inside:avoid;
+      }
+    }
+  </style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+  <main class="wrap">
+    <header class="topbar">
+      <div class="brand"><span class="dot" aria-hidden="true"></span><span>Nexus Oilfield AI · Manager Brief</span></div>
+      <div class="controls">
+        <a class="control secondary" href="37_drilling_modules.html">Control Center</a>
+        <a class="control secondary" href="81_drilling_daily_intelligence_fusion.html">Daily Fusion</a>
+        <a class="control secondary" href="82_ctis_fleet_tracker.html">CTIS Fleet</a>
+        <a class="control secondary" href="79_drilling_manager_brief.html?view=morning">Morning cut view</a>
+        <a class="control secondary" href="20_drilling_stage_1_execution_playbook.html">Stage 1 Playbook</a>
+        <button class="control-button secondary" type="button" id="refreshBrief">Refresh</button>
+        <button class="control-button secondary" type="button" id="printMorningCut">Print morning cut</button>
+        <button class="control-button" type="button" id="printBrief">Print brief</button>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="hero-top">
+        <div>
+          <span class="hero-label">Daily drilling handoff</span>
+          <h1>Manager Brief</h1>
+          <p>Короткий экран для оперативной планерки: текущее stage-решение, что горит сегодня, недельный фокус, watchlist и очередь действий с owner. Источник тот же, что и в drilling control center, но без лишней навигации. Этот brief задуман как универсальный ежедневный слой управления для любого проекта бурения, а не как экран под конкретное месторождение.</p>
+        </div>
+        <div class="decision-pill blocked" id="briefPill">Chain not ready</div>
+      </div>
+      <div class="metric-grid">
+        <div class="metric-card"><span>Current stage</span><strong id="briefStage">Stage 1</strong><small id="briefStageNote">Начните с design cockpit и Stage 1 tracker.</small></div>
+        <div class="metric-card"><span>Decision</span><strong id="briefDecision">Нет live decision</strong><small id="briefDecisionNote">Заполните stage tools, чтобы здесь появился текущий go / hold / block сигнал.</small></div>
+        <div class="metric-card"><span>Tracker progress</span><strong id="briefTracker">0 / 0</strong><small id="briefTrackerNote">Stage 1 tracker еще не обновлялся.</small></div>
+        <div class="metric-card"><span>Last refresh</span><strong id="briefRefresh">--:--</strong><small id="briefRefreshNote">Страница перечитывает local state из stage, initiative и action desk инструментов.</small></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>Handoff Summary</h2><span>what to say in the room</span></div>
+      <div class="handoff-grid">
+        <div class="handoff-card"><h3>What burns today</h3><p id="handoffToday">Когда появятся приоритеты today, здесь будет короткая строка для планерки.</p></div>
+        <div class="handoff-card"><h3>This week focus</h3><p id="handoffWeek">Когда появятся задачи this week, здесь будет строка недельного фокуса.</p></div>
+        <div class="handoff-card"><h3>Watchlist</h3><p id="handoffWatch">Когда появятся watch items, здесь будет строка того, что держим под наблюдением.</p></div>
+      </div>
+    </section>
+
+    <section class="section print-focus-section morning-keep">
+      <div class="section-head"><h2>Today Focus Cut</h2><span>morning five-minute review</span></div>
+      <div class="today-grid">
+        <div class="today-metrics">
+          <div class="today-card is-hot"><span>Today actions</span><strong id="todayFocusMetric">0</strong><p id="todayFocusNote">Пока нет срочных действий с priority today.</p></div>
+          <div class="today-card"><span>Need owner</span><strong id="todayOwnerGapMetric">0</strong><p id="todayOwnerGapNote">Все today actions имеют owner.</p></div>
+          <div class="today-card"><span>Need ack</span><strong id="todayAckGapMetric">0</strong><p id="todayAckGapNote">Все today actions уже приняты в работу.</p></div>
+        </div>
+        <div class="today-card">
+          <span>Today queue</span>
+          <p id="todayQueueLead">Здесь появится короткая очередь действий на сегодняшнюю пятиминутку.</p>
+          <ul class="today-list" id="todayQueueList"><li>Сегодня нет действий с priority today.</li></ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>Signals</h2><span>where the pressure comes from</span></div>
+      <div class="signal-grid">
+        <div class="signal-card"><strong id="signalStage">Top operational signal</strong><p id="signalStageNote">Пока нет данных из stage chain.</p></div>
+        <div class="signal-card"><strong id="signalInitiative">Top portfolio signal</strong><p id="signalInitiativeNote">Пока нет данных из initiative runtime layer.</p></div>
+        <div class="signal-card"><strong id="signalMeeting">Manager meeting focus</strong><p id="signalMeetingNote">Когда данные появятся, здесь будет короткая формулировка для daily drilling review.</p></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>Escalation Queue</h2><span>top blockers and actions</span></div>
+      <div class="queue-grid">
+        <div class="queue-card">
+          <h3>Top blockers</h3>
+          <ul id="blockersList"><li>Сначала зафиксируйте blockers в stage и initiative tools.</li></ul>
+        </div>
+        <div class="queue-card">
+          <h3>Immediate actions</h3>
+          <ul id="actionsList"><li>Заполните Stage 1-4 и I1-I5 инструменты, чтобы собрать реальную очередь менеджера.</li></ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section print-focus-section morning-keep">
+      <div class="section-head"><h2>Owner Risk Board</h2><span>who is exposed right now</span></div>
+      <div class="risk-grid">
+        <div class="risk-card is-hot"><span>Unacknowledged</span><strong id="riskUnackMetric">0</strong><p id="riskUnackNote">Нет действий, которые еще не приняты в работу.</p></div>
+        <div class="risk-card is-hot"><span>Due today</span><strong id="riskDueMetric">0</strong><p id="riskDueNote">Нет действий, которые должны быть закрыты сегодня.</p></div>
+        <div class="risk-card"><span>Unassigned</span><strong id="riskUnassignedMetric">0</strong><p id="riskUnassignedNote">Все действия имеют назначенного owner.</p></div>
+      </div>
+      <ul class="risk-list" id="riskList"><li>Когда в action desk появятся непринятые, due today или unassigned actions, они будут показаны здесь.</li></ul>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>Owner Queue</h2><span>read-only view from action desk</span></div>
+      <div class="owner-grid" id="ownerQueue">
+        <div class="owner-card"><strong>Очередь действий пока не собрана.</strong><p>Заполните stage и initiative tools, чтобы action desk начал работать.</p></div>
+      </div>
+    </section>
+
+    <p class="footer">Printable drilling manager brief · Doc 79</p>
+  </main>
+
+  <script>
+    (function () {
+      var STAGE1_KEY = 'nexus_stage1_manager_summary_v1';
+      var STAGE2_KEY = 'nexus_stage2_pilot_tool_v1';
+      var STAGE3_KEY = 'nexus_stage3_rollout_tool_v1';
+      var STAGE4_KEY = 'nexus_stage4_autonomy_tool_v1';
+      var TRACKER_KEY = 'tracker_tasks';
+      var INITIATIVE_KEY = 'nexus_drilling_initiatives_console_v1';
+      var ESCALATION_DESK_KEY = 'nexus_drilling_escalation_desk_v1';
+      var CEMENTING_KEY = 'cementing_case_v1';
+      var I1_RUNTIME_KEY = 'nexus_i1_runtime_tool_v1';
+      var I2_RUNTIME_KEY = 'nexus_i2_hydraulics_runtime_v1';
+      var I3_RUNTIME_KEY = 'nexus_i3_losses_runtime_v1';
+      var I4_RUNTIME_KEY = 'nexus_i4_cementing_runtime_v1';
+      var I5_RUNTIME_KEY = 'nexus_i5_document_pipeline_runtime_v1';
+      var INITIATIVES = [
+        { id: 'i1', code: 'I1', title: 'Depth-Day Optimizer', owner: 'PO / Ops Lead', action: 'Подтвердить baseline по NPT, ETA и critical path сигналам.' },
+        { id: 'i2', code: 'I2', title: 'Hydraulics Twin', owner: 'Drilling Engineer', action: 'Проверить pressure window и runtime calculators для pilot wells.' },
+        { id: 'i3', code: 'I3', title: 'Losses Engine', owner: 'Mud / Losses Lead', action: 'Согласовать loss taxonomy и alert thresholds для field usage.' },
+        { id: 'i4', code: 'I4', title: 'Casing & Cementing', owner: 'Cementing Lead', action: 'Подготовить расчетный кейс и сохранить его как рабочий шаблон.' },
+        { id: 'i5', code: 'I5', title: 'Document Pipeline', owner: 'Data Engineer', action: 'Закрыть ingestion path и нормализацию ключевых drilling documents.' }
+      ];
+
+      function readJson(key) {
+        try {
+          return JSON.parse(localStorage.getItem(key) || 'null');
+        } catch (error) {
+          return null;
+        }
+      }
+
+      function setText(id, value) {
+        var node = document.getElementById(id);
+        if (node) {
+          node.textContent = value;
+        }
+      }
+
+      function setPill(id, status, text) {
+        var node = document.getElementById(id);
+        if (!node) {
+          return;
+        }
+        node.className = 'decision-pill ' + (status || 'blocked');
+        node.textContent = text || 'No data';
+      }
+
+      function renderList(id, items, fallback) {
+        var node = document.getElementById(id);
+        if (!node) {
+          return;
+        }
+        var values = items && items.length ? items : [fallback];
+        node.innerHTML = values.map(function (item) {
+          return '<li>' + escapeHtml(item) + '</li>';
+        }).join('');
+      }
+
+      function escapeHtml(value) {
+        return String(value || '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
+      function metricFromState(stage1, stage2, stage3, stage4) {
+        var values = [];
+        if (stage1 && typeof stage1.readinessScore === 'number') {
+          values.push(stage1.readinessScore);
+        }
+        if (stage2 && typeof stage2.readiness === 'number') {
+          values.push(stage2.readiness);
+        }
+        if (stage3 && typeof stage3.health === 'number') {
+          values.push(stage3.health);
+        }
+        if (stage4 && typeof stage4.health === 'number') {
+          values.push(stage4.health);
+        }
+        if (!values.length) {
+          return 0;
+        }
+        return Math.round(values.reduce(function (sum, value) { return sum + value; }, 0) / values.length);
+      }
+
+      function getCurrentStage(stage1, stage2, stage3, stage4) {
+        if (stage4) {
+          return { label: 'Stage 4', note: 'Автономный контур уже в фокусе.' };
+        }
+        if (stage3) {
+          return { label: 'Stage 3', note: 'Главный фокус на wave rollout и support capacity.' };
+        }
+        if (stage2) {
+          return { label: 'Stage 2', note: 'Главный фокус на pilot readiness и adoption.' };
+        }
+        if (stage1) {
+          return { label: 'Stage 1', note: 'Главный фокус на readiness, артефактах и gate closure.' };
+        }
+        return { label: 'Stage 1', note: 'Начните с design cockpit и Stage 1 tracker.' };
+      }
+
+      function latestDecision(stage1, stage2, stage3, stage4) {
+        if (stage4) {
+          return { status: stage4.status, pill: stage4.pill, title: 'Autonomy decision', note: stage4.summary || 'Stage 4 summary is not available yet.' };
+        }
+        if (stage3) {
+          return { status: stage3.status, pill: stage3.pill, title: 'Rollout decision', note: stage3.summary || 'Stage 3 summary is not available yet.' };
+        }
+        if (stage2) {
+          return { status: stage2.status, pill: stage2.pill, title: 'Pilot decision', note: stage2.summary || 'Stage 2 summary is not available yet.' };
+        }
+        if (stage1) {
+          return { status: stage1.status, pill: stage1.pill, title: 'Stage 1 decision', note: stage1.summary || 'Stage 1 summary is not available yet.' };
+        }
+        return { status: 'blocked', pill: 'Chain not ready', title: 'Нет активного решения', note: 'Сформируйте хотя бы один live stage status.' };
+      }
+
+      function trackerProgress(tasks) {
+        if (!Array.isArray(tasks) || !tasks.length) {
+          return { done: 0, total: 0, note: 'Stage 1 tracker еще не обновлялся.' };
+        }
+        var done = tasks.filter(function (task) { return task.status === 'done'; }).length;
+        return { done: done, total: tasks.length, note: 'Выполнено ' + done + ' из ' + tasks.length + ' задач трекера.' };
+      }
+
+      function uniqueItems(listSets, fallback) {
+        var merged = [];
+        listSets.forEach(function (items) {
+          if (Array.isArray(items)) {
+            items.forEach(function (item) {
+              if (item && merged.indexOf(item) === -1 && merged.length < 6) {
+                merged.push(item);
+              }
+            });
+          }
+        });
+        return merged.length ? merged : [fallback];
+      }
+
+      function initiativeMeta(status) {
+        var map = {
+          backlog: { score: 20 },
+          active: { score: 65 },
+          at_risk: { score: 35 },
+          ready: { score: 85 },
+          scaled: { score: 100 }
+        };
+        return map[status] || map.backlog;
+      }
+
+      function normalizeInitiativeState(raw) {
+        var normalized = {};
+        INITIATIVES.forEach(function (initiative) {
+          var current = raw && raw[initiative.id] ? raw[initiative.id] : {};
+          normalized[initiative.id] = {
+            status: current.status || 'backlog',
+            owner: current.owner || initiative.owner,
+            action: current.action || initiative.action,
+            note: current.note || ''
+          };
+        });
+        return normalized;
+      }
+
+      function readInitiativeRuntime() {
+        return {
+          i1: readJson(I1_RUNTIME_KEY),
+          i2: readJson(I2_RUNTIME_KEY),
+          i3: readJson(I3_RUNTIME_KEY),
+          i4: readJson(I4_RUNTIME_KEY),
+          i5: readJson(I5_RUNTIME_KEY)
+        };
+      }
+
+      function getEffectiveInitiativeState(initiative, state, runtimeMap, cementingDetected) {
+        var manual = state[initiative.id];
+        var runtime = runtimeMap[initiative.id] || null;
+        var effectiveStatus = runtime && runtime.status ? runtime.status : manual.status;
+        var effectiveAction = runtime && runtime.actions && runtime.actions.length ? runtime.actions[0] : manual.action;
+        var effectiveNote = manual.note || (runtime && runtime.summary ? runtime.summary : '');
+        if (initiative.id === 'i4' && !runtime && cementingDetected) {
+          effectiveNote = manual.note || 'Состояние калькулятора найдено. Рабочий шаблон цементирования уже сохранен.';
+        }
+        return {
+          status: effectiveStatus,
+          owner: manual.owner,
+          action: effectiveAction,
+          note: effectiveNote,
+          runtime: runtime
+        };
+      }
+
+      function buildEffectiveInitiativeStates(state, runtimeMap, cementingDetected) {
+        var effectiveStates = {};
+        INITIATIVES.forEach(function (initiative) {
+          effectiveStates[initiative.id] = getEffectiveInitiativeState(initiative, state, runtimeMap, cementingDetected);
+        });
+        return effectiveStates;
+      }
+
+      function buildActionKey(text) {
+        return String(text || '')
+          .toLowerCase()
+          .replace(/[^a-z0-9а-я]+/gi, '-')
+          .replace(/^-+|-+$/g, '')
+          .slice(0, 80) || 'action';
+      }
+
+      function suggestedPriorityFromSeverity(severity, index) {
+        if (severity === 'blocked' || severity === 'at_risk') {
+          return index < 2 ? 'today' : 'this_week';
+        }
+        if (severity === 'conditional' || severity === 'active') {
+          return index < 2 ? 'this_week' : 'watch';
+        }
+        return 'watch';
+      }
+
+      function buildActionEntries(actions, severity, sourceLabel) {
+        return (actions || []).filter(function (item) { return !!item; }).map(function (item, index) {
+          return {
+            text: item,
+            source: sourceLabel,
+            suggestedPriority: suggestedPriorityFromSeverity(severity, index)
+          };
+        });
+      }
+
+      function normalizeEscalationDeskState(raw, actions) {
+        var nextState = {};
+        actions.forEach(function (actionEntry) {
+          var actionText = typeof actionEntry === 'string' ? actionEntry : actionEntry.text;
+          var suggestedPriority = typeof actionEntry === 'string' ? 'watch' : actionEntry.suggestedPriority || 'watch';
+          var actionKey = buildActionKey(actionText);
+          var current = raw && raw[actionKey] ? raw[actionKey] : {};
+          nextState[actionKey] = {
+            key: actionKey,
+            text: actionText,
+            owner: current.owner || '',
+            priority: current.priorityManual ? (current.priority || suggestedPriority) : suggestedPriority,
+            suggestedPriority: suggestedPriority,
+            priorityManual: !!current.priorityManual,
+            dueToday: !!current.dueToday,
+            acknowledged: !!current.acknowledged,
+            source: typeof actionEntry === 'string' ? 'manager' : actionEntry.source || 'manager'
+          };
+        });
+        return nextState;
+      }
+
+      function deriveInitiativeSeverity(effectiveStates) {
+        var items = Object.keys(effectiveStates).map(function (key) { return effectiveStates[key]; });
+        if (items.some(function (item) { return item.status === 'at_risk'; })) {
+          return 'at_risk';
+        }
+        if (items.some(function (item) { return item.status === 'active'; })) {
+          return 'active';
+        }
+        if (items.some(function (item) { return item.status === 'ready'; })) {
+          return 'ready';
+        }
+        return 'backlog';
+      }
+
+      function renderOwnerQueue(values) {
+        var host = document.getElementById('ownerQueue');
+        if (!host) {
+          return;
+        }
+        if (!values.length) {
+          host.innerHTML = '<div class="owner-card"><strong>Очередь действий пока не собрана.</strong><p>Заполните stage и initiative tools, чтобы action desk начал работать.</p></div>';
+          return;
+        }
+        host.innerHTML = values.map(function (item, index) {
+          var priorityLabel = item.priority === 'today' ? 'Today' : item.priority === 'this_week' ? 'This week' : 'Watch';
+          var sourceLabel = item.source === 'stage' ? 'Stage chain' : item.source === 'initiative' ? 'Initiative layer' : 'Manager';
+          return [
+            '<div class="owner-card">',
+            '<div class="owner-card-top">',
+            '<div>',
+            '<strong>' + (index + 1) + '. ' + escapeHtml(item.text) + '</strong>',
+            '<p>' + (item.acknowledged ? 'Действие подтверждено и находится в работе.' : 'Действие еще не подтверждено менеджером.') + '</p>',
+            '</div>',
+            '<div class="owner-meta">',
+            '<span class="priority-chip ' + item.priority + '">' + priorityLabel + '</span>',
+            '<span class="source-chip">' + sourceLabel + '</span>',
+            '</div>',
+            '</div>',
+            '<div class="owner-notes">',
+            '<div class="owner-note"><span>Owner</span><strong>' + escapeHtml(item.owner || 'Not assigned') + '</strong></div>',
+            '<div class="owner-note"><span>Due today</span><strong>' + (item.dueToday ? 'Close today' : 'No') + '</strong></div>',
+            '<div class="owner-note"><span>Override</span><strong>' + (item.priorityManual ? 'Manual priority' : 'Suggested priority') + '</strong></div>',
+            '</div>',
+            '</div>'
+          ].join('');
+        }).join('');
+      }
+
+      function renderRiskBoard(values) {
+        var unacknowledged = values.filter(function (item) { return !item.acknowledged; });
+        var dueToday = values.filter(function (item) { return item.dueToday; });
+        var unassigned = values.filter(function (item) { return !String(item.owner || '').trim(); });
+        var immediate = values.filter(function (item) {
+          return !item.acknowledged || item.dueToday || !String(item.owner || '').trim();
+        }).slice(0, 6).map(function (item) {
+          var owner = String(item.owner || '').trim() || 'owner not assigned';
+          var flags = [];
+          if (!item.acknowledged) {
+            flags.push('not acknowledged');
+          }
+          if (item.dueToday) {
+            flags.push('due today');
+          }
+          if (!String(item.owner || '').trim()) {
+            flags.push('unassigned');
+          }
+          return item.text + ' · ' + owner + ' · ' + flags.join(', ');
+        });
+
+        setText('riskUnackMetric', String(unacknowledged.length));
+        setText('riskUnackNote', unacknowledged.length ? 'Нужно подтверждение менеджера по ' + unacknowledged.length + ' действию(ям).' : 'Нет действий, которые еще не приняты в работу.');
+        setText('riskDueMetric', String(dueToday.length));
+        setText('riskDueNote', dueToday.length ? dueToday.slice(0, 2).map(function (item) { return item.text; }).join(' | ') : 'Нет действий, которые должны быть закрыты сегодня.');
+        setText('riskUnassignedMetric', String(unassigned.length));
+        setText('riskUnassignedNote', unassigned.length ? 'Нужно назначить owner для ' + unassigned.length + ' действию(ям).' : 'Все действия имеют назначенного owner.');
+        renderList('riskList', immediate, 'Когда в action desk появятся непринятые, due today или unassigned actions, они будут показаны здесь.');
+      }
+
+      function renderTodayFocus(todayItems) {
+        var withoutOwner = todayItems.filter(function (item) { return !String(item.owner || '').trim(); });
+        var withoutAck = todayItems.filter(function (item) { return !item.acknowledged; });
+        var lead = todayItems.length
+          ? todayItems.slice(0, 2).map(function (item) { return item.text; }).join(' | ')
+          : 'Сегодня нет действий с priority today.';
+        var list = todayItems.map(function (item) {
+          var owner = String(item.owner || '').trim() || 'owner not assigned';
+          var suffix = [];
+          if (!item.acknowledged) {
+            suffix.push('not acknowledged');
+          }
+          if (item.dueToday) {
+            suffix.push('due today');
+          }
+          return item.text + ' · ' + owner + (suffix.length ? ' · ' + suffix.join(', ') : '');
+        });
+
+        setText('todayFocusMetric', String(todayItems.length));
+        setText('todayFocusNote', todayItems.length ? 'Это actions, которые менеджер должен проговорить и распределить первыми.' : 'Пока нет срочных действий с priority today.');
+        setText('todayOwnerGapMetric', String(withoutOwner.length));
+        setText('todayOwnerGapNote', withoutOwner.length ? 'Для ' + withoutOwner.length + ' today actions еще не назначен owner.' : 'Все today actions имеют owner.');
+        setText('todayAckGapMetric', String(withoutAck.length));
+        setText('todayAckGapNote', withoutAck.length ? 'Для ' + withoutAck.length + ' today actions еще нет acknowledge.' : 'Все today actions уже приняты в работу.');
+        setText('todayQueueLead', lead);
+        renderList('todayQueueList', list, 'Сегодня нет действий с priority today.');
+      }
+
+      function render() {
+        var stage1 = readJson(STAGE1_KEY);
+        var stage2 = readJson(STAGE2_KEY);
+        var stage3 = readJson(STAGE3_KEY);
+        var stage4 = readJson(STAGE4_KEY);
+        var tracker = readJson(TRACKER_KEY);
+        var initiativeState = normalizeInitiativeState(readJson(INITIATIVE_KEY));
+        var runtimeMap = readInitiativeRuntime();
+        var cementingDetected = !!readJson(CEMENTING_KEY);
+        var effectiveInitiativeStates = buildEffectiveInitiativeStates(initiativeState, runtimeMap, cementingDetected);
+        var currentStage = getCurrentStage(stage1, stage2, stage3, stage4);
+        var decision = latestDecision(stage1, stage2, stage3, stage4);
+        var progress = trackerProgress(tracker);
+        var stageBlockers = uniqueItems([
+          stage4 && stage4.blockers,
+          stage3 && stage3.blockers,
+          stage2 && stage2.blockers,
+          stage1 && stage1.blockers
+        ], 'Сначала зафиксируйте blockers в stage tools.');
+        var stageActions = uniqueItems([
+          stage4 && stage4.actions,
+          stage3 && stage3.actions,
+          stage2 && stage2.actions,
+          stage1 && stage1.actions
+        ], 'Откройте Stage 1 cockpit и проставьте ближайшие действия.');
+        var initiativeBlockers = uniqueItems(INITIATIVES.map(function (initiative) {
+          var runtime = effectiveInitiativeStates[initiative.id].runtime;
+          return runtime && runtime.blockers;
+        }), 'Сначала зафиксируйте blockers в initiative tools.');
+        var initiativeActions = uniqueItems(INITIATIVES.map(function (initiative) {
+          var runtime = effectiveInitiativeStates[initiative.id].runtime;
+          return runtime && runtime.actions;
+        }), 'Откройте operational initiative tools, чтобы собрать portfolio queue.');
+        var combinedBlockers = uniqueItems([stageBlockers, initiativeBlockers], 'Сначала зафиксируйте blockers в stage и initiative tools.');
+        var combinedActions = uniqueItems([stageActions, initiativeActions], 'Заполните Stage 1-4 и I1-I5 инструменты, чтобы собрать реальную очередь менеджера.');
+        var combinedActionEntries = [];
+        buildActionEntries(stageActions, decision.status, 'stage').forEach(function (entry) {
+          if (!combinedActionEntries.some(function (current) { return current.text === entry.text; })) {
+            combinedActionEntries.push(entry);
+          }
+        });
+        buildActionEntries(initiativeActions, deriveInitiativeSeverity(effectiveInitiativeStates), 'initiative').forEach(function (entry) {
+          if (!combinedActionEntries.some(function (current) { return current.text === entry.text; })) {
+            combinedActionEntries.push(entry);
+          }
+        });
+        var deskState = normalizeEscalationDeskState(readJson(ESCALATION_DESK_KEY), combinedActionEntries.length ? combinedActionEntries : combinedActions);
+        var priorityWeight = { today: 0, this_week: 1, watch: 2 };
+        var values = Object.keys(deskState).map(function (key) {
+          return deskState[key];
+        }).sort(function (left, right) {
+          return (priorityWeight[left.priority] || 9) - (priorityWeight[right.priority] || 9);
+        });
+        var todayItems = values.filter(function (item) { return item.priority === 'today'; });
+        var weekItems = values.filter(function (item) { return item.priority === 'this_week'; });
+        var watchItems = values.filter(function (item) { return item.priority === 'watch'; });
+        var stageHealth = metricFromState(stage1, stage2, stage3, stage4);
+
+        setPill('briefPill', decision.status, decision.pill || 'Chain not ready');
+        setText('briefStage', currentStage.label);
+        setText('briefStageNote', currentStage.note);
+        setText('briefDecision', decision.title);
+        setText('briefDecisionNote', decision.note);
+        setText('briefTracker', progress.done + ' / ' + progress.total);
+        setText('briefTrackerNote', progress.note + (stageHealth ? ' Общий health по stage chain: ' + stageHealth + '%.' : ''));
+        setText('briefRefresh', new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }));
+
+        setText('handoffToday', todayItems.length ? todayItems.slice(0, 2).map(function (item) { return item.text; }).join(' | ') : 'Сегодня нет действий с приоритетом today.');
+        setText('handoffWeek', weekItems.length ? weekItems.slice(0, 2).map(function (item) { return item.text; }).join(' | ') : 'На этой неделе нет задач уровня this week.');
+        setText('handoffWatch', watchItems.length ? watchItems.slice(0, 2).map(function (item) { return item.text; }).join(' | ') : 'Watchlist сейчас пуст.');
+
+        renderTodayFocus(todayItems);
+        setText('signalStage', combinedBlockers[0] ? 'Top operational signal: ' + currentStage.label : 'Top operational signal');
+        setText('signalStageNote', stageBlockers[0] || 'Пока нет данных из stage chain.');
+        setText('signalInitiative', values.some(function (item) { return item.source === 'initiative'; }) ? 'Top portfolio signal: Initiative layer' : 'Top portfolio signal');
+        setText('signalInitiativeNote', initiativeBlockers[0] || 'Пока нет данных из initiative runtime layer.');
+        setText('signalMeeting', combinedActions[0] ? 'Manager meeting focus: ' + combinedActions[0] : 'Manager meeting focus');
+        setText('signalMeetingNote', combinedBlockers[0] || 'Когда данные появятся, здесь будет короткая формулировка для daily drilling review.');
+
+        renderList('blockersList', combinedBlockers, 'Сначала зафиксируйте blockers в stage и initiative tools.');
+        renderList('actionsList', combinedActions, 'Заполните Stage 1-4 и I1-I5 инструменты, чтобы собрать реальную очередь менеджера.');
+        renderRiskBoard(values);
+        renderOwnerQueue(values);
+      }
+
+      function currentViewMode() {
+        var params = new URLSearchParams(window.location.search);
+        return params.get('view') || 'full';
+      }
+
+      function applyViewMode() {
+        document.body.classList.toggle('morning-focus', currentViewMode() === 'morning');
+      }
+
+      function printDocument(mode) {
+        document.body.classList.toggle('print-morning-cut', mode === 'morning');
+        window.print();
+      }
+
+      document.getElementById('printBrief').addEventListener('click', function () {
+        printDocument('full');
+      });
+
+      document.getElementById('printMorningCut').addEventListener('click', function () {
+        printDocument('morning');
+      });
+
+      window.addEventListener('afterprint', function () {
+        document.body.classList.remove('print-morning-cut');
+      });
+
+      document.getElementById('refreshBrief').addEventListener('click', function () {
+        render();
+      });
+
+      window.addEventListener('storage', render);
+      applyViewMode();
+      render();
+    }());
+  </script>
+</body>
+</html>

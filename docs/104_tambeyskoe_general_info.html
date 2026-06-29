@@ -1,0 +1,504 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>104 · Тамбейское · Общая информация</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap");
+
+    :root {
+      --bg-0:#081118;
+      --bg-1:#112435;
+      --bg-2:#183845;
+      --panel:rgba(8,18,28,.86);
+      --panel-soft:rgba(255,255,255,.035);
+      --line:rgba(227,238,255,.16);
+      --line-soft:rgba(227,238,255,.08);
+      --text:#edf5ff;
+      --muted:#a8bdd2;
+      --cyan:#21d7b3;
+      --amber:#ffbf66;
+      --rose:#ff8a76;
+      --lime:#9cf07f;
+      --blue:#8fb8ff;
+      --violet:#b99bff;
+      --shadow:0 24px 56px rgba(0,0,0,.44);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      font-family: "Manrope", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(900px 460px at 0% -10%, rgba(33,215,179,.20), transparent),
+        radial-gradient(760px 420px at 100% 0%, rgba(255,191,102,.16), transparent),
+        linear-gradient(145deg, var(--bg-0), var(--bg-1) 46%, var(--bg-2));
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(to right, rgba(255,255,255,.02) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,.02) 1px, transparent 1px);
+      background-size: 34px 34px;
+      mask-image: radial-gradient(circle at 50% 20%, rgba(0,0,0,.96), transparent 74%);
+    }
+
+    .wrap {
+      position: relative;
+      z-index: 1;
+      width: min(1440px, 95vw);
+      margin: 0 auto;
+      padding: 24px 0 70px;
+    }
+
+    .top,
+    .hero,
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      position: sticky;
+      top: 12px;
+      z-index: 20;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text);
+      font-family: "Oswald", sans-serif;
+      font-size: 20px;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 35% 35%, #d8fff8, var(--cyan));
+    }
+
+    .nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .nav a {
+      text-decoration: none;
+      color: #062721;
+      background: linear-gradient(130deg,#a0f8eb,#22d7b4);
+      border: 1px solid rgba(34,215,180,.75);
+      border-radius: 10px;
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .hero,
+    .panel {
+      margin-top: 18px;
+      padding: 24px;
+    }
+
+    .hero {
+      background:
+        radial-gradient(540px 220px at 6% 0%, rgba(33,215,179,.14), transparent),
+        radial-gradient(560px 240px at 100% 0%, rgba(255,191,102,.10), transparent),
+        var(--panel);
+    }
+
+    .eyebrow,
+    .tag,
+    .mini-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--line-soft);
+      border-radius: 999px;
+      background: rgba(255,255,255,.04);
+      color: #d8e8f8;
+    }
+
+    .eyebrow,
+    .tag {
+      padding: 6px 10px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .mini-tag {
+      padding: 7px 10px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    h1, h2, h3, h4 {
+      margin: 0;
+      font-family: "Oswald", sans-serif;
+      letter-spacing: -.01em;
+    }
+
+    .hero h1 {
+      margin-top: 14px;
+      font-size: clamp(34px, 5vw, 58px);
+      line-height: .98;
+    }
+
+    p, li, td {
+      color: #c7d7ec;
+      line-height: 1.7;
+      font-size: 14px;
+    }
+
+    .hero-grid,
+    .split,
+    .passport-grid,
+    .signal-grid,
+    .route-grid,
+    .logistics-grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .hero-grid {
+      margin-top: 18px;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .split {
+      margin-top: 18px;
+      grid-template-columns: 1.1fr .9fr;
+    }
+
+    .hero-stat,
+    .box,
+    .passport-card,
+    .signal-card,
+    .route-card,
+    .map-card {
+      border: 1px solid var(--line-soft);
+      border-radius: 18px;
+      background: var(--panel-soft);
+      padding: 16px;
+    }
+
+    .hero-stat strong {
+      display: block;
+      font-size: 26px;
+      line-height: 1;
+    }
+
+    .hero-stat span {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .box-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .box-item {
+      border-top: 1px solid var(--line-soft);
+      padding-top: 10px;
+    }
+
+    .passport-grid,
+    .route-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      margin-top: 16px;
+    }
+
+    .signal-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      margin-top: 16px;
+    }
+
+    .logistics-grid {
+      margin-top: 16px;
+      grid-template-columns: 1fr;
+    }
+
+    .passport-card h3,
+    .signal-card h3,
+    .route-card h3,
+    .map-card h3 {
+      font-size: 22px;
+      margin-bottom: 10px;
+    }
+
+    .metric-line {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      border-bottom: 1px solid var(--line-soft);
+      padding-bottom: 8px;
+      margin-bottom: 8px;
+      align-items: flex-start;
+    }
+
+    .metric-line:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+      margin-bottom: 0;
+    }
+
+    .metric-key {
+      color: #dce8f7;
+      font-weight: 700;
+    }
+
+    .metric-value {
+      text-align: right;
+      color: var(--muted);
+      max-width: 58%;
+    }
+
+    .signal-card {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .signal-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,.04), transparent 70%);
+      pointer-events: none;
+    }
+
+    .signal-value {
+      font-size: 34px;
+      font-family: "Oswald", sans-serif;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .signal-card small {
+      display: block;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      font-size: 11px;
+      margin-bottom: 6px;
+    }
+
+    .route-card ul {
+      margin: 0;
+      padding-left: 18px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .map-card svg,
+    .map-card img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 16px;
+      background: linear-gradient(180deg, #7ec1f4, #95cff7);
+    }
+
+    .caption {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .footer {
+      margin-top: 16px;
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      text-align: center;
+    }
+
+    @media (max-width: 1180px) {
+      .hero-grid,
+      .split,
+      .passport-grid,
+      .signal-grid,
+      .route-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 860px) {
+      .top {
+        position: static;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+  <main class="wrap">
+    <header class="top">
+      <a class="brand" href="103_tambeyskoe_project_dashboard.html"><span class="dot" aria-hidden="true"></span><span>Тамбейское · General Info</span></a>
+      <nav class="nav">
+        <a href="103_tambeyskoe_project_dashboard.html">К дашборду</a>
+        <a href="56_fields_projects_dashboard.html">Мои проекты</a>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <span class="eyebrow">Field passport · Тамбейское · Раздел 1</span>
+      <h1>Раздел 1. Общая информация</h1>
+      <p>Паспорт Тамбейского НГКМ собран в один прикладной экран: статус автономного объекта, административная привязка ЯНАО, климатический диапазон, ветровая среда, мощность многолетнемерзлых пород и логистика доступа через Лабытнанги, Обскую губу, зимники, Бованенково и вертолетные плечи на Северо-Тамбейское и Тасийское ЛУ.</p>
+      <div class="hero-grid">
+        <div class="hero-stat"><strong>Тазовский</strong><span>административный район</span></div>
+        <div class="hero-stat"><strong>-46 / +37 °C</strong><span>температурный диапазон</span></div>
+        <div class="hero-stat"><strong>298 сут</strong><span>отопительный период</span></div>
+        <div class="hero-stat"><strong>344 м</strong><span>подошва ММП</span></div>
+      </div>
+      <div class="split">
+        <article class="box">
+          <h3>Что уже вынесено</h3>
+          <div class="box-list">
+            <div class="box-item">Статус объекта и полевая привязка: Тамбейское НГКМ, Российская Федерация, Тюменская область, Ямало-Ненецкий автономный округ, Тазовский район.</div>
+            <div class="box-item">Климатическая рамка: среднегодовая температура -4 °C, летний максимум +37 °C, зимний минимум -46 °C, что сразу задает требования к сезонности и автономности.</div>
+            <div class="box-item">Логистика вынесена не только текстом, но и двумя схемами: региональная транспортная среда и локальная схема Северо-Тамбейского и Тасийского ЛУ.</div>
+          </div>
+        </article>
+        <article class="box">
+          <h3>Операционные сигналы</h3>
+          <div class="box-list">
+            <div class="box-item">Преобладающие ветры: зимой ЮЗ-З, летом С-СЗ. Максимальная скорость ветра достигает 30 м/с.</div>
+            <div class="box-item">Мерзлота начинается с поверхности и уходит до 344 м, что важно для инфраструктуры, фундаментов и сезонных транспортных решений.</div>
+            <div class="box-item">Зимний маршрут до Северо-Тамбейского и Тасийского ЛУ работает с 01.01 по 01.05, расчетная протяженность плеча 330 км.</div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Паспорт территории</h2>
+      <div class="passport-grid">
+        <article class="passport-card">
+          <h3>Объект и административная привязка</h3>
+          <div class="metric-line"><span class="metric-key">Статус</span><span class="metric-value">Автономный объект</span></div>
+          <div class="metric-line"><span class="metric-key">Площадь</span><span class="metric-value">Тамбейское НГКМ</span></div>
+          <div class="metric-line"><span class="metric-key">Государство</span><span class="metric-value">Российская Федерация</span></div>
+          <div class="metric-line"><span class="metric-key">Регион</span><span class="metric-value">Тюменская область, ЯНАО</span></div>
+          <div class="metric-line"><span class="metric-key">Район</span><span class="metric-value">Тазовский</span></div>
+        </article>
+        <article class="passport-card">
+          <h3>Климат и природные ограничения</h3>
+          <div class="metric-line"><span class="metric-key">Среднегодовая температура</span><span class="metric-value">-4 °C</span></div>
+          <div class="metric-line"><span class="metric-key">Наибольшая летняя</span><span class="metric-value">+37 °C</span></div>
+          <div class="metric-line"><span class="metric-key">Наименьшая зимняя</span><span class="metric-value">-46 °C</span></div>
+          <div class="metric-line"><span class="metric-key">Отопительный период</span><span class="metric-value">298 суток</span></div>
+          <div class="metric-line"><span class="metric-key">Макс. скорость ветра</span><span class="metric-value">до 30 м/с</span></div>
+        </article>
+      </div>
+
+      <div class="signal-grid">
+        <article class="signal-card">
+          <small>Ветровая среда</small>
+          <div class="signal-value">ЮЗ-З</div>
+          <p>Зимнее преобладающее направление ветров.</p>
+        </article>
+        <article class="signal-card">
+          <small>Ветровая среда</small>
+          <div class="signal-value">С-СЗ</div>
+          <p>Летнее преобладающее направление ветров.</p>
+        </article>
+        <article class="signal-card">
+          <small>Мерзлота</small>
+          <div class="signal-value">0 м</div>
+          <p>Кровля многолетнемерзлых пород начинается с поверхности.</p>
+        </article>
+        <article class="signal-card">
+          <small>Мерзлота</small>
+          <div class="signal-value">344 м</div>
+          <p>Подошва многолетнемерзлых пород.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Транспортная доступность</h2>
+      <div class="route-grid">
+        <article class="route-card">
+          <h3>Наземный и железнодорожный маршрут</h3>
+          <ul>
+            <li>Наземным транспортом доступ осуществляется до г. Лабытнанги по федеральным трассам.</li>
+            <li>По железной дороге путь идет от станции Обская. От Лабытнанги до Бованенковского НГКМ по маршруту Обская - ст. Карская.</li>
+            <li>От станции Карская транспортная схема переключается на северный арктический логистический коридор.</li>
+          </ul>
+        </article>
+        <article class="route-card">
+          <h3>Зимник, вода и авиация</h3>
+          <ul>
+            <li>По зимней автодороге путь от Бованенковского НГКМ до Северо-Тамбейского и Тасийского ЛУ идет в период 01.01 - 01.05, ориентировочная длина 330 км.</li>
+            <li>В летний период доставка через акваторию Обской губы ведется на временный причал перевозки грузов.</li>
+            <li>Воздушное сообщение организуется через Новый Уренгой и далее вертолетом до Северо-Тамбейского и Тасийского ЛУ.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Логистическая среда и инфраструктура</h2>
+      <div class="logistics-grid">
+        <article class="map-card">
+          <h3>Региональная логистическая схема</h3>
+          <img src="../STUFF/Images/4.jpg" alt="Региональная логистическая схема" />
+          <div class="caption">Оригинальное изображение из папки STUFF без изменений.</div>
+        </article>
+
+        <article class="map-card">
+          <h3>Локальная схема Северо-Тамбейского и Тасийского ЛУ</h3>
+          <img src="../STUFF/Images/5.jpg" alt="Локальная схема Северо-Тамбейского и Тасийского ЛУ" />
+          <div class="caption">Оригинальное изображение из папки STUFF без изменений.</div>
+        </article>
+
+        <article class="map-card">
+          <h3>Обзорная карта Тамбейского кластера и соседних лицензионных участков</h3>
+          <img src="../STUFF/Images/6.jpg" alt="Обзорная карта Тамбейского кластера и соседних лицензионных участков" />
+          <div class="caption">Оригинальное изображение из папки STUFF без изменений.</div>
+        </article>
+      </div>
+    </section>
+
+    <p class="footer">Тамбейское · Doc 104 · Общая информация</p>
+  </main>
+  <script src="assets/js/global-auth-widget.js"></script>
+</body>
+</html>

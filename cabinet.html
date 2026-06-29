@@ -1,0 +1,1199 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Личный кабинет — DRILL-Q</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Arial, sans-serif; background: #F5F5F7; color: #1D1D1F; font-size: 15px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+:root {
+  --white: #FFFFFF; --bg: #F5F5F7;
+  --text: #1D1D1F; --text2: #6E6E73; --text3: #AEAEB2;
+  --blue: #2563EB; --blue-l: #EFF6FF; --blue-d: #1D4ED8;
+  --border: rgba(0,0,0,0.08); --border-m: rgba(0,0,0,0.12);
+  --sh-sm: 0 1px 4px rgba(0,0,0,0.06); --sh: 0 4px 20px rgba(0,0,0,0.08);
+  --r: 16px; --r-sm: 10px;
+  --green: #16A34A; --green-l: #F0FDF4; --red: #DC2626; --red-l: #FEF2F2;
+  --amber: #D97706; --amber-l: #FFFBEB;
+}
+nav { position:sticky; top:0; z-index:100; background:rgba(255,255,255,0.88); backdrop-filter:saturate(180%) blur(20px); border-bottom:1px solid var(--border); height:60px; display:flex; align-items:center; padding:0 40px; justify-content:space-between; }
+.nav-logo { display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--text); }
+.nav-mark { width:30px; height:30px; border-radius:8px; background:var(--blue); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; color:#fff; }
+.nav-name { font-size:16px; font-weight:700; letter-spacing:-.4px; }
+.nav-right { display:flex; align-items:center; gap:10px; }
+.user-chip { display:flex; align-items:center; gap:8px; padding:5px 14px 5px 5px; border-radius:20px; border:1px solid rgba(0,0,0,0.1); background:rgba(255,255,255,.6); color:var(--text); font-size:13px; font-weight:500; }
+.user-chip-av { width:28px; height:28px; border-radius:50%; background:var(--blue); color:#fff; font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:center; }
+.btn-ghost { padding:7px 16px; border-radius:20px; border:1px solid var(--border); background:transparent; color:var(--text); font-size:13px; font-weight:500; cursor:pointer; text-decoration:none; font-family:inherit; transition:all .15s; }
+.btn-ghost:hover { background:rgba(0,0,0,0.05); }
+.wrap { width:min(1100px, 92vw); margin:0 auto; padding:48px 0 100px; }
+
+/* Welcome */
+.welcome { background:var(--white); border:1.5px solid var(--border); border-radius:var(--r); padding:36px 40px; box-shadow:var(--sh-sm); margin-bottom:32px; display:flex; align-items:center; justify-content:space-between; gap:32px; }
+.welcome-text h1 { font-size:clamp(22px,3vw,30px); font-weight:700; letter-spacing:-.6px; margin-bottom:6px; }
+.welcome-text p { color:var(--text2); font-size:15px; }
+.welcome-avatar { width:72px; height:72px; border-radius:50%; background:linear-gradient(135deg,#2563EB,#6366F1); display:flex; align-items:center; justify-content:center; font-size:28px; font-weight:700; color:#fff; flex-shrink:0; }
+
+/* Stats */
+.stats-row { display:grid; grid-template-columns:repeat(4, 1fr); gap:16px; margin-bottom:32px; }
+.stat-card { background:var(--white); border:1.5px solid var(--border); border-radius:var(--r); padding:22px 24px; box-shadow:var(--sh-sm); }
+.stat-label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.07em; color:var(--text3); margin-bottom:8px; }
+.stat-val { font-size:26px; font-weight:700; letter-spacing:-.04em; }
+.stat-sub { font-size:12px; color:var(--text3); margin-top:4px; }
+.stat-badge { display:inline-flex; align-items:center; gap:4px; padding:2px 8px; border-radius:99px; font-size:11px; font-weight:600; margin-top:6px; }
+.badge-blue { background:var(--blue-l); color:var(--blue); }
+.badge-green { background:var(--green-l); color:var(--green); }
+
+/* Section header */
+.section-hd { display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; }
+.section-hd h2 { font-size:20px; font-weight:700; letter-spacing:-.3px; }
+.section-hd a, .section-hd button.link-btn { font-size:13px; color:var(--blue); text-decoration:none; font-weight:500; background:none; border:none; cursor:pointer; font-family:inherit; }
+
+/* Project cards */
+.projects-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(300px, 1fr)); gap:16px; margin-bottom:40px; }
+.proj-card { background:var(--white); border:1.5px solid var(--border); border-radius:var(--r); padding:24px; text-decoration:none; color:inherit; display:flex; flex-direction:column; gap:14px; transition:all .18s; box-shadow:var(--sh-sm); cursor:pointer; }
+.proj-card:hover { border-color:var(--blue); box-shadow:var(--sh), 0 0 0 3px rgba(37,99,235,.07); transform:translateY(-2px); }
+.proj-card-top { display:flex; align-items:flex-start; justify-content:space-between; }
+.proj-icon { width:44px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0; }
+.proj-icon-blue { background:var(--blue-l); }
+.proj-icon-green { background:var(--green-l); }
+.proj-icon-amber { background:var(--amber-l); }
+.chip { font-size:11px; font-weight:600; padding:3px 9px; border-radius:99px; }
+.chip-green { background:var(--green-l); color:var(--green); }
+.chip-blue { background:var(--blue-l); color:var(--blue); }
+.chip-grey { background:var(--bg); color:var(--text3); border:1px solid var(--border); }
+.proj-name { font-size:17px; font-weight:700; letter-spacing:-.3px; }
+.proj-sub { font-size:13px; color:var(--text2); }
+.proj-props { display:flex; gap:16px; flex-wrap:wrap; }
+.proj-prop-label { font-size:10px; font-weight:700; color:var(--text3); text-transform:uppercase; letter-spacing:.06em; }
+.proj-prop-val { font-size:13px; font-weight:600; }
+.proj-footer { display:flex; align-items:center; justify-content:space-between; padding-top:12px; border-top:1px solid var(--border); }
+.proj-footer span { font-size:13px; font-weight:600; color:var(--blue); }
+.proj-footer .arrow { font-size:16px; color:var(--text3); transition:all .15s; }
+.proj-card:hover .arrow { color:var(--blue); transform:translateX(3px); }
+
+/* Upload zone */
+.upload-section { margin-bottom:40px; }
+.upload-box { border:2px dashed var(--border-m); border-radius:var(--r); padding:56px 32px; text-align:center; background:var(--white); transition:all .2s; cursor:pointer; }
+.upload-box:hover, .upload-box.drag-over { border-color:var(--blue); background:var(--blue-l); }
+.upload-icon { font-size:40px; margin-bottom:14px; }
+.upload-box h3 { font-size:17px; font-weight:700; letter-spacing:-.3px; margin-bottom:8px; }
+.upload-box p { color:var(--text2); font-size:14px; max-width:380px; margin:0 auto 20px; }
+.upload-formats { display:flex; flex-wrap:wrap; gap:6px; justify-content:center; margin-bottom:20px; }
+.fmt-chip { padding:3px 10px; border-radius:99px; background:var(--bg); border:1px solid var(--border); font-size:12px; font-weight:600; color:var(--text3); }
+.btn-upload { display:inline-flex; align-items:center; gap:8px; padding:11px 24px; border-radius:var(--r-sm); background:var(--blue); color:#fff; font-size:14px; font-weight:600; border:none; cursor:pointer; font-family:inherit; transition:all .15s; }
+.btn-upload:hover { background:var(--blue-d); }
+#fileInput { display:none; }
+.upload-progress { display:flex; flex-direction:column; gap:8px; margin-top:14px; }
+.upload-row { display:flex; align-items:center; gap:10px; padding:10px 14px; background:#fff; border:1px solid var(--border); border-radius:10px; font-size:13px; }
+
+/* Tools */
+.tools-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(240px, 1fr)); gap:14px; margin-bottom:40px; }
+.tool-card { background:var(--white); border:1.5px solid var(--border); border-radius:var(--r); padding:20px 22px; text-decoration:none; color:inherit; display:flex; align-items:center; gap:16px; transition:all .18s; box-shadow:var(--sh-sm); }
+.tool-card:hover { border-color:var(--blue); box-shadow:var(--sh); transform:translateY(-1px); }
+.tool-icon { width:40px; height:40px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
+.tool-name { font-size:14px; font-weight:700; letter-spacing:-.2px; }
+.tool-sub { font-size:12px; color:var(--text2); margin-top:2px; }
+.tool-arrow { margin-left:auto; color:var(--text3); font-size:14px; }
+
+/* Profile section */
+.profile-section { display:grid; grid-template-columns:1fr 320px; gap:24px; margin-bottom:40px; }
+.profile-card, .notif-card { background:var(--white); border:1.5px solid var(--border); border-radius:var(--r); padding:28px 32px; box-shadow:var(--sh-sm); }
+.profile-card h3, .notif-card h3 { font-size:16px; font-weight:700; letter-spacing:-.3px; margin-bottom:20px; }
+.profile-row { display:flex; flex-direction:column; gap:4px; padding:12px 0; border-bottom:1px solid var(--border); }
+.profile-row:last-of-type { border-bottom:none; }
+.profile-row-label { font-size:11px; font-weight:700; color:var(--text3); text-transform:uppercase; letter-spacing:.06em; }
+.profile-row-val { font-size:14px; font-weight:500; }
+.btn-danger { padding:8px 18px; border-radius:var(--r-sm); background:transparent; border:1px solid #FECACA; color:#DC2626; font-size:13px; font-weight:600; cursor:pointer; font-family:inherit; transition:all .15s; margin-top:20px; }
+.btn-danger:hover { background:var(--red-l); }
+.notif-item { display:flex; align-items:flex-start; gap:10px; padding:10px 0; border-bottom:1px solid var(--border); }
+.notif-item:last-child { border-bottom:none; }
+.notif-dot { width:7px; height:7px; border-radius:50%; background:var(--blue); margin-top:5px; flex-shrink:0; }
+.notif-body { font-size:13px; color:var(--text2); }
+.notif-body strong { color:var(--text); font-weight:600; }
+
+/* ─────────────── ANALYSIS MODAL ─────────────── */
+.anal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.55); backdrop-filter:blur(4px); z-index:1000; overflow-y:auto; padding:24px 16px; }
+.anal-overlay.open { display:flex; align-items:flex-start; justify-content:center; }
+.anal-modal { background:#fff; border-radius:20px; width:min(860px, 100%); box-shadow:0 24px 80px rgba(0,0,0,.18); overflow:hidden; margin:auto; }
+.anal-header { padding:28px 32px 24px; border-bottom:1px solid var(--border); display:flex; align-items:flex-start; justify-content:space-between; gap:16px; }
+.anal-header h2 { font-size:22px; font-weight:700; letter-spacing:-.4px; margin-bottom:4px; }
+.anal-header p { font-size:13px; color:var(--text2); }
+.anal-close { width:32px; height:32px; border-radius:50%; border:1px solid var(--border); background:var(--bg); cursor:pointer; font-size:14px; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-family:inherit; }
+.anal-close:hover { background:var(--red-l); border-color:#FECACA; color:var(--red); }
+.anal-body { padding:28px 32px; display:grid; grid-template-columns:1fr 1fr; gap:28px; }
+.anal-section { display:flex; flex-direction:column; gap:0; }
+.anal-section-title { font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:var(--text3); margin-bottom:14px; }
+.anal-field { display:flex; flex-direction:column; gap:5px; margin-bottom:14px; }
+.anal-field label { font-size:12px; font-weight:600; color:var(--text2); }
+.anal-field input, .anal-field select {
+  padding:9px 12px; border-radius:9px; border:1.5px solid var(--border);
+  font-size:14px; font-family:inherit; color:var(--text); background:#fff; outline:none;
+  transition:border-color .15s;
+}
+.anal-field input:focus, .anal-field select:focus { border-color:var(--blue); }
+.anal-field input.extracted { border-color:rgba(22,163,74,.4); background:var(--green-l); }
+.anal-extracted-badge { font-size:10px; font-weight:700; color:var(--green); background:var(--green-l); padding:2px 6px; border-radius:4px; display:inline-block; margin-bottom:2px; }
+.anal-raw-section { padding:0 32px 28px; }
+.anal-raw-title { font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:var(--text3); margin-bottom:12px; }
+.anal-raw-wrap { max-height:200px; overflow:auto; border:1px solid var(--border); border-radius:10px; }
+.anal-raw-table { width:100%; border-collapse:collapse; font-size:12px; }
+.anal-raw-table th { background:var(--bg); font-weight:700; font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:var(--text3); padding:8px 12px; text-align:left; position:sticky; top:0; }
+.anal-raw-table td { padding:7px 12px; border-top:1px solid var(--border); color:var(--text); }
+.anal-raw-table tr:hover td { background:var(--blue-l); }
+.anal-footer { padding:20px 32px 28px; border-top:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; gap:16px; }
+.anal-footer p { font-size:13px; color:var(--text2); }
+.btn-create { padding:13px 28px; border-radius:var(--r-sm); background:var(--blue); color:#fff; font-size:15px; font-weight:700; border:none; cursor:pointer; font-family:inherit; transition:all .15s; display:flex; align-items:center; gap:8px; }
+.btn-create:hover { background:var(--blue-d); }
+
+/* Progress spinner */
+.spin-overlay { display:none; position:fixed; inset:0; background:rgba(255,255,255,.85); z-index:2000; flex-direction:column; align-items:center; justify-content:center; gap:16px; }
+.spin-overlay.active { display:flex; }
+.spinner { width:48px; height:48px; border:4px solid var(--border-m); border-top-color:var(--blue); border-radius:50%; animation:spin .8s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg); } }
+.spin-msg { font-size:15px; font-weight:600; color:var(--text); }
+
+@media (max-width:900px) {
+  nav { padding:0 20px; }
+  .wrap { padding:32px 0 60px; }
+  .stats-row { grid-template-columns:repeat(2, 1fr); }
+  .profile-section { grid-template-columns:1fr; }
+  .anal-body { grid-template-columns:1fr; }
+}
+@media (max-width:600px) {
+  .welcome { flex-direction:column; align-items:flex-start; }
+  .welcome-avatar { display:none; }
+  .anal-modal { border-radius:12px; }
+  .anal-header, .anal-body, .anal-raw-section, .anal-footer { padding-left:20px; padding-right:20px; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="index.html">
+    <div class="nav-mark">DQ</div>
+    <span class="nav-name">DRILL-Q</span>
+  </a>
+  <div class="nav-right" id="navRight"></div>
+</nav>
+
+<div class="wrap">
+
+  <!-- Welcome -->
+  <div class="welcome" id="welcomeBlock">
+    <div class="welcome-text">
+      <h1 id="welcomeHeading">Личный кабинет</h1>
+      <p id="welcomeSub">Загрузите данные по своей скважине для анализа.</p>
+    </div>
+    <div class="welcome-avatar" id="welcomeAv">DQ</div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-label">Мои скважины</div>
+      <div class="stat-val" id="statMyWells">0</div>
+      <div class="stat-sub">загружено проектов</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Документов</div>
+      <div class="stat-val" id="statDocs">0</div>
+      <div class="stat-sub">обработано файлов</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Демо-доступ</div>
+      <div class="stat-val" style="font-size:18px;color:var(--green)">Активен</div>
+      <div class="stat-sub">56 месторождений</div>
+      <div class="stat-badge badge-green">Демо</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Ванкор · Забой</div>
+      <div class="stat-val" id="statDepth">—</div>
+      <div class="stat-sub">м · live</div>
+      <div class="stat-badge badge-blue">В бурении</div>
+    </div>
+  </div>
+
+  <!-- My Projects -->
+  <div style="margin-bottom:40px">
+    <div class="section-hd">
+      <h2>Мои проекты</h2>
+      <a href="docs/56_fields_projects_dashboard.html">Все демо-месторождения →</a>
+    </div>
+    <div class="projects-grid" id="projectsGrid">
+      <!-- rendered by JS -->
+    </div>
+  </div>
+
+  <!-- Upload -->
+  <div class="upload-section" id="uploadSection">
+    <div class="section-hd">
+      <h2>Загрузить данные по скважине</h2>
+    </div>
+    <div class="upload-box" id="dropZone"
+         onclick="document.getElementById('fileInput').click()"
+         ondragover="this.classList.add('drag-over');event.preventDefault()"
+         ondragleave="this.classList.remove('drag-over')"
+         ondrop="handleDrop(event)">
+      <div class="upload-icon">📂</div>
+      <h3>Перетащите файлы сюда или нажмите для выбора</h3>
+      <p>Суточные рапорты, параметры бурового раствора, геология, инклинометрия — любые данные по скважине</p>
+      <div class="upload-formats">
+        <span class="fmt-chip">Excel .xlsx / .xls</span>
+        <span class="fmt-chip">CSV</span>
+        <span class="fmt-chip">PDF</span>
+        <span class="fmt-chip">Word .docx</span>
+        <span class="fmt-chip">LAS / LAS2</span>
+      </div>
+      <button class="btn-upload" onclick="event.stopPropagation();document.getElementById('fileInput').click()">
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+        Выбрать файлы для анализа
+      </button>
+      <input type="file" id="fileInput" multiple accept=".xlsx,.xls,.csv,.pdf,.docx,.doc,.las,.txt"
+             onchange="handleFiles(this.files)">
+    </div>
+    <div class="upload-progress" id="uploadList"></div>
+  </div>
+
+  <!-- Tools -->
+  <div style="margin-bottom:40px">
+    <div class="section-hd">
+      <h2>Инструменты</h2>
+      <a href="tools.html">Все инструменты →</a>
+    </div>
+    <div class="tools-grid">
+      <a class="tool-card" href="tools/vankor_command_center.html">
+        <div class="tool-icon" style="background:#EFF6FF">🖥</div>
+        <div><div class="tool-name">Командный центр</div><div class="tool-sub">Бурение · Ванкор 7-002</div></div>
+        <span class="tool-arrow">→</span>
+      </a>
+      <a class="tool-card" href="docs/vankor_dwop.html">
+        <div class="tool-icon" style="background:#F0FDF4">📐</div>
+        <div><div class="tool-name">DWOP</div><div class="tool-sub">Планирование бурения</div></div>
+        <span class="tool-arrow">→</span>
+      </a>
+      <a class="tool-card" href="docs/mudgpt_pro.html">
+        <div class="tool-icon" style="background:#FFF7ED">🧪</div>
+        <div><div class="tool-name">MudGPT</div><div class="tool-sub">Расчёты бурового раствора</div></div>
+        <span class="tool-arrow">→</span>
+      </a>
+      <a class="tool-card" href="docs/56_fields_projects_dashboard.html">
+        <div class="tool-icon" style="background:#F5F3FF">🗺</div>
+        <div><div class="tool-name">56 месторождений</div><div class="tool-sub">Демо-база данных</div></div>
+        <span class="tool-arrow">→</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Profile + Notifications -->
+  <div class="profile-section">
+    <div class="profile-card">
+      <h3>Профиль</h3>
+      <div class="profile-row"><div class="profile-row-label">Имя</div><div class="profile-row-val" id="profName">—</div></div>
+      <div class="profile-row"><div class="profile-row-label">Компания</div><div class="profile-row-val" id="profCompany">—</div></div>
+      <div class="profile-row"><div class="profile-row-label">E-mail</div><div class="profile-row-val" id="profEmail">—</div></div>
+      <div class="profile-row"><div class="profile-row-label">Телефон</div><div class="profile-row-val" id="profPhone">—</div></div>
+      <div class="profile-row"><div class="profile-row-label">Регистрация</div><div class="profile-row-val" id="profDate">—</div></div>
+      <button class="btn-danger" onclick="logout()">Выйти из аккаунта</button>
+    </div>
+    <div class="notif-card">
+      <h3>Уведомления</h3>
+      <div id="notifList">
+        <div class="notif-item">
+          <div class="notif-dot"></div>
+          <div class="notif-body"><strong>Добро пожаловать!</strong> Демо-доступ к 56 месторождениям активирован.</div>
+        </div>
+        <div class="notif-item">
+          <div class="notif-dot" style="background:var(--text3)"></div>
+          <div class="notif-body">Загрузите Excel-файл с данными по скважине — система автоматически извлечёт параметры и создаст проект.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ─── ANALYSIS MODAL ─── -->
+<div class="anal-overlay" id="analOverlay" onclick="if(event.target===this)closeAnal()">
+  <div class="anal-modal">
+    <div class="anal-header">
+      <div>
+        <h2>Анализ данных скважины</h2>
+        <p id="analFileNames">Обрабатываем загруженные файлы...</p>
+      </div>
+      <button class="anal-close" onclick="closeAnal()">✕</button>
+    </div>
+
+    <div class="anal-body">
+      <!-- Left: Well Info -->
+      <div class="anal-section">
+        <div class="anal-section-title">Идентификация скважины</div>
+
+        <div class="anal-field">
+          <label>Название скважины / Куст</label>
+          <input id="af_wellName" type="text" placeholder="Скв. 1-001, Куст 7">
+        </div>
+        <div class="anal-field">
+          <label>Месторождение / Площадь</label>
+          <input id="af_field" type="text" placeholder="Ванкорское НГМ">
+        </div>
+        <div class="anal-field">
+          <label>Оператор / Недропользователь</label>
+          <input id="af_operator" type="text" placeholder="Роснефть">
+        </div>
+        <div class="anal-field">
+          <label>Тип скважины</label>
+          <select id="af_wellType">
+            <option>Горизонтальная</option>
+            <option>Наклонно-направленная</option>
+            <option>Вертикальная</option>
+            <option>Многозабойная</option>
+          </select>
+        </div>
+        <div class="anal-field">
+          <label>Статус</label>
+          <select id="af_status">
+            <option>В бурении</option>
+            <option>Завершена</option>
+            <option>В планировании</option>
+            <option>Освоение</option>
+          </select>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div class="anal-field">
+            <label>Текущий забой, м</label>
+            <input id="af_depth" type="number" placeholder="2500">
+          </div>
+          <div class="anal-field">
+            <label>Проектная глубина, м</label>
+            <input id="af_targetDepth" type="number" placeholder="4311">
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Mud Params -->
+      <div class="anal-section">
+        <div class="anal-section-title">Последние параметры бурового раствора</div>
+
+        <div class="anal-field">
+          <label>Тип раствора</label>
+          <input id="af_mudType" type="text" placeholder="КМЦ-полимерный, РУО, KCl-PHPA...">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div class="anal-field">
+            <label>Плотность, г/см³</label>
+            <input id="af_density" type="number" step="0.001" placeholder="1.180">
+          </div>
+          <div class="anal-field">
+            <label>УВ (вязкость), сек</label>
+            <input id="af_viscosity" type="number" placeholder="48">
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div class="anal-field">
+            <label>ПВ, мПа·с</label>
+            <input id="af_pv" type="number" placeholder="18">
+          </div>
+          <div class="anal-field">
+            <label>ДНС / ПНС, Па</label>
+            <input id="af_yp" type="number" placeholder="8">
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div class="anal-field">
+            <label>Водоотдача, мл/30мин</label>
+            <input id="af_fl" type="number" placeholder="4.0">
+          </div>
+          <div class="anal-field">
+            <label>pH</label>
+            <input id="af_ph" type="number" step="0.1" placeholder="9.5">
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div class="anal-field">
+            <label>Хлориды, мг/л</label>
+            <input id="af_chlorides" type="text" placeholder="5000">
+          </div>
+          <div class="anal-field">
+            <label>Объём р-ра, м³</label>
+            <input id="af_mudVol" type="number" placeholder="120">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Raw data table -->
+    <div class="anal-raw-section" id="analRawSection" style="display:none">
+      <div class="anal-raw-title">Извлечённые данные из файлов <span id="analRowCount" style="font-weight:400;text-transform:none;color:var(--text3)"></span></div>
+      <div class="anal-raw-wrap">
+        <table class="anal-raw-table">
+          <thead id="analRawHead"></thead>
+          <tbody id="analRawBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="anal-footer">
+      <p id="analExtractNote" style="color:var(--text3);font-size:13px"></p>
+      <div style="display:flex;gap:10px">
+        <button class="btn-ghost" onclick="closeAnal()">Отмена</button>
+        <button class="btn-create" onclick="saveWellProject()">
+          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+          Создать проект скважины
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Spinner -->
+<div class="spin-overlay" id="spinOverlay">
+  <div class="spinner"></div>
+  <div class="spin-msg" id="spinMsg">Анализируем файлы...</div>
+</div>
+
+<script>
+/* ════════════════════════════════════════
+   AUTH
+════════════════════════════════════════ */
+const DQ_USER_KEY  = 'dq_user';
+const DQ_WELLS_KEY = 'dq_user_wells';
+
+function getUser()  { try { return JSON.parse(localStorage.getItem(DQ_USER_KEY));  } catch { return null; } }
+function getWells() { try { return JSON.parse(localStorage.getItem(DQ_WELLS_KEY)) || []; } catch { return []; } }
+function saveWells(arr) { localStorage.setItem(DQ_WELLS_KEY, JSON.stringify(arr)); }
+
+function logout() {
+  if (!confirm('Выйти из аккаунта DRILL-Q?')) return;
+  localStorage.removeItem(DQ_USER_KEY);
+  window.location.href = 'index.html';
+}
+
+/* ════════════════════════════════════════
+   INIT PAGE
+════════════════════════════════════════ */
+function initPage() {
+  const user = getUser();
+  if (!user) { window.location.href = 'index.html'; return; }
+
+  const initials = ((user.firstName||'?')[0] + (user.lastName||'?')[0]).toUpperCase();
+  const fullName  = user.firstName + ' ' + user.lastName;
+
+  document.getElementById('navRight').innerHTML = `
+    <div class="user-chip">
+      <div class="user-chip-av">${initials}</div>
+      <span style="font-size:13px;font-weight:500;color:var(--text)">${fullName}</span>
+    </div>
+    <button class="btn-ghost" onclick="logout()">Выйти</button>`;
+
+  document.getElementById('welcomeHeading').textContent = 'Привет, ' + user.firstName + '!';
+  document.getElementById('welcomeSub').textContent = 'Загрузите данные по своей скважине или изучите демо.';
+  document.getElementById('welcomeAv').textContent = initials;
+
+  document.getElementById('profName').textContent    = fullName;
+  document.getElementById('profCompany').textContent = user.company || '—';
+  document.getElementById('profEmail').textContent   = user.email   || '—';
+  document.getElementById('profPhone').textContent   = user.phone   || '—';
+  if (user.registeredAt) {
+    const d = new Date(user.registeredAt);
+    document.getElementById('profDate').textContent = d.toLocaleDateString('ru-RU', {day:'2-digit',month:'long',year:'numeric'});
+  }
+
+  renderProjectCards();
+  updateStats();
+  updateDepth();
+  setInterval(updateDepth, 1500);
+  window.addEventListener('storage', e => { if (e.key === 'sim_live_depth') updateDepth(); });
+}
+
+function updateDepth() {
+  const raw = localStorage.getItem('sim_live_depth');
+  const d   = raw ? parseFloat(raw) : 0;
+  const el  = document.getElementById('statDepth');
+  if (el) el.textContent = (d > 0 ? Math.round(d) : '—');
+}
+
+function updateStats() {
+  const wells = getWells();
+  const totalDocs = wells.reduce((s,w) => s + (w.fileCount||0), 0);
+  document.getElementById('statMyWells').textContent = wells.length;
+  document.getElementById('statDocs').textContent    = totalDocs;
+}
+
+/* ════════════════════════════════════════
+   PROJECT CARDS
+════════════════════════════════════════ */
+function renderProjectCards() {
+  const grid  = document.getElementById('projectsGrid');
+  const wells = getWells();
+
+  let html = `
+    <a class="proj-card" href="tools/vankor_command_center.html">
+      <div class="proj-card-top">
+        <div class="proj-icon proj-icon-blue">⛏</div>
+        <span class="chip chip-green">В бурении</span>
+      </div>
+      <div>
+        <div class="proj-name">Ванкорское НГМ</div>
+        <div class="proj-sub">Скв. 7-002 · Куст 7 · Горизонтальная</div>
+      </div>
+      <div class="proj-props">
+        <div><div class="proj-prop-label">Забой</div><div class="proj-prop-val" id="cabDepth">— м</div></div>
+        <div><div class="proj-prop-label">Глубина</div><div class="proj-prop-val">4 311 м MD</div></div>
+        <div><div class="proj-prop-label">Оператор</div><div class="proj-prop-val">Роснефть</div></div>
+      </div>
+      <div class="proj-footer"><span>Командный центр</span><span class="arrow">→</span></div>
+    </a>`;
+
+  wells.forEach(w => {
+    const chipClass = w.status === 'В бурении' ? 'chip-green' : w.status === 'Завершена' ? 'chip-grey' : 'chip-blue';
+    const depthPct  = w.targetDepth ? Math.min(100,(w.depth/w.targetDepth*100)).toFixed(0) : '—';
+    html += `
+    <a class="proj-card" href="well_hub.html?id=${w.id}">
+      <div class="proj-card-top">
+        <div class="proj-icon proj-icon-amber">🛢</div>
+        <span class="chip ${chipClass}">${w.status||'—'}</span>
+      </div>
+      <div>
+        <div class="proj-name">${escHtml(w.field||w.wellName||'Моя скважина')}</div>
+        <div class="proj-sub">${escHtml(w.wellName)} · ${escHtml(w.wellType||'')}</div>
+      </div>
+      <div class="proj-props">
+        <div><div class="proj-prop-label">Забой</div><div class="proj-prop-val">${w.depth ? w.depth+' м' : '—'}</div></div>
+        <div><div class="proj-prop-label">Проходка</div><div class="proj-prop-val">${depthPct}%</div></div>
+        <div><div class="proj-prop-label">Оператор</div><div class="proj-prop-val">${escHtml(w.operator||'—')}</div></div>
+      </div>
+      <div class="proj-footer"><span>Открыть кабинет скважины</span><span class="arrow">→</span></div>
+    </a>`;
+  });
+
+  grid.innerHTML = html;
+
+  // live depth for Vankor card
+  const d = parseFloat(localStorage.getItem('sim_live_depth')||0);
+  const cabDepth = document.getElementById('cabDepth');
+  if (cabDepth) cabDepth.textContent = (d > 0 ? Math.round(d)+' м' : '— м');
+}
+
+function escHtml(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+/* ════════════════════════════════════════
+   FILE UPLOAD & ANALYSIS
+════════════════════════════════════════ */
+let _pendingAnalysis = null;
+
+function handleFiles(files) {
+  if (!files || !files.length) return;
+  showSpinner('Читаем файлы...');
+  const fileArr = Array.from(files);
+
+  const list = document.getElementById('uploadList');
+  list.innerHTML = '';
+  fileArr.forEach(f => {
+    const row = document.createElement('div');
+    row.className = 'upload-row';
+    row.innerHTML = `<span style="font-size:18px">${fileEmoji(f.name)}</span>
+      <span style="flex:1;font-weight:500">${escHtml(f.name)}</span>
+      <span style="color:var(--text3)">${formatSize(f.size)}</span>
+      <span style="background:var(--amber-l);color:var(--amber);font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px">Анализ...</span>`;
+    list.appendChild(row);
+  });
+
+  const results = { extracted: {}, rawRows: [], headers: [], fileCount: fileArr.length, fileNames: fileArr.map(f=>f.name) };
+
+  // ── Step 1: always extract from file names ──
+  const nameFields = extractFromFileNames(fileArr.map(f => f.name));
+  Object.assign(results.extracted, nameFields);
+
+  // ── Step 2: parse file contents async ──
+  const tasks = fileArr.map(f => readFileContent(f, results));
+  Promise.allSettled(tasks).then(() => {
+    hideSpinner();
+    openAnalModal(results, fileArr.map(f => f.name));
+  });
+}
+
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('dropZone').classList.remove('drag-over');
+  handleFiles(e.dataTransfer.files);
+}
+
+/* Returns a promise for reading any file type */
+function readFileContent(f, results) {
+  const ext = f.name.split('.').pop().toLowerCase();
+
+  if (['xlsx','xls'].includes(ext)) {
+    return new Promise(resolve => {
+      const reader = new FileReader();
+      reader.onload = e => {
+        try {
+          const wb = XLSX.read(e.target.result, {type:'array'});
+          wb.SheetNames.forEach(sn => {
+            const rows = XLSX.utils.sheet_to_json(wb.Sheets[sn], {header:1, defval:''});
+            mergeExtraction(results, rows);
+          });
+        } catch(err) { console.warn('XLSX error', err); }
+        resolve();
+      };
+      reader.onerror = resolve;
+      reader.readAsArrayBuffer(f);
+    });
+  }
+
+  if (ext === 'csv') {
+    return new Promise(resolve => {
+      const reader = new FileReader();
+      reader.onload = e => {
+        mergeExtraction(results, parseCSVtoRows(e.target.result));
+        resolve();
+      };
+      reader.onerror = resolve;
+      reader.readAsText(f, 'UTF-8');
+    });
+  }
+
+  if (['docx','doc'].includes(ext)) {
+    return new Promise(resolve => {
+      const reader = new FileReader();
+      reader.onload = async e => {
+        try {
+          const text = await extractDOCXtext(e.target.result);
+          if (text) mergeExtractionFromText(results, text);
+        } catch(err) { console.warn('DOCX error', err); }
+        resolve();
+      };
+      reader.onerror = resolve;
+      reader.readAsArrayBuffer(f);
+    });
+  }
+
+  if (ext === 'pdf') {
+    return new Promise(resolve => {
+      // Try reading PDF as Latin-1 — embedded text fragments are often readable
+      const reader = new FileReader();
+      reader.onload = e => {
+        try {
+          const raw = e.target.result;
+          // Extract readable ASCII/cyrillic text strings from PDF binary
+          const text = extractPDFtext(raw);
+          if (text) mergeExtractionFromText(results, text);
+        } catch(err) { console.warn('PDF error', err); }
+        resolve();
+      };
+      reader.onerror = resolve;
+      reader.readAsBinaryString(f);
+    });
+  }
+
+  if (ext === 'las') {
+    return new Promise(resolve => {
+      const reader = new FileReader();
+      reader.onload = e => {
+        const lasRows = parseLAS(e.target.result);
+        mergeExtraction(results, lasRows);
+        resolve();
+      };
+      reader.onerror = resolve;
+      reader.readAsText(f, 'UTF-8');
+    });
+  }
+
+  return Promise.resolve();
+}
+
+/* ── DOCX: unzip → word/document.xml → strip tags ── */
+async function extractDOCXtext(arrayBuffer) {
+  if (typeof JSZip === 'undefined') return '';
+  const zip = await JSZip.loadAsync(arrayBuffer);
+  const docFile = zip.files['word/document.xml'];
+  if (!docFile) return '';
+  const xml = await docFile.async('text');
+  // Each <w:p> is a paragraph
+  return xml
+    .replace(/<w:p[ >]/gi, '\n')
+    .replace(/<[^>]+>/g, '')
+    .replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&nbsp;/g,' ')
+    .replace(/[ \t]+/g, ' ')
+    .trim();
+}
+
+/* ── PDF: extract readable text fragments from binary ── */
+function extractPDFtext(binaryStr) {
+  // Look for text between BT/ET markers and parentheses (PDF text operators)
+  const chunks = [];
+  // Pattern: text in parentheses after Tj, TJ, '
+  const re = /\(([^\)]{2,200})\)\s*T[jJ']/g;
+  let m;
+  while ((m = re.exec(binaryStr)) !== null) {
+    const s = m[1].replace(/\\[nrt\\()]/g,' ').trim();
+    if (s.length > 3) chunks.push(s);
+  }
+  // Also try to find Cyrillic-like sequences
+  const reRu = /([А-ЯЁа-яё][А-ЯЁа-яё\s\-.,;:№0-9]{4,100})/g;
+  while ((m = reRu.exec(binaryStr)) !== null) chunks.push(m[1]);
+
+  return chunks.join('\n');
+}
+
+/* CSV parser */
+function parseCSVtoRows(text) {
+  return text.split(/\r?\n/).map(line => {
+    if (line.includes(';')) return line.split(';');
+    if (line.includes('\t')) return line.split('\t');
+    return line.split(',');
+  }).map(row => row.map(c => c.replace(/^"|"$/g,'').trim()));
+}
+
+/* LAS parser */
+function parseLAS(text) {
+  const rows = [];
+  const lines = text.split(/\r?\n/);
+  let inData = false;
+  lines.forEach(line => {
+    if (/^~A/i.test(line)) { inData = true; return; }
+    if (inData) {
+      const vals = line.trim().split(/\s+/);
+      if (vals.length > 1 && !isNaN(vals[0])) rows.push(vals);
+    }
+  });
+  return rows;
+}
+
+/* ─────────────────────────────────────
+   EXTRACT FROM FILE NAMES (always runs)
+───────────────────────────────────── */
+function extractFromFileNames(names) {
+  const combined = names.join(' ');
+  const fields   = {};
+
+  // Well number: "скв. 73", "скв К73", "скважина 73"
+  const wellM = combined.match(/скв(?:\.|\s+[А-ЯЁа-яё]?)?\s*([А-ЯЁа-яёA-Z]?\s*\d+(?:-\d+)?)/i)
+             || combined.match(/скважин[аы]\s+(?:№\s*)?([А-ЯЁа-яёA-Z0-9\s\-]+?\d+)/i);
+  if (wellM) fields.wellName = 'Скв. ' + wellM[1].replace(/\s+/g,' ').trim();
+
+  // Field: e.g. "Ковыктинское ГКМ", "Ванкорское НГМ", "Тамбейское НГКМ"
+  const fieldM = combined.match(/([А-ЯЁ][а-яё]+(?:ское|ская|ский|ского|инское|инская|овское|евское)(?:\s+(?:ГКМ|НГМ|НГКМ|НГК|месторождение))?)/);
+  if (fieldM) fields.field = fieldM[1].trim();
+
+  // Operator — known names in file names
+  const OPS = [
+    ['Газпром','Газпром'], ['Роснефть','Роснефть'], ['Лукойл','Лукойл'],
+    ['Новатэк','НОВАТЭК'], ['Сургутнефтегаз','Сургутнефтегаз'],
+    ['Газпромнефть','Газпром Нефть'], ['ИНК','ИНК'], ['Иркутская нефтяная','ИНК'],
+    ['Татнефть','Татнефть'], ['Башнефть','Башнефть']
+  ];
+  for (const [key, label] of OPS) {
+    if (new RegExp(key,'i').test(combined)) { fields.operator = label; break; }
+  }
+
+  return fields;
+}
+
+/* ─────────────────────────────────────
+   EXTRACT FROM FREE TEXT (DOCX / PDF)
+───────────────────────────────────── */
+function mergeExtractionFromText(results, text) {
+  const lines = text.split(/\n/).map(l => l.trim()).filter(l => l.length > 1);
+  const ex    = results.extracted;
+
+  // Init arrays
+  if (!ex.keyParagraphs)  ex.keyParagraphs  = [];
+  if (!ex.headings)       ex.headings       = [];
+  if (!ex.wellTypes)      ex.wellTypes      = [];
+  if (!ex.formations)     ex.formations     = [];
+  if (!ex.mudIntervals)   ex.mudIntervals   = [];
+
+  // DRILLING KEYWORDS — lines with these are "key" and worth showing
+  const KEY_TOPICS = /раствор|бурени[ея]|скважин|глубин|обсадн|цемент|реагент|водоотдач|плотность|вязкость|карбонат|соль|ингибит|полимер|лигносульфон|смазк|лубрикант|нефтяная|долот|интервал|конструкц|горизонт|продуктивн|коллектор|поглощени|кавернообразован|осложнен|авари|температур|давлени|литологи|стратиграф|зона|пласт|ммп|многолетн/i;
+
+  lines.forEach(line => {
+    const l = line;
+
+    // ── Well name ──
+    if (!ex.wellName) {
+      const m = l.match(/скважин[аы]\s+(?:№\s*)?([А-ЯЁа-яёA-Z0-9\-]+\s*\d+)/i)
+             || l.match(/скв\.?\s*(?:№\s*)?([А-ЯЁа-яёA-Z]?\s*\d+(?:[-/]\d+)?)/i);
+      if (m) ex.wellName = 'Скв. ' + m[1].trim();
+    }
+
+    // ── Field ──
+    if (!ex.field) {
+      const m = l.match(/месторождени[ея]\s*[:—\-]?\s*([А-ЯЁ][а-яёА-ЯЁ\s\-]+(?:ГКМ|НГМ|НГКМ|НГКМ)?)/i)
+             || l.match(/([А-ЯЁ][а-яё]+(?:ское|ская|ского|инское|овское|евское)(?:\s+(?:ГКМ|НГМ|НГКМ|НГКМ|месторождение))?)/);
+      if (m) ex.field = m[1].trim().replace(/\s+/g,' ').slice(0,60);
+    }
+
+    // ── Operator / Customer ──
+    if (!ex.operator) {
+      const m = l.match(/(?:оператор|заказчик|недропользователь|нефтегазодобывающ)\s*[:—\-]?\s*([А-ЯЁA-Za-z][^\n,;]{2,60})/i)
+             || l.match(/(?:ООО|ОАО|ПАО|АО|ЗАО)\s+["«]?([А-ЯЁa-яё\s]{3,50})["»]?/);
+      if (m) ex.operator = m[1].trim().slice(0,60);
+    }
+
+    // ── Region ──
+    if (!ex.region) {
+      const m = l.match(/((?:[А-ЯЁ][а-яё]+(?:ская|ский|ское|ого)\s+)?(?:область|край|округ|республика|автономный\s+округ))/i)
+             || l.match(/(Иркутская|Красноярский|Ямало-Ненецкий|Ханты-Мансийский|Тюменская|Томская|Сахалинская|Ненецкий|Западная Сибирь|Восточная Сибирь)/i);
+      if (m) ex.region = m[1].trim();
+    }
+
+    // ── Well count ──
+    if (!ex.wellCount) {
+      const m = l.match(/(\d+)\s*скважин/i)
+             || l.match(/программ[аы]\s+(?:на\s+)?(\d+)\s*скважин/i)
+             || l.match(/(?:количество|кол-во)\s+скважин[^:]*[:—]?\s*(\d+)/i);
+      if (m) ex.wellCount = m[1];
+    }
+
+    // ── Work period ──
+    if (!ex.workPeriod) {
+      const m = l.match(/(\d{4})\s*[–\-—\/]\s*(\d{4})\s*(?:г|год)/i)
+             || l.match(/период[^:]*[:—]?\s*(\d{4})\s*[–\-—]\s*(\d{4})/i);
+      if (m) ex.workPeriod = m[1] + '–' + m[2];
+    }
+
+    // ── Target depth ──
+    if (!ex.targetDepth) {
+      const m = l.match(/проект(?:ная)?\s+(?:глуб|забой)[а-я]*\s*[:—\-]?\s*(\d{3,5}(?:[.,]\d+)?)\s*м/i)
+             || l.match(/(?:конечная|целевая|максимальная)\s+глуб[а-я]*\s*[:—\-]?\s*(\d{3,5})/i)
+             || l.match(/глубин[аы]\s+(?:по\s+)?(?:MD|MD|стволу)?\s*[:—]?\s*(\d{3,5})\s*м/i);
+      if (m) ex.targetDepth = m[1].replace(',','.');
+    }
+
+    // ── Mud type ──
+    if (!ex.mudType) {
+      const m = l.match(/(?:тип|вид|состав|наименование)\s+(?:бурового\s+)?раствора\s*[:—\-]?\s*([А-ЯЁA-Za-z][^\n]{3,80})/i)
+             || l.match(/(?:водный\s+раствор|РУО|нефтяная\s+основа|КЛСП|КМЦ|КГЖ|хлоркалиевый|ингибированный)\s+(?:раствор)?[^\n]{0,60}/i);
+      if (m) ex.mudType = m[1]?.trim().slice(0,80) || m[0].trim().slice(0,80);
+    }
+
+    // ── Density ──
+    if (!ex.density) {
+      const m = l.match(/плотность\s*(?:раствора|БР|р-ра)?\s*[:—\-]?\s*(\d+[.,]\d{2,3})\s*(?:г\/см|кг\/м)/i)
+             || l.match(/(\d+[.,]\d{2,3})\s*г\/см[³3]/i);
+      if (m) {
+        let v = parseFloat(m[1].replace(',','.'));
+        if (v > 10) v = v / 1000;
+        if (v >= 0.9 && v <= 2.5) ex.density = v.toFixed(3);
+      }
+    }
+
+    // ── Viscosity ──
+    if (!ex.viscosity) {
+      const m = l.match(/(?:условная\s+)?вязкость[^:]*[:—\-]?\s*(\d{2,3})\s*с(?:ек)?/i)
+             || l.match(/УВ\s*[:—\-=]?\s*(\d{2,3})/i);
+      if (m) ex.viscosity = m[1];
+    }
+
+    // ── PV ──
+    if (!ex.pv) {
+      const m = l.match(/(?:пластическая\s+вязкость|ПВ)\s*[:—\-=]?\s*(\d+(?:[.,]\d+)?)\s*м?Па/i);
+      if (m) ex.pv = m[1].replace(',','.');
+    }
+
+    // ── YP ──
+    if (!ex.yp) {
+      const m = l.match(/(?:динамическое\s+напряж|ДНС|ПНС|предельное\s+напряж)[а-я]*\s*[:—\-=]?\s*(\d+(?:[.,]\d+)?)\s*Па/i);
+      if (m) ex.yp = m[1].replace(',','.');
+    }
+
+    // ── Fluid loss ──
+    if (!ex.fl) {
+      const m = l.match(/водоотдача[^:]*[:—\-=]?\s*(\d+(?:[.,]\d+)?)\s*мл/i)
+             || l.match(/фильтрат[а-я]*[^:]*[:—\-=]?\s*(\d+(?:[.,]\d+)?)\s*мл/i);
+      if (m) ex.fl = m[1].replace(',','.');
+    }
+
+    // ── pH ──
+    if (!ex.ph) {
+      const m = l.match(/pH\s*[:—\-=]?\s*(\d+(?:[.,]\d+)?)/i);
+      if (m) ex.ph = m[1].replace(',','.');
+    }
+
+    // ── Well types (collect all found) ──
+    if (/горизонтальн/i.test(l) && !ex.wellTypes.includes('Горизонтальные')) ex.wellTypes.push('Горизонтальные');
+    if (/наклонно.направленн/i.test(l) && !ex.wellTypes.includes('Наклонно-направленные')) ex.wellTypes.push('Наклонно-направленные');
+    if (/вертикальн/i.test(l) && !ex.wellTypes.includes('Вертикальные')) ex.wellTypes.push('Вертикальные');
+    if (/многозабойн/i.test(l) && !ex.wellTypes.includes('Многозабойные')) ex.wellTypes.push('Многозабойные');
+
+    // ── Geological formations ──
+    const fmM = l.match(/(?:свит[аы]|горизонт|пласт|ярус|осадочн)\s+["«]?([А-ЯЁ][а-яё]{2,30})["»]?/i)
+             || l.match(/(Чонский|Преображенский|Осинский|Ярактинский|Вакунайский|Тэтэрский|Нижнебельский|Верхнечонский)/i);
+    if (fmM) {
+      const fn = fmM[1].trim();
+      if (!ex.formations.includes(fn)) ex.formations.push(fn);
+    }
+
+    // ── Headings: short lines that look like section titles ──
+    if (l.length >= 5 && l.length <= 120 && /^[А-ЯЁ0-9\d]/.test(l) && !/[:;,]/.test(l.slice(-1))) {
+      if (/буров|скважин|раствор|конструкц|геолог|литолог|страти|програм|транспорт|логистик|общ[аяие]\s+|технич|реагент|цементир|обсадн|инклиноме|безопасн|охран|экологи/i.test(l)) {
+        if (!ex.headings.includes(l)) ex.headings.push(l.slice(0, 100));
+      }
+    }
+
+    // ── Key paragraphs: lines that contain drilling-relevant content ──
+    if (l.length >= 40 && l.length <= 400 && KEY_TOPICS.test(l)) {
+      if (ex.keyParagraphs.length < 30) ex.keyParagraphs.push(l.slice(0, 300));
+    }
+  });
+
+  // Deduplicate
+  ex.headings     = [...new Set(ex.headings)].slice(0, 20);
+  ex.keyParagraphs = [...new Set(ex.keyParagraphs)].slice(0, 30);
+  ex.formations    = [...new Set(ex.formations)].slice(0, 10);
+  ex.wellTypes     = [...new Set(ex.wellTypes)];
+}
+
+/* ─── Parameter extraction ─── */
+const EXTRACT_PATTERNS = {
+  wellName:    [/скважин[аы]/i, /скв\.?\s*[№#]?\s*\d/i, /well\s*[#№]?\s*\d/i],
+  field:       [/месторождени[ея]/i, /площад[ьи]/i, /нгм/i, /нгкм/i],
+  operator:    [/оператор/i, /заказчик/i, /недропользователь/i, /компания-оператор/i],
+  wellType:    [/тип скваж/i, /конструкц/i, /профил[ьи]/i],
+  depth:       [/глубина долота/i, /д\.?д\.?/i, /текущ.*глуб/i, /забой/i, /depth\s+bit/i],
+  targetDepth: [/проект.*глуб/i, /целевая.*глуб/i, /конечная.*глуб/i, /проект\. глуб/i],
+  mudType:     [/тип.*раствор/i, /вид.*раствор/i, /состав.*раствор/i, /флюид/i],
+  density:     [/плотность/i, /density/i],
+  viscosity:   [/условная вязкость/i, /УВ\b/i, /вязкость\b/i, /viscosity/i],
+  pv:          [/пластическая вязкость/i, /ПВ\b/i, /PV\b/i],
+  yp:          [/предельное напряж/i, /динамическое напряж/i, /ДНС\b/i, /ПНС\b/i, /YP\b/i],
+  fl:          [/водоотдача/i, /фильтр/i, /fluid loss/i, /FL\b/i],
+  ph:          [/pH\b/i, /водородный\s+показ/i],
+  chlorides:   [/хлорид/i, /cl[-−]/i, /хлор-ион/i],
+  mudVol:      [/объ[её]м.*раствор/i, /объ[её]м\s*бр/i, /mud\s+vol/i],
+};
+
+function mergeExtraction(results, rows) {
+  if (!rows || !rows.length) return;
+  const ex = extractParams(rows);
+
+  // Merge: first-found wins per field
+  for (const [k, v] of Object.entries(ex.fields)) {
+    if (v && !results.extracted[k]) results.extracted[k] = v;
+  }
+
+  // Collect table data
+  if (ex.tableHeaders.length > 0) {
+    if (!results.headers.length) results.headers = ex.tableHeaders;
+    results.rawRows.push(...ex.tableRows);
+  }
+}
+
+function extractParams(rows) {
+  const fields = {};
+  let tableHeaders = [];
+  let tableRows    = [];
+
+  /* Pass 1: label-value pairs (cell in col N, value in col N+1 or below) */
+  rows.forEach((row, ri) => {
+    row.forEach((cell, ci) => {
+      const s = String(cell||'').trim();
+      if (!s || s.length > 80) return;
+
+      for (const [key, pats] of Object.entries(EXTRACT_PATTERNS)) {
+        if (fields[key]) continue;
+        if (pats.some(p => p.test(s))) {
+          // Look for value: same row next col, or next row same col
+          const nextInRow  = String(row[ci+1]||'').trim();
+          const nextInCol  = rows[ri+1] ? String(rows[ri+1][ci]||'').trim() : '';
+          const candidate  = nextInRow || nextInCol;
+          if (candidate && candidate !== s && !/скважин|месторожд|оператор/i.test(candidate)) {
+            fields[key] = candidate;
+          }
+        }
+      }
+    });
+  });
+
+  /* Pass 2: header-row table detection */
+  let bestHeaderIdx = -1;
+  let bestHeaderMap = {};
+  let bestScore     = 1;
+
+  rows.forEach((row, ri) => {
+    const map   = {};
+    let   score = 0;
+    row.forEach((cell, ci) => {
+      const s = String(cell||'').trim();
+      for (const [key, pats] of Object.entries(EXTRACT_PATTERNS)) {
+        if (pats.some(p => p.test(s))) { map[key] = ci; score++; }
+      }
+    });
+    if (score > bestScore) { bestScore = score; bestHeaderIdx = ri; bestHeaderMap = map; }
+  });
+
+  if (bestHeaderIdx >= 0) {
+    tableHeaders = rows[bestHeaderIdx].map(c => String(c||'').trim()).filter(Boolean);
+    const dataRows = rows.slice(bestHeaderIdx + 1);
+    tableRows = dataRows
+      .filter(row => row.some(c => String(c||'').trim()))
+      .slice(0, 200)
+      .map(row => {
+        const obj = {};
+        for (const [key, ci] of Object.entries(bestHeaderMap)) {
+          const v = String(row[ci]||'').trim();
+          if (v) { obj[key] = v; if (!fields[key]) fields[key] = v; }
+        }
+        return { _raw: row.map(c => String(c||'').trim()), ...obj };
+      });
+
+    // Take latest non-empty value for numeric params
+    const numericKeys = ['depth','density','viscosity','pv','yp','fl','ph','chlorides','mudVol'];
+    for (let i = tableRows.length - 1; i >= 0; i--) {
+      for (const k of numericKeys) {
+        if (!fields[k] && tableRows[i][k]) fields[k] = tableRows[i][k];
+      }
+    }
+  }
+
+  return { fields, tableHeaders, tableRows };
+}
+
+/* ─── Analysis Modal ─── */
+function openAnalModal(results, fileNames) {
+  _pendingAnalysis = results;
+  document.getElementById('analFileNames').textContent = 'Файлы: ' + fileNames.join(', ');
+
+  const ex  = results.extracted;
+  const cnt = Object.values(ex).filter(Boolean).length;
+  const noteEl = document.getElementById('analExtractNote');
+  if (cnt > 0) {
+    noteEl.style.color = 'var(--green)';
+    noteEl.textContent = `✓ Извлечено ${cnt} параметров из файлов. Проверьте и при необходимости скорректируйте.`;
+  } else {
+    noteEl.style.color = 'var(--text3)';
+    noteEl.textContent = 'Не удалось извлечь параметры автоматически — заполните вручную. Поддерживаются Excel и CSV с данными бурового раствора.';
+  }
+
+  // Fill form fields
+  const fill = (id, key) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.value = ex[key] || '';
+    if (ex[key]) el.classList.add('extracted'); else el.classList.remove('extracted');
+  };
+
+  fill('af_wellName','wellName'); fill('af_field','field'); fill('af_operator','operator');
+  fill('af_depth','depth'); fill('af_targetDepth','targetDepth');
+  fill('af_mudType','mudType'); fill('af_density','density'); fill('af_viscosity','viscosity');
+  fill('af_pv','pv'); fill('af_yp','yp'); fill('af_fl','fl'); fill('af_ph','ph');
+  fill('af_chlorides','chlorides'); fill('af_mudVol','mudVol');
+
+  // Raw table
+  if (results.rawRows.length > 0 && results.headers.length > 0) {
+    const secEl = document.getElementById('analRawSection');
+    secEl.style.display = '';
+    document.getElementById('analRowCount').textContent = `— ${results.rawRows.length} строк`;
+
+    const headEl = document.getElementById('analRawHead');
+    const bodyEl = document.getElementById('analRawBody');
+    headEl.innerHTML = '<tr>' + results.headers.slice(0,12).map(h=>`<th>${escHtml(h)}</th>`).join('') + '</tr>';
+    bodyEl.innerHTML = results.rawRows.slice(0,100).map(r =>
+      '<tr>' + (r._raw||[]).slice(0,12).map(c=>`<td>${escHtml(c)}</td>`).join('') + '</tr>'
+    ).join('');
+  }
+
+  document.getElementById('analOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeAnal() {
+  document.getElementById('analOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+/* ─── Save Well Project ─── */
+function saveWellProject() {
+  const g = id => (document.getElementById(id)||{}).value?.trim()||'';
+
+  const wellName    = g('af_wellName');
+  const field       = g('af_field');
+  const operator    = g('af_operator');
+  const wellType    = g('af_wellType');
+  const status      = g('af_status');
+  const depth       = parseFloat(g('af_depth'))       || 0;
+  const targetDepth = parseFloat(g('af_targetDepth')) || 0;
+  const mudType     = g('af_mudType');
+  const density     = g('af_density');
+  const viscosity   = g('af_viscosity');
+  const pv          = g('af_pv');
+  const yp          = g('af_yp');
+  const fl          = g('af_fl');
+  const ph          = g('af_ph');
+  const chlorides   = g('af_chlorides');
+  const mudVol      = g('af_mudVol');
+
+  if (!wellName && !field) {
+    alert('Укажите название скважины или месторождения');
+    document.getElementById('af_wellName').focus();
+    return;
+  }
+
+  const id  = 'well_' + Date.now();
+  const ex  = _pendingAnalysis?.extracted || {};
+  const well = {
+    id, wellName, field, operator, wellType, status, depth, targetDepth,
+    mud: { mudType, density, viscosity, pv, yp, fl, ph, chlorides, mudVol },
+    // Rich analytics from document text
+    region:       ex.region       || '',
+    wellCount:    ex.wellCount    || '',
+    workPeriod:   ex.workPeriod   || '',
+    formations:   ex.formations   || [],
+    wellTypes:    ex.wellTypes    || [],
+    headings:     ex.headings     || [],
+    keyParagraphs: ex.keyParagraphs || [],
+    rawRows:  (_pendingAnalysis?.rawRows||[]).slice(0, 500),
+    headers:  _pendingAnalysis?.headers || [],
+    fileCount: _pendingAnalysis?.fileCount || 0,
+    fileNames: _pendingAnalysis?.fileNames || [],
+    createdAt: Date.now()
+  };
+
+  const wells = getWells();
+  wells.push(well);
+  saveWells(wells);
+
+  closeAnal();
+  renderProjectCards();
+  updateStats();
+
+  // Add notification
+  const notifList = document.getElementById('notifList');
+  const dot = document.createElement('div');
+  dot.className = 'notif-item';
+  dot.innerHTML = `<div class="notif-dot" style="background:var(--green)"></div>
+    <div class="notif-body"><strong>${escHtml(field||wellName)}</strong> — проект создан. Данные загружены и готовы к анализу.</div>`;
+  notifList.prepend(dot);
+
+  // Scroll to projects
+  document.getElementById('projectsGrid').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+/* ════════════════════════════════════════
+   UTILS
+════════════════════════════════════════ */
+function fileEmoji(name) {
+  const ext = name.split('.').pop().toLowerCase();
+  return {xlsx:'📊',xls:'📊',csv:'📋',pdf:'📄',docx:'📝',doc:'📝',las:'🗃'}[ext]||'📁';
+}
+function formatSize(bytes) {
+  if (bytes < 1024) return bytes + ' B';
+  if (bytes < 1048576) return (bytes/1024).toFixed(1) + ' KB';
+  return (bytes/1048576).toFixed(1) + ' MB';
+}
+function showSpinner(msg) {
+  document.getElementById('spinMsg').textContent = msg||'Загрузка...';
+  document.getElementById('spinOverlay').classList.add('active');
+}
+function hideSpinner() { document.getElementById('spinOverlay').classList.remove('active'); }
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAnal(); });
+
+initPage();
+</script>
+</body>
+</html>

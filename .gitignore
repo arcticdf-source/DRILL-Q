@@ -1,0 +1,22 @@
+# Claude / agent local config
+.claude/
+
+# Пустой вложенный репозиторий (только .git, без файлов)
+cloto-ai-platform/
+
+# OS
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# Editor
+.vscode/
+.idea/
+
+# Node (на случай если появится)
+node_modules/
+npm-debug.log*
+
+# Логи и временное
+*.log
+*.tmp

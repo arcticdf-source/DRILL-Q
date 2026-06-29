@@ -1,0 +1,1271 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>110 · Восточно-Тагульский ЛУ · Геология</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap");
+
+    :root {
+      --bg-0:#061019;
+      --bg-1:#0f2033;
+      --bg-2:#1a3550;
+      --panel:rgba(8,17,28,.88);
+      --panel-soft:rgba(255,255,255,.035);
+      --line:rgba(226,237,255,.15);
+      --line-soft:rgba(226,237,255,.08);
+      --text:#edf5ff;
+      --muted:#9bb1c9;
+      --cyan:#20d9b4;
+      --amber:#ffbf66;
+      --blue:#8db4ff;
+      --violet:#c6a6ff;
+      --green:#79e3a5;
+      --rose:#ff8a7a;
+      --gold:#f3d37b;
+      --teal:#7be3df;
+      --ink:#07131d;
+      --shadow:0 28px 68px rgba(0,0,0,.42);
+      --c-q:linear-gradient(180deg, #ffe49b, #f3c45f);
+      --c-tn:linear-gradient(180deg, #d9f0ff, #79c9ff);
+      --c-sp:linear-gradient(180deg, #daf1ff, #99d7ff);
+      --c-ns:linear-gradient(180deg, #cbb6ff, #9b72ff);
+      --c-dr:linear-gradient(180deg, #8aa1c2, #4c5e7f);
+      --c-dl:linear-gradient(180deg, #ffe0af, #ffb871);
+      --c-jak:linear-gradient(180deg, #7cf0d0, #36caa3);
+      --c-mh:linear-gradient(180deg, #8fd3ff, #4d8dff);
+      --c-sd:linear-gradient(180deg, #ffcb97, #ff8e63);
+      --c-nch:linear-gradient(180deg, #9df2ab, #45c67a);
+      --c-jan:linear-gradient(180deg, #dad2ff, #9e8bff);
+      --c-sg:linear-gradient(180deg, #a7d4ff, #5f99ff);
+      --c-tch:linear-gradient(180deg, #ffd9ba, #ffad78);
+      --c-j2m:linear-gradient(180deg, #c9f0ff, #71c8ff);
+      --c-ln:linear-gradient(180deg, #f5c8ff, #c680ff);
+      --c-vm:linear-gradient(180deg, #ffe18f, #ffad62);
+      --c-gas:linear-gradient(180deg, #87f4af, #1ebe70);
+      --c-oil:linear-gradient(180deg, #ffc56e, #ff8b41);
+      --c-risk:linear-gradient(180deg, #ffbe94, #ff7f6b);
+      --c-thermo:linear-gradient(180deg, #9ae6ff, #55b8ff);
+      --c-pressure:linear-gradient(180deg, #cbb4ff, #8e71ff);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      font-family: "Manrope", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(880px 440px at 0% -8%, rgba(32,217,180,.18), transparent),
+        radial-gradient(760px 420px at 100% 0%, rgba(255,191,102,.14), transparent),
+        radial-gradient(640px 300px at 50% 0%, rgba(141,180,255,.12), transparent),
+        linear-gradient(145deg, var(--bg-0), var(--bg-1) 48%, var(--bg-2));
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(to right, rgba(255,255,255,.02) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,.02) 1px, transparent 1px);
+      background-size: 40px 40px;
+      mask-image: radial-gradient(circle at 50% 18%, rgba(0,0,0,.95), transparent 70%);
+    }
+
+    .wrap {
+      position: relative;
+      z-index: 1;
+      width: min(1460px, 95vw);
+      margin: 0 auto;
+      padding: 24px 0 56px;
+    }
+
+    .top,
+    .hero,
+    .section {
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+    }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 12px 16px;
+      border-radius: 16px;
+      background: rgba(8,14,24,.66);
+      backdrop-filter: blur(10px);
+      position: sticky;
+      top: 12px;
+      z-index: 20;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: "Oswald", sans-serif;
+      font-size: 20px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 35% 35%, #d8fff8, var(--cyan));
+      box-shadow: 0 0 18px rgba(32,217,180,.45);
+    }
+
+    .nav {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .nav a {
+      text-decoration: none;
+      border-radius: 999px;
+      padding: 9px 14px;
+      font: 800 12px/1 "Manrope", sans-serif;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: #06231f;
+      background: linear-gradient(135deg, #9efcef, var(--cyan));
+      border: 1px solid rgba(32,217,180,.82);
+    }
+
+    .hero,
+    .section {
+      margin-top: 18px;
+      border-radius: 28px;
+      padding: clamp(22px, 3vw, 36px);
+      background: var(--panel);
+    }
+
+    .hero {
+      background:
+        radial-gradient(420px 220px at 5% 0%, rgba(32,217,180,.14), transparent),
+        radial-gradient(520px 280px at 100% 0%, rgba(255,191,102,.12), transparent),
+        linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015)),
+        var(--panel);
+    }
+
+    .eyebrow,
+    .tag,
+    .legend-chip,
+    .mini-chip,
+    .risk-chip,
+    .fluid-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line-soft);
+      background: rgba(255,255,255,.04);
+      color: #d8e8f8;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    h1, h2, h3, h4 {
+      margin: 0;
+      font-family: "Oswald", sans-serif;
+      letter-spacing: -.01em;
+    }
+
+    h1 {
+      margin: 14px 0 10px;
+      font-size: clamp(40px, 5.4vw, 70px);
+      line-height: .95;
+      max-width: 1120px;
+    }
+
+    h1 span { color: var(--amber); }
+
+    p, li, td {
+      color: #d1ddec;
+      line-height: 1.72;
+      font-size: 14px;
+    }
+
+    .hero-grid,
+    .hero-layout,
+    .depth-layout,
+    .cards-grid,
+    .prospect-grid,
+    .table-grid,
+    .summary-grid,
+    .mini-metric,
+    .bar-list,
+    .legend,
+    .quick-list,
+    .risk-grid,
+    .thermo-grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .hero-grid {
+      margin-top: 18px;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .hero-layout {
+      margin-top: 18px;
+      grid-template-columns: 1.08fr .92fr;
+    }
+
+    .hero-stat,
+    .card,
+    .table-card,
+    .summary-card,
+    .well-card,
+    .fluid-card,
+    .risk-card,
+    .thermo-card {
+      border: 1px solid var(--line-soft);
+      border-radius: 20px;
+      background: var(--panel-soft);
+      padding: 16px;
+      min-width: 0;
+    }
+
+    .hero-layout > *,
+    .cards-grid > *,
+    .prospect-grid > *,
+    .table-grid > *,
+    .risk-grid > *,
+    .thermo-grid > * {
+      min-width: 0;
+    }
+
+    .hero-stat strong,
+    .mini-box strong {
+      display: block;
+      font-size: 26px;
+      line-height: 1;
+    }
+
+    .hero-stat span,
+    .mini-box span,
+    .micro {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .legend {
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      margin-top: 16px;
+    }
+
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      display: inline-block;
+    }
+
+    .summary-card h3,
+    .card h3,
+    .well-card h3,
+    .risk-card h3,
+    .table-card h3,
+    .fluid-card h3,
+    .thermo-card h3 {
+      margin: 0;
+      font-size: 21px;
+    }
+
+    .summary-card p,
+    .card p,
+    .well-card p,
+    .risk-card p,
+    .table-card p,
+    .fluid-card p,
+    .thermo-card p {
+      margin: 10px 0 0;
+      color: #c6d7ea;
+      font-size: 13px;
+      line-height: 1.65;
+    }
+
+    .quick-list { margin-top: 12px; }
+
+    .quick-item {
+      display: grid;
+      grid-template-columns: 110px minmax(0, 1fr);
+      gap: 10px;
+      border-top: 1px solid var(--line-soft);
+      padding-top: 10px;
+      font-size: 13px;
+      align-items: start;
+    }
+
+    .quick-item strong,
+    .quick-item span {
+      min-width: 0;
+      overflow-wrap: break-word;
+      word-break: normal;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 12px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    .section-head h2 {
+      font-size: 28px;
+    }
+
+    .depth-layout {
+      grid-template-columns: .9fr 1.1fr;
+    }
+
+    .depth-rail {
+      border: 1px solid var(--line-soft);
+      border-radius: 22px;
+      background: rgba(255,255,255,.025);
+      padding: 14px;
+    }
+
+    .depth-title {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    .depth-title strong {
+      font-size: 18px;
+    }
+
+    .depth-scale {
+      display: grid;
+      grid-template-columns: 72px 1fr;
+      gap: 12px;
+      align-items: stretch;
+    }
+
+    .depth-labels {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      color: #dce9f7;
+      font-size: 12px;
+      padding: 4px 0;
+      min-height: 1240px;
+    }
+
+    .well-column {
+      position: relative;
+      border-radius: 22px;
+      overflow: hidden;
+      border: 1px solid var(--line-soft);
+      min-height: 1240px;
+      background: rgba(255,255,255,.03);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .well-layer {
+      position: relative;
+      padding: 9px 13px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      color: var(--ink);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      isolation: isolate;
+      flex: 0 0 auto;
+    }
+
+    .well-layer::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,.28), transparent 48%, rgba(255,255,255,.08));
+      z-index: -1;
+    }
+
+    .well-layer strong {
+      font-size: 13px;
+      line-height: 1.15;
+    }
+
+    .well-layer span {
+      margin-top: 4px;
+      font-size: 11px;
+      line-height: 1.4;
+      opacity: .98;
+    }
+
+    .well-layer.compact {
+      min-height: 52px;
+      padding: 8px 12px;
+    }
+
+    .well-layer.compact strong {
+      font-size: 11.5px;
+      line-height: 1.1;
+    }
+
+    .well-layer.compact span {
+      margin-top: 3px;
+      font-size: 10px;
+      line-height: 1.2;
+    }
+
+    .overlay-note {
+      position: absolute;
+      right: 10px;
+      width: 188px;
+      display: grid;
+      gap: 8px;
+      pointer-events: none;
+    }
+
+    .overlay-badge {
+      border-radius: 14px;
+      padding: 9px 10px;
+      background: rgba(8,17,28,.84);
+      border: 1px solid rgba(255,255,255,.08);
+      color: #eff7ff;
+      font-size: 11px;
+      line-height: 1.45;
+      box-shadow: 0 8px 20px rgba(0,0,0,.18);
+    }
+
+    .overlay-badge strong {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 4px;
+      color: #f8ffb4;
+    }
+
+    .summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .cards-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .prospect-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .table-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .risk-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .thermo-grid { grid-template-columns: 1fr; }
+
+    .mini-metric {
+      margin-top: 12px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .mini-box {
+      border: 1px solid var(--line-soft);
+      border-radius: 16px;
+      padding: 12px;
+      background: rgba(255,255,255,.025);
+    }
+
+    .bar-list { margin-top: 12px; }
+
+    .bar-row {
+      display: grid;
+      grid-template-columns: 162px 1fr auto;
+      gap: 10px;
+      align-items: center;
+      font-size: 13px;
+    }
+
+    .bar-track {
+      height: 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.06);
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,.05);
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: inherit;
+    }
+
+    .fluid-card.gas { border-color: rgba(66,197,143,.28); }
+    .fluid-card.oil { border-color: rgba(255,149,87,.3); }
+
+    .fluid-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .fluid-chip.gas {
+      background: rgba(31,191,114,.16);
+      border-color: rgba(31,191,114,.34);
+      color: #cbffe1;
+    }
+
+    .fluid-chip.oil {
+      background: rgba(255,139,65,.16);
+      border-color: rgba(255,139,65,.34);
+      color: #ffe1c9;
+    }
+
+    .risk-card {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .risk-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(160deg, rgba(255,255,255,.06), transparent 52%, rgba(255,255,255,.02));
+      pointer-events: none;
+    }
+
+    .risk-chip {
+      margin-right: 6px;
+      margin-bottom: 6px;
+      background: rgba(255,143,128,.16);
+      border-color: rgba(255,143,128,.34);
+      color: #ffd9d3;
+    }
+
+    .thermo-stack {
+      display: grid;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .thermo-summary {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .thermo-summary-row {
+      display: grid;
+      grid-template-columns: 140px minmax(0, 1fr);
+      gap: 12px;
+      align-items: start;
+      padding-top: 10px;
+      border-top: 1px solid var(--line-soft);
+    }
+
+    .thermo-summary-row strong,
+    .thermo-summary-row span {
+      min-width: 0;
+      overflow-wrap: break-word;
+    }
+
+    .regime-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .regime-row {
+      display: grid;
+      grid-template-columns: 120px minmax(0, 1fr);
+      gap: 12px;
+      padding-top: 10px;
+      border-top: 1px solid var(--line-soft);
+      align-items: start;
+    }
+
+    .regime-row strong,
+    .regime-row span {
+      min-width: 0;
+      overflow-wrap: break-word;
+    }
+
+    .thermo-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: center;
+      font-size: 13px;
+      padding-top: 10px;
+      border-top: 1px solid var(--line-soft);
+    }
+
+    .thermo-label {
+      min-width: 0;
+    }
+
+    .thermo-label strong {
+      display: block;
+      font-size: 13px;
+      color: #eff6ff;
+    }
+
+    .thermo-label span {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .thermo-track {
+      height: 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.06);
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,.05);
+    }
+
+    .thermo-fill {
+      height: 100%;
+      border-radius: inherit;
+      background: var(--c-thermo);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    th, td {
+      border: 1px solid var(--line-soft);
+      padding: 10px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: #c8daec;
+      background: rgba(255,255,255,.04);
+    }
+
+    td {
+      color: #d6e6f5;
+      line-height: 1.5;
+    }
+
+    .table-wrap {
+      overflow: auto;
+      margin-top: 12px;
+    }
+
+    .pressure-shell {
+      margin-top: 12px;
+      border: 1px solid var(--line-soft);
+      border-radius: 18px;
+      padding: 12px;
+      background: rgba(255,255,255,.02);
+    }
+
+    .pressure-shell svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .footer {
+      margin-top: 18px;
+      font-size: 12px;
+      color: #8197b0;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    @media (max-width: 1220px) {
+      .hero-grid,
+      .hero-layout,
+      .depth-layout,
+      .cards-grid,
+      .prospect-grid,
+      .table-grid,
+      .summary-grid,
+      .risk-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .top {
+        position: static;
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .hero-grid,
+      .mini-metric,
+      .prospect-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .bar-row,
+      .quick-item,
+      .thermo-row,
+      .regime-row,
+      .thermo-summary-row {
+        grid-template-columns: 1fr;
+      }
+
+      .thermo-card,
+      .well-card,
+      .summary-card,
+      .fluid-card,
+      .risk-card,
+      .table-card {
+        overflow: hidden;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .hero-grid,
+      .mini-metric,
+      .legend,
+      .prospect-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .depth-scale {
+        grid-template-columns: 1fr;
+      }
+
+      .well-column,
+      .depth-labels {
+        min-height: auto;
+      }
+
+      .overlay-note {
+        position: static;
+        width: auto;
+        margin-top: 12px;
+      }
+    }
+  </style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+  <main class="wrap">
+    <header class="top">
+      <a class="brand" href="108_vostochno_tagul_project_dashboard.html"><span class="dot" aria-hidden="true"></span><span>Восточно-Тагульский ЛУ · Geo Cockpit</span></a>
+      <nav class="nav">
+        <a href="108_vostochno_tagul_project_dashboard.html">К дашборду</a>
+        <a href="109_vostochno_tagul_general_info.html">Общая информация</a>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <span class="eyebrow">Geo cockpit · Восточно-Тагульский ЛУ · Раздел 2</span>
+      <h1>Раздел 2. <span>Геология и стратиграфия</span></h1>
+      <p>Красочный геологический экран по Восточно-Тагульскому лицензионному участку: ожидаемый литолого-стратиграфический разрез до 3000 м, цветная колонна по свитам, окна нефтегазоперспективы, термодинамика по разрезу и карта осложнений, которые реально будут определять режим бурения.</p>
+      <div class="hero-grid">
+        <div class="hero-stat"><strong>3000 м</strong><span>макс. глубина разреза</span></div>
+        <div class="hero-stat"><strong>16</strong><span>стратиграфических блоков</span></div>
+        <div class="hero-stat"><strong>1 нефть + 2 газ</strong><span>продуктивные окна</span></div>
+        <div class="hero-stat"><strong>4 коридора</strong><span>осложнений по стволу</span></div>
+      </div>
+      <div class="legend" id="legendChips"></div>
+      <div class="hero-layout">
+        <article class="summary-card">
+          <h3>Что читается сразу</h3>
+          <p>Верх разреза до 520 м работает как мерзлотно-криогенный блок с риском растепления, поглощений и кавернообразования. Ниже разрез становится чередованием песчаников, алевролитов, аргиллитов и аргиллитоподобных глин, а главные углеводородные сигналы смещаются в нижнехетский, сиговский и вымский блоки.</p>
+          <div class="quick-list">
+            <div class="quick-item"><strong>0-520 м</strong><span>Четвертичный и танамский блок: мерзлота, потери промывочной жидкости, падение механической скорости и нестабильность стенок.</span></div>
+            <div class="quick-item"><strong>795-1170 м</strong><span>Дорожковская и долганская свиты: аргиллитоподобные глины, песчаники и первые интервалы частичных поглощений.</span></div>
+            <div class="quick-item"><strong>2160-2350 м</strong><span>Нижнехетская свита с нефтеперспективным пластом Нх-3-4 и насыщением до 26,5 МПа.</span></div>
+            <div class="quick-item"><strong>2580-2995 м</strong><span>Юрский блок с двумя газоперспективными окнами, где вступают в игру проявления, давление и контроль по продуктивным горизонтам.</span></div>
+          </div>
+        </article>
+        <article class="summary-card">
+          <h3>Инженерные сигналы</h3>
+          <p>Геология здесь диктует не один, а несколько режимов бурения. Сначала важна защита мерзлотного блока и минимизация растепления, затем контроль фильтрации и стабилизация стенок в глинистых интервалах, а глубже уже критичны плотность, очистка и готовность к нефтегазоводопроявлениям в нижнехетско-юрском окне.</p>
+          <div class="mini-metric" id="miniMetrics"></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>Геологическая колонна по глубине</h2>
+          <p>Цветной разрез собран по стратиграфическим подразделениям, а поверх нанесены перспективные зоны, чтобы сразу видеть, где ствол меняет литологическое и флюидное поведение.</p>
+        </div>
+        <span class="tag">Восточно-Тагульский ЛУ · TVD 0-3000 м</span>
+      </div>
+      <div class="depth-layout">
+        <div class="depth-rail">
+          <div class="depth-title">
+            <strong>Стратиграфическая колонна</strong>
+            <span class="mini-chip">Окна Нх-3-4, Сг5-7 и Ю7</span>
+          </div>
+          <div class="depth-scale">
+            <div class="depth-labels" id="depthLabels"></div>
+            <div class="well-column" id="wellColumn">
+              <div class="overlay-note" id="overlayNotes"></div>
+            </div>
+          </div>
+        </div>
+        <div class="cards-grid">
+          <article class="well-card">
+            <h3>Литологическая логика</h3>
+            <p>Разрез стартует с рыхлых четвертичных и песчано-глинистых меловых толщ, затем уходит в аргиллитизированный пакет, после чего раскрывается длинная юрско-меловая последовательность песчаников, алевролитов и аргиллитов.</p>
+            <div class="bar-list" id="lithologyBars"></div>
+          </article>
+          <article class="well-card">
+            <h3>Градиент пластового давления</h3>
+            <p>По таблице разрез в основном работает в окне 0,164 кГс/см² на м, но в суходудинско-нижнехетском блоке проседает до 0,155. Это важный инженерный сигнал для окна по плотности БР и контроля проявлений.</p>
+            <div class="bar-list" id="pressureBars"></div>
+            <div class="pressure-shell" id="pressureChart"></div>
+          </article>
+          <article class="well-card">
+            <h3>Термодинамика по разрезу</h3>
+            <p>Верхние 520 м живут в мерзлотном режиме без температурного прироста, ниже включается стабильный градиент 2,5 °C/100 м. Это означает резкую смену требований к циркуляции и тепловому менеджменту.</p>
+            <div class="thermo-grid">
+              <div class="thermo-card">
+                <h3>Температурный профиль и режим давления</h3>
+                <div class="thermo-stack" id="thermalBars"></div>
+                <div class="thermo-summary">
+                  <div class="thermo-summary-row"><strong>Тип режима</strong><span>Гидростатический по таблице.</span></div>
+                  <div class="thermo-summary-row"><strong>0-520 м</strong><span>ММП, температурный градиент 0 °C/100 м.</span></div>
+                  <div class="thermo-summary-row"><strong>520-3000 м</strong><span>Градиент 2,5 °C/100 м, переход к нормальному геотермическому режиму.</span></div>
+                </div>
+              </div>
+            </div>
+          </article>
+          <article class="well-card">
+            <h3>Фокус по продуктивным горизонтам</h3>
+            <p>Нефтяное окно сосредоточено в Нх-3-4 нижнехетской свиты, а газовые сигналы смещены в сиговский и вымский горизонты. Ниже собраны ключевые показатели по коллектору и потенциальному дебиту.</p>
+            <div class="bar-list" id="prospectBars"></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>Нефте- и газоперспективные интервалы</h2>
+          <p>Весь productive story вынесен в отдельный блок: тип коллектора, плотность флюида, газосодержание и ожидаемый дебит, чтобы геология сразу связывалась с экономикой будущей скважины.</p>
+        </div>
+      </div>
+      <div class="prospect-grid" id="prospectCards"></div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>Осложнения по разрезу</h2>
+          <p>Ниже собраны ключевые operational-риски: поглощения, сужение ствола, кавернообразование и нефтегазоводопроявления, а также реальная причина их появления именно в этих свитах.</p>
+        </div>
+      </div>
+      <div class="risk-grid" id="riskCards"></div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>Табличный паспорт</h2>
+          <p>Сохранены табличные данные по стратиграфии, продуктивным окнам, термодинамике и осложнениям, чтобы страница оставалась рабочим инженерным листом, а не только красивой визуализацией.</p>
+        </div>
+      </div>
+      <div class="table-grid">
+        <article class="table-card">
+          <h3>Стратиграфия и литология</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Свита</th>
+                  <th>Интервал, м</th>
+                  <th>Литология</th>
+                  <th>Градиент Рпл</th>
+                </tr>
+              </thead>
+              <tbody id="stratTableBody"></tbody>
+            </table>
+          </div>
+        </article>
+        <article class="table-card">
+          <h3>Перспективы и осложнения</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Блок</th>
+                  <th>Интервал</th>
+                  <th>Сигнал</th>
+                </tr>
+              </thead>
+              <tbody id="signalsTableBody"></tbody>
+            </table>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <p class="footer">Восточно-Тагульский ЛУ · Doc 110 · Геология и стратиграфия</p>
+  </main>
+
+  <script>
+    const stratigraphy = [
+      { code: 'Q', name: 'Четвертичные отложения', top: 0, base: 100, color: 'var(--c-q)', lithology: 'Пески, супеси, суглинки, глины, торф', pressure: '0,000-0,164', detail: 'Поверхностный рыхлый блок с максимальной чувствительностью к растеплению и нарушению целостности стенок.' },
+      { code: 'K2tn', name: 'Танамская свита', top: 100, base: 520, color: 'var(--c-tn)', lithology: 'Пески, алевриты, глины', pressure: '0,164', detail: 'Длинный верхнемеловой песчано-алевритово-глинистый интервал, связанный с мерзлотными осложнениями.' },
+      { code: 'K2sp', name: 'Салпадинская свита', top: 520, base: 570, color: 'var(--c-sp)', lithology: 'Пески, алевриты, глины', pressure: '0,164', detail: 'Короткий переходный пакет с сохранением песчано-глинистого строения.' },
+      { code: 'K2ns', name: 'Насоновская свита', top: 570, base: 795, color: 'var(--c-ns)', lithology: 'Алевролиты глинистые, глины, пески', pressure: '0,164', detail: 'Глинисто-алевритовый интервал с ростом нестабильности стенок и чувствительности к фильтрации.' },
+      { code: 'K2dr', name: 'Дорожковская свита', top: 795, base: 895, color: 'var(--c-dr)', lithology: 'Аргиллитоподобные глины и алевриты', pressure: '0,164', detail: 'Жесткий аргиллитизированный блок с риском кавернообразования при набухании.' },
+      { code: 'K1-2dl', name: 'Долганская свита', top: 895, base: 1170, color: 'var(--c-dl)', lithology: 'Песчаники и пески с редкими прослоями алевролитов и глин', pressure: '0,164', detail: 'Первый песчаный блок со склонностью к частичным поглощениям за счет естественной фильтрации.' },
+      { code: 'K1jak', name: 'Яковлевская свита', top: 1170, base: 1630, color: 'var(--c-jak)', lithology: 'Переслаивание песчаников, алевролитов, аргиллитоподобных глин и аргиллитов', pressure: '0,164', detail: 'Крупный неоднородный пакет с сильной сменой коллекторских и экранирующих свойств.' },
+      { code: 'K1mch', name: 'Малохетская свита', top: 1630, base: 1755, color: 'var(--c-mh)', lithology: 'Песчаники с редкими прослоями глинисто-алевритовых пород', pressure: '0,164', detail: 'Преимущественно песчаный интервал, продолжающий цепочку фильтрационных осложнений.' },
+      { code: 'K1sd', name: 'Суходудинская свита', top: 1755, base: 2160, color: 'var(--c-sd)', lithology: 'Переслаивание песчаников, аргиллитов, алевролитов', pressure: '0,155', detail: 'Блок с пониженным градиентом пластового давления и риском сужения ствола в глинистых прослоях.' },
+      { code: 'K1nch', name: 'Нижнехетская свита', top: 2160, base: 2350, color: 'var(--c-nch)', lithology: 'Переслаивание песчаников, аргиллитов, алевролитов', pressure: '0,155', detail: 'Главное нефтеперспективное окно разреза с пластом Нх-3-4 и риском проявлений.' },
+      { code: 'J3jan', name: 'Яновстанская свита', top: 2350, base: 2580, color: 'var(--c-jan)', lithology: 'Переслаивание алевролитов, аргиллитов', pressure: '0,164', detail: 'Глинисто-алевритовый юрский блок, где сохраняется риск кавернообразования.' },
+      { code: 'J3sg', name: 'Сиговская свита', top: 2580, base: 2690, color: 'var(--c-sg)', lithology: 'Песчаники, алевролиты, аргиллиты', pressure: '0,164', detail: 'Первое юрское газовое окно с поровым коллектором и потенциалом дебита.' },
+      { code: 'J3tch', name: 'Точинская свита', top: 2690, base: 2730, color: 'var(--c-tch)', lithology: 'Аргиллиты, алевролиты, песчаники', pressure: '0,164', detail: 'Тонкий переходный блок между сиговским и малышевским пакетами.' },
+      { code: 'J2m', name: 'Малышевская свита', top: 2730, base: 2910, color: 'var(--c-j2m)', lithology: 'Песчаники, алевролиты, аргиллиты', pressure: '0,164', detail: 'Песчано-алевритовый юрский интервал, включенный в коридор возможных проявлений.' },
+      { code: 'J2ln', name: 'Леонтьевская свита', top: 2910, base: 2980, color: 'var(--c-ln)', lithology: 'Песчаники, алевролиты, аргиллиты', pressure: '0,164', detail: 'Переход к нижнему продуктивному окну Ю7.' },
+      { code: 'J2vm', name: 'Вымская свита', top: 2980, base: 3000, color: 'var(--c-vm)', lithology: 'Песчаники, алевролиты, аргиллиты', pressure: '0,164', detail: 'Нижний газоперспективный блок разреза с окном Ю7.' }
+    ];
+
+    const thermal = [
+      { label: 'ММП / верх разреза', top: 0, base: 520, gradient: 0, value: '0 °C/100 м' },
+      { label: 'Основной разрез', top: 520, base: 3000, gradient: 2.5, value: '2,5 °C/100 м' }
+    ];
+
+    const prospects = [
+      {
+        title: 'Нх-3-4 · K1nch',
+        type: 'Нефть',
+        kind: 'oil',
+        top: 2240,
+        base: 2350,
+        ao: '2240-2350 м',
+        collector: 'Поровый',
+        densityStd: '0,843 г/см3',
+        densityRes: '0,769 г/см3',
+        gasDensity: '0,657',
+        gasContent: '184,5 м3/т',
+        rate: '30 м3/сут',
+        pressure: '26,5 МПа',
+        chip: 'Нижнехетская свита',
+        note: 'Главное нефтеперспективное окно Восточно-Тагульского ЛУ с поровым коллектором и высоким газосодержанием.'
+      },
+      {
+        title: 'Сг5-7 · J3sg',
+        type: 'Газ',
+        kind: 'gas',
+        top: 2625,
+        base: 2655,
+        ao: '-2565...-2595 м',
+        collector: 'Поровый',
+        densityStd: '-',
+        densityRes: '-',
+        gasDensity: '0,729',
+        gasContent: '-',
+        rate: '40 тыс. м3/сут',
+        pressure: 'Газоперспектива',
+        chip: 'Сиговская свита',
+        note: 'Первый юрский газовый горизонт с ожидаемым дебитом 40 тыс. м3/сут.'
+      },
+      {
+        title: 'Ю7 · J2vm',
+        type: 'Газ',
+        kind: 'gas',
+        top: 2980,
+        base: 2995,
+        ao: '-2920...-2935 м',
+        collector: 'Поровый',
+        densityStd: '-',
+        densityRes: '-',
+        gasDensity: '0,729',
+        gasContent: '-',
+        rate: '40 тыс. м3/сут',
+        pressure: 'Газоперспектива',
+        chip: 'Вымская свита',
+        note: 'Нижнее газовое окно разреза, требующее готовности к проявлениям на финальном участке бурения.'
+      }
+    ];
+
+    const risks = [
+      {
+        title: 'Мерзлота и поглощения',
+        interval: '0-520 м',
+        chips: ['Q', 'K2tn', 'поглощения', 'прихват'],
+        text: 'Поглощения промывочной жидкости, обвалы стенок, кавернообразование, прихват инструмента и падение механической скорости проходки.',
+        cause: 'Растепление ММП за счет естественной фильтрации и обвала стенок при прохождении пород средней и высокой плотности.'
+      },
+      {
+        title: 'Частичные потери и сужение',
+        interval: '895-2160 м',
+        chips: ['K1-2dl', 'K1mch', 'K1sd', 'сужение ствола'],
+        text: 'Частичное поглощение промывочной жидкости и локальное сужение ствола скважины.',
+        cause: 'В песчаниках потери связаны с естественной фильтрацией в пласт, в глинистых интервалах сужение идет через формирование глинистой корки.'
+      },
+      {
+        title: 'Кавернообразование',
+        interval: '795-895 м и 2350-2580 м',
+        chips: ['K2dr', 'J3jan', 'набухание'],
+        text: 'Кавернообразование наиболее вероятно в аргиллитовых и аргиллитоподобных отложениях.',
+        cause: 'При прохождении глинистых интервалов порода набухает и обваливается, что быстро ломает калибр ствола.'
+      },
+      {
+        title: 'Нефтегазоводопроявления',
+        interval: '2160-3000 м',
+        chips: ['K1nch', 'J3sg', 'J2m', 'J2vm'],
+        text: 'Риск проявлений при вскрытии нижнехетского и юрских продуктивных горизонтов.',
+        cause: 'При прохождении продуктивных пластов усиливается риск нефтегазоводопроявлений, особенно при провале по плотности и очистке.'
+      }
+    ];
+
+    function formatNumber(value) {
+      return String(value).replace('.', ',');
+    }
+
+    function renderLegend() {
+      document.getElementById('legendChips').innerHTML = stratigraphy.map((unit) => `
+        <span class="legend-chip"><span class="legend-dot" style="background:${unit.color}"></span>${unit.code}</span>
+      `).join('');
+    }
+
+    function renderMiniMetrics() {
+      const metrics = [
+        { value: '0-520 м', label: 'мерзлотный блок' },
+        { value: '0,155-0,164', label: 'градиент Рпл, кГс/см2/м' },
+        { value: '26,5 МПа', label: 'P насыщения Нх-3-4' },
+        { value: '40 тыс. м3/сут', label: 'потенциал газа по J3sg/J2vm' }
+      ];
+
+      document.getElementById('miniMetrics').innerHTML = metrics.map((item) => `
+        <div class="mini-box">
+          <strong>${item.value}</strong>
+          <span>${item.label}</span>
+        </div>
+      `).join('');
+    }
+
+    function renderDepthLabels() {
+      const marks = [0, 500, 1000, 1500, 2000, 2500, 3000];
+      document.getElementById('depthLabels').innerHTML = marks.map((mark) => `<span>${mark} м</span>`).join('');
+    }
+
+    function renderWellColumn() {
+      const totalDepth = 3000;
+      const column = document.getElementById('wellColumn');
+      column.innerHTML = '<div class="overlay-note" id="overlayNotes"></div>';
+
+      stratigraphy.forEach((unit) => {
+        const height = Math.max(((unit.base - unit.top) / totalDepth) * 1240, 48);
+        const compact = (unit.base - unit.top) < 90 ? 'compact' : '';
+        const block = document.createElement('div');
+        block.className = `well-layer ${compact}`;
+        block.style.height = `${height}px`;
+        block.style.background = unit.color;
+        block.innerHTML = `
+          <strong>${unit.code} · ${unit.name}</strong>
+          <span>${unit.top}-${unit.base} м · ${unit.lithology}</span>
+        `;
+        column.appendChild(block);
+      });
+
+      const overlay = document.getElementById('overlayNotes');
+      const notes = [
+        { top: 80, title: 'Криоблок', text: '0-520 м: мерзлота, растепление, поглощения.' },
+        { top: 875, title: 'Нефтяное окно', text: 'Нх-3-4 · 2240-2350 м · K1nch.' },
+        { top: 1025, title: 'Газ 1', text: 'Сг5-7 · 2625-2655 м · J3sg.' },
+        { top: 1165, title: 'Газ 2', text: 'Ю7 · 2980-2995 м · J2vm.' }
+      ];
+
+      overlay.innerHTML = notes.map((note) => `
+        <div class="overlay-badge" style="margin-top:${note.top}px">
+          <strong>${note.title}</strong>
+          <span>${note.text}</span>
+        </div>
+      `).join('');
+    }
+
+    function renderLithologyBars() {
+      const highlights = [
+        { label: 'Песчаные тела', value: 68, suffix: 'много в K1-2dl / K1mch / J3sg / J2m', color: 'var(--c-jak)' },
+        { label: 'Глинистый контроль', value: 74, suffix: 'усилен в K2ns / K2dr / J3jan', color: 'var(--c-pressure)' },
+        { label: 'Неоднородность разреза', value: 82, suffix: 'частое переслаивание', color: 'var(--c-oil)' },
+        { label: 'Продуктивность', value: 57, suffix: '1 нефтяное + 2 газовых окна', color: 'var(--c-gas)' }
+      ];
+
+      document.getElementById('lithologyBars').innerHTML = highlights.map((item) => `
+        <div class="bar-row">
+          <span>${item.label}</span>
+          <div class="bar-track"><div class="bar-fill" style="width:${item.value}%; background:${item.color}"></div></div>
+          <strong>${item.suffix}</strong>
+        </div>
+      `).join('');
+    }
+
+    function renderPressureBars() {
+      document.getElementById('pressureBars').innerHTML = stratigraphy.filter((unit) => unit.base > 520).map((unit) => {
+        const pressureValue = unit.pressure.includes('0,155') ? 62 : unit.pressure.includes('0,000') ? 8 : 66;
+        return `
+          <div class="bar-row">
+            <span>${unit.code}</span>
+            <div class="bar-track"><div class="bar-fill" style="width:${pressureValue}%; background:var(--c-pressure)"></div></div>
+            <strong>${unit.pressure}</strong>
+          </div>
+        `;
+      }).join('');
+
+      const svgWidth = 540;
+      const svgHeight = 270;
+      const xStep = svgWidth / (stratigraphy.length - 1);
+      const points = stratigraphy.map((unit, index) => {
+        const numeric = unit.pressure.includes('0,155') ? 0.155 : unit.pressure.includes('0,000') ? 0.08 : 0.164;
+        const x = 30 + index * (xStep - 8);
+        const y = 220 - ((numeric - 0.08) / 0.09) * 150;
+        return `${x},${y}`;
+      }).join(' ');
+
+      document.getElementById('pressureChart').innerHTML = `
+        <svg viewBox="0 0 ${svgWidth} ${svgHeight}" aria-label="График градиента давления">
+          <defs>
+            <linearGradient id="pressureFill" x1="0" x2="1" y1="0" y2="0">
+              <stop offset="0%" stop-color="#cbb4ff" />
+              <stop offset="100%" stop-color="#7c62ff" />
+            </linearGradient>
+          </defs>
+          <rect x="20" y="20" width="500" height="210" rx="18" fill="rgba(255,255,255,.03)" stroke="rgba(255,255,255,.08)" />
+          <line x1="40" y1="200" x2="500" y2="200" stroke="rgba(255,255,255,.18)" />
+          <line x1="40" y1="130" x2="500" y2="130" stroke="rgba(255,255,255,.1)" stroke-dasharray="6 6" />
+          <line x1="40" y1="60" x2="500" y2="60" stroke="rgba(255,255,255,.1)" stroke-dasharray="6 6" />
+          <polyline fill="none" stroke="url(#pressureFill)" stroke-width="4" points="${points}" />
+          ${stratigraphy.map((unit, index) => {
+            const numeric = unit.pressure.includes('0,155') ? 0.155 : unit.pressure.includes('0,000') ? 0.08 : 0.164;
+            const x = 30 + index * (xStep - 8);
+            const y = 220 - ((numeric - 0.08) / 0.09) * 150;
+            return `<circle cx="${x}" cy="${y}" r="5" fill="#9efcef" /><text x="${x}" y="${y - 12}" text-anchor="middle" fill="#dfeeff" font-size="10">${unit.code}</text>`;
+          }).join('')}
+          <text x="40" y="214" fill="#a9bdd4" font-size="11">0,08</text>
+          <text x="40" y="144" fill="#a9bdd4" font-size="11">0,12</text>
+          <text x="40" y="74" fill="#a9bdd4" font-size="11">0,16</text>
+        </svg>
+      `;
+    }
+
+    function renderThermalBars() {
+      document.getElementById('thermalBars').innerHTML = thermal.map((item) => `
+        <div class="thermo-row">
+          <div class="thermo-label">
+            <strong>${item.label}</strong>
+            <span>${item.top}-${item.base} м</span>
+          </div>
+          <strong>${item.value}</strong>
+        </div>
+        <div class="thermo-track"><div class="thermo-fill" style="width:${item.gradient === 0 ? 12 : 78}%"></div></div>
+      `).join('');
+    }
+
+    function renderProspectBars() {
+      document.getElementById('prospectBars').innerHTML = prospects.map((item) => {
+        const width = item.kind === 'oil' ? 64 : 78;
+        const color = item.kind === 'oil' ? 'var(--c-oil)' : 'var(--c-gas)';
+        return `
+          <div class="bar-row">
+            <span>${item.title}</span>
+            <div class="bar-track"><div class="bar-fill" style="width:${width}%; background:${color}"></div></div>
+            <strong>${item.rate}</strong>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderProspectCards() {
+      document.getElementById('prospectCards').innerHTML = prospects.map((item) => `
+        <article class="fluid-card ${item.kind}">
+          <div class="fluid-head">
+            <div>
+              <span class="fluid-chip ${item.kind}">${item.type}</span>
+              <h3>${item.title}</h3>
+            </div>
+            <span class="tag">${item.chip}</span>
+          </div>
+          <p>${item.note}</p>
+          <div class="quick-list">
+            <div class="quick-item"><strong>Интервал</strong><span>${item.top}-${item.base} м</span></div>
+            <div class="quick-item"><strong>Абс. отметка</strong><span>${item.ao}</span></div>
+            <div class="quick-item"><strong>Коллектор</strong><span>${item.collector}</span></div>
+            <div class="quick-item"><strong>Потенциал</strong><span>${item.rate}</span></div>
+            <div class="quick-item"><strong>Плотность / газ</strong><span>${item.kind === 'oil' ? `${item.densityStd} std, ${item.densityRes} пл., газ ${item.gasDensity}` : `отн. плотность газа ${item.gasDensity}`}</span></div>
+            <div class="quick-item"><strong>Доп. сигнал</strong><span>${item.kind === 'oil' ? `Газосодержание ${item.gasContent}, Pнас ${item.pressure}` : item.pressure}</span></div>
+          </div>
+        </article>
+      `).join('');
+    }
+
+    function renderRiskCards() {
+      document.getElementById('riskCards').innerHTML = risks.map((risk) => `
+        <article class="risk-card">
+          <h3>${risk.title}</h3>
+          <p>${risk.text}</p>
+          <div style="margin-top:12px;">${risk.chips.map((chip) => `<span class="risk-chip">${chip}</span>`).join('')}</div>
+          <div class="quick-list">
+            <div class="quick-item"><strong>Интервал</strong><span>${risk.interval}</span></div>
+            <div class="quick-item"><strong>Причина</strong><span>${risk.cause}</span></div>
+          </div>
+        </article>
+      `).join('');
+    }
+
+    function renderTables() {
+      document.getElementById('stratTableBody').innerHTML = stratigraphy.map((unit) => `
+        <tr>
+          <td>${unit.code} · ${unit.name}</td>
+          <td>${unit.top}-${unit.base} м</td>
+          <td>${unit.lithology}</td>
+          <td>${unit.pressure}</td>
+        </tr>
+      `).join('');
+
+      const signalRows = [
+        ...prospects.map((item) => ({ block: item.title, interval: `${item.top}-${item.base} м`, signal: `${item.type}, ${item.collector}, ${item.rate}` })),
+        ...thermal.map((item) => ({ block: item.label, interval: `${item.top}-${item.base} м`, signal: `Температурный градиент ${item.value}` })),
+        ...risks.map((risk) => ({ block: risk.title, interval: risk.interval, signal: risk.text }))
+      ];
+
+      document.getElementById('signalsTableBody').innerHTML = signalRows.map((item) => `
+        <tr>
+          <td>${item.block}</td>
+          <td>${item.interval}</td>
+          <td>${item.signal}</td>
+        </tr>
+      `).join('');
+    }
+
+    renderLegend();
+    renderMiniMetrics();
+    renderDepthLabels();
+    renderWellColumn();
+    renderLithologyBars();
+    renderPressureBars();
+    renderThermalBars();
+    renderProspectBars();
+    renderProspectCards();
+    renderRiskCards();
+    renderTables();
+  </script>
+  <script src="assets/js/global-auth-widget.js"></script>
+</body>
+</html>

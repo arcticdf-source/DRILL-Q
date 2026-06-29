@@ -1,0 +1,1328 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>107 · Тамбейское · Буровые растворы</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap");
+
+    :root {
+      --bg-0:#071019;
+      --bg-1:#112334;
+      --bg-2:#1b344a;
+      --panel:rgba(8,18,29,.88);
+      --panel-soft:rgba(255,255,255,.035);
+      --line:rgba(226,237,255,.15);
+      --line-soft:rgba(226,237,255,.08);
+      --text:#edf5ff;
+      --muted:#9ab0c9;
+      --cyan:#23d8b3;
+      --amber:#ffbf66;
+      --blue:#8db4ff;
+      --violet:#c6a6ff;
+      --green:#7fe3a4;
+      --rose:#ff8a7a;
+      --gold:#f6d986;
+      --shadow:0 26px 64px rgba(0,0,0,.42);
+      --sec-1:linear-gradient(180deg, #ffd987, #ffb859);
+      --sec-2:linear-gradient(180deg, #8de8d3, #36c7af);
+      --sec-3:linear-gradient(180deg, #98beff, #5e87ff);
+      --ink:#07141f;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      font-family: "Manrope", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(860px 420px at 0% -8%, rgba(35,216,179,.18), transparent),
+        radial-gradient(760px 420px at 100% 0%, rgba(255,191,102,.14), transparent),
+        radial-gradient(620px 280px at 50% 0%, rgba(141,180,255,.14), transparent),
+        linear-gradient(145deg, var(--bg-0), var(--bg-1) 46%, var(--bg-2));
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(to right, rgba(255,255,255,.02) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,.02) 1px, transparent 1px);
+      background-size: 38px 38px;
+      mask-image: radial-gradient(circle at 50% 18%, rgba(0,0,0,.96), transparent 72%);
+    }
+
+    .wrap {
+      width: min(1460px, 95vw);
+      margin: 0 auto;
+      padding: 24px 0 56px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .top,
+    .hero,
+    .section,
+    .tab-shell {
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+    }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 12px 16px;
+      border-radius: 16px;
+      background: rgba(8,14,24,.66);
+      backdrop-filter: blur(10px);
+      position: sticky;
+      top: 12px;
+      z-index: 20;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text);
+      font-family: "Oswald", sans-serif;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      font-size: 20px;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 35% 35%, #defff8, var(--cyan));
+      box-shadow: 0 0 18px rgba(35,216,179,.45);
+    }
+
+    .nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .nav a {
+      text-decoration: none;
+      border-radius: 999px;
+      padding: 9px 14px;
+      font: 800 12px/1 "Manrope", sans-serif;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: #06231f;
+      background: linear-gradient(135deg, #9efcef, var(--cyan));
+      border: 1px solid rgba(35,216,179,.8);
+    }
+
+    .hero,
+    .section,
+    .tab-shell {
+      margin-top: 18px;
+      border-radius: 28px;
+      padding: clamp(22px, 3vw, 34px);
+      background: var(--panel);
+    }
+
+    .hero {
+      background:
+        radial-gradient(420px 220px at 0% 0%, rgba(35,216,179,.14), transparent),
+        radial-gradient(520px 260px at 100% 0%, rgba(255,191,102,.12), transparent),
+        linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015)),
+        var(--panel);
+    }
+
+    .eyebrow,
+    .tag,
+    .chip,
+    .info-chip,
+    .tab-btn,
+    .risk-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 999px;
+      border: 1px solid var(--line-soft);
+      background: rgba(255,255,255,.04);
+      color: #d8e8f8;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .eyebrow,
+    .tag,
+    .chip,
+    .info-chip,
+    .risk-chip {
+      padding: 6px 10px;
+    }
+
+    h1, h2, h3, h4 {
+      margin: 0;
+      font-family: "Oswald", sans-serif;
+      letter-spacing: -.01em;
+    }
+
+    h1 {
+      margin-top: 14px;
+      font-size: clamp(40px, 5.2vw, 68px);
+      line-height: .96;
+      max-width: 1120px;
+    }
+
+    h1 span { color: var(--amber); }
+
+    p, td, li {
+      color: #d0dded;
+      line-height: 1.7;
+      font-size: 14px;
+    }
+
+    .hero-grid,
+    .summary-grid,
+    .program-grid,
+    .cards-grid,
+    .chart-grid,
+    .equipment-grid,
+    .mini-grid,
+    .table-grid,
+    .param-grid,
+    .tab-stats,
+    .density-bars,
+    .ops-grid,
+    .chem-card-grid,
+    .lab-grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .hero-grid {
+      margin-top: 18px;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .summary-grid,
+    .program-grid,
+    .chart-grid,
+    .table-grid {
+      margin-top: 18px;
+      grid-template-columns: 1.05fr .95fr;
+    }
+
+    .cards-grid,
+    .equipment-grid,
+    .ops-grid,
+    .chem-card-grid,
+    .lab-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .hero-stat,
+    .summary-box,
+    .card,
+    .equipment-card,
+    .table-card,
+    .ops-card,
+    .metric,
+    .tab-box,
+    .chem-card,
+    .lab-card {
+      border: 1px solid var(--line-soft);
+      border-radius: 20px;
+      background: var(--panel-soft);
+      padding: 16px;
+      min-width: 0;
+    }
+
+    .hero-stat strong,
+    .metric strong,
+    .chem-number {
+      display: block;
+      font-size: clamp(21px, 2.1vw, 26px);
+      line-height: 1.04;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+      max-width: 100%;
+    }
+
+    .hero-stat span,
+    .metric span,
+    .chem-label,
+    .micro {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .summary-box h3,
+    .card h3,
+    .table-card h3,
+    .equipment-card h3,
+    .ops-card h3,
+    .tab-box h3,
+    .chem-card h3,
+    .lab-card h3 {
+      font-size: 22px;
+    }
+
+    .list {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .list-item {
+      border-top: 1px solid var(--line-soft);
+      padding-top: 10px;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .section-head h2 {
+      font-size: 28px;
+    }
+
+    .well-card {
+      border: 1px solid var(--line-soft);
+      border-radius: 24px;
+      background: rgba(255,255,255,.03);
+      padding: 18px;
+    }
+
+    .well-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .depth-layout {
+      display: grid;
+      grid-template-columns: 70px 1fr;
+      gap: 12px;
+      align-items: stretch;
+    }
+
+    .depth-labels {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      color: #dce9f7;
+      font-size: 12px;
+      padding: 4px 0;
+    }
+
+    .well-column {
+      position: relative;
+      min-height: 860px;
+      border-radius: 22px;
+      overflow: hidden;
+      border: 1px solid var(--line-soft);
+      background: rgba(255,255,255,.03);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .well-layer {
+      position: relative;
+      color: var(--ink);
+      padding: 10px 14px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      isolation: isolate;
+    }
+
+    .well-layer::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,.24), transparent 45%, rgba(255,255,255,.08));
+      z-index: -1;
+    }
+
+    .well-layer strong {
+      font-size: 14px;
+      line-height: 1.1;
+    }
+
+    .well-layer span {
+      margin-top: 4px;
+      font-size: 11.5px;
+      line-height: 1.35;
+    }
+
+    .tab-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .tab-btn {
+      padding: 12px 16px;
+      cursor: pointer;
+      font-family: "Manrope", sans-serif;
+      font-weight: 800;
+      transition: transform .2s ease, background .2s ease, border-color .2s ease;
+    }
+
+    .tab-btn:hover,
+    .tab-btn.active {
+      transform: translateY(-1px);
+      border-color: transparent;
+      color: #071826;
+    }
+
+    .tab-shell {
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .tab-head {
+      padding: 18px 18px 0;
+    }
+
+    .tab-head h2 {
+      font-size: 30px;
+    }
+
+    .tab-head p {
+      margin: 8px 0 0;
+      max-width: 100ch;
+    }
+
+    .tab-stats {
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      padding: 18px;
+    }
+
+    .tab-body {
+      padding: 0 18px 18px;
+      display: grid;
+      grid-template-columns: 1.02fr .98fr;
+      gap: 16px;
+    }
+
+    .mini-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      margin-top: 12px;
+    }
+
+    .param-grid {
+      grid-template-columns: 1fr;
+      margin-top: 12px;
+    }
+
+    .param-box {
+      border: 1px solid var(--line-soft);
+      border-radius: 18px;
+      background: rgba(255,255,255,.025);
+      padding: 14px;
+    }
+
+    .param-box h4 {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    .param-row,
+    .bar-row {
+      display: grid;
+      grid-template-columns: 170px 1fr auto;
+      gap: 10px;
+      align-items: center;
+      font-size: 13px;
+      padding: 6px 0;
+    }
+
+    .param-row + .param-row {
+      border-top: 1px solid rgba(255,255,255,.06);
+    }
+
+    .param-value,
+    .bar-value {
+      overflow-wrap: anywhere;
+      word-break: break-word;
+      text-align: right;
+    }
+
+    .bar-track {
+      height: 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.06);
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,.05);
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: inherit;
+    }
+
+    .caption,
+    .note {
+      margin-top: 12px;
+      font-size: 13px;
+      color: #b9cbe1;
+    }
+
+    .equipment-card,
+    .ops-card,
+    .chem-card,
+    .lab-card {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .equipment-card::before,
+    .ops-card::before,
+    .chem-card::before,
+    .lab-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(160deg, rgba(255,255,255,.05), transparent 55%, rgba(255,255,255,.02));
+      pointer-events: none;
+    }
+
+    .table-wrap {
+      overflow: auto;
+      margin-top: 12px;
+      border-radius: 16px;
+      border: 1px solid var(--line-soft);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      min-width: 780px;
+    }
+
+    th, td {
+      border: 1px solid var(--line-soft);
+      padding: 10px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: #c8daec;
+      background: rgba(255,255,255,.04);
+    }
+
+    td {
+      color: #d6e6f5;
+      line-height: 1.5;
+    }
+
+    .svg-shell svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .footer {
+      margin-top: 18px;
+      font-size: 12px;
+      color: #8197b0;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    @media (max-width: 1220px) {
+      .hero-grid,
+      .summary-grid,
+      .program-grid,
+      .chart-grid,
+      .table-grid,
+      .cards-grid,
+      .equipment-grid,
+      .ops-grid,
+      .chem-card-grid,
+      .lab-grid,
+      .tab-body {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .top {
+        position: static;
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .hero-grid,
+      .mini-grid,
+      .chem-card-grid,
+      .lab-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .param-row,
+      .bar-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+  <main class="wrap">
+    <header class="top">
+      <a class="brand" href="103_tambeyskoe_project_dashboard.html"><span class="dot" aria-hidden="true"></span><span>Тамбейское · Mud Program</span></a>
+      <nav class="nav">
+        <a href="103_tambeyskoe_project_dashboard.html">К дашборду</a>
+        <a href="105_tambeyskoe_well_constructions.html">Конструкция</a>
+        <a href="106_tambeyskoe_lithology.html">Литология</a>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <span class="eyebrow">Mud cockpit · Тамбейское · Раздел 4</span>
+      <h1>Раздел 4. <span>Буровые растворы</span></h1>
+      <p>Полноценный mud-program по Тамбейскому собран по трем рабочим интервалам: направление, кондуктор и эксплуатационная колонна. На странице сразу видны интервальные параметры раствора, объемный баланс, потребность в химреагентах по секциям, схема системы очистки и минимальная лаборатория контроля. Экран сделан как рабочий контур, где инженер сразу видит не только какой раствор нужен, но и сколько его готовить, чем оснащать очистку и чем обрабатывать систему на каждом этапе.</p>
+      <div class="hero-grid">
+        <div class="hero-stat"><strong>3</strong><span>интервала бурения</span></div>
+        <div class="hero-stat"><strong>543 м³</strong><span>свежий раствор на цикл</span></div>
+        <div class="hero-stat"><strong>46,4 т</strong><span>CaCO3 по двум нижним секциям</span></div>
+        <div class="hero-stat"><strong>3-2-2</strong><span>вибросита, дегазаторы, центрифуги</span></div>
+      </div>
+      <div class="summary-grid">
+        <article class="summary-box">
+          <h3>Как читается программа</h3>
+          <p>Верх стартует на полимер-глинистом растворе, кондуктор переходит на инкапсулирующий режим с двумя подинтервалами, а эксплуатационная колонна удерживает уже более жесткое окно по фильтрации, МБТ, песку и CaCO3. Ниже это разложено не одной таблицей, а по секциям: параметры, объемы, химия и логика системы очистки.</p>
+          <div class="list">
+            <div class="list-item"><strong>0-50 м</strong> · стартовый верхний раствор 1250 кг/м³, высокая условная вязкость, базовый бентонит-баритовый пакет.</div>
+            <div class="list-item"><strong>50-639 м</strong> · инкапсулирующий блок под кондуктор, силикаты, ГКЖ, PAA и крупный CaCO3-пакет.</div>
+            <div class="list-item"><strong>639-1819 м</strong> · эксплуатационный mud-window 1180 кг/м³ с органическим ингибитором, лубрикантом и усиленным CaCO3.</div>
+          </div>
+        </article>
+        <article class="summary-box">
+          <h3>Ключевые operational-сигналы</h3>
+          <p>Источник отдельно подчеркивает мерзлотную дисциплину, ограничение температуры раствора до +15 °C в верхнем блоке и возможность ступенчатого роста плотности при осложнениях без выхода к ГРП или поглощениям. Для очистки сразу нужен полноценный solids-control train, а не урезанная схема.</p>
+          <div class="list">
+            <div class="list-item"><strong>ММП и гидраты</strong> · на интервале кондуктора держать температуру раствора не выше +15 °C и не готовить систему на перегретой воде.</div>
+            <div class="list-item"><strong>Инкапсуляция</strong> · активные глины 40-60 с, поэтому работают PAA, силикаты, ГКЖ и ПАА/ПАЦ-пакет.</div>
+            <div class="list-item"><strong>Ступенчатая коррекция</strong> · при осложнениях допускается увеличение плотности, но окно должно исключать ГРП и потери.</div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>Интервальная программа раствора</h2>
+          <p>Слева показана скважина по интервалам, справа каждая секция раскрывается в отдельном mud-passport с подэтапами, реологией, объемами и химией.</p>
+        </div>
+        <span class="tag">0-1819 м MD · 3 секции</span>
+      </div>
+      <div class="program-grid">
+        <article class="well-card">
+          <div class="well-title">
+            <h3>Каркас по глубине</h3>
+            <span class="info-chip">323,9 → 244,5 → 177,8 мм</span>
+          </div>
+          <div class="depth-layout">
+            <div class="depth-labels" id="depthLabels"></div>
+            <div class="well-column" id="wellColumn"></div>
+          </div>
+        </article>
+        <div>
+          <div class="tab-row" id="intervalTabs"></div>
+          <div class="tab-shell" id="intervalContent"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>Объемы и envelope по секциям</h2>
+          <p>Объемный баланс вынесен отдельно: сколько раствора остается в стволе, сколько уходит на шлам, сколько нужно свежей системы и где растет цена интервала.</p>
+        </div>
+      </div>
+      <div class="chart-grid">
+        <article class="tab-box">
+          <h3>Свежий раствор по интервалам</h3>
+          <div class="density-bars" id="volumeBars"></div>
+        </article>
+        <article class="tab-box">
+          <h3>Потери и surface load</h3>
+          <div class="density-bars" id="lossBars"></div>
+        </article>
+      </div>
+      <div class="chem-card-grid" id="chemSummaryCards"></div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>Система очистки и лаборатория</h2>
+          <p>Solids-control train вынесен как схема процесса, а ниже сохранены состав оборудования приготовления/очистки и минимальная лаборатория РВО.</p>
+        </div>
+      </div>
+      <div class="chart-grid">
+        <article class="tab-box svg-shell">
+          <h3>Схематический рисунок системы очистки</h3>
+          <div id="equipmentGraphic"></div>
+          <div class="caption">Схема отражает полный контур: возврат из скважины, 3 вибросита, гидроциклонный блок, песко- и илоотделение, 2 центрифуги, химический блок, гидросмесительная воронка, активные емкости, дегазаторы и насосный тракт.</div>
+        </article>
+        <article class="tab-box">
+          <h3>Equipment pack</h3>
+          <div class="equipment-grid" id="equipmentCards"></div>
+        </article>
+      </div>
+      <div class="lab-grid" id="labCards"></div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>Табличный паспорт</h2>
+          <p>Ниже сохранены ключевые таблицы по параметрам БР, объемам, химреагентам и составу оборудования, чтобы модуль оставался рабочим листом для сервиса и супервайзинга.</p>
+        </div>
+      </div>
+      <div class="table-grid">
+        <article class="table-card">
+          <h3>Параметры и объемы</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Секция</th>
+                  <th>Интервал</th>
+                  <th>Тип БР</th>
+                  <th>Параметры</th>
+                </tr>
+              </thead>
+              <tbody id="mudTableBody"></tbody>
+            </table>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Секция</th>
+                  <th>V свежего, м³</th>
+                  <th>V в открытом стволе, м³</th>
+                  <th>Потери на шламе, м³</th>
+                  <th>Прочие потери, м³</th>
+                </tr>
+              </thead>
+              <tbody id="volumeTableBody"></tbody>
+            </table>
+          </div>
+        </article>
+        <article class="table-card">
+          <h3>Химреагенты и оборудование</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Интервал</th>
+                  <th>Компонент</th>
+                  <th>Норма</th>
+                  <th>Потребность</th>
+                  <th>Назначение</th>
+                </tr>
+              </thead>
+              <tbody id="chemTableBody"></tbody>
+            </table>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Оборудование</th>
+                  <th>Характеристика</th>
+                  <th>Кол-во</th>
+                </tr>
+              </thead>
+              <tbody id="equipmentTableBody"></tbody>
+            </table>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <p class="footer">Тамбейское · Doc 107 · Буровые растворы</p>
+  </main>
+
+  <script>
+    const intervals = [
+      {
+        id: 'dir',
+        name: 'Направление',
+        depthLabel: '0-50 м TVD / 0-50 м MD',
+        anchor: 'Долото 393,7 мм · колонна 323,9 мм',
+        casing: '323,9 мм',
+        bit: '393,7 мм',
+        cavern: 2.0,
+        system: 'Полимер-глинистый',
+        density: '1250 кг/м³',
+        densityValue: 1250,
+        funnel: '100-160 сек',
+        ions: '<2000 мг/л',
+        filtration: '≤15 см³/30 мин',
+        filtrationValue: 15,
+        gels: '10-30 / 15-45',
+        mbt: 'Не регламентируется',
+        mbtValue: 0,
+        pv: 'Не задано',
+        yp: '25-55 фунт/100фут²',
+        ph: '8-9,5',
+        caco3: 'Не регламентируется',
+        sand: '≤3 %',
+        crust: '≤2,0 мм',
+        top: 0,
+        base: 50,
+        color: 'var(--sec-1)',
+        swatch: '#ffb859',
+        note: 'Стартовая секция собирает базовую бентонит-баритовую систему для безопасного запуска верхнего интервала и работы по направлению без избыточной химии.',
+        subStages: [
+          { label: 'Основной режим', interval: '0-50 м', funnel: '100-160 сек', gels: '10-30 / 15-45', yp: '25-55 фунт/100фут²' }
+        ],
+        volumes: {
+          drilledLength: 50.0,
+          transferred: 0,
+          insideCasing: 0,
+          openHole: 12.2,
+          surface: 40.0,
+          cuttingsMoisture: 2.0,
+          cuttingsLoss: 24.4,
+          otherLoss: 2.5,
+          dilution: 0,
+          freshMud: 79.0
+        },
+        reagents: [
+          { name: 'Бентонит', unit: 'кг', norm: '70', need: '5530,0', purpose: 'Структурообразователь' },
+          { name: 'Барит', unit: 'кг', norm: '100', need: '7900,0', purpose: 'Утяжелитель' },
+          { name: 'Каустическая сода', unit: 'кг', norm: '1,0', need: '79,0', purpose: 'Регулятор pH' },
+          { name: 'ПАЦ ВВ', unit: 'кг', norm: '1,0', need: '79,0', purpose: 'Понизитель водоотдачи' },
+          { name: 'Кальцинированная сода', unit: 'кг', norm: '1,0', need: '79,0', purpose: 'Регулятор pH, снижение жесткости' },
+          { name: 'Техническая вода', unit: 'л', norm: '965', need: '76235', purpose: 'Базовая жидкость' }
+        ]
+      },
+      {
+        id: 'cond',
+        name: 'Кондуктор',
+        depthLabel: '50-630 м TVD / 50-639 м MD',
+        anchor: 'Долото 295,3 мм · колонна 244,5 мм',
+        casing: '244,5 мм',
+        bit: '295,3 мм',
+        cavern: 1.3,
+        system: 'Полимер-глинистый инкапсулирующий',
+        density: '1250 кг/м³',
+        densityValue: 1250,
+        funnel: '90-160 сек → 40-60 сек',
+        ions: '<2000 мг/л',
+        filtration: '≤8 см³/30 мин',
+        filtrationValue: 8,
+        gels: '8-18 / 12-25 → 5-15 / 10-25',
+        mbt: '≤70 кг/м³',
+        mbtValue: 70,
+        pv: '≤25 мПа·с',
+        yp: '18-25 → 20-30 фунт/100фут²',
+        ph: '8,5-10',
+        caco3: '>70 кг/м³',
+        sand: '≤2 % → ≤1,0 %',
+        crust: '≤1,5 мм',
+        top: 50,
+        base: 639,
+        color: 'var(--sec-2)',
+        swatch: '#36c7af',
+        note: 'Кондуктор уже требует реальной ингибирующей и инкапсулирующей химии: PAA, силикаты, ГКЖ, CaCO3 и контролируемую фильтрацию, чтобы спокойно пройти ММП и активные глины.',
+        subStages: [
+          { label: '50-100 м', interval: '50-100 м', funnel: '90-160 сек', gels: '8-18 / 12-25', yp: '18-25 фунт/100фут²' },
+          { label: '100-639 м', interval: '100-639 м', funnel: '40-60 сек', gels: '5-15 / 10-25', yp: '20-30 фунт/100фут²' }
+        ],
+        volumes: {
+          drilledLength: 589.0,
+          transferred: 30.0,
+          insideCasing: 3.7,
+          openHole: 52.4,
+          surface: 56.1,
+          cuttingsMoisture: 1.3,
+          cuttingsLoss: 68.1,
+          otherLoss: 29.0,
+          dilution: 40.0,
+          freshMud: 220.0
+        },
+        reagents: [
+          { name: 'Бентонит', unit: 'кг', norm: '50', need: '11000,0', purpose: 'Структурообразователь' },
+          { name: 'Барит', unit: 'кг', norm: '30', need: '6600,0', purpose: 'Утяжелитель' },
+          { name: 'Пеногаситель', unit: 'л', norm: '0,2', need: '44,0', purpose: 'Пеногаситель' },
+          { name: 'Пирофосфат натрия', unit: 'кг', norm: '0,7', need: '154,0', purpose: 'Дефлокулянт' },
+          { name: 'Бикарбонат натрия', unit: 'кг', norm: '0,2', need: '44,0', purpose: 'Нейтрализатор Ca++' },
+          { name: 'Каустическая сода', unit: 'кг', norm: '1,0', need: '220,0', purpose: 'Регулятор pH' },
+          { name: 'ПАЦ НВ', unit: 'кг', norm: '2,0', need: '440,0', purpose: 'Понизитель водоотдачи' },
+          { name: 'ПАЦ ВВ', unit: 'кг', norm: '2,0', need: '440,0', purpose: 'Понизитель водоотдачи' },
+          { name: 'ГКЖ', unit: 'л', norm: '2,0', need: '440,0', purpose: 'Ингибитор' },
+          { name: 'Силикат натрия', unit: 'л', norm: '6,0', need: '1320,0', purpose: 'Ингибитор' },
+          { name: 'ПАА', unit: 'кг', norm: '1,0', need: '220,0', purpose: 'Инкапсулятор' },
+          { name: 'Кальцинированная сода', unit: 'кг', norm: '1,0', need: '220,0', purpose: 'Регулятор pH, снижение жесткости' },
+          { name: 'Detergent', unit: 'л', norm: '3,0', need: '660,0', purpose: 'Противосальниковая добавка' },
+          { name: 'CaCO3 M', unit: 'кг', norm: '100', need: '22000,0', purpose: 'Кольматант мелкой и средней фракции' },
+          { name: 'Техническая вода', unit: 'л', norm: '950', need: '209000', purpose: 'Базовая жидкость' }
+        ]
+      },
+      {
+        id: 'prod',
+        name: 'Эксплуатационная колонна',
+        depthLabel: '630-1800 м TVD / 639-1819 м MD',
+        anchor: 'Долото 222,3 мм · колонна 177,8 мм',
+        casing: '177,8 мм',
+        bit: '222,3 мм',
+        cavern: 1.15,
+        system: 'Полимер-глинистый инкапсулирующий',
+        density: '1180 кг/м³',
+        densityValue: 1180,
+        funnel: '40-55 сек',
+        ions: '<2000 мг/л',
+        filtration: '<6 см³/30 мин',
+        filtrationValue: 6,
+        gels: '5-15 / 10-25',
+        mbt: '≤42 кг/м³',
+        mbtValue: 42,
+        pv: '≤25 мПа·с',
+        yp: '10-20 фунт/100фут²',
+        ph: '8,5-10',
+        caco3: '>90 кг/м³',
+        sand: '≤1,0 %',
+        crust: '≤1,0 мм',
+        top: 639,
+        base: 1819,
+        color: 'var(--sec-3)',
+        swatch: '#5e87ff',
+        note: 'Нижний mud-window самый чувствительный: тут уже работает не только фильтрация и реология, но и антидифференциальный, смазывающий и биозащитный пакет, потому что стоимость ошибки резко растет.',
+        subStages: [
+          { label: 'Основной режим', interval: '639-1819 м', funnel: '40-55 сек', gels: '5-15 / 10-25', yp: '10-20 фунт/100фут²' }
+        ],
+        volumes: {
+          drilledLength: 1180.0,
+          transferred: 40.0,
+          insideCasing: 25.9,
+          openHole: 52.6,
+          surface: 78.5,
+          cuttingsMoisture: 1.1,
+          cuttingsLoss: 58.0,
+          otherLoss: 29.5,
+          dilution: 40.0,
+          freshMud: 244.0
+        },
+        reagents: [
+          { name: 'Каустическая сода', unit: 'кг', norm: '1,0', need: '244,0', purpose: 'Регулятор pH' },
+          { name: 'ПАЦ НВ', unit: 'кг', norm: '4,0', need: '976,0', purpose: 'Понизитель водоотдачи' },
+          { name: 'ПАЦ ВВ', unit: 'кг', norm: '2,0', need: '488,0', purpose: 'Понизитель водоотдачи' },
+          { name: 'Ксантановая смола', unit: 'кг', norm: '2,0', need: '488,0', purpose: 'Биополимер' },
+          { name: 'CaCO3 M', unit: 'кг', norm: '100', need: '24400,0', purpose: 'Кольматант мелкой и средней фракции' },
+          { name: 'Detergent', unit: 'л', norm: '3,0', need: '732,0', purpose: 'Противосальниковая добавка' },
+          { name: 'Органический ингибитор', unit: 'л', norm: '10,0', need: '2440,0', purpose: 'Полиамидный ингибитор / полиэтиленгликоль' },
+          { name: 'Бактерицид', unit: 'л', norm: '1,0', need: '244,0', purpose: 'Бактерицид' },
+          { name: 'Лубрикант', unit: 'л', norm: '15,0', need: '3660,0', purpose: 'Смазывающая добавка' },
+          { name: 'Известь', unit: 'кг', norm: '1,0', need: '244,0', purpose: 'Контроль щелочности, нейтрализация CO2 и бикарбонатов' },
+          { name: 'Гидролизированный полиакриламид', unit: 'кг', norm: '3,0', need: '732,0', purpose: 'Инкапсулятор' },
+          { name: 'Бикарбонат натрия', unit: 'кг', norm: '0,2', need: '49,0', purpose: 'Нейтрализатор Ca++' },
+          { name: 'Пеногаситель', unit: 'л', norm: '0,2', need: '49,0', purpose: 'Пеногаситель' }
+        ]
+      }
+    ];
+
+    const equipment = [
+      { name: 'Циркуляционная система', spec: 'ЦС БУ', qty: '1', icon: 'Емкости', detail: 'Базовая активная система циркуляции.' },
+      { name: 'Вибросито', spec: '≥ 37 л/сек, ≥ 6G', qty: '3', icon: 'Вибросита', detail: 'Первая ступень удаления крупного шлама.' },
+      { name: 'Сито-гидроциклонная установка', spec: '≥ 6G', qty: '1', icon: 'Гидроциклон', detail: 'Композитный блок второй ступени очистки.' },
+      { name: 'Пескоотделитель', spec: '≥ 65 л/сек', qty: '1', icon: 'Desander', detail: 'Выделение крупной песчаной фракции.' },
+      { name: 'Илоотделитель', spec: '≥ 65 л/сек', qty: '1', icon: 'Desilter', detail: 'Отделение более мелкой твердой фазы.' },
+      { name: 'Центробежный насос', spec: '≥ 65 л/сек', qty: '3', icon: 'Насосы', detail: 'Подача между узлами очистки и смешения.' },
+      { name: 'Конвейер шнековый', spec: '-', qty: '1', icon: 'Шнек', detail: 'Механический отвод шлама.' },
+      { name: 'Центрифуга', spec: '≥ 2100G', qty: '2', icon: 'Центрифуги', detail: 'Тонкая очистка и управление solids loading.' },
+      { name: 'Винтовой насос подачи на центрифуги', spec: '3-40 м³/ч', qty: '2', icon: 'Feed', detail: 'Стабильная подача на тонкую очистку.' },
+      { name: 'Блок химического усиления центрифуги', spec: '≥ 4 м³/ч', qty: '1', icon: 'Chem boost', detail: 'Отдельный узел дозирования для усиления сепарации.' },
+      { name: 'Гидросмесительная воронка', spec: '11 л/сек', qty: '1', icon: 'Funnel', detail: 'Основной ввод химреагентов в циркуляцию.' },
+      { name: 'Дегазатор', spec: 'до 60 л/сек промывочной жидкости', qty: '2', icon: 'Дегазаторы', detail: 'Снятие газа из потока раствора.' }
+    ];
+
+    const labItems = [
+      { name: 'Воронка Марша', qty: '2', detail: 'Базовый контроль условной вязкости.' },
+      { name: 'Мерная кружка', qty: '2', detail: 'Полевые объемные замеры.' },
+      { name: 'Металлические рычажные весы', qty: '2', detail: 'Контроль плотности раствора.' },
+      { name: 'Герметизированные рычажные весы', qty: '1', detail: 'Работа под давлением.' },
+      { name: 'Ротационный вискозиметр', qty: '1', detail: 'Не менее 8 скоростей.' },
+      { name: 'Термический / нагреваемый вискозиметр', qty: '1', detail: 'Проверка реологии в нагретом режиме.' },
+      { name: 'Фильтр-пресс LTLP', qty: '1', detail: 'Стандартный размер, контроль фильтрации.' },
+      { name: 'pH-метр', qty: '1', detail: 'Непрерывный контроль щелочности.' },
+      { name: 'Комплект Pf / Pm / Mf', qty: '1', detail: 'Щелочность раствора.' },
+      { name: 'Комплект Ca++, Mg2+, Cl-', qty: '1', detail: 'Ионный состав.' },
+      { name: 'Комплект MBT', qty: '1', detail: 'Абсорбционная емкость.' },
+      { name: 'Реторта 50 мл', qty: '1', detail: 'Содержание масла/воды/твердой фазы.' },
+      { name: 'Комплект для песка', qty: '1', detail: 'Контроль содержания песка.' },
+      { name: 'Кальциметр', qty: '1', detail: 'CaCO3 и карбонатный контроль.' },
+      { name: 'КТК-2 или аналог', qty: '1', detail: 'Дополнительный лабораторный контроль.' },
+      { name: 'Секундомер', qty: '1', detail: 'Полевая дисциплина всех быстрых тестов.' }
+    ];
+
+    const opsNotes = [
+      'При осложнениях плотность увеличивать ступенчато, сохраняя окно без гидроразрыва и без потерь.',
+      'При бурении интервала ММП и под кондуктор держать температуру раствора в рабочих емкостях не выше 15 °C.',
+      'Для предупреждения растепления устья и пород ММП под кондуктор соблюдать значение условной вязкости не менее 120 с в зоне ММП и 40-60 с в активных глинах.',
+      'При наличии газогидратных линз допускается увеличение плотности, но без возникновения ГРП с учетом ЭЦП.'
+    ];
+
+    let activeId = intervals[0].id;
+
+    function renderDepthLabels() {
+      const marks = [0, 50, 100, 300, 630, 1000, 1400, 1819];
+      document.getElementById('depthLabels').innerHTML = marks.map((mark) => `<span>${mark} м</span>`).join('');
+    }
+
+    function renderWellColumn() {
+      const totalDepth = 1819;
+      document.getElementById('wellColumn').innerHTML = intervals.map((item) => {
+        const depthSpan = Math.max(item.base - item.top, 50);
+        const height = Math.max((depthSpan / totalDepth) * 860, 88);
+        return `
+          <article class="well-layer" style="height:${height}px; background:${item.color}">
+            <strong>${item.name}</strong>
+            <span>${item.depthLabel}<br>${item.system}</span>
+          </article>
+        `;
+      }).join('');
+    }
+
+    function renderTabs() {
+      const root = document.getElementById('intervalTabs');
+      root.innerHTML = intervals.map((item) => `
+        <button class="tab-btn${item.id === activeId ? ' active' : ''}" style="background:${item.id === activeId ? item.color : 'rgba(255,255,255,.04)'}" data-id="${item.id}">${item.name}</button>
+      `).join('');
+
+      root.querySelectorAll('.tab-btn').forEach((button) => {
+        button.addEventListener('click', () => {
+          activeId = button.dataset.id;
+          renderTabs();
+          renderIntervalContent();
+        });
+      });
+    }
+
+    function renderIntervalContent() {
+      const item = intervals.find((entry) => entry.id === activeId);
+      const reagentPreview = item.reagents.slice(0, 6).map((row) => `
+        <div class="param-row">
+          <span class="param-name">${row.name}</span>
+          <span>${row.norm} ${row.unit}</span>
+          <span class="param-value">${row.need}</span>
+        </div>
+      `).join('');
+
+      const subStageRows = item.subStages.map((stage) => `
+        <div class="param-row">
+          <span class="param-name">${stage.label}</span>
+          <span>${stage.funnel}</span>
+          <span class="param-value">${stage.gels}</span>
+        </div>
+      `).join('');
+
+      document.getElementById('intervalContent').innerHTML = `
+        <div class="tab-head">
+          <h2>${item.name}</h2>
+          <p>${item.note}</p>
+        </div>
+        <div class="tab-stats">
+          <div class="metric"><strong>${item.depthLabel}</strong><span>глубинная привязка</span></div>
+          <div class="metric"><strong>${item.system}</strong><span>тип бурового раствора</span></div>
+          <div class="metric"><strong>${String(item.cavern).replace('.', ',')}</strong><span>коэффициент кавернозности</span></div>
+          <div class="metric"><strong>${item.volumes.freshMud} м³</strong><span>свежий раствор на секцию</span></div>
+        </div>
+        <div class="tab-body">
+          <div class="tab-box">
+            <h3>Паспорт секции</h3>
+            <div class="mini-grid">
+              <div class="metric"><strong>${item.casing}</strong><span>обсадная колонна</span></div>
+              <div class="metric"><strong>${item.bit}</strong><span>долото</span></div>
+              <div class="metric"><strong>${item.anchor}</strong><span>привязка к конструкции</span></div>
+              <div class="metric"><strong>${item.ions}</strong><span>содержание ионов</span></div>
+            </div>
+            <div class="param-grid">
+              <div class="param-box">
+                <h4>Реология и фильтрация</h4>
+                <div class="param-row"><span class="param-name">Плотность</span><span></span><span class="param-value">${item.density}</span></div>
+                <div class="param-row"><span class="param-name">Усл. вязкость</span><span></span><span class="param-value">${item.funnel}</span></div>
+                <div class="param-row"><span class="param-name">Фильтрация</span><span></span><span class="param-value">${item.filtration}</span></div>
+                <div class="param-row"><span class="param-name">CHC</span><span></span><span class="param-value">${item.gels}</span></div>
+                <div class="param-row"><span class="param-name">Пластическая вязкость</span><span></span><span class="param-value">${item.pv}</span></div>
+                <div class="param-row"><span class="param-name">ДНС / YP</span><span></span><span class="param-value">${item.yp}</span></div>
+              </div>
+              <div class="param-box">
+                <h4>Твердая фаза и химия</h4>
+                <div class="param-row"><span class="param-name">МБТ</span><span></span><span class="param-value">${item.mbt}</span></div>
+                <div class="param-row"><span class="param-name">pH</span><span></span><span class="param-value">${item.ph}</span></div>
+                <div class="param-row"><span class="param-name">CaCO3</span><span></span><span class="param-value">${item.caco3}</span></div>
+                <div class="param-row"><span class="param-name">Содержание песка</span><span></span><span class="param-value">${item.sand}</span></div>
+                <div class="param-row"><span class="param-name">Толщина корки</span><span></span><span class="param-value">${item.crust}</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="tab-box">
+            <h3>Подэтапы, объемы и химия</h3>
+            <div class="param-box">
+              <h4>Подэтапы по интервалу</h4>
+              ${subStageRows}
+            </div>
+            <div class="param-box" style="margin-top:12px;">
+              <h4>Объемный баланс</h4>
+              <div class="param-row"><span class="param-name">Открытый ствол</span><span></span><span class="param-value">${item.volumes.openHole} м³</span></div>
+              <div class="param-row"><span class="param-name">На поверхности</span><span></span><span class="param-value">${item.volumes.surface} м³</span></div>
+              <div class="param-row"><span class="param-name">Потери на шламе</span><span></span><span class="param-value">${item.volumes.cuttingsLoss} м³</span></div>
+              <div class="param-row"><span class="param-name">Прочие потери</span><span></span><span class="param-value">${item.volumes.otherLoss} м³</span></div>
+              <div class="param-row"><span class="param-name">Свежий раствор</span><span></span><span class="param-value">${item.volumes.freshMud} м³</span></div>
+            </div>
+            <div class="param-box" style="margin-top:12px;">
+              <h4>Главные химреагенты</h4>
+              ${reagentPreview}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderVolumeBars() {
+      document.getElementById('volumeBars').innerHTML = intervals.map((item) => {
+        const width = (item.volumes.freshMud / 244) * 100;
+        return `
+          <div class="bar-row">
+            <span>${item.name}</span>
+            <div class="bar-track"><div class="bar-fill" style="width:${width}%; background:${item.color}"></div></div>
+            <span class="bar-value">${item.volumes.freshMud} м³</span>
+          </div>
+          <div class="bar-row">
+            <span>Откр. ствол</span>
+            <div class="bar-track"><div class="bar-fill" style="width:${(item.volumes.openHole / 52.6) * 100}%; background:linear-gradient(90deg,#8db4ff,#5e87ff)"></div></div>
+            <span class="bar-value">${item.volumes.openHole} м³</span>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderLossBars() {
+      document.getElementById('lossBars').innerHTML = intervals.map((item) => `
+        <div class="bar-row">
+          <span>${item.name} · шлам</span>
+          <div class="bar-track"><div class="bar-fill" style="width:${(item.volumes.cuttingsLoss / 68.1) * 100}%; background:linear-gradient(90deg,#ffbf66,#ff8a7a)"></div></div>
+          <span class="bar-value">${item.volumes.cuttingsLoss} м³</span>
+        </div>
+        <div class="bar-row">
+          <span>${item.name} · прочие</span>
+          <div class="bar-track"><div class="bar-fill" style="width:${(item.volumes.otherLoss / 29.5) * 100}%; background:linear-gradient(90deg,#7fe3a4,#23d8b3)"></div></div>
+          <span class="bar-value">${item.volumes.otherLoss} м³</span>
+        </div>
+      `).join('');
+    }
+
+    function renderChemSummaryCards() {
+      document.getElementById('chemSummaryCards').innerHTML = intervals.map((item) => {
+        const totalDry = item.reagents
+          .filter((row) => row.unit === 'кг')
+          .reduce((sum, row) => sum + Number(String(row.need).replace(',', '.')), 0);
+        const totalLiquid = item.reagents
+          .filter((row) => row.unit === 'л')
+          .reduce((sum, row) => sum + Number(String(row.need).replace(',', '.')), 0);
+
+        return `
+          <article class="chem-card">
+            <h3>${item.name}</h3>
+            <div class="chem-number">${Math.round(totalDry / 100) / 10} т</div>
+            <div class="chem-label">сухие реагенты на секцию</div>
+            <div class="chem-number" style="margin-top:10px;">${Math.round(totalLiquid)} л</div>
+            <div class="chem-label">жидкие реагенты / вода</div>
+            <div class="caption">Главный химический акцент: ${item.caco3 !== 'Не регламентируется' ? item.caco3 : 'бентонит-баритовый запуск'}.</div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    function renderEquipmentGraphic() {
+      const svg = `
+        <svg viewBox="0 0 980 560" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Схема системы очистки">
+          <defs>
+            <linearGradient id="tankGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#9efcef" />
+              <stop offset="100%" stop-color="#23d8b3" />
+            </linearGradient>
+            <linearGradient id="eqGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#8db4ff" />
+              <stop offset="100%" stop-color="#5f88ff" />
+            </linearGradient>
+            <linearGradient id="warnGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#ffd987" />
+              <stop offset="100%" stop-color="#ff8a7a" />
+            </linearGradient>
+            <filter id="glow">
+              <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="rgba(0,0,0,.28)" />
+            </filter>
+            <marker id="arrow" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L6,3 L0,6 Z" fill="#bfe2ff" />
+            </marker>
+          </defs>
+
+          <rect x="20" y="20" width="940" height="520" rx="30" fill="rgba(255,255,255,.03)" stroke="rgba(255,255,255,.08)" />
+          <text x="36" y="54" fill="#edf5ff" font-size="26" font-family="Oswald, sans-serif">Solids Control Train · Тамбейское</text>
+          <text x="36" y="78" fill="#a6bed7" font-size="14">Flowline → 3 вибросита → гидроциклон → desander/desilter → 2 центрифуги → активные емкости → насосы → обратно в скважину</text>
+
+          <rect x="54" y="330" width="186" height="122" rx="24" fill="url(#tankGrad)" filter="url(#glow)" />
+          <text x="74" y="372" fill="#06221d" font-size="24" font-weight="700">Активные емкости</text>
+          <text x="74" y="402" fill="#06221d" font-size="18">ЦС БУ</text>
+          <text x="74" y="426" fill="#0a3d35" font-size="14">смешение, подготовка, контроль</text>
+
+          <rect x="286" y="116" width="152" height="96" rx="22" fill="url(#eqGrad)" filter="url(#glow)" />
+          <text x="316" y="150" fill="#f7fbff" font-size="20" font-weight="700">3 вибросита</text>
+          <text x="316" y="176" fill="#eff5ff" font-size="14">≥37 л/с · ≥6G</text>
+
+          <rect x="490" y="116" width="152" height="96" rx="22" fill="url(#eqGrad)" filter="url(#glow)" />
+          <text x="516" y="150" fill="#f7fbff" font-size="20" font-weight="700">Гидроциклон</text>
+          <text x="516" y="176" fill="#eff5ff" font-size="14">сито-гидроциклонный блок</text>
+
+          <rect x="700" y="108" width="196" height="104" rx="22" fill="url(#warnGrad)" filter="url(#glow)" />
+          <text x="724" y="144" fill="#2b130f" font-size="20" font-weight="700">Desander + Desilter</text>
+          <text x="724" y="170" fill="#3a1c16" font-size="14">≥65 л/с на каждой ступени</text>
+
+          <rect x="694" y="248" width="202" height="98" rx="22" fill="url(#eqGrad)" filter="url(#glow)" />
+          <text x="740" y="282" fill="#f7fbff" font-size="20" font-weight="700">2 центрифуги</text>
+          <text x="740" y="308" fill="#eff5ff" font-size="14">≥2100G + 2 screw feed pumps</text>
+
+          <rect x="470" y="370" width="170" height="88" rx="22" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.16)" />
+          <text x="500" y="404" fill="#edf5ff" font-size="20" font-weight="700">Гидросмеситель</text>
+          <text x="500" y="428" fill="#cfe0f1" font-size="14">11 л/с · ввод химии</text>
+
+          <rect x="278" y="370" width="150" height="88" rx="22" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.16)" />
+          <text x="304" y="404" fill="#edf5ff" font-size="20" font-weight="700">2 дегазатора</text>
+          <text x="304" y="428" fill="#cfe0f1" font-size="14">до 60 л/с</text>
+
+          <rect x="724" y="388" width="172" height="64" rx="18" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.16)" />
+          <text x="756" y="418" fill="#edf5ff" font-size="20" font-weight="700">3 насоса + шнек</text>
+
+          <path d="M240 392 C286 392, 262 164, 286 164" fill="none" stroke="#bfe2ff" stroke-width="5" marker-end="url(#arrow)" />
+          <path d="M438 164 C462 164, 466 164, 490 164" fill="none" stroke="#bfe2ff" stroke-width="5" marker-end="url(#arrow)" />
+          <path d="M642 164 C668 164, 668 164, 700 164" fill="none" stroke="#bfe2ff" stroke-width="5" marker-end="url(#arrow)" />
+          <path d="M798 212 C798 226, 798 230, 798 248" fill="none" stroke="#bfe2ff" stroke-width="5" marker-end="url(#arrow)" />
+          <path d="M694 298 C640 298, 648 414, 640 414" fill="none" stroke="#bfe2ff" stroke-width="5" marker-end="url(#arrow)" />
+          <path d="M470 414 C452 414, 446 414, 428 414" fill="none" stroke="#8de8d3" stroke-width="5" marker-end="url(#arrow)" />
+          <path d="M352 370 C336 340, 324 310, 324 246" fill="none" stroke="#ffd987" stroke-width="4" stroke-dasharray="8 8" marker-end="url(#arrow)" />
+          <path d="M640 414 C684 414, 694 414, 724 414" fill="none" stroke="#ffd987" stroke-width="4" marker-end="url(#arrow)" />
+
+          <text x="74" y="316" fill="#a6bed7" font-size="13">Возврат из скважины / flowline</text>
+          <text x="760" y="470" fill="#a6bed7" font-size="13">Отдельный блок химического усиления центрифуги сохранен в equipment table</text>
+        </svg>
+      `;
+
+      document.getElementById('equipmentGraphic').innerHTML = svg;
+    }
+
+    function renderEquipmentCards() {
+      document.getElementById('equipmentCards').innerHTML = equipment.slice(0, 9).map((item) => `
+        <article class="equipment-card">
+          <h3>${item.icon}</h3>
+          <p><strong>${item.spec}</strong> · ${item.qty} шт.</p>
+          <p>${item.name}</p>
+          <div class="caption">${item.detail}</div>
+        </article>
+      `).join('');
+    }
+
+    function renderLabCards() {
+      document.getElementById('labCards').innerHTML = labItems.map((item) => `
+        <article class="lab-card">
+          <h3>${item.name}</h3>
+          <div class="chem-number">${item.qty}</div>
+          <div class="chem-label">единиц в минимальной лаборатории</div>
+          <div class="caption">${item.detail}</div>
+        </article>
+      `).join('');
+    }
+
+    function renderTables() {
+      document.getElementById('mudTableBody').innerHTML = intervals.map((item) => `
+        <tr>
+          <td>${item.name}</td>
+          <td>${item.depthLabel}<br>${item.anchor}</td>
+          <td>${item.system}</td>
+          <td>ρ ${item.density}<br>T ${item.funnel}<br>Ф ${item.filtration}<br>CHC ${item.gels}<br>МБТ ${item.mbt}<br>pH ${item.ph}<br>CaCO3 ${item.caco3}<br>Песок ${item.sand}<br>Корка ${item.crust}</td>
+        </tr>
+      `).join('');
+
+      document.getElementById('volumeTableBody').innerHTML = intervals.map((item) => `
+        <tr>
+          <td>${item.name}</td>
+          <td>${item.volumes.freshMud}</td>
+          <td>${item.volumes.openHole}</td>
+          <td>${item.volumes.cuttingsLoss}</td>
+          <td>${item.volumes.otherLoss}</td>
+        </tr>
+      `).join('');
+
+      document.getElementById('chemTableBody').innerHTML = intervals.flatMap((item) => item.reagents.map((row) => `
+        <tr>
+          <td>${item.name}<br>${item.depthLabel}</td>
+          <td>${row.name}</td>
+          <td>${row.norm} ${row.unit}</td>
+          <td>${row.need} ${row.unit}</td>
+          <td>${row.purpose}</td>
+        </tr>
+      `)).join('');
+
+      document.getElementById('equipmentTableBody').innerHTML = equipment.map((item) => `
+        <tr>
+          <td>${item.name}</td>
+          <td>${item.spec}</td>
+          <td>${item.qty}</td>
+        </tr>
+      `).join('');
+    }
+
+    renderDepthLabels();
+    renderWellColumn();
+    renderTabs();
+    renderIntervalContent();
+    renderVolumeBars();
+    renderLossBars();
+    renderChemSummaryCards();
+    renderEquipmentGraphic();
+    renderEquipmentCards();
+    renderLabCards();
+    renderTables();
+  </script>
+  <script src="assets/js/global-auth-widget.js"></script>
+</body>
+</html>

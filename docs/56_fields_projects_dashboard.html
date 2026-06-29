@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Месторождения — DRILL-Q</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+  background: #F5F5F7;
+  color: #1D1D1F;
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+:root {
+  --white: #FFFFFF;
+  --bg: #F5F5F7;
+  --text: #1D1D1F;
+  --text2: #6E6E73;
+  --text3: #AEAEB2;
+  --blue: #2563EB;
+  --blue-l: #EFF6FF;
+  --border: rgba(0,0,0,0.08);
+  --sh-sm: 0 1px 4px rgba(0,0,0,0.06);
+  --sh: 0 4px 20px rgba(0,0,0,0.08);
+  --r: 16px;
+  --r-sm: 10px;
+}
+
+/* NAV */
+nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid var(--border);
+  height: 56px;
+  display: flex; align-items: center;
+  padding: 0 40px;
+  justify-content: space-between;
+}
+.nav-logo { display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--text); }
+.nav-mark { width:28px; height:28px; border-radius:7px; background:var(--blue); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:#fff; letter-spacing:-.5px; }
+.nav-name { font-size:15px; font-weight:700; letter-spacing:-.4px; }
+.nav-links { display:flex; gap:28px; list-style:none; }
+.nav-links a { text-decoration:none; color:var(--text2); font-size:14px; font-weight:500; transition:color .15s; }
+.nav-links a:hover { color:var(--text); }
+.nav-right { display:flex; gap:12px; align-items:center; }
+.btn-ghost { padding:7px 16px; border-radius:var(--r-sm); border:1px solid var(--border); background:transparent; color:var(--text); font-size:13px; font-weight:500; text-decoration:none; transition:all .15s; }
+.btn-ghost:hover { background:var(--bg); }
+.btn-nav { padding:7px 16px; border-radius:var(--r-sm); background:var(--blue); color:#fff; font-size:13px; font-weight:600; text-decoration:none; transition:background .15s; }
+.btn-nav:hover { background:#1D4ED8; }
+
+/* LAYOUT */
+.wrap { width: min(1200px, 92vw); margin: 0 auto; padding: 48px 0 80px; }
+
+/* HEADER */
+.page-header { margin-bottom: 40px; }
+.breadcrumb { display:flex; align-items:center; gap:6px; font-size:13px; color:var(--text3); margin-bottom:12px; }
+.breadcrumb a { color:var(--text3); text-decoration:none; }
+.breadcrumb a:hover { color:var(--blue); }
+.breadcrumb .sep { color:var(--text3); }
+.page-header h1 { font-size: 36px; font-weight: 700; letter-spacing: -.8px; margin-bottom: 8px; }
+.page-header p { color:var(--text2); font-size:16px; max-width: 560px; }
+
+/* SEARCH */
+.search-row { display:flex; align-items:center; gap:12px; margin-bottom:32px; }
+.search-wrap { position:relative; flex:1; max-width:480px; }
+.search-icon { position:absolute; left:14px; top:50%; transform:translateY(-50%); color:var(--text3); font-size:16px; pointer-events:none; }
+.search-input {
+  width:100%; height:44px; padding:0 14px 0 40px;
+  border:1.5px solid var(--border); border-radius:var(--r-sm);
+  background:var(--white); font-size:14px; color:var(--text);
+  outline:none; transition:border-color .15s, box-shadow .15s;
+  font-family: inherit;
+}
+.search-input:focus { border-color:var(--blue); box-shadow:0 0 0 3px rgba(37,99,235,.1); }
+.search-input::placeholder { color:var(--text3); }
+.count-badge { font-size:13px; color:var(--text3); white-space:nowrap; }
+
+/* CARDS GRID */
+.cards { display:grid; grid-template-columns:repeat(auto-fill, minmax(320px, 1fr)); gap:20px; }
+
+.field-card {
+  background:var(--white);
+  border:1.5px solid var(--border);
+  border-radius:var(--r);
+  padding:28px;
+  text-decoration:none; color:inherit;
+  display:flex; flex-direction:column; gap:16px;
+  box-shadow:var(--sh-sm);
+  transition:all .22s;
+  position:relative; overflow:hidden;
+}
+.field-card:hover {
+  transform:translateY(-4px);
+  box-shadow:var(--sh), 0 0 0 2px var(--blue);
+  border-color:var(--blue);
+}
+.field-card-top { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
+.field-icon {
+  width:48px; height:48px; border-radius:12px;
+  background:var(--blue-l); display:flex; align-items:center; justify-content:center;
+  font-size:18px; font-weight:700; color:var(--blue); flex-shrink:0;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+}
+.field-meta { display:flex; flex-direction:column; gap:4px; align-items:flex-end; }
+.modules-badge { font-size:11px; font-weight:600; color:var(--text3); background:var(--bg); border-radius:99px; padding:3px 10px; border:1px solid var(--border); }
+.field-card h3 { font-size:18px; font-weight:700; letter-spacing:-.3px; line-height:1.25; margin:0; }
+.field-card p { color:var(--text2); font-size:13px; line-height:1.55; flex:1; margin:0; }
+.field-tags { display:flex; gap:6px; flex-wrap:wrap; margin-top:auto; }
+.tag { font-size:11px; font-weight:500; color:var(--text2); background:var(--bg); border:1px solid var(--border); border-radius:99px; padding:3px 10px; }
+.field-card:hover .field-icon { background:var(--blue); color:#fff; }
+
+/* ARROW */
+.card-arrow { position:absolute; right:24px; bottom:24px; width:28px; height:28px; border-radius:99px; background:var(--bg); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:14px; color:var(--text3); transition:all .2s; }
+.field-card:hover .card-arrow { background:var(--blue); border-color:var(--blue); color:#fff; }
+
+/* EMPTY */
+.empty { display:none; padding:48px 24px; text-align:center; color:var(--text3); font-size:14px; border:1.5px dashed var(--border); border-radius:var(--r); }
+.empty h3 { font-size:16px; font-weight:600; margin-bottom:6px; color:var(--text2); }
+
+@media(max-width:640px){
+  nav { padding:0 20px; }
+  .wrap { padding:32px 0 60px; }
+  .nav-links { display:none; }
+  .cards { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="../index.html">
+    <div class="nav-mark">DQ</div>
+    <span class="nav-name">DRILL-Q</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="../index.html#how">Как работает</a></li>
+    <li><a href="../index.html#features">Возможности</a></li>
+    <li><a href="#">Месторождения</a></li>
+  </ul>
+  <div class="nav-right">
+    <a class="btn-ghost" href="#">Войти</a>
+    <a class="btn-nav" href="../app.html">Открыть приложение →</a>
+  </div>
+</nav>
+
+<div class="wrap">
+  <div class="page-header">
+    <div class="breadcrumb">
+      <a href="../index.html">DRILL-Q</a>
+      <span class="sep">/</span>
+      <span>База месторождений</span>
+    </div>
+    <h1>База месторождений</h1>
+    <p>Выберите месторождение чтобы открыть проектный дашборд — конструкция скважин, геология, буровые растворы и трассировка рисков.</p>
+  </div>
+
+  <div class="search-row">
+    <div class="search-wrap">
+      <span class="search-icon">⌕</span>
+      <input class="search-input" id="searchInput" type="search" placeholder="Поиск по названию месторождения…" />
+    </div>
+    <span class="count-badge" id="countBadge">8 месторождений</span>
+  </div>
+
+  <div class="cards" id="cardsGrid">
+
+    <a class="field-card" href="119_severo_yarudeyskoe_project_dashboard.html" data-name="северо-ярудейское северо ярудейское ярудейское подшибякина янао">
+      <div class="field-card-top">
+        <div class="field-icon">СЯ</div>
+        <div class="field-meta"><span class="modules-badge">6 модулей</span></div>
+      </div>
+      <h3>Им. Подшибякина (Северо-Ярудейское)</h3>
+      <p>ЯНАО · 8 скважин фонда 301-308 · Старт май 2026. Открыт полный контур из 6 модулей: общая информация, конструкция, траектории, геология, буровые растворы и ГИС/испытания.</p>
+      <div class="field-tags">
+        <span class="tag">ЯНАО</span>
+        <span class="tag">8 скважин</span>
+        <span class="tag">РУО</span>
+      </div>
+      <div class="card-arrow">→</div>
+    </a>
+
+    <a class="field-card" href="57_vchng_project_dashboard.html" data-name="верхнечонское нгкм вчнг иркутская">
+      <div class="field-card-top">
+        <div class="field-icon">ВЧ</div>
+        <div class="field-meta"><span class="modules-badge">6 модулей</span></div>
+      </div>
+      <h3>Верхнечонское НГКМ (ВЧНГ)</h3>
+      <p>Иркутская область · 119 скважин программы 2027–2028 · 4 лота. Контур из 6 рабочих модулей: общая информация, график, литология, конструкция, буровые растворы и транспортная схема.</p>
+      <div class="field-tags">
+        <span class="tag">Иркутская обл.</span>
+        <span class="tag">119 скважин</span>
+        <span class="tag">2027–2028</span>
+      </div>
+      <div class="card-arrow">→</div>
+    </a>
+
+    <a class="field-card" href="103_tambeyskoe_project_dashboard.html" data-name="тамбейское месторождение тамбей ямал">
+      <div class="field-card-top">
+        <div class="field-icon">ТМ</div>
+        <div class="field-meta"><span class="modules-badge">4 модуля</span></div>
+      </div>
+      <h3>Тамбейское месторождение</h3>
+      <p>ЯМАЛ · −46 °C мин. зимняя температура · 298 сут. отопительный период. Контур из 4 модулей: общая информация, конструкция скважин, литология и буровые растворы.</p>
+      <div class="field-tags">
+        <span class="tag">ЯМАЛ</span>
+        <span class="tag">−46 °C</span>
+        <span class="tag">543 м³ БР</span>
+      </div>
+      <div class="card-arrow">→</div>
+    </a>
+
+    <a class="field-card" href="108_vostochno_tagul_project_dashboard.html" data-name="восточно-тагульский восточно тагульский тагульский красноярский">
+      <div class="field-card-top">
+        <div class="field-icon">ВТ</div>
+        <div class="field-meta"><span class="modules-badge">3 модуля</span></div>
+      </div>
+      <h3>Восточно-Тагульский ЛУ</h3>
+      <p>Красноярский край · Поисково-оценочная скважина №1 · Проектная глубина 3000 м. Открыты модули: общая информация, геология и буровые растворы.</p>
+      <div class="field-tags">
+        <span class="tag">Красноярский кр.</span>
+        <span class="tag">3000 м</span>
+        <span class="tag">3 горизонта</span>
+      </div>
+      <div class="card-arrow">→</div>
+    </a>
+
+    <a class="field-card" href="115_yuzhno_kirinskoe_project_dashboard.html" data-name="южно-киринское южно киринское шельф сахалин offshore">
+      <div class="field-card-top">
+        <div class="field-icon">ЮК</div>
+        <div class="field-meta"><span class="modules-badge">3 модуля</span></div>
+      </div>
+      <h3>Южно-Киринское месторождение</h3>
+      <p>Шельф Сахалина · 6 скважин фонда (СК-3, 46, 14, 15, 4, 5) · Offshore. Модули: общая информация, геология и буровые растворы по секциям.</p>
+      <div class="field-tags">
+        <span class="tag">Offshore</span>
+        <span class="tag">6 скважин</span>
+        <span class="tag">Сахалин</span>
+      </div>
+      <div class="card-arrow">→</div>
+    </a>
+
+    <a class="field-card" href="97_zapadno_luginetskoe_project_dashboard.html" data-name="западно-лугинецкое западно лугинецкое томская">
+      <div class="field-card-top">
+        <div class="field-icon">ЗЛ</div>
+        <div class="field-meta"><span class="modules-badge">5 модулей</span></div>
+      </div>
+      <h3>Западно-Лугинецкое месторождение</h3>
+      <p>Томская область · Скважина 106ПО · 85 сут. бурения. Открыты 5 модулей: общие данные, конструкция, литология, буровые растворы и профиль ствола.</p>
+      <div class="field-tags">
+        <span class="tag">Томская обл.</span>
+        <span class="tag">106ПО</span>
+        <span class="tag">3D профиль</span>
+      </div>
+      <div class="card-arrow">→</div>
+    </a>
+
+    <a class="field-card" href="64_yuzhno_russkoe_project_dashboard.html" data-name="южно-русское южно русское ямал">
+      <div class="field-card-top">
+        <div class="field-icon">ЮР</div>
+        <div class="field-meta"><span class="modules-badge">12 разделов</span></div>
+      </div>
+      <h3>Южно-Русское месторождение</h3>
+      <p>ЯМАЛ · Скважины 5101, 5102, 4901-4903 · Полный проектный контур. 12 разделов по скважине: геология, конструкция, БР, ННБ, испытания и автоматизация.</p>
+      <div class="field-tags">
+        <span class="tag">ЯМАЛ</span>
+        <span class="tag">5 скважин</span>
+        <span class="tag">Полный контур</span>
+      </div>
+      <div class="card-arrow">→</div>
+    </a>
+
+    <a class="field-card" href="project_well_dashboard.html?name=%D0%A3%D1%80%D0%B5%D0%BD%D0%B3%D0%BE%D0%B9%D1%81%D0%BA%D0%BE%D0%B5%20%D0%BC%D0%B5%D1%81%D1%82%D0%BE%D1%80%D0%BE%D0%B6%D0%B4%D0%B5%D0%BD%D0%B8%D0%B5&well=9301" data-name="уренгойское уренгой янао">
+      <div class="field-card-top">
+        <div class="field-icon">УР</div>
+        <div class="field-meta"><span class="modules-badge">Активен</span></div>
+      </div>
+      <h3>Уренгойское месторождение</h3>
+      <p>ЯНАО · Скважина 9301 · Готовый проектный контур. Конструкция скважин, интервалы буровых растворов, инженерные расчёты по всем разделам.</p>
+      <div class="field-tags">
+        <span class="tag">ЯНАО</span>
+        <span class="tag">Скв. 9301</span>
+        <span class="tag">Готов</span>
+      </div>
+      <div class="card-arrow">→</div>
+    </a>
+
+  </div>
+  <div class="empty" id="emptyState">
+    <h3>Месторождение не найдено</h3>
+    Попробуйте другой запрос или <a href="../app.html" style="color:var(--blue)">добавьте новое месторождение →</a>
+  </div>
+</div>
+
+<script>
+const input = document.getElementById('searchInput');
+const cards = document.querySelectorAll('.field-card');
+const empty = document.getElementById('emptyState');
+const badge = document.getElementById('countBadge');
+
+input.addEventListener('input', function() {
+  const q = this.value.trim().toLowerCase();
+  let n = 0;
+  cards.forEach(c => {
+    const match = !q || (c.dataset.name || '').toLowerCase().includes(q) ||
+      c.querySelector('h3').textContent.toLowerCase().includes(q);
+    c.style.display = match ? '' : 'none';
+    if (match) n++;
+  });
+  empty.style.display = n ? 'none' : 'block';
+  badge.textContent = n + ' месторожден' + (n===1?'ие':n<5?'ия':'ий');
+});
+</script>
+</body>
+</html>

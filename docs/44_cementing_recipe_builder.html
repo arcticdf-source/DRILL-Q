@@ -1,0 +1,851 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>44 · Конструктор рецептур цементирования</title>
+<style>
+:root {
+  --bg-0: #060b12;
+  --bg-1: #0f1a2a;
+  --bg-2: #182840;
+  --text: #edf4ff;
+  --muted: #98abc4;
+  --line: rgba(229, 238, 255, 0.15);
+  --cyan: #1ad8b5;
+  --amber: #ffbc4c;
+  --ok: #3fb950;
+  --warn: #d29922;
+  --bad: #f85149;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  font-family: 'Manrope', 'Segoe UI', sans-serif;
+  color: var(--text);
+  background: linear-gradient(145deg, var(--bg-0), var(--bg-1) 42%, var(--bg-2));
+  min-height: 100vh;
+}
+
+.app { max-width: 1500px; margin: 0 auto; padding: 16px; }
+
+.top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: rgba(9, 15, 24, 0.8);
+  padding: 12px 14px;
+  position: sticky;
+  top: 8px;
+  z-index: 10;
+  gap: 12px;
+}
+
+.brand { font-weight: 800; font-size: 18px; }
+.brand span { color: var(--cyan); }
+
+.actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.btn {
+  border: 1px solid var(--line);
+  background: #1a2a45;
+  color: #d3e4ff;
+  border-radius: 8px;
+  padding: 7px 11px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 12px;
+  transition: all 200ms ease;
+}
+
+.btn:hover { border-color: var(--cyan); background: rgba(26, 216, 181, 0.1); }
+.btn.main { background: linear-gradient(135deg, #8df7e7, #14d7b2); color: #062a24; border-color: #14d7b2; }
+
+h1 { font-size: 24px; color: var(--cyan); margin: 12px 0 6px; }
+.hint { font-size: 12px; color: var(--muted); margin-bottom: 12px; }
+
+.container3 {
+  display: grid;
+  grid-template-columns: 320px 1fr 380px;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.panel {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: rgba(12, 20, 34, 0.8);
+  padding: 12px;
+}
+
+.side { position: sticky; top: 64px; height: calc(100vh - 80px); overflow-y: auto; }
+
+.center { display: flex; flex-direction: column; gap: 12px; }
+
+h2 { font-size: 18px; color: var(--cyan); margin: 8px 0 6px; border-bottom: 1px solid var(--line); padding-bottom: 6px; }
+h3 { font-size: 14px; color: var(--amber); margin: 8px 0 4px; }
+
+label {
+  display: block;
+  margin: 6px 0 4px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+input, select, textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: #0b1527;
+  color: var(--text);
+  padding: 7px 8px;
+  font-size: 13px;
+}
+
+input:focus, select:focus { border-color: var(--cyan); outline: none; }
+
+.card {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #17253d;
+  padding: 10px;
+  margin-bottom: 8px;
+}
+
+.recipe-btn {
+  width: 100%;
+  text-align: left;
+  border: 1px solid var(--line);
+  background: #172742;
+  color: #d7e5fb;
+  border-radius: 8px;
+  padding: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  transition: all 200ms ease;
+  margin-bottom: 6px;
+}
+
+.recipe-btn:hover, .recipe-btn.active {
+  border-color: var(--cyan);
+  background: #1b2e4d;
+}
+
+.recipe-title { font-weight: 700; font-size: 13px; }
+.recipe-sub { font-size: 10px; color: #9db2d0; margin-top: 2px; }
+
+.additive-list { display: grid; gap: 6px; }
+
+.additive-item {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #0f1f34;
+  padding: 8px;
+  position: relative;
+}
+
+.additive-name {
+  flex: 1;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.additive-amount {
+  width: 70px;
+  border: 1px solid #2d4f7b;
+  background: #0b1527;
+  padding: 4px 6px;
+  border-radius: 5px;
+  font-size: 11px;
+  text-align: right;
+}
+
+.additive-unit {
+  width: 50px;
+  font-size: 11px;
+  color: var(--muted);
+  text-align: center;
+}
+
+.remove-btn {
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: rgba(248, 81, 73, 0.2);
+  color: var(--bad);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.remove-btn:hover { background: rgba(248, 81, 73, 0.4); }
+
+.out {
+  margin-top: 8px;
+  border: 1px solid #26537f;
+  background: #0b1a2e;
+  border-radius: 8px;
+  padding: 8px;
+}
+
+.or {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px dotted #21456f;
+  padding: 4px 0;
+  font-size: 12px;
+}
+
+.or:last-child { border-bottom: none; }
+
+.mono {
+  font-family: Consolas, monospace;
+  color: var(--cyan);
+  font-weight: 700;
+}
+
+.ok { color: var(--ok); }
+.warn { color: var(--warn); }
+.bad { color: var(--bad); }
+
+.row {
+  display: flex;
+  gap: 8px;
+  align-items: end;
+}
+
+.row > div { flex: 1; }
+
+.chart-comp {
+  margin-top: 8px;
+}
+
+canvas {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #0f1f34;
+  width: 100%;
+  height: auto;
+}
+
+table { width: 100%; border-collapse: collapse; margin-top: 7px; }
+th, td { border: 1px solid var(--line); padding: 6px; font-size: 11px; text-align: left; }
+th { background: #111f36; color: var(--cyan); font-weight: 700; }
+
+.tab-buttons {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.tab-btn {
+  border: 1px solid var(--line);
+  background: #172742;
+  color: #d7e5fb;
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.tab-btn.active {
+  border-color: var(--cyan);
+  background: #1b2e4d;
+}
+
+.section-tab { display: none; }
+.section-tab.active { display: block; }
+
+@media (max-width: 1300px) {
+  .container3 { grid-template-columns: 1fr; }
+  .side { position: static; height: auto; }
+}
+
+@media (max-width: 880px) {
+  .container3 { grid-template-columns: 1fr; }
+}
+</style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+
+<div class="app">
+  <div class="top">
+    <div class="brand"><span>44</span> · Конструктор рецептур</div>
+    <div class="actions">
+      <button class="btn" onclick="saveRecipe()">💾 Сохранить</button>
+      <button class="btn" onclick="loadRecipe()">📂 Загрузить</button>
+      <button class="btn main" onclick="exportRecipeJSON()">📊 Export</button>
+      <a class="btn" href="43_cementing_calculator.html">← Калькулятор</a>
+    </div>
+  </div>
+
+  <h1>Конструктор рецептур цементных растворов</h1>
+  <div class="hint">Выберите условия скважины → получите рекомендуемые добавки → настройте рецепту → смотрите результат. Все расчёты по API RP 65.</div>
+
+  <div class="container3">
+    <!-- ЛЕВАЯ ПАНЕЛЬ: УСЛОВИЯ И РЕЦЕПТЫ -->
+    <aside class="side panel">
+      <h2>Условия скважины</h2>
+      
+      <label>Глубина забоя, м</label>
+      <input id="tvd" type="number" value="2000" onchange="updateRecommendations()" oninput="updateRecommendations()">
+
+      <label style="margin-top: 8px;">Температура на забое, °C</label>
+      <input id="bht" type="number" value="60" onchange="updateRecommendations()" oninput="updateRecommendations()">
+
+      <label style="margin-top: 8px;">Давление пласта (градиент), МПа/м</label>
+      <input id="pressure_gradient" type="number" value="0.0108" step="0.0001" onchange="updateRecommendations()" oninput="updateRecommendations()">
+
+      <label style="margin-top: 8px;">Тип пласта</label>
+      <select id="formation_type" onchange="updateRecommendations()">
+        <option value="normal">Нормальные</option>
+        <option value="weak">Слабые (подвержены collapse)</option>
+        <option value="lost">Потеряющие (lost circulation)</option>
+        <option value="hthp">HTHP (высокие T° и P)</option>
+        <option value="salt">Соли</option>
+      </select>
+
+      <label style="margin-top: 8px;">Требуемая плотность, кг/м³</label>
+      <input id="target_density" type="number" value="1850" onchange="updateRecommendations()" oninput="updateRecommendations()">
+
+      <h2 style="margin-top: 16px;">Типовые рецепты</h2>
+      <div id="recipesBox" class="additive-list"></div>
+
+      <h2 style="margin-top: 16px;">Рекомендация</h2>
+      <div class="out" id="recipeHint"></div>
+    </aside>
+
+    <!-- ЦЕНТР: КОНСТРУКТОР -->
+    <section class="center">
+      <!-- ВЫБОР КЛАССОВ ЦЕМЕНТА -->
+      <div class="panel">
+        <h2>1) Класс цемента</h2>
+        <div class="row">
+          <div>
+            <label>Основной цемент</label>
+            <select id="main_cement" onchange="updateRecipe()">
+              <option value="G">Class G (38-66°C, стандартный)</option>
+              <option value="H">Class H (базовый, любые условия)</option>
+              <option value="A">Class A (0-38°C, низкие T°)</option>
+              <option value="C">Class C (ускоренное схватывание)</option>
+              <option value="B">Class B (изоляция)</option>
+            </select>
+          </div>
+          <div>
+            <label>Доля основного, %</label>
+            <input id="cement_main_pct" type="number" value="100" min="0" max="100" onchange="updateRecipe()" oninput="updateRecipe()">
+          </div>
+        </div>
+
+        <label style="margin-top: 8px;">Добавить лигирующий агент?</label>
+        <select id="supplementary_agent" onchange="updateRecipe()">
+          <option value="none">Нет</option>
+          <option value="fly_ash">Летучая зола (20-30%)</option>
+          <option value="silica_fume">Кремниевая пыль (5-15%)</option>
+          <option value="slag">Доменный шлак (25-50%)</option>
+          <option value="diatomite">Диатомит (облегчитель)</option>
+        </select>
+      </div>
+
+      <!-- ВЫБОР ДОБАВОК -->
+      <div class="panel">
+        <h2>2) Добавки для рецептуры</h2>
+        
+        <div class="tab-buttons">
+          <button class="tab-btn active" onclick="switchTab('tab_common')">Основные</button>
+          <button class="tab-btn" onclick="switchTab('tab_modifiers')">Модификаторы</button>
+          <button class="tab-btn" onclick="switchTab('tab_density')">Плотность</button>
+          <button class="tab-btn" onclick="switchTab('tab_special')">Специальные</button>
+        </div>
+
+        <!-- TAB: ОСНОВНЫЕ ДОБАВКИ -->
+        <div id="tab_common" class="section-tab active">
+          <h3>Замедлители и ускорители</h3>
+          <button class="btn" style="width:100%;margin-bottom:6px;" onclick="addAdditive('retarder_std', 'Замедлитель стандартный', 0.3, 'кг/м³')">+ Замедлитель стд</button>
+          <button class="btn" style="width:100%;margin-bottom:6px;" onclick="addAdditive('retarder_high', 'Замедлитель высокой дозировки', 0.5, 'кг/м³')">+ Высокой доз.</button>
+          <button class="btn" style="width:100%;margin-bottom:12px;" onclick="addAdditive('accelerator', 'Ускоритель схватывания', 1.0, 'кг/м³')">+ Ускоритель</button>
+
+          <h3>Понизители воды</h3>
+          <button class="btn" style="width:100%;margin-bottom:6px;" onclick="addAdditive('fluid_loss', 'Понизитель потерь воды', 1.5, 'кг/м³')">+ Понизитель воды</button>
+          <button class="btn" style="width:100%;margin-bottom:12px;" onclick="addAdditive('super_plasticizer', 'Суперпластификатор', 2.0, 'кг/м³')">+ Суперпластификатор</button>
+        </div>
+
+        <!-- TAB: МОДИФИКАТОРЫ -->
+        <div id="tab_modifiers" class="section-tab">
+          <h3>Модификаторы свойств</h3>
+          <button class="btn" style="width:100%;margin-bottom:6px;" onclick="addAdditive('expansion_agent', 'Расширитель', 0.8, 'кг/м³')">+ Расширитель</button>
+          <button class="btn" style="width:100%;margin-bottom:6px;" onclick="addAdditive('defoamer', 'Пеногаситель', 0.4, 'кг/м³')">+ Пеногаситель</button>
+          <button class="btn" style="width:100%;margin-bottom:12px;" onclick="addAdditive('dispersant', 'Диспергатор', 1.2, 'кг/м³')">+ Диспергатор</button>
+
+          <h3>Вспомогательные</h3>
+          <button class="btn" style="width:100%;margin-bottom:6px;" onclick="addAdditive('antifoam', 'Антивспенивающий агент', 0.2, 'кг/м³')">+ Антивспен.</button>
+          <button class="btn" style="width:100%;margin-bottom:12px;" onclick="addAdditive('gas_block', 'Блокировщик газа', 0.5, 'кг/м³')">+ Блокировщик газа</button>
+        </div>
+
+        <!-- TAB: ПЛОТНОСТЬ -->
+        <div id="tab_density" class="section-tab">
+          <h3>Утяжелители</h3>
+          <button class="btn" style="width:100%;margin-bottom:6px;" onclick="addAdditive('barite', 'Барит (BaSO₄)', 150, 'кг/м³')">+ Барит (сыпучий)</button>
+          <button class="btn" style="width:100%;margin-bottom:6px;" onclick="addAdditive('hematite', 'Гематит (Fe₂O₃)', 120, 'кг/м³')">+ Гематит</button>
+          <button class="btn" style="width:100%;margin-bottom:12px;" onclick="addAdditive('siderite', 'Сидерит (FeCO₃)', 100, 'кг/м³')">+ Сидерит</button>
+
+          <h3>Облегчители</h3>
+          <button class="btn" style="width:100%;margin-bottom:6px;" onclick="addAdditive('microspheres', 'Синт. микросферы', 80, 'кг/м³')">+ Микросферы</button>
+          <button class="btn" style="width:100%;margin-bottom:6px;" onclick="addAdditive('diatomite_light', 'Диатомит', 50, 'кг/м³')">+ Диатомит</button>
+          <button class="btn" style="width:100%;margin-bottom:12px;" onclick="addAdditive('perlite', 'Перлит', 40, 'кг/м³')">+ Перлит</button>
+        </div>
+
+        <!-- TAB: СПЕЦИАЛЬНЫЕ -->
+        <div id="tab_special" class="section-tab">
+          <h3>Специальные назначения</h3>
+          <button class="btn" style="width:100%;margin-bottom:6px;" onclick="addAdditive('hydration_control', 'Контроль гидратации', 0.6, 'кг/м³')">+ Контроль гидр.</button>
+          <button class="btn" style="width:100%;margin-bottom:6px;" onclick="addAdditive('bridging_agent', 'Агент мостирования', 50, 'кг/м³')">+ Агент мостир.</button>
+          <button class="btn" style="width:100%;margin-bottom:6px;" onclick="addAdditive('fiber_reinforcement', 'Фибра (армирование)', 15, 'кг/м³')">+ Фибра</button>
+          <button class="btn" style="width:100%;margin-bottom:12px;" onclick="addAdditive('biocide', 'Биоцид', 0.3, 'кг/м³')">+ Биоцид</button>
+        </div>
+      </div>
+
+      <!-- СПИСОК ВЫБРАННЫХ ДОБАВОК -->
+      <div class="panel">
+        <h2>3) Активные добавки в рецепте</h2>
+        <div id="additivesBox" class="additive-list"></div>
+        <button class="btn" style="width:100%;margin-top:8px;" onclick="clearAdditives()">Очистить добавки</button>
+      </div>
+
+      <!-- РЕЗУЛЬТАТЫ -->
+      <div class="panel">
+        <h2>4) Рецепта (на 1 м³ раствора)</h2>
+        <div class="out" id="recipeOut"></div>
+        <table id="componentsTable"></table>
+        <div class="chart-comp" id="chartComp"></div>
+      </div>
+
+      <!-- СВОЙСТВА -->
+      <div class="panel">
+        <h2>5) Прогноз свойств</h2>
+        <div class="out" id="propertiesOut"></div>
+        <table id="propertiesTable"></table>
+      </div>
+    </section>
+
+    <!-- ПРАВАЯ ПАНЕЛЬ: ВИЗУАЛИЗАЦИЯ И СТАТУС -->
+    <aside class="panel" style="position: sticky; top: 64px; height: calc(100vh - 80px); overflow-y: auto;">
+      <h2>Статус рецепты</h2>
+      <div class="out" id="statusBox"></div>
+
+      <h2 style="margin-top: 16px;">График состав</h2>
+      <canvas id="pieChart" width="300" height="300"></canvas>
+
+      <h2 style="margin-top: 16px;">Характеристики</h2>
+      <div class="out" id="charBox"></div>
+
+      <h2 style="margin-top: 16px;">Рекомендуемые комбинации</h2>
+      <div id="combinationsBox"></div>
+    </aside>
+  </div>
+</div>
+
+<script>
+const KEY = 'cementing_recipe_v1';
+const ADDITIVE_DB = {
+  retarder_std: { name: 'Замедлитель стандартный', category: 'Замедлитель', effect: 'Замедляет TT на 1-2 часа', density_delta: 0 },
+  retarder_high: { name: 'Замедлитель высокой дозировки', category: 'Замедлитель', effect: 'Замедляет TT на 2-4 часа', density_delta: 0 },
+  accelerator: { name: 'Ускоритель схватывания', category: 'Ускоритель', effect: 'Ускоряет схватывание', density_delta: 20 },
+  fluid_loss: { name: 'Понизитель потерь воды', category: 'Модификатор', effect: 'Снижает фильтрацию', density_delta: 0 },
+  super_plasticizer: { name: 'Суперпластификатор', category: 'Модификатор', effect: 'Улучшает текучесть', density_delta: 0 },
+  expansion_agent: { name: 'Расширитель', category: 'Модификатор', effect: 'Расширение при схватывании', density_delta: 10 },
+  defoamer: { name: 'Пеногаситель', category: 'Модификатор', effect: 'Уменьшает пенообразование', density_delta: -5 },
+  dispersant: { name: 'Диспергатор', category: 'Модификатор', effect: 'Улучшает дисперсность', density_delta: 0 },
+  antifoam: { name: 'Антивспенивающий агент', category: 'Вспомогательный', effect: 'Удаляет воздух', density_delta: 0 },
+  gas_block: { name: 'Блокировщик газа', category: 'Вспомогательный', effect: 'Блокирует газовые мигрирование', density_delta: 5 },
+  barite: { name: 'Барит (BaSO₄)', category: 'Утяжелитель', effect: 'Повышает плотность', density_delta: 4300 },
+  hematite: { name: 'Гематит (Fe₂O₃)', category: 'Утяжелитель', effect: 'Повышает плотность', density_delta: 4980 },
+  siderite: { name: 'Сидерит (FeCO₃)', category: 'Утяжелитель', effect: 'Повышает плотность', density_delta: 3800 },
+  microspheres: { name: 'Синтетические микросферы', category: 'Облегчитель', effect: 'Снижает плотность', density_delta: 1500 },
+  diatomite_light: { name: 'Диатомит', category: 'Облегчитель', effect: 'Облегчает раствор', density_delta: 1200 },
+  perlite: { name: 'Перлит', category: 'Облегчитель', effect: 'Облегчает раствор', density_delta: 1600 },
+  hydration_control: { name: 'Контроль гидратации', category: 'Специальный', effect: 'Контролирует реакцию', density_delta: 0 },
+  bridging_agent: { name: 'Агент мостирования', category: 'Специальный', effect: 'Мостирование в трещинах', density_delta: 2500 },
+  fiber_reinforcement: { name: 'Фибра армирования', category: 'Специальный', effect: 'Армирование', density_delta: 1200 },
+  biocide: { name: 'Биоцид', category: 'Специальный', effect: 'Защита от микроб', density_delta: 0 }
+};
+
+const RECIPES = [
+  { name: '✓ Нормальная скважина', cond: 'tvd<1000,bht<40', cement: 'G', additives: [] },
+  { name: '⚡ Холодная скважина', cond: 'bht<20', cement: 'A', additives: [{ id: 'accelerator', amt: 1.5 }] },
+  { name: '🔥 HTHP (высокие T°P)', cond: 'bht>80,pressure_gradient>0.0135', cement: 'G', additives: [{ id: 'retarder_high', amt: 0.8 }, { id: 'expansion_agent', amt: 1.0 }] },
+  { name: '⚖ Облегчённая (1700 кг/м³)', cond: 'formation_type=weak', cement: 'G', additives: [{ id: 'microspheres', amt: 120 }] },
+  { name: '💪 Утяжелённая (2000 кг/м³)', cond: 'formation_type=hthp', cement: 'G', additives: [{ id: 'barite', amt: 200 }] },
+  { name: '🛡 Потеряющие пласты', cond: 'formation_type=lost', cement: 'G', additives: [{ id: 'bridging_agent', amt: 60 }, { id: 'fiber_reinforcement', amt: 20 }] },
+];
+
+let active_additives = [];
+
+function el(id) { return document.getElementById(id); }
+function fn(id) { return parseFloat(el(id).value) || 0; }
+function fv(id) { return el(id).value || ''; }
+function setv(id, val, digits) { el(id).value = typeof val === 'number' ? val.toFixed(digits||0) : val; }
+
+function addAdditive(id, name, amount, unit) {
+  const existing = active_additives.find(a => a.id === id);
+  if (!existing) {
+    active_additives.push({ id, amount, unit });
+  }
+  renderAdditives();
+  updateRecipe();
+}
+
+function removeAdditive(id) {
+  active_additives = active_additives.filter(a => a.id !== id);
+  renderAdditives();
+  updateRecipe();
+}
+
+function renderAdditives() {
+  let html = '';
+  for (const add of active_additives) {
+    const info = ADDITIVE_DB[add.id];
+    if (!info) continue;
+    html += `
+      <div class="additive-item">
+        <div class="additive-name" title="${info.effect}">${info.name}</div>
+        <input class="additive-amount" type="number" value="${add.amount}" step="0.1" 
+          onchange="updateAdditiveAmount('${add.id}', this.value)" oninput="updateRecipe()">
+        <div class="additive-unit">${add.unit}</div>
+        <button class="remove-btn" onclick="removeAdditive('${add.id}')">✕</button>
+      </div>
+    `;
+  }
+  if (html === '') html = '<div style="color:#98abc4;font-size:11px;padding:8px;">Выберите добавки выше</div>';
+  el('additivesBox').innerHTML = html;
+}
+
+function updateAdditiveAmount(id, value) {
+  const add = active_additives.find(a => a.id === id);
+  if (add) add.amount = parseFloat(value) || 0;
+  updateRecipe();
+}
+
+function clearAdditives() {
+  active_additives = [];
+  renderAdditives();
+  updateRecipe();
+}
+
+function updateRecipe() {
+  const cement_class = fv('main_cement');
+  const cement_pct = fn('cement_main_pct') / 100;
+  const supplementary = fv('supplementary_agent');
+  const target_density = fn('target_density');
+  
+  // Базовая плотность цемента по классу
+  const cement_densities = { A: 3140, B: 3150, C: 3200, G: 3130, H: 3120 };
+  const cement_density = cement_densities[cement_class] || 3130;
+  
+  // Построить рецепту
+  let components = [];
+  let total_mass = 0;
+  
+  // 1) Цемент (базовый в расчёте на 1 м³)
+  const cement_mass_base = 1000; // кг (начальное приближение)
+  let cement_amount = cement_mass_base * cement_pct;
+  
+  // 2) Добавки
+  let additives_mass = 0;
+  for (const add of active_additives) {
+    const amt = add.amount;
+    additives_mass += amt;
+    components.push({ name: ADDITIVE_DB[add.id].name, amount: amt, unit: add.unit, category: ADDITIVE_DB[add.id].category });
+  }
+  
+  // 3) Лигирующий агент
+  let ligand_mass = 0;
+  if (supplementary !== 'none') {
+    const ligand_pcts = { fly_ash: 25, silica_fume: 10, slag: 35, diatomite: 20 };
+    const ligand_pct = ligand_pcts[supplementary] || 0;
+    ligand_mass = cement_amount * (ligand_pct / (100 - ligand_pct));
+    components.push({ name: supplementary, amount: ligand_mass, unit: 'кг', category: 'Лигирующий' });
+  }
+  
+  // 4) Вода (В/Ц = 0.44 типичный для Class G)
+  const wc_ratio = 0.44;
+  const water_mass = (cement_amount + ligand_mass) * wc_ratio;
+  components.push({ name: 'Вода', amount: water_mass, unit: 'л', category: 'Вода' });
+  
+  total_mass = cement_amount + ligand_mass + water_mass;
+  
+  // Пересчитать для получения целевой плотности (итеративно)
+  const density_delta_sum = active_additives.reduce((sum, a) => sum + (ADDITIVE_DB[a.id].density_delta * (a.amount/1000)), 0);
+  const adjusted_density = 1000 + density_delta_sum; // упрощённый расчёт
+  
+  // Рендер рецепты
+  let recipe_out = `
+    <div class="or"><span>Класс цемента</span><span class="mono">${cement_class}</span></div>
+    <div class="or"><span>Основной цемент</span><span class="mono">${cement_amount.toFixed(0)} кг/м³</span></div>
+    ${ligand_mass > 0 ? `<div class="or"><span>Лигирующий агент</span><span class="mono">${ligand_mass.toFixed(0)} кг</span></div>` : ''}
+    <div class="or"><span>Всего добавок</span><span class="mono">${additives_mass.toFixed(1)} кг/м³</span></div>
+    <div class="or"><span>Требуется воды</span><span class="mono">${water_mass.toFixed(0)} л/м³</span></div>
+    <div class="or"><span>Завуспроизводится плотность</span><span class="mono ${Math.abs(adjusted_density - target_density) < 50 ? 'ok' : 'warn'}">${adjusted_density.toFixed(0)} кг/м³</span></div>
+  `;
+  el('recipeOut').innerHTML = recipe_out;
+  
+  // Таблица компонентов
+  let tbl = '<tr><th>Компонент</th><th>Кол-во</th><th>Единица</th><th>% от сухих</th></tr>';
+  const dry_mass = components.filter(c => c.unit !== 'л').reduce((s, c) => s + c.amount, 0);
+  for (const c of components.filter(c => c.unit !== 'л')) {
+    const pct = (c.amount / dry_mass * 100).toFixed(1);
+    tbl += `<tr><td>${c.name}</td><td>${c.amount.toFixed(1)}</td><td>${c.unit}</td><td>${pct}%</td></tr>`;
+  }
+  el('componentsTable').innerHTML = tbl;
+  
+  // Статус
+  const status_checks = [
+    ['Цемент выбран', cement_class !== '' ? 'PASS' : 'FAIL'],
+    ['Добавки конфигурированы', active_additives.length > 0 ? 'PASS' : 'INFO'],
+    ['Плотность в норме', Math.abs(adjusted_density - target_density) < 100 ? 'PASS' : 'WARN'],
+  ];
+  
+  let status_html = '';
+  for (const [check, result] of status_checks) {
+    status_html += `<div class="or"><span>${check}</span><span class="mono ${result === 'PASS' ? 'ok' : result === 'WARN' ? 'warn' : result === 'FAIL' ? 'bad' : 'muted'}">${result}</span></div>`;
+  }
+  el('statusBox').innerHTML = status_html;
+  
+  // График (pie)
+  drawPie(components, el('pieChart'));
+  
+  // Свойства
+  updateProperties(cement_class, active_additives);
+  
+  // Рекомендации
+  updateRecommendations();
+}
+
+function updateProperties(cement_class, additives) {
+  const bht = fn('bht');
+  const formation = fv('formation_type');
+  
+  // Базовые свойства по классу
+  const base_tt = { A: 45, B: 45, C: 60, G: 30, H: 40 }[cement_class] || 40;
+  const base_strength_24h = { A: 6, B: 5, C: 12, G: 7, H: 6 }[cement_class] || 6;
+  const base_fluid_loss = 100;
+  
+  // Эффект температуры
+  const temp_factor = bht > 80 ? 0.5 : (bht > 60 ? 0.7 : (bht > 40 ? 0.9 : 1.0));
+  let tt_calc = base_tt / temp_factor;
+  
+  // Эффекты добавок
+  let tt_multiplier = 1.0;
+  let strength_bonus = 0;
+  let fluid_loss_reduction = 0;
+  let density_shift_pct = 0;
+  
+  for (const add of additives) {
+    const info = ADDITIVE_DB[add.id];
+    if (add.id.includes('retarder')) tt_multiplier *= 1.3;
+    if (add.id === 'accelerator') tt_multiplier *= 0.6;
+    if (add.id === 'fluid_loss') fluid_loss_reduction = 30;
+    if (add.id === 'expansion_agent') strength_bonus += 15;
+  }
+  
+  tt_calc *= tt_multiplier;
+  const strength_24h = Math.max(1, base_strength_24h + strength_bonus);
+  const fluid_loss_final = Math.max(10, base_fluid_loss - fluid_loss_reduction);
+  
+  let prop_out = `
+    <div class="or"><span>Thickening Time</span><span class="mono">${tt_calc.toFixed(1)} мин</span></div>
+    <div class="or"><span>Ранняя прочность (24h)</span><span class="mono">${strength_24h.toFixed(1)} МПа</span></div>
+    <div class="or"><span>Финальная прочность (28d)</span><span class="mono">${(strength_24h * 1.8).toFixed(1)} МПа</span></div>
+    <div class="or"><span>Потеря фильтрата (API)</span><span class="mono">${fluid_loss_final.toFixed(0)} мл/30мин</span></div>
+    <div class="or"><span>Плотность на забое</span><span class="mono">${fn('target_density').toFixed(0)} кг/м³</span></div>
+    <div class="or"><span>Статус свойств</span><span class="mono ok">OPTIMIZED</span></div>
+  `;
+  el('propertiesOut').innerHTML = prop_out;
+  
+  let prop_tbl = '<tr><th>Свойство</th><th>Значение</th><th>Единица</th></tr>';
+  prop_tbl += `<tr><td>Thickening Time</td><td>${tt_calc.toFixed(1)}</td><td>мин</td></tr>`;
+  prop_tbl += `<tr><td>Ранняя прочность</td><td>${strength_24h.toFixed(1)}</td><td>МПа</td></tr>`;
+  prop_tbl += `<tr><td>Финальная прочность</td><td>${(strength_24h * 1.8).toFixed(1)}</td><td>МПа</td></tr>`;
+  prop_tbl += `<tr><td>Потеря фильтрата</td><td>${fluid_loss_final.toFixed(0)}</td><td>мл</td></tr>`;
+  prop_tbl += `<tr><td>Плотность раствора</td><td>${fn('target_density').toFixed(0)}</td><td>кг/м³</td></tr>`;
+  el('propertiesTable').innerHTML = prop_tbl;
+}
+
+function updateRecommendations() {
+  const tvd = fn('tvd');
+  const bht = fn('bht');
+  const pg = fn('pressure_gradient');
+  const formation = fv('formation_type');
+  
+  // Подобрать рецепты
+  const matched = RECIPES.filter(r => {
+    const conds = r.cond.split(',');
+    return conds.every(c => {
+      if (c.includes('tvd<')) return tvd < parseInt(c.match(/\d+/)[0]);
+      if (c.includes('tvd>')) return tvd > parseInt(c.match(/\d+/)[0]);
+      if (c.includes('bht<')) return bht < parseInt(c.match(/\d+/)[0]);
+      if (c.includes('bht>')) return bht > parseInt(c.match(/\d+/)[0]);
+      if (c.includes('pressure_gradient>')) return pg > parseFloat(c.match(/[\d.]+/)[0]);
+      if (c.includes('formation_type')) return formation === c.split('=')[1];
+      return true;
+    });
+  });
+  
+  let rec_html = '';
+  if (matched.length > 0) {
+    const best = matched[0];
+    rec_html = `
+      <div class="or"><span>Лучший выбор рецепты:</span></div>
+      <div style="color:#1ad8b5;font-weight:700;margin-top:4px;">${best.name}</div>
+      <div style="color:#98abc4;font-size:11px;margin-top:4px;">Для условий: T°=${bht}°C, TVD=${tvd}м, тип=${formation}</div>
+    `;
+  }
+  el('recipeHint').innerHTML = rec_html;
+  
+  // Показать типовые рецепты
+  let recipes_html = '';
+  for (const rec of RECIPES) {
+    recipes_html += `<button class="recipe-btn" onclick="applyRecipe('${rec.name}','${rec.cement}')" title="${rec.cond}"><div class="recipe-title">${rec.name}</div><div class="recipe-sub">${rec.cond}</div></button>`;
+  }
+  el('recipesBox').innerHTML = recipes_html;
+}
+
+function applyRecipe(name, cement) {
+  el('main_cement').value = cement;
+  active_additives = [];
+  updateRecipe();
+  alert(`Применена рецепта: ${name}`);
+}
+
+function drawPie(components, canvas) {
+  const ctx = canvas.getContext('2d');
+  canvas.width = 300;
+  canvas.height = 300;
+  
+  const colors = ['#1ad8b5', '#ffbc4c', '#f85149', '#3fb950', '#58a6ff', '#d29922', '#79c0ff', '#8b949e'];
+  const dry_comps = components.filter(c => c.unit !== 'л');
+  const total = dry_comps.reduce((s, c) => s + c.amount, 0);
+  
+  let angle = -Math.PI / 2;
+  for (let i = 0; i < dry_comps.length; i++) {
+    const comp = dry_comps[i];
+    const slice = (comp.amount / total) * 2 * Math.PI;
+    
+    ctx.fillStyle = colors[i % colors.length];
+    ctx.beginPath();
+    ctx.arc(150, 150, 80, angle, angle + slice);
+    ctx.lineTo(150, 150);
+    ctx.fill();
+    
+    ctx.strokeStyle = '#060b12';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    
+    angle += slice;
+  }
+  
+  ctx.fillStyle = '#fff';
+  ctx.font = 'bold 14px Manrope';
+  ctx.textAlign = 'center';
+  ctx.fillText('СОСТАВ', 150, 145);
+  ctx.font = '11px Manrope';
+  ctx.fillText('(сухие)', 150, 160);
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('.section-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  el(tab).classList.add('active');
+  event.target.classList.add('active');
+}
+
+function saveRecipe() {
+  const data = {
+    cement: fv('main_cement'),
+    cement_pct: fn('cement_main_pct'),
+    supplementary: fv('supplementary_agent'),
+    target_density: fn('target_density'),
+    tvd: fn('tvd'),
+    bht: fn('bht'),
+    formation: fv('formation_type'),
+    additives: JSON.stringify(active_additives)
+  };
+  localStorage.setItem(KEY, JSON.stringify(data));
+  alert('Рецепта сохранена');
+}
+
+function loadRecipe() {
+  const raw = localStorage.getItem(KEY);
+  if (!raw) { alert('Сохранений не найдено'); return; }
+  try {
+    const d = JSON.parse(raw);
+    el('main_cement').value = d.cement;
+    el('cement_main_pct').value = d.cement_pct;
+    el('supplementary_agent').value = d.supplementary;
+    el('target_density').value = d.target_density;
+    el('tvd').value = d.tvd;
+    el('bht').value = d.bht;
+    el('formation_type').value = d.formation;
+    active_additives = JSON.parse(d.additives);
+    renderAdditives();
+    updateRecipe();
+    alert('Рецепта загружена');
+  } catch (e) { alert('Ошибка загрузки'); }
+}
+
+function exportRecipeJSON() {
+  const data = {
+    cement: fv('main_cement'),
+    cement_pct: fn('cement_main_pct'),
+    supplementary: fv('supplementary_agent'),
+    target_density: fn('target_density'),
+    conditions: {
+      tvd: fn('tvd'),
+      bht: fn('bht'),
+      pressure_gradient: fn('pressure_gradient'),
+      formation_type: fv('formation_type')
+    },
+    additives: active_additives
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'cementing_recipe.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  const raw = localStorage.getItem(KEY);
+  if (raw) {
+    try {
+      const d = JSON.parse(raw);
+      el('main_cement').value = d.cement;
+      el('cement_main_pct').value = d.cement_pct;
+      el('supplementary_agent').value = d.supplementary;
+      el('target_density').value = d.target_density;
+      el('tvd').value = d.tvd;
+      el('bht').value = d.bht;
+      el('formation_type').value = d.formation;
+      active_additives = JSON.parse(d.additives || '[]');
+      renderAdditives();
+    } catch (e) {}
+  }
+  updateRecipe();
+});
+</script>
+  <script src="assets/js/global-auth-widget.js"></script>
+</body>
+</html>

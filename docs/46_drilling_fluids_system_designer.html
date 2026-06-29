@@ -1,0 +1,959 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>46 · Drilling Fluid System Designer</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Manrope:wght@400;500;700;800&display=swap");
+
+    :root {
+      --bg-0: #060b12;
+      --bg-1: #0f1a2a;
+      --bg-2: #182840;
+      --panel: rgba(10, 19, 31, 0.78);
+      --text: #edf4ff;
+      --muted: #98abc4;
+      --line: rgba(229, 238, 255, 0.15);
+      --line-soft: rgba(229, 238, 255, 0.08);
+      --cyan: #1ad8b5;
+      --amber: #ffbc4c;
+      --ok: #3fb950;
+      --warn: #d29922;
+      --bad: #f85149;
+      --shadow: 0 20px 48px rgba(0, 0, 0, 0.45);
+      --radius: 14px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      font-family: "Manrope", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(860px 420px at 0% -10%, rgba(26, 216, 181, 0.2), rgba(26, 216, 181, 0)),
+        radial-gradient(760px 380px at 100% 0%, rgba(255, 188, 76, 0.18), rgba(255, 188, 76, 0)),
+        linear-gradient(145deg, var(--bg-0), var(--bg-1) 42%, var(--bg-2));
+    }
+
+    .wrap {
+      width: min(1340px, 94vw);
+      margin: 0 auto;
+      padding: 20px 0 56px;
+    }
+
+    .top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border: 1px solid var(--line-soft);
+      border-radius: 14px;
+      background: rgba(9, 15, 24, 0.65);
+      backdrop-filter: blur(8px);
+      padding: 12px 14px;
+      position: sticky;
+      top: 10px;
+      z-index: 20;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: "Oswald", sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-size: 20px;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 35% 35%, #cffff7, var(--cyan));
+    }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      text-decoration: none;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 8px 11px;
+      color: #d8e6ff;
+      background: rgba(16, 27, 46, 0.85);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      border-color: var(--cyan);
+      background: rgba(26, 216, 181, 0.1);
+    }
+
+    .btn.main {
+      color: #06231f;
+      background: linear-gradient(130deg, #8df7e7, #1ad8b5);
+      border-color: rgba(26, 216, 181, 0.8);
+    }
+
+    .hero {
+      margin-top: 14px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: linear-gradient(150deg, rgba(26, 216, 181, 0.12), rgba(14, 24, 38, 0.9) 40%, rgba(255, 188, 76, 0.1));
+      box-shadow: var(--shadow);
+      padding: 20px;
+    }
+
+    .hero h1 {
+      margin: 0 0 6px;
+      color: var(--cyan);
+      font-size: clamp(24px, 3.6vw, 36px);
+      font-family: "Oswald", sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .hero p {
+      margin: 0;
+      color: #dbe9ff;
+      line-height: 1.55;
+      font-size: 14px;
+    }
+
+    .tabs {
+      margin-top: 14px;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .tab-btn {
+      border: 1px solid var(--line);
+      background: rgba(13, 23, 38, 0.8);
+      color: #d7e6ff;
+      border-radius: 10px;
+      padding: 10px;
+      text-align: left;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 12px;
+      line-height: 1.3;
+    }
+
+    .tab-btn.active {
+      border-color: var(--cyan);
+      background: rgba(26, 216, 181, 0.12);
+      color: #e7fff8;
+    }
+
+    .tab {
+      margin-top: 12px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(9, 15, 24, 0.62);
+      padding: 12px;
+      display: none;
+    }
+
+    .tab.active { display: block; }
+
+    h2 {
+      margin: 0 0 10px;
+      font-family: "Oswald", sans-serif;
+      font-size: 20px;
+      color: var(--amber);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    h3 {
+      margin: 0 0 8px;
+      font-size: 14px;
+      color: var(--cyan);
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--panel);
+      padding: 10px;
+    }
+
+    label {
+      display: block;
+      font-size: 11px;
+      color: var(--muted);
+      margin: 6px 0 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    input, select {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #0b1527;
+      color: var(--text);
+      padding: 7px 8px;
+      font-size: 13px;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--cyan);
+    }
+
+    .ro {
+      background: #0f2238;
+      border-color: #2d4f7b;
+      color: #9ee9d7;
+      font-weight: 700;
+    }
+
+    .out {
+      border: 1px solid #26537f;
+      border-radius: 10px;
+      background: #0b1a2e;
+      padding: 8px;
+    }
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 3px 0;
+      border-bottom: 1px dotted #21456f;
+      font-size: 12px;
+    }
+
+    .row:last-child { border-bottom: none; }
+
+    .mono {
+      font-family: Consolas, monospace;
+      color: var(--cyan);
+      font-weight: 700;
+    }
+
+    .ok { color: var(--ok); }
+    .warn { color: var(--warn); }
+    .bad { color: var(--bad); }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+    }
+
+    th, td {
+      border: 1px solid var(--line);
+      padding: 6px;
+      text-align: left;
+      vertical-align: top;
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    th {
+      background: rgba(22, 34, 56, 0.7);
+      color: var(--cyan);
+      font-weight: 700;
+    }
+
+    .add-list {
+      display: grid;
+      gap: 6px;
+    }
+
+    .add-item {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 7px;
+      background: rgba(12, 22, 38, 0.75);
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr 0.6fr;
+      gap: 6px;
+      align-items: center;
+      font-size: 12px;
+    }
+
+    .hint {
+      color: #b5c9e5;
+      font-size: 12px;
+      line-height: 1.45;
+      margin-top: 6px;
+    }
+
+    @media (max-width: 1080px) {
+      .tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    }
+  </style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+  <main class="wrap">
+    <div class="top">
+      <div class="brand"><span class="dot"></span>46 · Drilling Fluids System Designer</div>
+      <div class="actions">
+        <button class="btn" onclick="saveState()">Сохранить</button>
+        <button class="btn" onclick="loadState()">Загрузить</button>
+        <button class="btn main" onclick="exportState()">Экспорт JSON</button>
+        <a class="btn" href="47_drilling_fluid_system_selection.html">Подбор системы 47</a>
+        <a class="btn" href="45_drilling_fluids_mi_knowledge_map.html">К карте знаний</a>
+        <a class="btn" href="42_drilling_fluids_dashboard.html">К дашборду</a>
+      </div>
+    </div>
+
+    <section class="hero">
+      <h1>Расчеты + Рецептуры + Профилактика + QC</h1>
+      <p>
+        Единый рабочий модуль по буровым растворам в СИ на базе MI Manual.
+        Используются только функциональные и химические классы компонентов без торговых названий.
+      </p>
+    </section>
+
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="si" onclick="openTab('si', this)">1) SI Calculation Hub</button>
+      <button class="tab-btn" data-tab="design" onclick="openTab('design', this)">2) Конструктор системы</button>
+      <button class="tab-btn" data-tab="risk" onclick="openTab('risk', this)">3) Prevention Engine</button>
+      <button class="tab-btn" data-tab="qc" onclick="openTab('qc', this)">4) Lab-to-Field QC</button>
+    </div>
+
+    <section id="tab_si" class="tab active">
+      <h2>SI Calculation Hub</h2>
+      <div class="grid-3">
+        <div class="card">
+          <h3>Базовые входные данные</h3>
+          <label>TVD, м</label>
+          <input id="tvd_m" type="number" value="3200" oninput="runAll()" onchange="runAll()" />
+
+          <label>Плотность раствора, кг/м3</label>
+          <input id="mw_kgm3" type="number" value="1450" oninput="runAll()" onchange="runAll()" />
+
+          <label>Потери давления в кольцевом, МПа</label>
+          <input id="ann_dp_mpa" type="number" value="2.4" step="0.01" oninput="runAll()" onchange="runAll()" />
+
+          <label>Расход, л/мин</label>
+          <input id="flow_lpm" type="number" value="1600" oninput="runAll()" onchange="runAll()" />
+
+          <label>Диаметр скважины, мм</label>
+          <input id="hole_mm" type="number" value="215.9" oninput="runAll()" onchange="runAll()" />
+
+          <label>Наружный диаметр БТ, мм</label>
+          <input id="pipe_od_mm" type="number" value="127" oninput="runAll()" onchange="runAll()" />
+        </div>
+
+        <div class="card">
+          <h3>Конвертации и гидростатика</h3>
+          <label>Плотность, SG</label>
+          <input id="mw_sg" class="ro" readonly />
+
+          <label>Плотность, ppg</label>
+          <input id="mw_ppg" class="ro" readonly />
+
+          <label>Градиент гидростатический, МПа/м</label>
+          <input id="hyd_grad_mpa_m" class="ro" readonly />
+
+          <label>Гидростатическое давление на TVD, МПа</label>
+          <input id="hyd_p_mpa" class="ro" readonly />
+
+          <label>Кольцевая скорость, м/с</label>
+          <input id="av_ms" class="ro" readonly />
+
+          <label>ECD, кг/м3</label>
+          <input id="ecd_kgm3" class="ro" readonly />
+        </div>
+
+        <div class="card">
+          <h3>Окно давлений</h3>
+          <label>Поровый градиент, МПа/м</label>
+          <input id="pore_grad" type="number" value="0.0112" step="0.0001" oninput="runAll()" onchange="runAll()" />
+
+          <label>Градиент гидроразрыва, МПа/м</label>
+          <input id="frac_grad" type="number" value="0.0170" step="0.0001" oninput="runAll()" onchange="runAll()" />
+
+          <label>Запас до pore, МПа</label>
+          <input id="margin_to_pore" class="ro" readonly />
+
+          <label>Запас до frac, МПа</label>
+          <input id="margin_to_frac" class="ro" readonly />
+
+          <label>Индекс давления</label>
+          <input id="pressure_index" class="ro" readonly />
+
+          <div class="hint">
+            Индекс = отношение динамического давления к окну между поровым и fracture.
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:10px;">
+        <h3>Краткий результат расчета</h3>
+        <div class="out" id="si_out"></div>
+      </div>
+    </section>
+
+    <section id="tab_design" class="tab">
+      <h2>Конструктор системы бурового раствора</h2>
+      <div class="grid-2">
+        <div class="card">
+          <h3>Условия и тип системы</h3>
+          <label>Тип базовой системы</label>
+          <select id="system_family" onchange="onFamilyChange(); runAll();">
+            <option value="wbm" selected>WBM (водная)</option>
+            <option value="naf">NAF (инвертная неводная)</option>
+            <option value="synth">Synthetic (синтетическая)</option>
+          </select>
+
+          <label>Температура забоя, C</label>
+          <input id="bh_temp" type="number" value="95" oninput="runAll()" onchange="runAll()" />
+
+          <label>Реактивные сланцы</label>
+          <select id="reactive_shale" onchange="runAll()">
+            <option value="yes" selected>Да</option>
+            <option value="no">Нет</option>
+          </select>
+
+          <label>Склонность к потерям</label>
+          <select id="loss_prone" onchange="runAll()">
+            <option value="high" selected>Высокая</option>
+            <option value="mid">Средняя</option>
+            <option value="low">Низкая</option>
+          </select>
+
+          <label>Целевая плотность, кг/м3</label>
+          <input id="target_rho" type="number" value="1650" oninput="runAll()" onchange="runAll()" />
+
+          <label>Базовая жидкость, кг/м3</label>
+          <input id="base_rho" type="number" value="1030" oninput="runAll()" onchange="runAll()" />
+        </div>
+
+        <div class="card">
+          <h3>Добавки (кг/м3 конечного раствора)</h3>
+          <div id="additive_list" class="add-list"></div>
+          <div class="hint">
+            Номенклатура по химической природе: утяжелитель (сульфат бария), ингибитор (K/Na/Ca соли),
+            полимер-вязкостник (ксантан/целлюлозные), фильтрационные агенты (крахмал/полимер),
+            LCM (волокно/гранулы/пластинки), лубрикант, щелочной буфер.
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-top:10px;">
+        <div class="card">
+          <h3>Расчет рецептуры на 1 м3</h3>
+          <div class="out" id="recipe_out"></div>
+          <table id="recipe_table"></table>
+        </div>
+        <div class="card">
+          <h3>Оценка свойств</h3>
+          <div class="out" id="prop_out"></div>
+          <table id="prop_table"></table>
+        </div>
+      </div>
+    </section>
+
+    <section id="tab_risk" class="tab">
+      <h2>Prevention Engine</h2>
+      <div class="grid-2">
+        <div class="card">
+          <h3>Операционные параметры</h3>
+          <label>Инклинация, град</label>
+          <input id="incl_deg" type="number" value="52" oninput="runAll()" onchange="runAll()" />
+
+          <label>ROP, м/ч</label>
+          <input id="rop_mh" type="number" value="16" oninput="runAll()" onchange="runAll()" />
+
+          <label>LGS, %</label>
+          <input id="lgs_pct" type="number" value="8" oninput="runAll()" onchange="runAll()" />
+
+          <label>Fluid Loss (API), мл/30 мин</label>
+          <input id="fl_api" type="number" value="14" oninput="runAll()" onchange="runAll()" />
+
+          <label>PV, cP</label>
+          <input id="pv_cp" type="number" value="28" oninput="runAll()" onchange="runAll()" />
+
+          <label>YP, lb/100ft2</label>
+          <input id="yp_lb" type="number" value="18" oninput="runAll()" onchange="runAll()" />
+        </div>
+
+        <div class="card">
+          <h3>Риски и действия</h3>
+          <div class="out" id="risk_out"></div>
+          <table id="risk_table"></table>
+        </div>
+      </div>
+    </section>
+
+    <section id="tab_qc" class="tab">
+      <h2>Lab-to-Field QC</h2>
+      <div class="grid-3">
+        <div class="card">
+          <h3>Текущие измерения</h3>
+          <label>Плотность, кг/м3</label>
+          <input id="qc_rho" type="number" value="1640" oninput="runAll()" onchange="runAll()" />
+
+          <label>PV, cP</label>
+          <input id="qc_pv" type="number" value="30" oninput="runAll()" onchange="runAll()" />
+
+          <label>YP, lb/100ft2</label>
+          <input id="qc_yp" type="number" value="17" oninput="runAll()" onchange="runAll()" />
+
+          <label>10s/10m gel, lb/100ft2</label>
+          <input id="qc_gel" type="text" value="5/11" oninput="runAll()" onchange="runAll()" />
+
+          <label>Fluid Loss API, мл</label>
+          <input id="qc_fl" type="number" value="13" oninput="runAll()" onchange="runAll()" />
+
+          <label>Песок, %</label>
+          <input id="qc_sand" type="number" value="0.6" step="0.1" oninput="runAll()" onchange="runAll()" />
+        </div>
+
+        <div class="card">
+          <h3>Целевые окна</h3>
+          <label>Плотность target, кг/м3</label>
+          <input id="t_rho" type="number" value="1650" oninput="runAll()" onchange="runAll()" />
+
+          <label>PV окно, cP</label>
+          <input id="t_pv" type="text" value="22-34" oninput="runAll()" onchange="runAll()" />
+
+          <label>YP окно, lb/100ft2</label>
+          <input id="t_yp" type="text" value="14-22" oninput="runAll()" onchange="runAll()" />
+
+          <label>Fluid Loss max, мл</label>
+          <input id="t_fl_max" type="number" value="15" oninput="runAll()" onchange="runAll()" />
+
+          <label>Песок max, %</label>
+          <input id="t_sand_max" type="number" value="1" step="0.1" oninput="runAll()" onchange="runAll()" />
+
+          <label>LGS max, %</label>
+          <input id="t_lgs_max" type="number" value="8" oninput="runAll()" onchange="runAll()" />
+        </div>
+
+        <div class="card">
+          <h3>QC статус</h3>
+          <div class="out" id="qc_out"></div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:10px;">
+        <h3>Частота тестов (рекомендация)</h3>
+        <table>
+          <tr><th>Тест</th><th>Частота</th><th>Назначение</th></tr>
+          <tr><td>Плотность / funnel</td><td>каждая циркуляция / смена</td><td>оперативный контроль гидростатики и транспорта шлама</td></tr>
+          <tr><td>PV / YP / gels</td><td>минимум 2 раза в сутки</td><td>контроль реологии и hole cleaning</td></tr>
+          <tr><td>Fluid loss / cake</td><td>ежесуточно + при изменении химии</td><td>контроль фильтрации и риска прихватов</td></tr>
+          <tr><td>Retort / solids</td><td>ежесуточно</td><td>баланс твердой фазы и dilution plan</td></tr>
+          <tr><td>pH / щелочность / ионы</td><td>1-2 раза в сутки</td><td>химическая стабильность и коррозионный контроль</td></tr>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const KEY = "df_system_designer_v1";
+
+    const ADDITIVES = [
+      { id: "weighting", name: "Утяжелитель (сульфат бария)", rho: 4200, dose: 180 },
+      { id: "inhibitor", name: "Ингибитор глин (K/Na/Ca соли)", rho: 1800, dose: 25 },
+      { id: "polymer", name: "Полимер-вязкостник (ксантан/целлюлозный)", rho: 1500, dose: 4 },
+      { id: "filtration", name: "Фильтрационный агент (крахмал/полимер)", rho: 1450, dose: 9 },
+      { id: "lcm", name: "LCM пакет (волокно+гранулы+пластинки)", rho: 1300, dose: 0 },
+      { id: "lubricant", name: "Лубрикант", rho: 900, dose: 8 },
+      { id: "buffer", name: "Щелочной буфер", rho: 2100, dose: 2 }
+    ];
+
+    function el(id) { return document.getElementById(id); }
+    function fn(id) { return parseFloat(el(id).value) || 0; }
+    function fv(id) { return el(id).value || ""; }
+    function setVal(id, v, d) {
+      el(id).value = (typeof v === "number") ? v.toFixed(d ?? 2) : v;
+    }
+
+    function openTab(name, btn) {
+      document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+      document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+      el("tab_" + name).classList.add("active");
+      btn.classList.add("active");
+    }
+
+    function renderAdditives() {
+      const html = ADDITIVES.map(a => {
+        return '<div class="add-item">'
+          + '<div>' + a.name + '</div>'
+          + '<input type="number" id="add_' + a.id + '" value="' + a.dose + '" step="0.1" oninput="runAll()" onchange="runAll()" />'
+          + '<div>кг/м3</div>'
+          + '</div>';
+      }).join("");
+      el("additive_list").innerHTML = html;
+    }
+
+    function onFamilyChange() {
+      const fam = fv("system_family");
+      if (fam === "wbm") {
+        setVal("base_rho", 1030, 0);
+        setVal("add_weighting", 180, 0);
+        setVal("add_inhibitor", 25, 0);
+        setVal("add_polymer", 4, 1);
+        setVal("add_filtration", 9, 1);
+        setVal("add_lcm", 0, 0);
+        setVal("add_lubricant", 8, 1);
+      } else if (fam === "naf") {
+        setVal("base_rho", 860, 0);
+        setVal("add_weighting", 260, 0);
+        setVal("add_inhibitor", 10, 0);
+        setVal("add_polymer", 2.5, 1);
+        setVal("add_filtration", 7, 1);
+        setVal("add_lcm", 4, 0);
+        setVal("add_lubricant", 4, 1);
+      } else {
+        setVal("base_rho", 900, 0);
+        setVal("add_weighting", 230, 0);
+        setVal("add_inhibitor", 12, 0);
+        setVal("add_polymer", 3, 1);
+        setVal("add_filtration", 7, 1);
+        setVal("add_lcm", 3, 0);
+        setVal("add_lubricant", 5, 1);
+      }
+    }
+
+    function calcSI() {
+      const rho = fn("mw_kgm3");
+      const tvd = fn("tvd_m");
+      const annDp = fn("ann_dp_mpa");
+      const q = fn("flow_lpm") / 1000 / 60; // m3/s
+      const dh = fn("hole_mm") / 1000;
+      const dp = fn("pipe_od_mm") / 1000;
+      const poreGrad = fn("pore_grad");
+      const fracGrad = fn("frac_grad");
+
+      const sg = rho / 1000;
+      const ppg = rho / 119.826;
+      const grad = rho * 9.81 / 1e6; // MPa/m
+      const pHyd = grad * tvd;
+
+      let annArea = (Math.PI / 4) * (dh * dh - dp * dp);
+      if (annArea <= 0) annArea = 0.0001;
+      const av = q / annArea;
+
+      const ecd = rho + (annDp * 1e6) / (9.81 * Math.max(tvd, 1));
+      const pDyn = (ecd * 9.81 / 1e6) * tvd;
+      const pPore = poreGrad * tvd;
+      const pFrac = fracGrad * tvd;
+
+      const marginToPore = pDyn - pPore;
+      const marginToFrac = pFrac - pDyn;
+      const window = Math.max(pFrac - pPore, 0.01);
+      const pIndex = (pDyn - pPore) / window;
+
+      setVal("mw_sg", sg, 3);
+      setVal("mw_ppg", ppg, 2);
+      setVal("hyd_grad_mpa_m", grad, 4);
+      setVal("hyd_p_mpa", pHyd, 2);
+      setVal("av_ms", av, 2);
+      setVal("ecd_kgm3", ecd, 0);
+      setVal("margin_to_pore", marginToPore, 2);
+      setVal("margin_to_frac", marginToFrac, 2);
+      setVal("pressure_index", pIndex, 2);
+
+      const idxClass = pIndex < 0.25 ? "ok" : (pIndex < 0.8 ? "warn" : "bad");
+      const out = ''
+        + '<div class="row"><span>Гидростатика @ TVD</span><span class="mono">' + pHyd.toFixed(2) + ' МПа</span></div>'
+        + '<div class="row"><span>Динамика @ ECD</span><span class="mono">' + pDyn.toFixed(2) + ' МПа</span></div>'
+        + '<div class="row"><span>Запас до fracture</span><span class="mono ' + (marginToFrac > 1 ? "ok" : "bad") + '">' + marginToFrac.toFixed(2) + ' МПа</span></div>'
+        + '<div class="row"><span>Запас над pore</span><span class="mono ' + (marginToPore > 0.3 ? "ok" : "warn") + '">' + marginToPore.toFixed(2) + ' МПа</span></div>'
+        + '<div class="row"><span>Индекс давления</span><span class="mono ' + idxClass + '">' + pIndex.toFixed(2) + '</span></div>';
+      el("si_out").innerHTML = out;
+
+      return { rho, tvd, annDp, av, ecd, pDyn, pPore, pFrac, marginToFrac, marginToPore, pIndex };
+    }
+
+    function calcDesign() {
+      const baseRho = fn("base_rho");
+      const targetRho = fn("target_rho");
+      const family = fv("system_family");
+      const temp = fn("bh_temp");
+      const reactive = fv("reactive_shale");
+      const lossProne = fv("loss_prone");
+
+      const rows = [];
+      let mFixed = 0;
+      let vFixed = 0;
+
+      ADDITIVES.forEach(a => {
+        if (a.id === "weighting") return;
+        const dose = fn("add_" + a.id);
+        const v = dose / a.rho;
+        mFixed += dose;
+        vFixed += v;
+        rows.push({ name: a.name, dose, rho: a.rho, vol: v });
+      });
+
+      const rhoW = ADDITIVES.find(x => x.id === "weighting").rho;
+      const constPart = mFixed + baseRho * (1 - vFixed);
+      let mWeight = (targetRho - constPart) / (1 - baseRho / rhoW);
+      if (!Number.isFinite(mWeight) || mWeight < 0) mWeight = 0;
+      setVal("add_weighting", mWeight, 1);
+
+      rows.unshift({
+        name: "Утяжелитель (сульфат бария)",
+        dose: mWeight,
+        rho: rhoW,
+        vol: mWeight / rhoW
+      });
+
+      const mTotalSolids = rows.reduce((s, r) => s + r.dose, 0);
+      const vTotalSolids = rows.reduce((s, r) => s + r.vol, 0);
+      const vBase = Math.max(1 - vTotalSolids, 0.001);
+      const mBase = vBase * baseRho;
+      const rhoAch = mBase + mTotalSolids;
+
+      const pvEst = 16 + 0.012 * mWeight + (family === "wbm" ? 4 : 6) + (temp > 120 ? 3 : 0);
+      const ypEst = 10 + 0.15 * fn("add_polymer") + 0.06 * fn("add_filtration") + (reactive === "yes" ? 2 : 0);
+      const flEst = Math.max(6, 22 - 0.8 * fn("add_filtration") - 0.2 * fn("add_polymer"));
+
+      const inhibIndex = (fn("add_inhibitor") / 25) + (family !== "wbm" ? 0.6 : 0);
+      const lcmIndex = fn("add_lcm") / 8;
+
+      const rec = [];
+      if (reactive === "yes" && inhibIndex < 1) rec.push("Увеличить ингибиторный пакет для контроля гидратации/дисперсии глин.");
+      if (lossProne === "high" && lcmIndex < 1) rec.push("Добавить LCM-пакет (волокно+гранулы+пластинки) до профилактического уровня.");
+      if (Math.abs(rhoAch - targetRho) > 25) rec.push("Подкорректировать утяжелитель или базовую плотность, отклонение от target слишком велико.");
+      if (flEst > 15) rec.push("Усилить фильтрационный блок (полимер/крахмал) для снижения API fluid loss.");
+
+      const head = ''
+        + '<div class="row"><span>Целевая плотность</span><span class="mono">' + targetRho.toFixed(0) + ' кг/м3</span></div>'
+        + '<div class="row"><span>Расчетная плотность</span><span class="mono ' + (Math.abs(rhoAch - targetRho) <= 20 ? "ok" : "warn") + '">' + rhoAch.toFixed(0) + ' кг/м3</span></div>'
+        + '<div class="row"><span>Твердая фаза (оценка)</span><span class="mono">' + (vTotalSolids * 100).toFixed(1) + ' %об.</span></div>'
+        + '<div class="row"><span>Базовая жидкость</span><span class="mono">' + mBase.toFixed(1) + ' кг/м3</span></div>';
+      el("recipe_out").innerHTML = head;
+
+      let tbl = '<tr><th>Компонент</th><th>Доза, кг/м3</th><th>Истинная плотность, кг/м3</th><th>Объем, м3</th></tr>';
+      rows.forEach(r => {
+        tbl += '<tr><td>' + r.name + '</td><td>' + r.dose.toFixed(2) + '</td><td>' + r.rho.toFixed(0) + '</td><td>' + r.vol.toFixed(4) + '</td></tr>';
+      });
+      tbl += '<tr><td><b>Базовая жидкость</b></td><td>' + mBase.toFixed(2) + '</td><td>' + baseRho.toFixed(0) + '</td><td>' + vBase.toFixed(4) + '</td></tr>';
+      el("recipe_table").innerHTML = tbl;
+
+      const pOut = ''
+        + '<div class="row"><span>PV (оценка)</span><span class="mono">' + pvEst.toFixed(1) + ' cP</span></div>'
+        + '<div class="row"><span>YP (оценка)</span><span class="mono">' + ypEst.toFixed(1) + ' lb/100ft2</span></div>'
+        + '<div class="row"><span>API Fluid Loss (оценка)</span><span class="mono">' + flEst.toFixed(1) + ' мл/30мин</span></div>'
+        + '<div class="row"><span>Ингибиторный индекс</span><span class="mono ' + (inhibIndex >= 1 ? "ok" : "warn") + '">' + inhibIndex.toFixed(2) + '</span></div>'
+        + '<div class="row"><span>LCM индекс</span><span class="mono ' + (lcmIndex >= 1 ? "ok" : "warn") + '">' + lcmIndex.toFixed(2) + '</span></div>';
+      el("prop_out").innerHTML = pOut;
+
+      let pt = '<tr><th>Параметр</th><th>Значение</th><th>Комментарий</th></tr>';
+      pt += '<tr><td>Плотность</td><td>' + rhoAch.toFixed(0) + ' кг/м3</td><td>' + (Math.abs(rhoAch - targetRho) <= 20 ? "в окне" : "нужна коррекция") + '</td></tr>';
+      pt += '<tr><td>PV</td><td>' + pvEst.toFixed(1) + ' cP</td><td>для текущего solids/утяжеления</td></tr>';
+      pt += '<tr><td>YP</td><td>' + ypEst.toFixed(1) + ' lb/100ft2</td><td>транспорт шлама</td></tr>';
+      pt += '<tr><td>Fluid Loss</td><td>' + flEst.toFixed(1) + ' мл/30мин</td><td>' + (flEst <= 15 ? "контролируемо" : "усилить FL-блок") + '</td></tr>';
+      pt += '<tr><td>Рекомендации</td><td colspan="2">' + (rec.length ? rec.join(" ") : "Пакет сбалансирован для заданных условий.") + '</td></tr>';
+      el("prop_table").innerHTML = pt;
+
+      return { rhoAch, targetRho, pvEst, ypEst, flEst, inhibIndex, lcmIndex };
+    }
+
+    function calcRisk(si, design) {
+      const incl = fn("incl_deg");
+      const rop = fn("rop_mh");
+      const lgs = fn("lgs_pct");
+      const fl = fn("fl_api");
+      const pv = fn("pv_cp");
+      const yp = fn("yp_lb");
+      const reactive = fv("reactive_shale");
+      const lossProne = fv("loss_prone");
+
+      let lost = 20;
+      lost += (lossProne === "high" ? 28 : lossProne === "mid" ? 14 : 5);
+      lost += Math.max(0, (0.9 - si.marginToFrac / Math.max(si.pFrac, 0.1)) * 40);
+      lost += (lgs > 8 ? 12 : 0);
+      lost += (si.pIndex > 0.8 ? 18 : 0);
+
+      let stuck = 18;
+      stuck += (fl > 15 ? 16 : 6);
+      stuck += (si.marginToPore > 2.5 ? 18 : 8);
+      stuck += (yp < 14 ? 8 : 0);
+      stuck += (incl > 40 ? 10 : 0);
+
+      let sag = 12;
+      sag += (fn("mw_kgm3") > 1700 ? 18 : 5);
+      sag += ((incl >= 35 && incl <= 75) ? 20 : 8);
+      sag += (si.av < 0.8 ? 18 : (si.av < 1.1 ? 10 : 3));
+      sag += (yp < 15 ? 12 : 3);
+
+      let stab = 15;
+      stab += (reactive === "yes" ? 20 : 5);
+      stab += (design.inhibIndex < 1 ? 18 : 4);
+      stab += (rop > 20 ? 10 : 4);
+      stab += (lgs > 8 ? 10 : 3);
+
+      lost = Math.min(100, Math.max(0, lost));
+      stuck = Math.min(100, Math.max(0, stuck));
+      sag = Math.min(100, Math.max(0, sag));
+      stab = Math.min(100, Math.max(0, stab));
+
+      const pack = [
+        { n: "Потери циркуляции", v: lost, a: "Снизить ECD, усилить LCM-пакет, ограничить surge/swab, проверка потерь по интервалам." },
+        { n: "Прихват (дифф/мех)", v: stuck, a: "Снизить overbalance, улучшить фильтрацию/качество корки, не держать колонну статично." },
+        { n: "Саг утяжелителя", v: sag, a: "Повысить YP/низкоскоростную реологию, удерживать annular velocity, контролировать инклинационные зоны." },
+        { n: "Нестабильность ствола", v: stab, a: "Усилить ингибиторный пакет, контролировать активность воды, держать плотность в безопасном окне." }
+      ];
+
+      const classify = x => x < 35 ? "ok" : (x < 65 ? "warn" : "bad");
+      const state = x => x < 35 ? "LOW" : (x < 65 ? "MED" : "HIGH");
+
+      let out = "";
+      pack.forEach(r => {
+        out += '<div class="row"><span>' + r.n + '</span><span class="mono ' + classify(r.v) + '">' + r.v.toFixed(0) + ' (' + state(r.v) + ')</span></div>';
+      });
+      el("risk_out").innerHTML = out;
+
+      let tbl = '<tr><th>Риск</th><th>Скор</th><th>Профилактика</th></tr>';
+      pack.forEach(r => {
+        tbl += '<tr><td>' + r.n + '</td><td class="' + classify(r.v) + '">' + r.v.toFixed(0) + '</td><td>' + r.a + '</td></tr>';
+      });
+      el("risk_table").innerHTML = tbl;
+
+      return { lost, stuck, sag, stab };
+    }
+
+    function parseRange(str) {
+      const m = (str || "").split("-").map(x => parseFloat(x.trim()));
+      if (m.length !== 2 || !Number.isFinite(m[0]) || !Number.isFinite(m[1])) return [0, 0];
+      return [Math.min(m[0], m[1]), Math.max(m[0], m[1])];
+    }
+
+    function calcQC(design) {
+      const rho = fn("qc_rho");
+      const pv = fn("qc_pv");
+      const yp = fn("qc_yp");
+      const fl = fn("qc_fl");
+      const sand = fn("qc_sand");
+      const lgs = fn("lgs_pct");
+
+      const tRho = fn("t_rho");
+      const [pvMin, pvMax] = parseRange(fv("t_pv"));
+      const [ypMin, ypMax] = parseRange(fv("t_yp"));
+      const flMax = fn("t_fl_max");
+      const sandMax = fn("t_sand_max");
+      const lgsMax = fn("t_lgs_max");
+
+      const chk = [];
+      chk.push({ k: "Плотность", ok: Math.abs(rho - tRho) <= 20, d: rho.toFixed(0) + " vs " + tRho.toFixed(0) + " кг/м3" });
+      chk.push({ k: "PV", ok: pv >= pvMin && pv <= pvMax, d: pv.toFixed(1) + " cP (" + pvMin + "-" + pvMax + ")" });
+      chk.push({ k: "YP", ok: yp >= ypMin && yp <= ypMax, d: yp.toFixed(1) + " (" + ypMin + "-" + ypMax + ")" });
+      chk.push({ k: "Fluid Loss", ok: fl <= flMax, d: fl.toFixed(1) + " <= " + flMax + " мл" });
+      chk.push({ k: "Sand", ok: sand <= sandMax, d: sand.toFixed(1) + " <= " + sandMax + " %" });
+      chk.push({ k: "LGS", ok: lgs <= lgsMax, d: lgs.toFixed(1) + " <= " + lgsMax + " %" });
+
+      const pass = chk.filter(x => x.ok).length;
+      const total = chk.length;
+      const score = (pass / total) * 100;
+      const cls = score >= 85 ? "ok" : (score >= 60 ? "warn" : "bad");
+
+      let out = '<div class="row"><span>QC Score</span><span class="mono ' + cls + '">' + score.toFixed(0) + '/100</span></div>';
+      chk.forEach(c => {
+        out += '<div class="row"><span>' + c.k + '</span><span class="mono ' + (c.ok ? "ok" : "bad") + '">' + (c.ok ? "PASS" : "CHECK") + '</span></div>';
+      });
+
+      const rec = [];
+      if (fl > flMax) rec.push("Снизить фильтрацию: увеличить долю фильтрационного агента/крахмала/полимера.");
+      if (sand > sandMax || lgs > lgsMax) rec.push("Стабилизировать solids control: шейкеры, гидроциклоны, центрифуга, dilution.");
+      if (Math.abs(rho - tRho) > 20) rec.push("Скорректировать утяжелитель/разбавление до целевой плотности.");
+      if (pv < pvMin || yp < ypMin) rec.push("Поднять carrying capacity: полимер-вязкостник/YP-коррекция.");
+      if (pv > pvMax) rec.push("Снизить PV: контроль drilled solids и диспергирование.");
+
+      out += '<div class="row"><span>Рекомендации</span><span class="mono">' + (rec.length ? rec.length : 0) + '</span></div>';
+      out += '<div class="hint">' + (rec.length ? rec.join(" ") : "Параметры в окне. Поддерживать текущий режим обработки.") + '</div>';
+      el("qc_out").innerHTML = out;
+    }
+
+    function runAll() {
+      const si = calcSI();
+      const design = calcDesign();
+      calcRisk(si, design);
+      calcQC(design);
+    }
+
+    function saveState() {
+      const nodes = Array.from(document.querySelectorAll("input,select"));
+      const payload = {};
+      nodes.forEach(n => payload[n.id] = n.value);
+      localStorage.setItem(KEY, JSON.stringify(payload));
+      alert("Состояние сохранено");
+    }
+
+    function loadState() {
+      const raw = localStorage.getItem(KEY);
+      if (!raw) {
+        alert("Сохранение не найдено");
+        return;
+      }
+      try {
+        const payload = JSON.parse(raw);
+        Object.keys(payload).forEach(k => {
+          if (el(k)) el(k).value = payload[k];
+        });
+        runAll();
+        alert("Состояние загружено");
+      } catch (e) {
+        alert("Ошибка загрузки");
+      }
+    }
+
+    function exportState() {
+      const nodes = Array.from(document.querySelectorAll("input,select"));
+      const payload = {};
+      nodes.forEach(n => payload[n.id] = n.value);
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "drilling_fluid_system_case.json";
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      renderAdditives();
+      onFamilyChange();
+
+      const raw = localStorage.getItem(KEY);
+      if (raw) {
+        try {
+          const payload = JSON.parse(raw);
+          Object.keys(payload).forEach(k => {
+            if (el(k)) el(k).value = payload[k];
+          });
+        } catch (e) {
+        }
+      }
+
+      runAll();
+    });
+  </script>
+  <script src="assets/js/global-auth-widget.js"></script>
+</body>
+</html>

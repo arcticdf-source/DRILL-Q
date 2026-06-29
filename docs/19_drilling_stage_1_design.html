@@ -1,0 +1,1393 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Бурение — Этап 1: Проектирование | NEXUS OILFIELD AI</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap");
+
+    :root {
+      --bg-0: #060a10;
+      --bg-1: #0d1522;
+      --text: #e8f0ff;
+      --muted: #94a3bb;
+      --cyan: #1ad8b5;
+      --amber: #ffbc4c;
+      --red: #ff7070;
+      --line: rgba(220,235,255,.14);
+      --line-s: rgba(220,235,255,.07);
+      --panel: rgba(10,16,28,.72);
+      --r: 18px;
+      --shadow: 0 20px 50px rgba(0,0,0,.45);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; }
+
+    html, body {
+      min-height: 100%;
+      background:
+        radial-gradient(700px 360px at 0% -10%, rgba(26,216,181,.22), transparent),
+        radial-gradient(600px 320px at 100% 5%,  rgba(255,188,76,.15), transparent),
+        linear-gradient(150deg, var(--bg-0), var(--bg-1) 55%, #101c32);
+      color: var(--text);
+      font-family: "Manrope", sans-serif;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      background:
+        linear-gradient(to right, rgba(255,255,255,.025) 1px, transparent 1px),
+        linear-gradient(to bottom,rgba(255,255,255,.025) 1px, transparent 1px);
+      background-size: 38px 38px;
+      mask-image: radial-gradient(circle at 50% 25%, rgba(0,0,0,.9), transparent 68%);
+    }
+
+    .wrap {
+      position: relative; z-index: 1;
+      width: min(1100px, 92vw);
+      margin: 0 auto;
+      padding: 28px 0 80px;
+    }
+
+    /* ── TOPBAR ── */
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+      padding: 12px 18px;
+      border-radius: 12px;
+      border: 1px solid var(--line-s);
+      background: rgba(6,11,20,.55);
+      backdrop-filter: blur(10px);
+      position: static;
+    }
+
+    .brand {
+      display: flex; align-items: center; gap: 10px;
+      font-family: "Oswald", sans-serif; font-size: 17px;
+      letter-spacing: .06em; text-transform: uppercase;
+    }
+
+    .brand-dot {
+      width: 12px; height: 12px; border-radius: 999px;
+      background: radial-gradient(circle at 30% 30%, #b2fff2, var(--cyan));
+      box-shadow: 0 0 0 0 rgba(26,216,181,.7);
+      animation: pulse 2.4s infinite;
+    }
+
+    .back-link {
+      font-size: 13px; color: var(--muted); text-decoration: none;
+      letter-spacing: .04em; text-transform: uppercase;
+      border: 1px solid var(--line-s);
+      border-radius: 999px;
+      padding: 6px 12px;
+      transition: border-color 160ms, color 160ms;
+    }
+    .back-link:hover { border-color: var(--cyan); color: var(--cyan); }
+    .stage-rail {
+      margin-top: 14px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid var(--line-s);
+      background: rgba(6,11,20,.55);
+      box-shadow: var(--shadow);
+    }
+    .rail-chip {
+      text-decoration: none;
+      padding: 7px 11px;
+      border-radius: 999px;
+      border: 1px solid var(--line-s);
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      background: rgba(255,255,255,.03);
+    }
+    .rail-chip.active {
+      color: #05241f;
+      background: linear-gradient(135deg, #9efcef, var(--cyan));
+      border-color: rgba(26,216,181,.82);
+    }
+
+    /* ── HERO ── */
+    .hero {
+      margin-top: 24px;
+      border-radius: 26px;
+      border: 1px solid var(--line);
+      padding: clamp(20px,3vw,40px);
+      background:
+        linear-gradient(140deg, rgba(26,216,181,.1), rgba(12,20,36,.85) 45%, rgba(255,188,76,.07)),
+        var(--panel);
+      box-shadow: var(--shadow);
+      position: relative; overflow: hidden; isolation: isolate;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute; width: 380px; height: 380px; right: -120px; bottom: -110px;
+      border-radius: 999px;
+      background: radial-gradient(circle, rgba(26,216,181,.25), transparent 70%);
+      filter: blur(18px); z-index: -1;
+    }
+
+    .badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 11px;
+      border-radius: 999px; border: 1px solid var(--line-s);
+      background: rgba(255,255,255,.04);
+      font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: #b8c9e0;
+    }
+
+    .badge-dot { width: 6px; height: 6px; border-radius: 999px; background: var(--amber); }
+
+    .hero h1 {
+      margin-top: 14px;
+      font-family: "Oswald", sans-serif; font-size: clamp(36px,5.5vw,66px);
+      line-height: 1.0; letter-spacing: .01em; text-transform: uppercase;
+    }
+
+    .hero h1 span { color: var(--cyan); }
+
+    .hero p {
+      margin-top: 14px;
+      color: #9fb3cc; font-size: clamp(15px,2vw,18px); line-height: 1.5;
+      max-width: 680px;
+    }
+
+    /* ── START STEPS ── */
+    .start {
+      margin-top: 20px;
+      display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 10px;
+    }
+
+    .start-step {
+      border: 1px solid var(--line-s); border-radius: 14px;
+      background: rgba(255,255,255,.03);
+      padding: 12px;
+    }
+
+    .step-num {
+      font-family: "Oswald", sans-serif; font-size: 13px;
+      color: var(--amber); letter-spacing: .08em;
+    }
+
+    .start-step p {
+      margin-top: 6px; font-size: 13px; color: #a0b2c9; line-height: 1.4;
+    }
+
+    /* ── GRID SECTIONS ── */
+    .grid-2 {
+      margin-top: 22px;
+      display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 16px;
+    }
+
+    .panel {
+      border: 1px solid var(--line-s); border-radius: var(--r);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      padding: 18px;
+    }
+
+    .panel-title {
+      font-family: "Oswald", sans-serif;
+      font-size: 22px; letter-spacing: .04em; text-transform: uppercase;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--line-s);
+      margin-bottom: 14px;
+    }
+
+    /* ── RESULTS ── */
+    .result-list { display: grid; gap: 10px; }
+
+    .result-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      border: 1px solid var(--line-s); border-radius: 12px;
+      background: rgba(255,255,255,.02);
+      padding: 12px;
+    }
+
+    .r-num {
+      min-width: 28px; height: 28px;
+      border-radius: 8px;
+      background: rgba(26,216,181,.14); border: 1px solid rgba(26,216,181,.4);
+      color: var(--cyan); font-weight: 800; font-size: 13px;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .result-item p { font-size: 14px; color: #c4d2e7; line-height: 1.4; }
+
+    /* ── MANAGER COCKPIT ── */
+    .cockpit {
+      margin-top: 22px;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background:
+        radial-gradient(420px 220px at 0% 0%, rgba(26,216,181,.11), transparent),
+        radial-gradient(360px 180px at 100% 0%, rgba(255,188,76,.08), transparent),
+        rgba(10,16,28,.82);
+      box-shadow: var(--shadow);
+      padding: 18px;
+    }
+
+    .cockpit-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .cockpit-head h2 {
+      font-family: "Oswald", sans-serif;
+      font-size: 28px;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    .cockpit-head p {
+      margin-top: 8px;
+      max-width: 760px;
+      color: #a7bad2;
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .cockpit-badge {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 6px 10px;
+      border: 1px solid rgba(26,216,181,.28);
+      background: rgba(26,216,181,.08);
+      color: #9aedde;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      white-space: nowrap;
+    }
+
+    .cockpit-grid {
+      display: grid;
+      grid-template-columns: 1.08fr .92fr;
+      gap: 16px;
+    }
+
+    .tool-panel {
+      border: 1px solid var(--line-s);
+      border-radius: 18px;
+      background: rgba(255,255,255,.03);
+      padding: 16px;
+    }
+
+    .tool-panel h3 {
+      font-size: 16px;
+      margin-bottom: 12px;
+    }
+
+    .tool-form {
+      display: grid;
+      gap: 12px;
+    }
+
+    .tool-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: 12px;
+    }
+
+    .field {
+      display: grid;
+      gap: 7px;
+    }
+
+    .field label,
+    .check-matrix legend,
+    .artifact-matrix legend {
+      font-size: 12px;
+      color: #c9d7ea;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      font-weight: 800;
+    }
+
+    .field small {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      border: 1px solid var(--line-s);
+      border-radius: 12px;
+      background: rgba(7,12,21,.74);
+      color: var(--text);
+      padding: 11px 12px;
+      font: inherit;
+      outline: none;
+    }
+
+    .field textarea {
+      min-height: 96px;
+      resize: vertical;
+    }
+
+    .field input[type="range"] {
+      padding: 0;
+      accent-color: var(--cyan);
+    }
+
+    .range-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .check-matrix,
+    .artifact-matrix {
+      margin: 0;
+      padding: 0;
+      border: 0;
+      display: grid;
+      gap: 8px;
+    }
+
+    .check-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      border: 1px solid var(--line-s);
+      border-radius: 12px;
+      background: rgba(255,255,255,.02);
+      padding: 11px 12px;
+    }
+
+    .check-card input {
+      margin-top: 3px;
+      accent-color: var(--cyan);
+    }
+
+    .check-card strong {
+      display: block;
+      font-size: 13px;
+      color: #e6f0ff;
+    }
+
+    .check-card span {
+      display: block;
+      margin-top: 3px;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.35;
+    }
+
+    .score-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .score-card {
+      border: 1px solid var(--line-s);
+      border-radius: 14px;
+      background: rgba(255,255,255,.03);
+      padding: 12px;
+    }
+
+    .score-card strong {
+      display: block;
+      font-size: 24px;
+      margin-top: 6px;
+    }
+
+    .score-card span {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--muted);
+    }
+
+    .decision-shell {
+      display: grid;
+      gap: 12px;
+    }
+
+    .decision-banner {
+      border-radius: 16px;
+      padding: 16px;
+      border: 1px solid var(--line-s);
+      background: rgba(255,255,255,.03);
+    }
+
+    .decision-banner[data-status="ready"] {
+      border-color: rgba(26,216,181,.4);
+      background: rgba(26,216,181,.08);
+    }
+
+    .decision-banner[data-status="conditional"] {
+      border-color: rgba(255,188,76,.4);
+      background: rgba(255,188,76,.08);
+    }
+
+    .decision-banner[data-status="blocked"] {
+      border-color: rgba(255,112,112,.4);
+      background: rgba(255,112,112,.08);
+    }
+
+    .decision-banner h3 {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    .decision-banner p {
+      margin-top: 8px;
+      color: #d8e5f5;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .decision-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      background: rgba(255,255,255,.06);
+      color: #e4eefc;
+    }
+
+    .tool-list {
+      margin: 0;
+      padding-left: 18px;
+      display: grid;
+      gap: 7px;
+      color: #d2e0f2;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .action-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .action-chip {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 6px 10px;
+      border: 1px solid var(--line-s);
+      background: rgba(255,255,255,.04);
+      font-size: 11px;
+      color: #dce8f9;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+    }
+
+    /* ── CHECKLIST ── */
+    .check-list { display: grid; gap: 8px; }
+
+    .check-item {
+      display: flex; align-items: center; gap: 10px;
+      border: 1px solid var(--line-s); border-radius: 10px;
+      background: rgba(255,255,255,.02);
+      padding: 11px 13px;
+      font-size: 14px; color: #c4d2e7;
+    }
+
+    .check-icon {
+      width: 22px; height: 22px; border-radius: 6px;
+      border: 1.5px solid var(--cyan);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .check-icon svg { display: block; }
+
+    /* ── ROADMAP ── */
+    .roadmap { display: grid; gap: 10px; }
+
+    .week {
+      border: 1px solid var(--line-s); border-radius: 14px;
+      background: rgba(8,14,26,.55);
+      padding: 14px;
+    }
+
+    .week-head {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 10px;
+    }
+
+    .wk-badge {
+      padding: 4px 10px; border-radius: 999px;
+      font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+      border: 1px solid rgba(255,188,76,.45);
+      background: rgba(255,188,76,.1); color: var(--amber);
+    }
+
+    .week-title { font-weight: 700; font-size: 15px; }
+
+    .week ul {
+      list-style: none; padding: 0;
+      display: grid; gap: 6px;
+    }
+
+    .week ul li {
+      font-size: 13px; color: #9bb0cc;
+      padding-left: 14px; position: relative;
+    }
+
+    .week ul li::before {
+      content: ""; position: absolute; left: 0; top: 7px;
+      width: 5px; height: 5px; border-radius: 999px; background: var(--cyan);
+    }
+
+    .week-gate {
+      margin-top: 10px;
+      display: flex; align-items: flex-start; gap: 8px;
+      border: 1px solid rgba(26,216,181,.28); border-radius: 10px;
+      background: rgba(26,216,181,.07);
+      padding: 9px 12px;
+      font-size: 13px; color: #8ee6d3;
+    }
+
+    /* ── ARTIFACTS ── */
+    .artifact-grid {
+      display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px;
+    }
+
+    .artifact {
+      border: 1px solid var(--line-s); border-radius: 12px;
+      background: rgba(255,255,255,.02);
+      padding: 12px;
+    }
+
+    .artifact-num {
+      font-size: 11px; font-weight: 800; letter-spacing: .1em; color: var(--amber);
+      text-transform: uppercase;
+    }
+
+    .artifact h4 { margin-top: 4px; font-size: 14px; color: #dce9ff; }
+    .artifact p  { margin-top: 5px; font-size: 13px; color: var(--muted); line-height: 1.38; }
+
+    /* ── GATE CRITERIA ── */
+    .gate-list { display: grid; gap: 8px; }
+
+    .gate-item {
+      display: flex; align-items: flex-start; gap: 10px;
+      border: 1px solid rgba(26,216,181,.22); border-radius: 10px;
+      background: rgba(26,216,181,.05);
+      padding: 11px 12px;
+      font-size: 14px; color: #b4e8de; line-height: 1.4;
+    }
+
+    .gate-num {
+      min-width: 24px; height: 24px; border-radius: 6px;
+      background: rgba(26,216,181,.2); border: 1px solid rgba(26,216,181,.45);
+      color: var(--cyan); font-weight: 800; font-size: 12px;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+
+    /* ── RISKS ── */
+    .risk-list { display: grid; gap: 10px; }
+
+    .risk-item {
+      border: 1px solid rgba(255,112,112,.22); border-radius: 12px;
+      background: rgba(255,112,112,.05);
+      padding: 12px;
+    }
+
+    .risk-title { font-size: 14px; font-weight: 700; color: #ffbaba; }
+    .risk-mit   { margin-top: 5px; font-size: 13px; color: #9dafc5; line-height: 1.38; }
+
+    /* ── 5-DAY SPRINT ── */
+    .sprint-grid {
+      display: grid; grid-template-columns: repeat(5, minmax(0,1fr)); gap: 8px;
+    }
+
+    .sprint-day {
+      border: 1px solid var(--line-s); border-radius: 12px;
+      background: rgba(255,255,255,.02);
+      padding: 12px;
+    }
+
+    .sd-num {
+      font-family: "Oswald", sans-serif; font-size: 22px; color: var(--cyan);
+      line-height: 1;
+    }
+
+    .sd-label { font-size: 11px; color: var(--muted); text-transform: uppercase;
+      letter-spacing: .06em; }
+
+    .sprint-day p { margin-top: 10px; font-size: 13px; color: #9bb0cc; line-height: 1.4; }
+
+    /* ── FOOTER ── */
+    .footer {
+      margin-top: 24px; text-align: center;
+      font-size: 12px; color: #5a6a82;
+      letter-spacing: .07em; text-transform: uppercase;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes pulse {
+      0%   { box-shadow: 0 0 0 0   rgba(26,216,181,.7); }
+      70%  { box-shadow: 0 0 0 12px rgba(26,216,181,0); }
+      100% { box-shadow: 0 0 0 0   rgba(26,216,181,0); }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 860px) {
+      .grid-2   { grid-template-columns: 1fr; }
+      .start    { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .sprint-grid { grid-template-columns: 1fr; }
+      .artifact-grid { grid-template-columns: 1fr; }
+      .cockpit-grid, .tool-row, .score-grid { grid-template-columns: 1fr; }
+      .topbar   { position: static; }
+    }
+
+    @media (max-width: 520px) {
+      .start    { grid-template-columns: 1fr; }
+    }
+  </style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+  <main class="wrap">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-dot" aria-hidden="true"></span>
+        Nexus Oilfield AI
+      </div>
+      <div style="display:flex;gap:10px;align-items:center">
+        <a href="artifacts/stage1_tracker.html" style="font-size:12px;color:#1ad8b5;text-decoration:none;letter-spacing:.04em;text-transform:uppercase;border:1px solid rgba(26,216,181,.4);border-radius:999px;padding:5px 11px;transition:background 150ms" onmouseenter="this.style.background='rgba(26,216,181,.12)'" onmouseleave="this.style.background=''">Трекер</a>
+        <a class="back-link" href="../index.html">← На главную</a>
+      </div>
+    </header>
+
+    <nav class="stage-rail">
+      <a class="rail-chip active" href="19_drilling_stage_1_design.html">Stage 1</a>
+      <a class="rail-chip" href="15_drilling_design_block.html">Design Block</a>
+      <a class="rail-chip" href="20_drilling_stage_1_execution_playbook.html">Playbook</a>
+      <a class="rail-chip" href="16_drilling_stage_2_pilot.html">Stage 2</a>
+      <a class="rail-chip" href="17_drilling_stage_3_scaling.html">Stage 3</a>
+      <a class="rail-chip" href="18_drilling_stage_4_autonomous_ops.html">Stage 4</a>
+      <a class="rail-chip" href="63_drilling_stage_roadmap.html">Roadmap</a>
+      <a class="rail-chip" href="64_drilling_board_overview.html">Board View</a>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="badge"><span class="badge-dot"></span>БУРЕНИЕ</div>
+      <h1>Этап <span>01</span><br>Проектирование</h1>
+      <p>Спроектировать управляемый цифровой контур бурения и organisационные процессы до старта пилота. Без этого этапа пилот начнется вслепую.</p>
+      <div class="start">
+        <div class="start-step">
+          <div class="step-num">ШАГ 01</div>
+          <p>Утвердить KPI charter и baseline окно</p>
+        </div>
+        <div class="start-step">
+          <div class="step-num">ШАГ 02</div>
+          <p>Назначить владельцев данных и решений</p>
+        </div>
+        <div class="start-step">
+          <div class="step-num">ШАГ 03</div>
+          <p>Подключить WITS/WITSML, отчеты и события</p>
+        </div>
+        <div class="start-step">
+          <div class="step-num">ШАГ 04</div>
+          <p>Запустить цикл контроля качества данных</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="cockpit">
+      <div class="cockpit-head">
+        <div>
+          <div class="cockpit-badge">Stage 1 Manager Cockpit</div>
+          <h2>Рабочий инструмент для go/no-go по проектированию</h2>
+          <p>Здесь менеджер по бурению не просто читает описание этапа, а быстро фиксирует статус проекта, считает readiness к пилоту, видит слабые места в архитектуре Stage 1 и получает следующий action plan по данным, governance и operational readiness.</p>
+        </div>
+        <div class="cockpit-badge">Local save</div>
+      </div>
+      <div class="cockpit-grid">
+        <div class="tool-panel">
+          <h3>Входные параметры проекта</h3>
+          <form class="tool-form" id="stage1CockpitForm">
+            <div class="tool-row">
+              <div class="field">
+                <label for="projectScope">Периметр Stage 1</label>
+                <select id="projectScope" name="projectScope">
+                  <option value="single_rig">Одна буровая / один pilot stream</option>
+                  <option value="multi_rig">Несколько буровых / один кластер</option>
+                  <option value="field_program">Полевая программа / multi-stream</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="currentWeek">Текущая неделя</label>
+                <select id="currentWeek" name="currentWeek">
+                  <option value="1">Неделя 1</option>
+                  <option value="2">Неделя 2</option>
+                  <option value="3">Неделя 3</option>
+                  <option value="4">Неделя 4</option>
+                  <option value="5">Неделя 5</option>
+                  <option value="6">Неделя 6</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="dataQualityScore">Data Quality Score</label>
+              <input id="dataQualityScore" name="dataQualityScore" type="range" min="0" max="100" value="72" />
+              <div class="range-meta"><span>Минимум для перехода к pilot: 80%</span><strong id="dataQualityScoreValue">72%</strong></div>
+            </div>
+
+            <div class="field">
+              <label for="alertPrecision">Precision / качество shadow-алертов</label>
+              <input id="alertPrecision" name="alertPrecision" type="range" min="0" max="100" value="64" />
+              <div class="range-meta"><span>Целевой operational threshold: 70%</span><strong id="alertPrecisionValue">64%</strong></div>
+            </div>
+
+            <fieldset class="check-matrix">
+              <legend>Жесткие gate-условия</legend>
+              <label class="check-card"><input type="checkbox" name="baselineApproved" /><span><strong>KPI charter и baseline подписаны</strong><span>Без этого невозможно доказать value и сравнить pilot с фактом.</span></span></label>
+              <label class="check-card"><input type="checkbox" name="hseEmbedded" /><span><strong>HSE-ограничения встроены в workflow</strong><span>Критические действия не могут выходить за технологическое окно и policy guardrails.</span></span></label>
+              <label class="check-card"><input type="checkbox" name="raciApproved" /><span><strong>RACI и владельцы решений утверждены</strong><span>Понятно, кто подтверждает, кто исполняет и кто закрывает feedback loop.</span></span></label>
+              <label class="check-card"><input type="checkbox" name="onCallReady" /><span><strong>On-call команда и SLA готовы</strong><span>Есть реальный operational контур поддержки для Stage 2.</span></span></label>
+            </fieldset>
+
+            <fieldset class="artifact-matrix">
+              <legend>Артефакты Stage 1</legend>
+              <div style="margin-bottom:10px;font-size:12px;line-height:1.5;color:#a9bdd7">Статусы здесь синхронизируются из рабочего реестра артефактов в playbook. Заполнение ведется на странице 20, а cockpit использует эти статусы для readiness-оценки.</div>
+              <label class="check-card"><input type="checkbox" name="artifactDesign" disabled /><span><strong>Бриф по проектированию бурения</strong><span>Периметр, риски, KPI, роли и ожидания заказчика зафиксированы.</span></span></label>
+              <label class="check-card"><input type="checkbox" name="artifactData" disabled /><span><strong>Пакет договоренностей по данным</strong><span>Источники, поля, SLA и владельцы данных зафиксированы.</span></span></label>
+              <label class="check-card"><input type="checkbox" name="artifactQuality" disabled /><span><strong>Отчет по качеству данных</strong><span>Пропуски, задержки, выбросы и итоговый quality score оформлены.</span></span></label>
+              <label class="check-card"><input type="checkbox" name="artifactAlerts" disabled /><span><strong>Каталог алертов v1</strong><span>Пороги, severity и эскалации согласованы с operations.</span></span></label>
+              <label class="check-card"><input type="checkbox" name="artifactWorkflow" disabled /><span><strong>Карта принятия решений</strong><span>Подтверждение, исполнение и feedback loop собраны в единый контур.</span></span></label>
+              <label class="check-card"><input type="checkbox" name="artifactReadiness" disabled /><span><strong>Лист готовности к пилоту</strong><span>Команда может формализовать go / no-go решение на пилот.</span></span></label>
+            </fieldset>
+
+            <div class="field">
+              <label for="managerNote">Ключевой риск / примечание менеджера</label>
+              <textarea id="managerNote" name="managerNote" placeholder="Например: data latency по WITS, нет owner по alert review, слабая explainability по stuck pipe early warning."></textarea>
+            </div>
+          </form>
+        </div>
+
+        <div class="tool-panel decision-shell">
+          <div class="decision-banner" id="decisionBanner" data-status="blocked">
+            <div class="decision-pill" id="decisionPill">No-Go</div>
+            <h3 id="decisionTitle">Stage 1 еще не готов к переходу</h3>
+            <p id="decisionSummary">Сейчас страница дает не описание, а управленческое решение: фиксирует, чего именно не хватает до Stage 2 и что надо закрыть в первую очередь.</p>
+          </div>
+
+          <div class="score-grid">
+            <div class="score-card"><span>Readiness</span><strong id="readinessScore">58%</strong></div>
+            <div class="score-card"><span>Gate Status</span><strong id="gateStatus">2 / 4</strong></div>
+            <div class="score-card"><span>Artifacts</span><strong id="artifactStatus">0 / 6</strong></div>
+          </div>
+
+          <div>
+            <h3>Что блокирует переход</h3>
+            <ul class="tool-list" id="blockersList"></ul>
+          </div>
+
+          <div>
+            <h3>Следующие действия менеджера</h3>
+            <ul class="tool-list" id="actionsList"></ul>
+          </div>
+
+          <div>
+            <h3>Архитектурный фокус на эту неделю</h3>
+            <div class="action-strip" id="focusStrip"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RESULTS + CHECKLIST -->
+    <div class="grid-2">
+      <div class="panel">
+        <div class="panel-title">Ключевые результаты</div>
+        <div class="result-list">
+          <div class="result-item">
+            <span class="r-num">1</span>
+            <p>Зафиксированы KPI и baseline — договоренность о том, что считаем успехом</p>
+          </div>
+          <div class="result-item">
+            <span class="r-num">2</span>
+            <p>Подключены и проверены источники данных на соответствие quality gates</p>
+          </div>
+          <div class="result-item">
+            <span class="r-num">3</span>
+            <p>Описаны AI-сценарии и роль инженера в принятии решений</p>
+          </div>
+          <div class="result-item">
+            <span class="r-num">4</span>
+            <p>Готовы интерфейсы алертинга и процесс согласования с супервайзером</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">Контрольный список</div>
+        <div class="check-list">
+          <div class="check-item">
+            <div class="check-icon">
+              <svg width="13" height="10" fill="none" viewBox="0 0 13 10">
+                <path d="M1 5l3.5 3.5L12 1" stroke="#1ad8b5" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            Data Quality Score согласован
+          </div>
+          <div class="check-item">
+            <div class="check-icon">
+              <svg width="13" height="10" fill="none" viewBox="0 0 13 10">
+                <path d="M1 5l3.5 3.5L12 1" stroke="#1ad8b5" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            HSE-ограничения в рабочих процедурах
+          </div>
+          <div class="check-item">
+            <div class="check-icon">
+              <svg width="13" height="10" fill="none" viewBox="0 0 13 10">
+                <path d="M1 5l3.5 3.5L12 1" stroke="#1ad8b5" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            Команда и роли по RACI утверждены
+          </div>
+          <div class="check-item">
+            <div class="check-icon">
+              <svg width="13" height="10" fill="none" viewBox="0 0 13 10">
+                <path d="M1 5l3.5 3.5L12 1" stroke="#1ad8b5" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            Готов план запуска пилота (Этап 2)
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ARTIFACTS -->
+    <div class="panel" style="margin-top:16px">
+      <div class="panel-title">Артефакты на выходе</div>
+      <div class="artifact-grid">
+        <a class="artifact" href="15_drilling_design_block.html" style="text-decoration:none;color:inherit;cursor:pointer;transition:border-color 160ms;display:block" onmouseenter="this.style.borderColor='rgba(26,216,181,.5)'" onmouseleave="this.style.borderColor=''">
+          <div class="artifact-num">Документ</div>
+          <h4>Design Block</h4>
+          <p>Полная стратегическая архитектура блока бурения: данные, AI-модули, KPI и guardrails.</p>
+          <div style="margin-top:8px;font-size:11px;color:#1ad8b5;letter-spacing:.06em;text-transform:uppercase">Открыть страницу →</div>
+        </a>
+        <a class="artifact" href="20_drilling_stage_1_execution_playbook.html" style="text-decoration:none;color:inherit;cursor:pointer;transition:border-color 160ms;display:block" onmouseenter="this.style.borderColor='rgba(255,188,76,.5)'" onmouseleave="this.style.borderColor=''">
+          <div class="artifact-num">Документ</div>
+          <h4>Execution Playbook</h4>
+          <p>Недельный рабочий план stage 1: артефакты, RACI, быстрый старт и gate-критерии.</p>
+          <div style="margin-top:8px;font-size:11px;color:#ffbc4c;letter-spacing:.06em;text-transform:uppercase">Открыть страницу →</div>
+        </a>
+        <a class="artifact" href="artifacts/kpi_charter.html" style="text-decoration:none;color:inherit;cursor:pointer;transition:border-color 160ms;display:block" onmouseenter="this.style.borderColor='rgba(26,216,181,.5)'" onmouseleave="this.style.borderColor=''">
+          <div class="artifact-num">Артефакт 01</div>
+          <h4>KPI Charter</h4>
+          <p>Периметр, baseline, согласованные KPI и подписи сторон</p>
+          <div style="margin-top:8px;font-size:11px;color:#1ad8b5;letter-spacing:.06em;text-transform:uppercase">Открыть шаблон →</div>
+        </a>
+        <a class="artifact" href="artifacts/data_contract.html" style="text-decoration:none;color:inherit;cursor:pointer;transition:border-color 160ms;display:block" onmouseenter="this.style.borderColor='rgba(255,188,76,.5)'" onmouseleave="this.style.borderColor=''">
+          <div class="artifact-num">Артефакт 02</div>
+          <h4>Data Contract Pack</h4>
+          <p>Источники, поля, частоты, владельцы данных, SLA</p>
+          <div style="margin-top:8px;font-size:11px;color:#ffbc4c;letter-spacing:.06em;text-transform:uppercase">Открыть шаблон →</div>
+        </a>
+        <div class="artifact">
+          <div class="artifact-num">Артефакт 03</div>
+          <h4>Data Quality Report</h4>
+          <p>Пропуски, задержки, выбросы, SLA на данные</p>
+        </div>
+        <a class="artifact" href="artifacts/alert_catalog.html" style="text-decoration:none;color:inherit;cursor:pointer;transition:border-color 160ms;display:block" onmouseenter="this.style.borderColor='rgba(255,112,112,.5)'" onmouseleave="this.style.borderColor=''">
+          <div class="artifact-num">Артефакт 04</div>
+          <h4>Alert Catalog v1</h4>
+          <p>Типы алертов, пороги, каналы, правила эскалации</p>
+          <div style="margin-top:8px;font-size:11px;color:#ff7070;letter-spacing:.06em;text-transform:uppercase">Открыть шаблон →</div>
+        </a>
+        <div class="artifact">
+          <div class="artifact-num">Артефакт 05</div>
+          <h4>Decision Workflow Map</h4>
+          <p>Кто подтверждает, кто исполняет, кто закрывает</p>
+        </div>
+        <a class="artifact" href="artifacts/pilot_launch_readiness_sheet.html" style="text-decoration:none;color:inherit;cursor:pointer;transition:border-color 160ms;display:block" onmouseenter="this.style.borderColor='rgba(26,216,181,.5)'" onmouseleave="this.style.borderColor=''">
+          <div class="artifact-num">Артефакт 06</div>
+          <h4>Pilot Launch Readiness Sheet</h4>
+          <p>Go/No-Go документ перед стартом Этапа 2</p>
+          <div style="margin-top:8px;font-size:11px;color:#1ad8b5;letter-spacing:.06em;text-transform:uppercase">Открыть readiness sheet →</div>
+        </a>
+      </div>
+    </div>
+
+    <!-- ROADMAP 6 WEEKS -->
+    <div class="panel" style="margin-top:16px">
+      <div class="panel-title">Дорожная карта — 6 недель</div>
+      <div class="roadmap">
+        <div class="week">
+          <div class="week-head">
+            <span class="wk-badge">Неделя 1</span>
+            <span class="week-title">Kickoff и рамки</span>
+          </div>
+          <ul>
+            <li>Утвердить периметр: бригады, скважины, интервалы</li>
+            <li>Зафиксировать KPI и окно baseline</li>
+            <li>Подтвердить владельцев данных и ответственных ролей</li>
+          </ul>
+          <div class="week-gate">
+            <svg style="flex-shrink:0;margin-top:1px" width="14" height="14" fill="none" viewBox="0 0 14 14">
+              <circle cx="7" cy="7" r="6" stroke="#1ad8b5" stroke-width="1.5"/>
+              <path d="M4.5 7l1.8 1.8L9.5 5" stroke="#1ad8b5" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Критерий: подписан kickoff-протокол и KPI charter
+          </div>
+        </div>
+        <div class="week">
+          <div class="week-head">
+            <span class="wk-badge">Неделя 2</span>
+            <span class="week-title">Данные и качество</span>
+          </div>
+          <ul>
+            <li>Подключить WITS/WITSML, отчеты, событийные журналы</li>
+            <li>Согласовать словарь полей и единицы измерения</li>
+            <li>Посчитать первичный Data Quality Score</li>
+          </ul>
+          <div class="week-gate">
+            <svg style="flex-shrink:0;margin-top:1px" width="14" height="14" fill="none" viewBox="0 0 14 14">
+              <circle cx="7" cy="7" r="6" stroke="#1ad8b5" stroke-width="1.5"/>
+              <path d="M4.5 7l1.8 1.8L9.5 5" stroke="#1ad8b5" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Критерий: ≥ 80% критичных полей доступны и валидны
+          </div>
+        </div>
+        <div class="week">
+          <div class="week-head">
+            <span class="wk-badge">Неделя 3</span>
+            <span class="week-title">Модель риска NPT</span>
+          </div>
+          <ul>
+            <li>Построить baseline-логику NPT Predictor</li>
+            <li>Определить пороги риска: низкий / средний / критичный</li>
+            <li>Настроить журнал причин алертов (explainability)</li>
+          </ul>
+          <div class="week-gate">
+            <svg style="flex-shrink:0;margin-top:1px" width="14" height="14" fill="none" viewBox="0 0 14 14">
+              <circle cx="7" cy="7" r="6" stroke="#1ad8b5" stroke-width="1.5"/>
+              <path d="M4.5 7l1.8 1.8L9.5 5" stroke="#1ad8b5" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Критерий: алерты имеют трассируемые причины и уровни приоритета
+          </div>
+        </div>
+        <div class="week">
+          <div class="week-head">
+            <span class="wk-badge">Неделя 4</span>
+            <span class="week-title">ROP и сценарии действий</span>
+          </div>
+          <ul>
+            <li>Спроектировать рекомендации по ROP в пределах техограничений</li>
+            <li>Утвердить playbook действий супервайзера</li>
+            <li>Настроить SLA реакции на алерты</li>
+          </ul>
+          <div class="week-gate">
+            <svg style="flex-shrink:0;margin-top:1px" width="14" height="14" fill="none" viewBox="0 0 14 14">
+              <circle cx="7" cy="7" r="6" stroke="#1ad8b5" stroke-width="1.5"/>
+              <path d="M4.5 7l1.8 1.8L9.5 5" stroke="#1ad8b5" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Критерий: для каждого критичного алерта задано действие и владелец
+          </div>
+        </div>
+        <div class="week">
+          <div class="week-head">
+            <span class="wk-badge">Неделя 5</span>
+            <span class="week-title">Shadow mode</span>
+          </div>
+          <ul>
+            <li>Запустить поток алертов без оперативного вмешательства</li>
+            <li>Сравнить алерты с фактическими событиями</li>
+            <li>Снизить долю ложных срабатываний</li>
+          </ul>
+          <div class="week-gate">
+            <svg style="flex-shrink:0;margin-top:1px" width="14" height="14" fill="none" viewBox="0 0 14 14">
+              <circle cx="7" cy="7" r="6" stroke="#1ad8b5" stroke-width="1.5"/>
+              <path d="M4.5 7l1.8 1.8L9.5 5" stroke="#1ad8b5" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Критерий: достигнут целевой Precision/Recall на тестовом окне
+          </div>
+        </div>
+        <div class="week">
+          <div class="week-head">
+            <span class="wk-badge">Неделя 6</span>
+            <span class="week-title">Readiness review</span>
+          </div>
+          <ul>
+            <li>Провести итоговый технико-операционный аудит</li>
+            <li>Выпустить Pilot Launch Readiness Sheet</li>
+            <li>Утвердить Go/No-Go на Этап 2</li>
+          </ul>
+          <div class="week-gate">
+            <svg style="flex-shrink:0;margin-top:1px" width="14" height="14" fill="none" viewBox="0 0 14 14">
+              <circle cx="7" cy="7" r="6" stroke="#1ad8b5" stroke-width="1.5"/>
+              <path d="M4.5 7l1.8 1.8L9.5 5" stroke="#1ad8b5" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Критерий: подписан акт готовности к пилоту
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GATES + RISKS -->
+    <div class="grid-2" style="margin-top:16px">
+      <div class="panel">
+        <div class="panel-title">Gate-критерии → Этап 2</div>
+        <div class="gate-list">
+          <div class="gate-item"><span class="gate-num">1</span>KPI и baseline официально утверждены</div>
+          <div class="gate-item"><span class="gate-num">2</span>Data Quality Score ≥ 0.80 по критичным полям</div>
+          <div class="gate-item"><span class="gate-num">3</span>Shadow mode прошел целевые пороги точности</div>
+          <div class="gate-item"><span class="gate-num">4</span>HSE-ограничения встроены в workflow</div>
+          <div class="gate-item"><span class="gate-num">5</span>Команда on-call и SLA готовы к пилоту</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">Риски и митигации</div>
+        <div class="risk-list">
+          <div class="risk-item">
+            <div class="risk-title">Низкое качество данных</div>
+            <div class="risk-mit">Data profiling + обязательные quality gates перед каждым этапом</div>
+          </div>
+          <div class="risk-item">
+            <div class="risk-title">Низкое принятие рекомендаций</div>
+            <div class="risk-mit">Обучение супервайзеров + короткий feedback loop</div>
+          </div>
+          <div class="risk-item">
+            <div class="risk-title">Завышенные ожидания</div>
+            <div class="risk-mit">Фиксировать реалистичные KPI и окно валидации на старте</div>
+          </div>
+          <div class="risk-item">
+            <div class="risk-title">Риски безопасности</div>
+            <div class="risk-mit">Hard-stop правила и human-in-the-loop для критичных действий</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:16px">
+      <div class="panel-title">Сводная карта стадий</div>
+      <div class="artifact-grid">
+        <a class="artifact" href="63_drilling_stage_roadmap.html" style="text-decoration:none;color:inherit;cursor:pointer;transition:border-color 160ms;display:block" onmouseenter="this.style.borderColor='rgba(26,216,181,.5)'" onmouseleave="this.style.borderColor=''">
+          <div class="artifact-num">Roadmap</div>
+          <h4>Drilling Stage Map 1-4</h4>
+          <p>Единая страница со всеми этапами: проектирование, пилот, масштабирование и автономный контур.</p>
+          <div style="margin-top:8px;font-size:11px;color:#1ad8b5;letter-spacing:.06em;text-transform:uppercase">Открыть roadmap →</div>
+        </a>
+      </div>
+    </div>
+
+    <!-- 5-DAY SPRINT -->
+    <div class="panel" style="margin-top:16px">
+      <div class="panel-title">Быстрый старт — 5 рабочих дней</div>
+      <div class="sprint-grid">
+        <div class="sprint-day">
+          <div class="sd-num">01</div>
+          <div class="sd-label">День</div>
+          <p>Утвердить рабочую группу и владельцев потоков данных</p>
+        </div>
+        <div class="sprint-day">
+          <div class="sd-num">02</div>
+          <div class="sd-label">День</div>
+          <p>Собрать перечень источников и структуру полей</p>
+        </div>
+        <div class="sprint-day">
+          <div class="sd-num">03</div>
+          <div class="sd-label">День</div>
+          <p>Зафиксировать KPI charter и baseline окно</p>
+        </div>
+        <div class="sprint-day">
+          <div class="sd-num">04</div>
+          <div class="sd-label">День</div>
+          <p>Согласовать матрицу алертов и каналы эскалации</p>
+        </div>
+        <div class="sprint-day">
+          <div class="sd-num">05</div>
+          <div class="sd-label">День</div>
+          <p>Readiness-сессия и закрепить backlog недели 2</p>
+        </div>
+      </div>
+    </div>
+
+    <p class="footer">Nexus Oilfield AI — Бурение Этап 01 / Проектирование</p>
+  </main>
+  <script>
+    (function () {
+      var STORAGE_KEY = 'nexus_stage1_manager_cockpit_v1';
+      var SUMMARY_KEY = 'nexus_stage1_manager_summary_v1';
+      var ARTIFACTS_KEY = 'nexus_stage1_artifact_workbench_v1';
+      var form = document.getElementById('stage1CockpitForm');
+      if (!form) {
+        return;
+      }
+
+      var focusByWeek = {
+        '1': ['KPI charter', 'Perimeter freeze', 'Owners and RACI'],
+        '2': ['Data contract', 'Field dictionary', 'Quality baseline'],
+        '3': ['NPT logic', 'Explainability', 'Severity thresholds'],
+        '4': ['ROP playbook', 'Supervisor actions', 'SLA reaction time'],
+        '5': ['Shadow mode', 'False positives', 'Alert adoption'],
+        '6': ['Readiness review', 'Pilot decision', 'Stage 2 launch plan']
+      };
+
+      function getFormState() {
+        var state = {};
+        Array.prototype.forEach.call(form.elements, function (element) {
+          if (!element.name) {
+            return;
+          }
+          state[element.name] = element.type === 'checkbox' ? element.checked : element.value;
+        });
+        return state;
+      }
+
+      function applyFormState(state) {
+        Object.keys(state || {}).forEach(function (name) {
+          var field = form.elements[name];
+          if (!field) {
+            return;
+          }
+          if (field.type === 'checkbox') {
+            field.checked = Boolean(state[name]);
+          } else {
+            field.value = state[name];
+          }
+        });
+      }
+
+      function saveState() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(getFormState()));
+        } catch (error) {
+          // Ignore local storage failures.
+        }
+      }
+
+      function loadState() {
+        try {
+          return JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
+        } catch (error) {
+          return null;
+        }
+      }
+
+      function loadArtifacts() {
+        try {
+          return JSON.parse(localStorage.getItem(ARTIFACTS_KEY) || 'null');
+        } catch (error) {
+          return null;
+        }
+      }
+
+      function saveSummary(summary) {
+        try {
+          localStorage.setItem(SUMMARY_KEY, JSON.stringify(summary));
+        } catch (error) {
+          // Ignore local storage failures.
+        }
+      }
+
+      function setRangeValue(id, value) {
+        var node = document.getElementById(id);
+        if (node) {
+          node.textContent = value + '%';
+        }
+      }
+
+      function renderList(id, items) {
+        var list = document.getElementById(id);
+        if (!list) {
+          return;
+        }
+        list.innerHTML = items.map(function (item) {
+          return '<li>' + item + '</li>';
+        }).join('');
+      }
+
+      function renderFocus(week) {
+        var strip = document.getElementById('focusStrip');
+        if (!strip) {
+          return;
+        }
+        strip.innerHTML = (focusByWeek[week] || []).map(function (item) {
+          return '<span class="action-chip">' + item + '</span>';
+        }).join('');
+      }
+
+      function normalizeArtifactWorkbench(raw) {
+        var definitions = {
+          artifactDesign: 'a1',
+          artifactData: 'a2',
+          artifactQuality: 'a3',
+          artifactAlerts: 'a4',
+          artifactWorkflow: 'a5',
+          artifactReadiness: 'a6'
+        };
+        var normalized = {};
+        Object.keys(definitions).forEach(function (fieldName) {
+          var item = raw && raw[definitions[fieldName]] ? raw[definitions[fieldName]] : null;
+          var status = item && item.status ? item.status : 'not_started';
+          normalized[fieldName] = status === 'review' || status === 'approved';
+        });
+        return normalized;
+      }
+
+      function applyArtifactStateToForm() {
+        var artifactState = normalizeArtifactWorkbench(loadArtifacts());
+        Object.keys(artifactState).forEach(function (fieldName) {
+          var field = form.elements[fieldName];
+          if (field) {
+            field.checked = artifactState[fieldName];
+          }
+        });
+      }
+
+      function updateCockpit() {
+        applyArtifactStateToForm();
+        var state = getFormState();
+        var dataQuality = Number(state.dataQualityScore || 0);
+        var alertPrecision = Number(state.alertPrecision || 0);
+        var gateChecks = ['baselineApproved', 'hseEmbedded', 'raciApproved', 'onCallReady'];
+        var artifactChecks = ['artifactDesign', 'artifactData', 'artifactQuality', 'artifactAlerts', 'artifactWorkflow', 'artifactReadiness'];
+        var passedGates = gateChecks.filter(function (key) { return state[key]; }).length;
+        var artifactCount = artifactChecks.filter(function (key) { return state[key]; }).length;
+        var governanceScore = Math.round((passedGates / gateChecks.length) * 100);
+        var artifactScore = Math.round((artifactCount / artifactChecks.length) * 100);
+        var readinessScore = Math.round(dataQuality * 0.35 + alertPrecision * 0.25 + governanceScore * 0.25 + artifactScore * 0.15);
+        var blockers = [];
+        var actions = [];
+        var status = 'blocked';
+        var title = 'Stage 1 еще не готов к переходу';
+        var pill = 'No-Go';
+        var summary = 'Есть критичные пробелы в design-to-pilot контуре. Сначала нужно закрыть обязательные gate-условия и довести архитектуру до операционно защищаемого состояния.';
+
+        setRangeValue('dataQualityScoreValue', dataQuality);
+        setRangeValue('alertPrecisionValue', alertPrecision);
+
+        if (!state.baselineApproved) {
+          blockers.push('Не подписаны KPI charter и baseline. Сейчас невозможно доказать value case и корректно оценить pilot.');
+          actions.push('Закрыть KPI charter с формулой эффекта, baseline-окном и официальными owner-signoff.');
+        }
+        if (dataQuality < 80) {
+          blockers.push('Data Quality Score ниже 80%. Контур данных пока недостаточно надежен для Stage 2.');
+          actions.push('Дожать качество критичных полей: latency, completeness, mapping единиц и owner SLA.');
+        }
+        if (alertPrecision < 70 && Number(state.currentWeek || 1) >= 5) {
+          blockers.push('Shadow-алерты пока не дотягивают до target precision для pilot режима.');
+          actions.push('Пересобрать пороги alerting и убрать ложные срабатывания до запуска пилота.');
+        }
+        if (!state.hseEmbedded) {
+          blockers.push('HSE-ограничения не встроены в workflow как hard guardrails.');
+          actions.push('Зафиксировать policy rules: что advisory-only, что blocked-by-default, что требует supervisor confirm.');
+        }
+        if (!state.raciApproved) {
+          blockers.push('Не утвержден RACI. Контур принятия решения еще организационно не собран.');
+          actions.push('Подписать decision workflow map: supervisor, drilling manager, remote ops, data/ML.');
+        }
+        if (!state.onCallReady && Number(state.currentWeek || 1) >= 4) {
+          blockers.push('Нет готового on-call и SLA контура под pilot support.');
+          actions.push('Собрать on-call roster и SLA response matrix до readiness review.');
+        }
+        if (artifactCount < 4) {
+          blockers.push('Артефакты Stage 1 еще не собраны в управляемый пакет.');
+          actions.push('Довести минимум до четырех рабочих артефактов: бриф, данные, качество и каталог алертов.');
+        }
+
+        if (!blockers.length && readinessScore >= 85 && passedGates === gateChecks.length && artifactCount >= 5 && dataQuality >= 80 && alertPrecision >= 70) {
+          status = 'ready';
+          title = 'Stage 1 готов к go/no-go review на pilot';
+          pill = 'Ready for Pilot Gate';
+          summary = 'Контур проектирования выглядит собранным: данные защищены, governance оформлен, архитектура и эксплуатационный workflow готовы к formal readiness review.';
+          actions = [
+            'Выпустить Pilot Launch Readiness Sheet и провести финальный management review.',
+            'Зафиксировать pilot perimeter, shadow-to-live protocol и owner cadence на Stage 2.',
+            'Перенести подтвержденные ограничения и action playbooks в pilot dashboard.'
+          ];
+        } else if (passedGates >= 3 && readinessScore >= 70) {
+          status = 'conditional';
+          title = 'Stage 1 близок к готовности, но переход пока условный';
+          pill = 'Conditional Go';
+          summary = 'Архитектурный каркас уже есть, но еще остаются 1-2 системных разрыва, которые опасно тащить в Stage 2 без закрытия.';
+        }
+
+        if (!actions.length) {
+          actions.push('Держать недельный cadence review и не расширять pilot perimeter до закрытия всех gate-критериев.');
+        }
+
+        var note = (state.managerNote || '').trim();
+        if (note) {
+          actions.push('Отдельно разобрать риск менеджера: ' + note);
+        }
+
+        document.getElementById('readinessScore').textContent = readinessScore + '%';
+        document.getElementById('gateStatus').textContent = passedGates + ' / ' + gateChecks.length;
+        document.getElementById('artifactStatus').textContent = artifactCount + ' / ' + artifactChecks.length;
+        document.getElementById('decisionPill').textContent = pill;
+        document.getElementById('decisionTitle').textContent = title;
+        document.getElementById('decisionSummary').textContent = summary;
+        document.getElementById('decisionBanner').setAttribute('data-status', status);
+
+        renderList('blockersList', blockers.length ? blockers : ['Критичных блокеров по текущему вводу не видно. Можно переходить к формальному readiness review и pilot planning.']);
+        renderList('actionsList', actions.slice(0, 5));
+        renderFocus(state.currentWeek || '1');
+        saveSummary({
+          readinessScore: readinessScore,
+          gateStatus: passedGates,
+          gateTotal: gateChecks.length,
+          artifactStatus: artifactCount,
+          artifactTotal: artifactChecks.length,
+          status: status,
+          pill: pill,
+          title: title,
+          summary: summary,
+          blockers: blockers,
+          actions: actions.slice(0, 5),
+          note: note,
+          currentWeek: state.currentWeek || '1',
+          projectScope: state.projectScope || 'single_rig',
+          dataQuality: dataQuality,
+          alertPrecision: alertPrecision,
+          updatedAt: new Date().toISOString()
+        });
+        saveState();
+      }
+
+      applyFormState(loadState());
+      applyArtifactStateToForm();
+      form.addEventListener('input', updateCockpit);
+      form.addEventListener('change', updateCockpit);
+      window.addEventListener('storage', function (event) {
+        if (event.key === ARTIFACTS_KEY) {
+          updateCockpit();
+        }
+      });
+      updateCockpit();
+    })();
+  </script>
+  <script src="assets/js/stage1-live-status.js"></script>
+  <script src="assets/js/global-auth-widget.js"></script>
+</body>
+</html>

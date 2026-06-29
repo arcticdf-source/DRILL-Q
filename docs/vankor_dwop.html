@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DWOP · Горизонтальная скважина · Нх III-IV · Ванкорское НГМ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#06090f;--p1:#0c1220;--p2:#111a2e;--p3:#172038;
+  --line:rgba(255,255,255,.07);--line2:rgba(255,255,255,.04);
+  --t:#d8e4f0;--muted:#6b7f96;--muted2:#4a5a6e;
+  --cyan:#00d4ff;--cyan2:rgba(0,212,255,.12);
+  --g:#00e676;--g2:rgba(0,230,118,.12);
+  --w:#ffab00;--w2:rgba(255,171,0,.15);
+  --r:#ff3d3d;--r2:rgba(255,61,61,.15);
+  --purple:#a78bfa;--purple2:rgba(167,139,250,.12);
+  --topbar:46px;--sidebar:220px;
+}
+html,body{height:100%;background:var(--bg);color:var(--t);font-family:'Inter',-apple-system,sans-serif;font-size:13px;line-height:1.5;-webkit-font-smoothing:antialiased}
+
+/* TOPBAR */
+#topbar{position:fixed;top:0;left:0;right:0;height:var(--topbar);z-index:200;
+  background:rgba(12,18,32,.97);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--line);
+  display:flex;align-items:center;padding:0 16px 0 0;gap:0}
+.tb-brand{width:var(--sidebar);flex-shrink:0;display:flex;align-items:center;gap:8px;padding:0 16px;border-right:1px solid var(--line);height:100%}
+.tb-mark{width:26px;height:26px;border-radius:6px;background:#2563eb;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#fff;letter-spacing:-.02em}
+.tb-name{font-size:13px;font-weight:800;letter-spacing:-.02em}
+.tb-sub{font-size:9px;color:var(--muted);margin-top:1px}
+.tb-mid{flex:1;display:flex;align-items:center;gap:10px;padding:0 14px}
+.tb-well{display:flex;align-items:center;gap:7px;padding:4px 10px;border-radius:6px;background:var(--p2);border:1px solid var(--line);font-size:12px}
+.tb-well .dot{width:6px;height:6px;border-radius:50%;background:var(--w);animation:blink 1.5s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.tb-badge{padding:3px 9px;border-radius:5px;font-size:10px;font-weight:700;background:rgba(255,171,0,.15);color:var(--w);border:1px solid rgba(255,171,0,.25)}
+.tb-right{margin-left:auto;display:flex;align-items:center;gap:8px;flex-shrink:0;padding-right:4px}
+.tb-stat{font-size:11px;color:var(--muted)}
+.tb-stat span{color:var(--cyan);font-family:'JetBrains Mono',monospace;font-weight:700}
+
+/* SIDEBAR */
+#sidebar{position:fixed;top:var(--topbar);left:0;bottom:0;width:var(--sidebar);z-index:100;
+  background:var(--p1);border-right:1px solid var(--line);
+  display:flex;flex-direction:column;overflow:hidden}
+.sb-section{padding:10px 10px 4px}
+.sb-label{font-size:9px;font-weight:700;color:var(--muted2);letter-spacing:.1em;text-transform:uppercase;padding:0 8px;margin-bottom:3px}
+.nav-item{display:flex;align-items:center;gap:9px;padding:7px 8px;border-radius:7px;color:var(--muted);font-size:12px;font-weight:500;cursor:pointer;transition:all .12s;position:relative}
+.nav-item:hover{background:var(--p2);color:var(--t)}
+.nav-item.active{background:var(--cyan2);color:var(--cyan);font-weight:700}
+.ni-icon{width:15px;height:15px;flex-shrink:0;opacity:.7}
+.nav-item.active .ni-icon{opacity:1}
+.nb{margin-left:auto;padding:1px 5px;border-radius:999px;font-size:9px;font-weight:700}
+.nb-r{background:var(--r);color:#fff}
+.nb-w{background:var(--w);color:#000}
+.nb-g{background:var(--g);color:#001}
+.nb-c{background:var(--cyan);color:#000}
+.sb-divider{height:1px;background:var(--line);margin:6px 10px}
+
+/* DEPTH CARD */
+.depth-card{margin:10px;padding:11px 12px;background:linear-gradient(135deg,#0f2347,#0a1928);border:1px solid rgba(0,212,255,.12);border-radius:9px}
+.dc-label{font-size:9px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.08em;margin-bottom:2px}
+.dc-val{font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;color:var(--cyan);line-height:1}
+.dc-sub{font-size:10px;color:rgba(255,255,255,.3);margin-top:2px}
+.dc-bar{margin-top:8px;height:3px;background:rgba(255,255,255,.1);border-radius:2px;overflow:hidden}
+.dc-fill{height:100%;background:var(--cyan);border-radius:2px}
+
+/* MAIN */
+#main{position:fixed;top:var(--topbar);left:var(--sidebar);right:0;bottom:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+.view{display:none;padding:20px}
+.view.active{display:block}
+
+/* PAGE HEADER */
+.ph{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px}
+.ph-title{font-size:18px;font-weight:800;letter-spacing:-.03em}
+.ph-sub{font-size:11px;color:var(--muted);margin-top:3px}
+.ph-actions{display:flex;gap:8px}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:6px 13px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;border:1px solid transparent;transition:all .15s;font-family:inherit}
+.btn-primary{background:#2563eb;color:#fff;border-color:#2563eb}
+.btn-primary:hover{background:#1d4ed8}
+.btn-ghost{background:var(--p2);color:var(--t);border-color:var(--line)}
+.btn-ghost:hover{border-color:var(--cyan);color:var(--cyan)}
+
+/* CARDS */
+.card{background:var(--p1);border:1px solid var(--line);border-radius:10px;margin-bottom:14px}
+.card-hdr{display:flex;align-items:center;justify-content:space-between;padding:12px 16px 0;margin-bottom:10px}
+.card-title{font-size:12px;font-weight:800;letter-spacing:.02em;text-transform:uppercase;color:var(--muted)}
+.card-body{padding:0 16px 14px}
+
+/* GRIDS */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+
+/* KPI */
+.kpi{background:var(--p1);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.kpi-label{font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px}
+.kpi-val{font-size:22px;font-weight:800;font-family:'JetBrains Mono',monospace;letter-spacing:-.5px}
+.kpi-sub{font-size:10px;margin-top:3px}
+.ok{color:var(--g)}.warn{color:var(--w)}.crit{color:var(--r)}.info{color:var(--cyan)}
+
+/* TABLES */
+.tbl{width:100%;border-collapse:collapse;font-size:12px}
+.tbl th{background:var(--p2);font-weight:700;color:var(--muted);text-align:left;padding:7px 10px;border-bottom:1px solid var(--line);font-size:10px;text-transform:uppercase;letter-spacing:.06em;white-space:nowrap}
+.tbl td{padding:8px 10px;border-bottom:1px solid var(--line2);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:rgba(255,255,255,.02)}
+.mono{font-family:'JetBrains Mono',monospace;color:var(--muted)}
+.bold{font-weight:700}
+.blue{color:var(--cyan)}.green{color:var(--g)}.amber{color:var(--w)}.red{color:var(--r)}.purple{color:var(--purple)}
+
+/* RISK PILLS */
+.rpill{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:999px;font-size:9px;font-weight:700;white-space:nowrap}
+.rp-crit{background:var(--r2);color:var(--r);border:1px solid rgba(255,61,61,.2)}
+.rp-high{background:rgba(249,115,22,.12);color:#f97316;border:1px solid rgba(249,115,22,.2)}
+.rp-med{background:var(--w2);color:var(--w);border:1px solid rgba(255,171,0,.2)}
+.rp-low{background:var(--g2);color:var(--g);border:1px solid rgba(0,230,118,.2)}
+
+/* CASING VISUAL */
+.csg-diagram{display:flex;flex-direction:column;gap:0;background:var(--p2);border-radius:8px;overflow:hidden}
+.csg-row{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--line2)}
+.csg-row:last-child{border-bottom:none}
+.csg-color{width:12px;height:12px;border-radius:3px;flex-shrink:0}
+.csg-info{flex:1}
+.csg-name{font-size:12px;font-weight:700}
+.csg-detail{font-size:10px;color:var(--muted);margin-top:1px}
+.csg-depth{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:var(--cyan);white-space:nowrap}
+.csg-od{font-size:10px;color:var(--muted);text-align:right}
+
+/* BHA DIAGRAM */
+.bha-wrap{display:flex;flex-direction:column;gap:2px}
+.bha-item{display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--p2);border-radius:6px;border-left:3px solid}
+.bha-item.bit{border-color:var(--r)}
+.bha-item.motor{border-color:var(--w)}
+.bha-item.mwd{border-color:var(--cyan)}
+.bha-item.lwd{border-color:var(--purple)}
+.bha-item.rss{border-color:var(--g)}
+.bha-item.stab{border-color:#f97316}
+.bha-item.dc{border-color:var(--muted2)}
+.bha-item.hwdp{border-color:var(--muted2)}
+.bha-item.jar{border-color:var(--w)}
+.bha-icon{font-size:14px;flex-shrink:0;width:22px;text-align:center}
+.bha-name{font-size:12px;font-weight:700;flex:1}
+.bha-spec{font-size:10px;color:var(--muted)}
+.bha-len{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);white-space:nowrap}
+
+/* ALERT ITEMS */
+.alert-item{display:flex;gap:10px;padding:10px 12px;background:var(--p2);border-radius:8px;margin-bottom:6px;border-left:3px solid;cursor:pointer;transition:opacity .15s}
+.alert-item:hover{opacity:.85}
+.alert-item.crit{border-color:var(--r)}
+.alert-item.high{border-color:#f97316}
+.alert-item.warn{border-color:var(--w)}
+.alert-item.info{border-color:var(--cyan)}
+.alert-item.ok{border-color:var(--g)}
+.ai-icon{font-size:14px;flex-shrink:0;margin-top:1px}
+.ai-body{flex:1}
+.ai-title{font-size:12px;font-weight:700;margin-bottom:2px}
+.alert-item.crit .ai-title{color:var(--r)}
+.alert-item.high .ai-title{color:#f97316}
+.alert-item.warn .ai-title{color:var(--w)}
+.alert-item.info .ai-title{color:var(--cyan)}
+.alert-item.ok .ai-title{color:var(--g)}
+.ai-desc{font-size:11px;color:var(--muted);line-height:1.5}
+.ai-meta{font-size:9px;font-family:'JetBrains Mono',monospace;color:var(--muted2);margin-top:3px}
+
+/* PHASE TIMELINE */
+.phase-timeline{display:flex;flex-direction:column;gap:0}
+.phase-item{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--line2);position:relative}
+.phase-item:last-child{border-bottom:none}
+.phase-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:3px;position:relative;z-index:1}
+.phase-line{position:absolute;left:4px;top:22px;bottom:-12px;width:2px;background:var(--line)}
+.phase-item:last-child .phase-line{display:none}
+.phase-body{flex:1}
+.phase-name{font-size:12px;font-weight:700}
+.phase-detail{font-size:11px;color:var(--muted);margin-top:2px;line-height:1.5}
+.phase-depth{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--cyan);margin-top:2px}
+
+/* TRAJECTORY CANVAS */
+#trajCanvas{display:block;width:100%;background:var(--p2);border-radius:8px}
+
+/* MUD INTERVAL */
+.mud-int{border-left:4px solid;border-radius:0 8px 8px 0;padding:12px 14px;background:var(--p2);margin-bottom:10px}
+.mud-int.int1{border-color:var(--cyan)}
+.mud-int.int2{border-color:var(--g)}
+.mud-int.int3{border-color:var(--w)}
+.mud-int.int4{border-color:var(--purple)}
+.mi-hdr{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.mi-badge{padding:2px 8px;border-radius:5px;font-size:10px;font-weight:700;font-family:'JetBrains Mono',monospace;background:var(--p3)}
+.mi-title{font-size:13px;font-weight:700}
+.mi-dens{margin-left:auto;font-size:13px;font-weight:800;font-family:'JetBrains Mono',monospace}
+.mi-params{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:8px}
+.mi-p{background:var(--p3);border-radius:6px;padding:6px 8px}
+.mi-p-label{font-size:9px;color:var(--muted);margin-bottom:2px;text-transform:uppercase;letter-spacing:.06em}
+.mi-p-val{font-size:12px;font-weight:700;font-family:'JetBrains Mono',monospace}
+.mi-warning{background:rgba(255,61,61,.08);border:1px solid rgba(255,61,61,.2);border-radius:6px;padding:8px 10px;font-size:11px;color:var(--r);line-height:1.5;margin-top:6px}
+.mi-reagents{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.mi-chem{padding:3px 8px;border-radius:5px;font-size:10px;background:var(--p3);color:var(--muted)}
+.mi-chem b{color:var(--t)}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-thumb{background:var(--line);border-radius:4px}
+
+/* SIMULATOR TAB */
+#view-sim{padding:0;height:calc(100vh - var(--topbar));overflow:hidden}
+#dwop-frame{width:100%;height:100%;border:none;display:block}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div id="topbar">
+  <div class="tb-brand">
+    <div class="tb-mark">DQ</div>
+    <div><div class="tb-name">DRILL-Q</div><div class="tb-sub">DWOP Симулятор</div></div>
+  </div>
+  <div class="tb-mid">
+    <div class="tb-well">
+      <div class="dot"></div>
+      <span style="color:var(--muted)">Ванкорское НГМ</span>
+      <span style="color:rgba(255,255,255,.2)">/</span>
+      <span style="font-weight:700">Горизонтальная · Нх III-IV</span>
+    </div>
+    <span class="tb-badge">DWOP · Предбуровой симулятор</span>
+  </div>
+  <div class="tb-right">
+    <div class="tb-stat">ТД <span>4 650 м MD</span></div>
+    <div class="tb-stat">TVD <span>2 841 м</span></div>
+    <div class="tb-stat">ГС <span>1 550 м</span></div>
+    <div class="tb-stat" style="color:var(--r);font-weight:700">АВПД <span>274 атм</span></div>
+  </div>
+</div>
+
+<!-- SIDEBAR -->
+<div id="sidebar">
+  <div class="depth-card">
+    <div class="dc-label">Проектная глубина (MD)</div>
+    <div class="dc-val">4 650 <span style="font-size:13px;opacity:.5">м</span></div>
+    <div class="dc-sub">TVD 2 841 м · ГС 1 550 м · Нх III-IV</div>
+    <div class="dc-bar"><div class="dc-fill" style="width:0%" id="simDepthBar"></div></div>
+  </div>
+
+  <div class="sb-section">
+    <div class="sb-label">Разделы DWOP</div>
+    <div class="nav-item active" id="nav-overview" onclick="showView('overview')">
+      <svg class="ni-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Обзор скважины
+    </div>
+    <div class="nav-item" id="nav-casing" onclick="showView('casing')">
+      <svg class="ni-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+      Конструкция скважины
+    </div>
+    <div class="nav-item" id="nav-traj" onclick="showView('traj')">
+      <svg class="ni-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
+      Траектория · ННБ
+    </div>
+    <div class="nav-item" id="nav-bha" onclick="showView('bha')">
+      <svg class="ni-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><circle cx="12" cy="12" r="3"/></svg>
+      КНБК и долота
+    </div>
+    <div class="nav-item" id="nav-mud" onclick="showView('mud')">
+      <svg class="ni-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
+      Программа раствора
+      <span class="nb nb-w">4</span>
+    </div>
+    <div class="nav-item" id="nav-risks" onclick="showView('risks')">
+      <svg class="ni-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+      Осложнения · Алерты
+      <span class="nb nb-r">9</span>
+    </div>
+    <div class="nav-item" id="nav-phases" onclick="showView('phases')">
+      <svg class="ni-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+      Операционный план
+    </div>
+  </div>
+
+  <div class="sb-divider"></div>
+
+  <div class="sb-section">
+    <div class="sb-label">Симуляция</div>
+    <div class="nav-item" id="nav-sim" onclick="showView('sim')" style="background:linear-gradient(135deg,rgba(0,212,255,.08),rgba(167,139,250,.08));color:var(--cyan);font-weight:700">
+      <svg class="ni-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" style="opacity:1"><circle cx="12" cy="12" r="3"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 2v2m0 16v2M2 12h2m16 0h2"/></svg>
+      ▶ Запустить симулятор
+    </div>
+  </div>
+
+  <div style="flex:1"></div>
+  <div style="padding:10px;font-size:10px;color:var(--muted2);border-top:1px solid var(--line2)">
+    AI · База аналогичных скважин<br>Горизонтальных: 12 · Нх III-IV: 8
+  </div>
+</div>
+
+<!-- MAIN -->
+<div id="main">
+
+<!-- ═══ ОБЗОР ═══ -->
+<div class="view active" id="view-overview">
+  <div class="ph">
+    <div>
+      <div class="ph-title">DWOP · Горизонтальная скважина на Нх III-IV</div>
+      <div class="ph-sub">Ванкорское НГМ · Предбуровой анализ · AI-рекомендации на основе аналогов</div>
+    </div>
+    <div class="ph-actions">
+      <button class="btn btn-ghost" onclick="showView('sim')">▶ Запустить симулятор</button>
+      <button class="btn btn-primary" onclick="showView('risks')">🚨 Карта рисков</button>
+    </div>
+  </div>
+
+  <!-- Критичный баннер -->
+  <div style="background:rgba(255,61,61,.08);border:1px solid rgba(255,61,61,.2);border-radius:10px;padding:13px 16px;margin-bottom:16px;display:flex;align-items:center;gap:10px">
+    <span style="font-size:18px">🚨</span>
+    <div>
+      <span style="font-size:13px;font-weight:700;color:var(--r)">АВПД · Нх III-IV · P = 274 атм · T = 65°C</span>
+      <span style="font-size:11px;color:rgba(255,100,100,.8);margin-left:12px">Наиболее сложная скважина месторождения. 9 критичных зон осложнений. ГС 1550 м.</span>
+    </div>
+  </div>
+
+  <!-- KPI row -->
+  <div class="g4" style="margin-bottom:16px">
+    <div class="kpi"><div class="kpi-label">Глубина MD</div><div class="kpi-val info">4 650</div><div class="kpi-sub muted">м MD · 4 интервала</div></div>
+    <div class="kpi"><div class="kpi-label">TVD забой</div><div class="kpi-val cyan">2 841</div><div class="kpi-sub muted">м ТВД · вход Нх III-IV</div></div>
+    <div class="kpi"><div class="kpi-label">Горизонт. участок</div><div class="kpi-val purple">1 550</div><div class="kpi-sub muted">м · KCl-полимерный р-р</div></div>
+    <div class="kpi"><div class="kpi-label">Пластовое давл.</div><div class="kpi-val crit">274</div><div class="kpi-sub crit">атм АВПД · T=65°C</div></div>
+  </div>
+
+  <div class="g2">
+    <!-- Общие данные -->
+    <div class="card">
+      <div class="card-hdr"><span class="card-title">Основные параметры скважины</span></div>
+      <div class="card-body">
+        <table class="tbl">
+          <tr><td class="muted">Тип скважины</td><td class="bold">Горизонтальная (ГС)</td></tr>
+          <tr><td class="muted">Целевой горизонт</td><td class="bold blue">Нижнехетская Нх III-IV</td></tr>
+          <tr><td class="muted">Глубина (MD)</td><td class="mono bold">4 650 м</td></tr>
+          <tr><td class="muted">Глубина (TVD)</td><td class="mono bold">2 841 м</td></tr>
+          <tr><td class="muted">Горизонтальный участок</td><td class="mono bold">1 550 м</td></tr>
+          <tr><td class="muted">KOP (точка набора)</td><td class="mono">2 100 м MD</td></tr>
+          <tr><td class="muted">Интенсивность набора</td><td class="mono">2,3° / 30 м</td></tr>
+          <tr><td class="muted">Макс. зенитный угол</td><td class="mono bold">90,0°</td></tr>
+          <tr><td class="muted">Проектный азимут</td><td class="mono">315° (СЗ)</td></tr>
+          <tr><td class="muted">Горизонтальное смещение</td><td class="mono">~1 534 м</td></tr>
+          <tr><td class="muted">Пластовое давление (Нх III-IV)</td><td class="mono bold crit">274 атм (26,9 МПа)</td></tr>
+          <tr><td class="muted">Пластовая температура</td><td class="mono">65°C</td></tr>
+          <tr><td class="muted">Градиент давления</td><td class="mono warn">АВПД · Ка = 1,97</td></tr>
+          <tr><td class="muted">ВНК (Нх III-IV)</td><td class="mono">–2 760 м абс.</td></tr>
+          <tr><td class="muted">ГНК (Нх III-IV)</td><td class="mono">–2 716 м абс.</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- Продуктивные горизонты + критичные зоны -->
+    <div>
+      <div class="card" style="margin-bottom:12px">
+        <div class="card-hdr"><span class="card-title">Горизонты, вскрываемые скважиной</span></div>
+        <div class="card-body">
+          <table class="tbl">
+            <thead><tr><th>Горизонт</th><th>Инт. TVD</th><th>P, атм</th><th>Статус</th></tr></thead>
+            <tbody>
+              <tr><td>Яковлевская Як III-VII</td><td class="mono">1630–1937</td><td class="mono warn">162</td><td><span class="rpill rp-high">Нефтеносный</span></td></tr>
+              <tr><td>Нижнехетская Нх I</td><td class="mono">2570–2750</td><td class="mono amber">254</td><td><span class="rpill rp-high">Продуктивный</span></td></tr>
+              <tr style="background:rgba(0,212,255,.04)"><td><b class="blue">Нижнехетская Нх III-IV ★</b></td><td class="mono blue">2750–2841</td><td class="mono crit bold">274</td><td><span class="rpill rp-crit">ЦЕЛЬ · АВПД</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="card" style="background:rgba(255,61,61,.05);border-color:rgba(255,61,61,.2)">
+        <div class="card-hdr"><span class="card-title" style="color:var(--r)">⚠ Критичные зоны — кратко</span></div>
+        <div class="card-body">
+          <div style="font-size:12px;line-height:2.2">
+            <div>❄️ <b>0–150 м</b> — вечная мерзлота, поглощения</div>
+            <div>⛽ <b>1005–1031 м</b> — газ Долганской, ρ газа 0.58</div>
+            <div>⚓ <b>1000–1350 м</b> — прихватоопасная зона</div>
+            <div>🛢 <b>1630–1937 м</b> — Яковлевская P=16.2 МПа</div>
+            <div>💊 <b>2100–2200 м</b> — ввести стабилизатор аргиллитов</div>
+            <div>🚨 <b>2665–2727 м</b> — нестаб. аргиллиты кровли Нх I</div>
+            <div>🛢 <b>2750–2841 м</b> — Нх I P=254 атм, нефтеприток</div>
+            <div>🚨 <b>2841 м TVD</b> — вход Нх III-IV АВПД P=274 атм</div>
+            <div>🔄 <b>2841–4650 м</b> — ГС, вынос шлама критичен</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Конструкция кратко -->
+  <div class="card">
+    <div class="card-hdr">
+      <span class="card-title">Конструкция скважины — обзор</span>
+      <button class="btn btn-ghost" style="font-size:11px;padding:4px 10px" onclick="showView('casing')">Подробнее →</button>
+    </div>
+    <div class="card-body">
+      <div class="csg-diagram">
+        <div class="csg-row"><div class="csg-color" style="background:#7eb8f0"></div><div class="csg-info"><div class="csg-name">Кондуктор Ø324 мм</div><div class="csg-detail">Отверстие Ø393.7 мм · цемент до устья · защита ВМ</div></div><div><div class="csg-depth">0 — 620 м MD</div><div class="csg-od">Долото 393.7 мм</div></div></div>
+        <div class="csg-row"><div class="csg-color" style="background:#a0c8a0"></div><div class="csg-info"><div class="csg-name">Тех. колонна Ø245 мм</div><div class="csg-detail">Отверстие Ø295.3 мм · перекрытие газа, прихватоопасных зон</div></div><div><div class="csg-depth">0 — 1 780 м MD</div><div class="csg-od">Долото 295.3 мм</div></div></div>
+        <div class="csg-row"><div class="csg-color" style="background:#d4a060"></div><div class="csg-info"><div class="csg-name">Экспл. колонна Ø178 мм</div><div class="csg-detail">Отверстие Ø219.1 мм · перекрытие Нх I, защита АВПД зоны</div></div><div><div class="csg-depth">0 — 3 100 м MD</div><div class="csg-od">Долото 219.1 мм</div></div></div>
+        <div class="csg-row" style="background:rgba(167,139,250,.06)"><div class="csg-color" style="background:#a78bfa"></div><div class="csg-info"><div class="csg-name bold purple">Хвостовик Ø114 мм (перфорир.)</div><div class="csg-detail">Отверстие Ø152.4 мм · горизонтальный участок · KCl-полимерный р-р</div></div><div><div class="csg-depth purple">3 100 — 4 650 м MD</div><div class="csg-od">Долото 152.4 мм</div></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ КОНСТРУКЦИЯ ═══ -->
+<div class="view" id="view-casing">
+  <div class="ph"><div><div class="ph-title">Конструкция скважины</div><div class="ph-sub">4 обсадные колонны · цементирование · башмаки</div></div></div>
+
+  <div class="card">
+    <div class="card-hdr"><span class="card-title">Программа обсадных колонн</span></div>
+    <div class="card-body" style="padding:0">
+      <table class="tbl">
+        <thead><tr><th>№</th><th>Колонна</th><th>OD, мм</th><th>ID, мм</th><th>Башмак MD</th><th>Башмак TVD</th><th>Долото, мм</th><th>Цемент</th><th>ОЗЦ</th><th>Назначение</th></tr></thead>
+        <tbody>
+          <tr>
+            <td class="mono">1</td>
+            <td class="bold">Кондуктор</td>
+            <td class="mono blue">324</td><td class="mono">306</td>
+            <td class="mono bold">620 м</td><td class="mono">620 м</td>
+            <td class="mono">393.7</td>
+            <td class="green">До устья</td>
+            <td class="mono">10 ч</td>
+            <td style="font-size:11px">Перекрытие ВМ зоны 0–150 м, поглощений 0–540 м</td>
+          </tr>
+          <tr>
+            <td class="mono">2</td>
+            <td class="bold">Тех. колонна</td>
+            <td class="mono blue">245</td><td class="mono">230</td>
+            <td class="mono bold">1 780 м</td><td class="mono">1 780 м</td>
+            <td class="mono">295.3</td>
+            <td class="green">До устья</td>
+            <td class="mono">14 ч</td>
+            <td style="font-size:11px">Изоляция газа Долганской (1005–1031 м), прихватозон</td>
+          </tr>
+          <tr>
+            <td class="mono">3</td>
+            <td class="bold">Экспл. колонна</td>
+            <td class="mono blue">178</td><td class="mono">165</td>
+            <td class="mono bold">3 100 м</td><td class="mono amber bold">2 841 м</td>
+            <td class="mono">219.1</td>
+            <td class="amber">До 800 м</td>
+            <td class="mono">18 ч</td>
+            <td style="font-size:11px">Изоляция Нх I (P=254 атм), защита перед ГС</td>
+          </tr>
+          <tr style="background:rgba(167,139,250,.05)">
+            <td class="mono">4</td>
+            <td class="bold purple">Хвостовик (ГС)</td>
+            <td class="mono purple">114</td><td class="mono">100</td>
+            <td class="mono bold purple">4 650 м</td><td class="mono purple">2 841 м</td>
+            <td class="mono">152.4</td>
+            <td class="purple">Перфориров.</td>
+            <td class="mono">—</td>
+            <td style="font-size:11px">Горизонтальный участок Нх III-IV, щелевые перфорации</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Детали по интервалам -->
+  <div class="g2">
+    <div>
+      <div class="card">
+        <div class="card-hdr"><span class="card-title">Интервал 1 · Кондуктор Ø393.7 мм · 0–620 м</span></div>
+        <div class="card-body">
+          <table class="tbl">
+            <tr><td class="muted">Долото</td><td class="mono bold">Ø393.7 мм PDC IADC 637</td></tr>
+            <tr><td class="muted">ROP</td><td class="mono">15–20 м/ч</td></tr>
+            <tr><td class="muted">ВОБ</td><td class="mono">30–50 кН</td></tr>
+            <tr><td class="muted">Обороты</td><td class="mono">80–100 об/мин · ротор</td></tr>
+            <tr><td class="muted">Расход (Q)</td><td class="mono">35–45 л/с</td></tr>
+            <tr><td class="muted">Давление насосов (ΔP)</td><td class="mono blue">80–100 бар</td></tr>
+            <tr><td class="muted">Крутящий момент</td><td class="mono blue">5–8 кН·м</td></tr>
+            <tr><td class="muted">ECD</td><td class="mono">1.20 г/см³</td></tr>
+            <tr><td class="muted">Раствор</td><td class="mono">Полимер-глин. ρ=1.18</td></tr>
+            <tr><td class="muted">Особенности</td><td style="font-size:11px;color:var(--r)">ВМ 0–150 м · поглощения 0–540 м · аварийный р-р 35 м³</td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="card" style="margin-top:0">
+        <div class="card-hdr"><span class="card-title">Интервал 2 · Тех. кол. Ø295.3 мм · 620–1780 м</span></div>
+        <div class="card-body">
+          <table class="tbl">
+            <tr><td class="muted">Долото</td><td class="mono bold">Ø295.3 мм PDC IADC 617</td></tr>
+            <tr><td class="muted">ROP</td><td class="mono">12–16 м/ч · ≤8 м/ч при газе</td></tr>
+            <tr><td class="muted">ВОБ</td><td class="mono">50–70 кН</td></tr>
+            <tr><td class="muted">Обороты</td><td class="mono">100–120 об/мин · ротор</td></tr>
+            <tr><td class="muted">Расход (Q)</td><td class="mono">28–35 л/с</td></tr>
+            <tr><td class="muted">Давление насосов (ΔP)</td><td class="mono blue">100–130 бар</td></tr>
+            <tr><td class="muted">Крутящий момент</td><td class="mono blue">8–12 кН·м</td></tr>
+            <tr><td class="muted">ECD</td><td class="mono">1.15–1.18 г/см³</td></tr>
+            <tr><td class="muted">Раствор</td><td class="mono">Полимер ρ=1.13 · 1.16 при газе</td></tr>
+            <tr><td class="muted">Особенности</td><td style="font-size:11px;color:var(--w)">Газ 1005–1031 м · прихват 1000–1350 м · MWD</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="card">
+        <div class="card-hdr"><span class="card-title">Интервал 3 · Экспл. кол. Ø219.1 мм · 1780–3100 м</span></div>
+        <div class="card-body">
+          <table class="tbl">
+            <tr><td class="muted">Долото</td><td class="mono bold">Ø219.1 мм PDC IADC 517</td></tr>
+            <tr><td colspan="2" style="padding:4px 10px;background:rgba(0,212,255,.06);font-size:10px;font-weight:700;color:var(--cyan);letter-spacing:.04em">ВЕРТИКАЛЬ · 1780–2100 м</td></tr>
+            <tr><td class="muted">ROP</td><td class="mono">9–11 м/ч</td></tr>
+            <tr><td class="muted">ВОБ</td><td class="mono">65–80 кН</td></tr>
+            <tr><td class="muted">Обороты</td><td class="mono">100–110 об/мин · ротор</td></tr>
+            <tr><td class="muted">Q / ΔP</td><td class="mono blue">28–32 л/с · 120–140 бар</td></tr>
+            <tr><td class="muted">Крутящий момент</td><td class="mono blue">11–14 кН·м</td></tr>
+            <tr><td colspan="2" style="padding:4px 10px;background:rgba(255,171,0,.08);font-size:10px;font-weight:700;color:var(--w);letter-spacing:.04em">НАБОР УГЛА (RSS) · КОР 2100 → ЕОВ 3100 м</td></tr>
+            <tr><td class="muted">ROP (набор)</td><td class="mono">5–8 м/ч · RSS</td></tr>
+            <tr><td class="muted">ВОБ (набор)</td><td class="mono">40–60 кН · снижен</td></tr>
+            <tr><td class="muted">Обороты</td><td class="mono">60–80 об/мин · с ВЗД</td></tr>
+            <tr><td class="muted">Q / ΔP (набор)</td><td class="mono blue">25–30 л/с · 150–175 бар</td></tr>
+            <tr><td class="muted">Крутящий момент</td><td class="mono blue">13–18 кН·м</td></tr>
+            <tr><td colspan="2" style="padding:4px 10px;background:rgba(255,61,61,.06);font-size:10px;font-weight:700;color:var(--r);letter-spacing:.04em">КРОВЛЯ НХ I · 2665–2727 м ТВД</td></tr>
+            <tr><td class="muted">ROP (кровля Нх)</td><td class="mono crit bold">≤ 5 м/ч строго!</td></tr>
+            <tr><td class="muted">ВОБ</td><td class="mono crit">55–65 кН · не превышать</td></tr>
+            <tr><td class="muted">Q / ΔP</td><td class="mono blue">25–30 л/с · 155–170 бар</td></tr>
+            <tr><td class="muted">Крутящий момент</td><td class="mono blue">14–18 кН·м</td></tr>
+            <tr><td class="muted">ECD</td><td class="mono">1.23 г/см³</td></tr>
+            <tr><td class="muted">Раствор</td><td class="mono">Полимер ρ=1.12–1.20</td></tr>
+            <tr><td class="muted">Особенности</td><td style="font-size:11px;color:var(--r)">RSS + LWD · стабилиз. аргиллитов с 2200 м ТВД · Нх I P=254 атм</td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="card" style="margin-top:0;background:rgba(167,139,250,.04);border-color:rgba(167,139,250,.2)">
+        <div class="card-hdr"><span class="card-title">Интервал 4 · Хвостовик Ø152.4 мм · 3100–4650 м ГС</span></div>
+        <div class="card-body">
+          <table class="tbl">
+            <tr><td class="muted">Долото</td><td class="mono bold purple">Ø152.4 мм PDC IADC 437</td></tr>
+            <tr><td colspan="2" style="padding:4px 10px;background:rgba(167,139,250,.08);font-size:10px;font-weight:700;color:var(--purple);letter-spacing:.04em">ГОРИЗОНТАЛЬНЫЙ СТВОЛ · TVD = 2841 м = const</td></tr>
+            <tr><td class="muted">ROP</td><td class="mono">8–12 м/ч · RSS + геонавигация</td></tr>
+            <tr><td class="muted">ВОБ</td><td class="mono purple">20–40 кН · снижен для ГС</td></tr>
+            <tr><td class="muted">Обороты</td><td class="mono purple">100–120 об/мин · выше для выноса шлама</td></tr>
+            <tr><td class="muted">Расход (Q)</td><td class="mono crit">30–35 л/с · мин. 30 л/с!</td></tr>
+            <tr><td class="muted">Давление насосов (ΔP)</td><td class="mono purple bold">150–200 бар · максимум инт.</td></tr>
+            <tr><td class="muted">Крутящий момент</td><td class="mono purple bold">18–25 кН·м · максимум инт.</td></tr>
+            <tr><td class="muted">ECD</td><td class="mono">1.09 г/см³</td></tr>
+            <tr><td class="muted">Раствор</td><td class="mono purple bold">KCl-полимер ρ=1.06</td></tr>
+            <tr><td class="muted">Особенности</td><td style="font-size:11px;color:var(--purple)">AGS вибратор · пыжевые промывки каждые 200 м · 2 цикла перед ПЗ</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ ТРАЕКТОРИЯ ═══ -->
+<div class="view" id="view-traj">
+  <div class="ph"><div><div class="ph-title">Траектория · ННБ · Геонавигация</div><div class="ph-sub">KOP 2100 м MD · набор 2.3°/30м · EOB 3100 м MD · ГС 1550 м · азимут 315°</div></div></div>
+
+  <div class="g2">
+    <div>
+      <div class="card" style="margin-bottom:12px">
+        <div class="card-hdr"><span class="card-title">Ключевые точки траектории</span></div>
+        <div class="card-body" style="padding:0">
+          <table class="tbl">
+            <thead><tr><th>MD, м</th><th>Зенит, °</th><th>Азимут, °</th><th>TVD, м</th><th>N (СЗ), м</th><th>E (СЗ), м</th><th>Примечание</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">0</td><td class="mono">0.0</td><td class="mono">315</td><td class="mono">0</td><td class="mono">0</td><td class="mono">0</td><td style="font-size:11px">Устье скважины</td></tr>
+              <tr><td class="mono">620</td><td class="mono">0.0</td><td class="mono">315</td><td class="mono">620</td><td class="mono">0</td><td class="mono">0</td><td style="font-size:11px">Башмак кондуктора Ø324</td></tr>
+              <tr><td class="mono">1780</td><td class="mono">0.0</td><td class="mono">315</td><td class="mono">1780</td><td class="mono">0</td><td class="mono">0</td><td style="font-size:11px">Башмак тех. колонны Ø245</td></tr>
+              <tr style="background:rgba(255,171,0,.05)"><td class="mono amber bold">2100</td><td class="mono amber">0.0</td><td class="mono">315</td><td class="mono amber">2100</td><td class="mono">0</td><td class="mono">0</td><td style="font-size:11px;color:var(--w)">KOP — начало набора угла</td></tr>
+              <tr><td class="mono">2400</td><td class="mono">23.0</td><td class="mono">315</td><td class="mono">2387</td><td class="mono">-47</td><td class="mono">47</td><td style="font-size:11px">Набор ~23°</td></tr>
+              <tr><td class="mono">2700</td><td class="mono">46.0</td><td class="mono">315</td><td class="mono">2555</td><td class="mono">-156</td><td class="mono">156</td><td style="font-size:11px">Набор ~46°</td></tr>
+              <tr><td class="mono">2900</td><td class="mono">61.3</td><td class="mono">315</td><td class="mono">2673</td><td class="mono">-264</td><td class="mono">264</td><td style="font-size:11px">Проход кровли Нх I</td></tr>
+              <tr><td class="mono">3000</td><td class="mono">69.0</td><td class="mono">315</td><td class="mono">2733</td><td class="mono">-339</td><td class="mono">339</td><td style="font-size:11px">Нх I коллектор P=254 атм</td></tr>
+              <tr style="background:rgba(255,61,61,.06)"><td class="mono crit bold">3100</td><td class="mono crit bold">90.0</td><td class="mono">315</td><td class="mono crit bold">2841</td><td class="mono">-438</td><td class="mono">438</td><td style="font-size:11px;color:var(--r)">EOB — вход в ГС · Нх III-IV</td></tr>
+              <tr><td class="mono">3500</td><td class="mono">90.0</td><td class="mono">315</td><td class="mono">2841</td><td class="mono">-722</td><td class="mono">722</td><td style="font-size:11px">Середина ГС</td></tr>
+              <tr><td class="mono">4000</td><td class="mono">90.0</td><td class="mono">315</td><td class="mono">2841</td><td class="mono">-1075</td><td class="mono">1075</td><td style="font-size:11px">—</td></tr>
+              <tr style="background:rgba(0,212,255,.06)"><td class="mono blue bold">4650</td><td class="mono">90.0</td><td class="mono">315</td><td class="mono blue bold">2841</td><td class="mono blue">-1534</td><td class="mono blue">1534</td><td style="font-size:11px;color:var(--cyan)">ТД · конец ГС</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-hdr"><span class="card-title">Параметры набора угла</span></div>
+        <div class="card-body">
+          <table class="tbl">
+            <tr><td class="muted">KOP (точка набора)</td><td class="mono amber bold">2 100 м MD / TVD</td></tr>
+            <tr><td class="muted">EOB (конец набора)</td><td class="mono">3 100 м MD</td></tr>
+            <tr><td class="muted">Длина секции набора</td><td class="mono">1 000 м MD</td></tr>
+            <tr><td class="muted">Интенсивность набора</td><td class="mono bold">2,3° / 30 м</td></tr>
+            <tr><td class="muted">Радиус кривизны</td><td class="mono">747 м</td></tr>
+            <tr><td class="muted">Delta TVD при наборе</td><td class="mono">741 м</td></tr>
+            <tr><td class="muted">Горизонт. секция</td><td class="mono purple bold">1 550 м · постоянный TVD</td></tr>
+            <tr><td class="muted">Азимут ГС</td><td class="mono">315° (С-З)</td></tr>
+            <tr><td class="muted">ННБ инструмент (набор)</td><td>RSS + MWD/LWD</td></tr>
+            <tr><td class="muted">ННБ инструмент (ГС)</td><td>RSS + гамма-каротаж + EM-телеметрия</td></tr>
+            <tr><td class="muted">Геонавигация</td><td style="font-size:11px;color:var(--g)">По гамма-каротажу и кажущемуся сопротивлению в реальном времени</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Canvas 2D траектории -->
+    <div>
+      <div class="card" style="margin-bottom:12px">
+        <div class="card-hdr"><span class="card-title">Профиль скважины (2D · вертикальная плоскость)</span></div>
+        <div class="card-body" style="padding:8px">
+          <canvas id="trajCanvas" height="500"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="card-title">Геонавигация · целевой пласт</span></div>
+        <div class="card-body">
+          <div style="background:var(--p2);border-radius:7px;padding:10px 12px;margin-bottom:8px">
+            <div style="font-size:11px;font-weight:700;color:var(--cyan);margin-bottom:4px">Целевая зона Нх III-IV</div>
+            <div style="font-size:11px;color:var(--muted);line-height:1.6">
+              Кровля: –2716 м абс. · Подошва: –2760 м (ВНК)<br>
+              Мощность нефтенасыщенного коллектора: 15–21 м<br>
+              Ствол ведём в верхней трети пласта (TVD = 2841 м абс.)
+            </div>
+          </div>
+          <div style="background:var(--p2);border-radius:7px;padding:10px 12px">
+            <div style="font-size:11px;font-weight:700;color:var(--g);margin-bottom:4px">Критерии геонавигации</div>
+            <div style="font-size:11px;color:var(--muted);line-height:1.6">
+              ✓ Гамма-каротаж &lt;40 API — коллектор<br>
+              ✓ Сопротивление &gt;5 Ом·м — нефтенасыщение<br>
+              ⚠ При GR &gt;60 — аргиллитовый прослой, корректировать траекторию<br>
+              ✓ Плановый Kн: ≥85% от мощности пласта в разрезе ГС
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ КНБК и ДОЛОТА ═══ -->
+<div class="view" id="view-bha">
+  <div class="ph"><div><div class="ph-title">КНБК и долота</div><div class="ph-sub">4 компоновки · PDC долота · RSS + MWD/LWD + ясы</div></div></div>
+
+  <div class="g2">
+
+    <!-- КНБК 1 -->
+    <div class="card">
+      <div class="card-hdr"><span class="card-title">КНБК №1 · Кондуктор · Ø393.7 мм · 0–620 м</span></div>
+      <div class="card-body">
+        <div class="bha-wrap">
+          <div class="bha-item bit"><div class="bha-icon">⬛</div><div class="bha-name">Долото PDC Ø393.7 мм<div class="bha-spec">IADC 637 · 6 лопастей · Ø16 мм вставки · TCI</div></div><div class="bha-len">—</div></div>
+          <div class="bha-item dc"><div class="bha-icon">⬜</div><div class="bha-name">Немагнитные УБТ<div class="bha-spec">Ø203 мм · 8 труб</div></div><div class="bha-len">72 м</div></div>
+          <div class="bha-item jar"><div class="bha-icon">🔧</div><div class="bha-name">Ясс гидравлический<div class="bha-spec">Ø178 мм · тандем</div></div><div class="bha-len">9 м</div></div>
+          <div class="bha-item hwdp"><div class="bha-icon">▭</div><div class="bha-name">УБТ утяжелённые HWDP<div class="bha-spec">Ø127 мм · 15 труб</div></div><div class="bha-len">135 м</div></div>
+        </div>
+        <div style="margin-top:10px;padding:8px 10px;background:var(--p2);border-radius:6px;font-size:11px;color:var(--muted);line-height:1.6">
+          Суммарная длина КНБК: ~216 м · Вертикальный интервал · Нет телеметрии
+        </div>
+      </div>
+    </div>
+
+    <!-- КНБК 2 -->
+    <div class="card">
+      <div class="card-hdr"><span class="card-title">КНБК №2 · Тех. кол. · Ø295.3 мм · 620–1780 м</span></div>
+      <div class="card-body">
+        <div class="bha-wrap">
+          <div class="bha-item bit"><div class="bha-icon">⬛</div><div class="bha-name">Долото PDC Ø295.3 мм<div class="bha-spec">IADC 617 · 6 лопастей · Ø13 мм · PDC резцы</div></div><div class="bha-len">—</div></div>
+          <div class="bha-item motor"><div class="bha-icon">🔄</div><div class="bha-name">Забойный двигатель 9 7/8"<div class="bha-spec">Угол отклонителя 1.5° · 5-ступенчатый</div></div><div class="bha-len">8 м</div></div>
+          <div class="bha-item mwd"><div class="bha-icon">📡</div><div class="bha-name">MWD телеметрия<div class="bha-spec">Пульсационный датчик · инклинометрия + азимут</div></div><div class="bha-len">4 м</div></div>
+          <div class="bha-item stab"><div class="bha-icon">🔩</div><div class="bha-name">Стабилизатор Ø285.8 мм<div class="bha-spec">Нерегулируемый · 3 лопасти</div></div><div class="bha-len">1 м</div></div>
+          <div class="bha-item jar"><div class="bha-icon">🔧</div><div class="bha-name">Ясс гидравлический<div class="bha-spec">Ø178 мм</div></div><div class="bha-len">9 м</div></div>
+          <div class="bha-item dc"><div class="bha-icon">⬜</div><div class="bha-name">Немагнитные УБТ<div class="bha-spec">Ø178 мм · 6 труб</div></div><div class="bha-len">54 м</div></div>
+          <div class="bha-item hwdp"><div class="bha-icon">▭</div><div class="bha-name">HWDP<div class="bha-spec">Ø127 мм · 15 труб</div></div><div class="bha-len">135 м</div></div>
+        </div>
+        <div style="margin-top:10px;padding:8px 10px;background:var(--p2);border-radius:6px;font-size:11px;color:var(--muted);line-height:1.6">
+          Суммарная длина: ~211 м · Вертикальный интервал · MWD-телеметрия обязательна при прохождении Яковлевской
+        </div>
+      </div>
+    </div>
+
+    <!-- КНБК 3 -->
+    <div class="card">
+      <div class="card-hdr"><span class="card-title">КНБК №3 · Экспл. кол. · Ø219.1 мм · 1780–3100 м</span></div>
+      <div class="card-body">
+        <div class="bha-wrap">
+          <div class="bha-item bit"><div class="bha-icon">⬛</div><div class="bha-name">Долото PDC Ø219.1 мм<div class="bha-spec">IADC 517 · 5 лопастей · Ø13 мм · термостойкое</div></div><div class="bha-len">—</div></div>
+          <div class="bha-item rss"><div class="bha-icon">🎯</div><div class="bha-name">RSS (Rotary Steerable)<div class="bha-spec">Толчковый тип · точность ±0.1° · 3D навигация</div></div><div class="bha-len">7 м</div></div>
+          <div class="bha-item lwd"><div class="bha-icon">📊</div><div class="bha-name">LWD комплекс<div class="bha-spec">Гамма-каротаж · НК · Сопротивление · Плотность</div></div><div class="bha-len">12 м</div></div>
+          <div class="bha-item stab"><div class="bha-icon">🔩</div><div class="bha-name">Стабилизатор Ø215.9 мм<div class="bha-spec">Нерегулируемый</div></div><div class="bha-len">1 м</div></div>
+          <div class="bha-item jar"><div class="bha-icon">🔧</div><div class="bha-name">Ясс гидромеханический<div class="bha-spec">Ø152 мм · обязателен при проходке кровли Нх</div></div><div class="bha-len">9 м</div></div>
+          <div class="bha-item dc"><div class="bha-icon">⬜</div><div class="bha-name">Немагнитные УБТ<div class="bha-spec">Ø178 мм · 8 труб</div></div><div class="bha-len">72 м</div></div>
+          <div class="bha-item hwdp"><div class="bha-icon">▭</div><div class="bha-name">HWDP<div class="bha-spec">Ø127 мм · 20 труб</div></div><div class="bha-len">180 м</div></div>
+        </div>
+        <div style="margin-top:10px;padding:8px 10px;background:rgba(255,61,61,.08);border:1px solid rgba(255,61,61,.15);border-radius:6px;font-size:11px;color:var(--r);line-height:1.6">
+          🚨 При проходке кровли Нх I (2665–2727 м TVD): РОП ≤5 м/ч · Запрет промывания при наращивании · Стабилизатор аргиллитов 10–14 кг/м³ (уже введён с 2200 м TVD)
+        </div>
+      </div>
+    </div>
+
+    <!-- КНБК 4 -->
+    <div class="card" style="border-color:rgba(167,139,250,.3)">
+      <div class="card-hdr"><span class="card-title">КНБК №4 · Хвостовик · Ø152.4 мм · 3100–4650 м ГС</span></div>
+      <div class="card-body">
+        <div class="bha-wrap">
+          <div class="bha-item bit"><div class="bha-icon">⬛</div><div class="bha-name">Долото PDC Ø152.4 мм<div class="bha-spec">IADC 437 · 5 лопастей · Ø11 мм · для горизонта</div></div><div class="bha-len">—</div></div>
+          <div class="bha-item rss"><div class="bha-icon">🎯</div><div class="bha-name">RSS с геонавигацией<div class="bha-spec">Автоматическая корректировка по пласту · GR + RES</div></div><div class="bha-len">9 м</div></div>
+          <div class="bha-item lwd"><div class="bha-icon">📊</div><div class="bha-name">LWD Gamma-Ray + Resist.<div class="bha-spec">Геонавигация в реальном времени · EM-телеметрия</div></div><div class="bha-len">8 м</div></div>
+          <div class="bha-item stab" style="border-color:#a78bfa"><div class="bha-icon">🔩</div><div class="bha-name">Гидравлический вибратор (AGS)<div class="bha-spec">Снижение трения в горизонтальном стволе</div></div><div class="bha-len">5 м</div></div>
+          <div class="bha-item jar"><div class="bha-icon">🔧</div><div class="bha-name">Ясс ударный<div class="bha-spec">Ø120 мм · для ГС обязателен</div></div><div class="bha-len">9 м</div></div>
+          <div class="bha-item dc"><div class="bha-icon">⬜</div><div class="bha-name">УБТ лёгкие<div class="bha-spec">Ø120 мм · 6 труб</div></div><div class="bha-len">54 м</div></div>
+          <div class="bha-item hwdp"><div class="bha-icon">▭</div><div class="bha-name">HWDP облегчённые<div class="bha-spec">Ø89 мм · 15 труб · для ГС</div></div><div class="bha-len">135 м</div></div>
+        </div>
+        <div style="margin-top:10px;padding:8px 10px;background:rgba(167,139,250,.08);border:1px solid rgba(167,139,250,.2);border-radius:6px;font-size:11px;color:var(--purple);line-height:1.6">
+          ГС специфика: Расход мин. 30 л/с · Вращение 120 об/мин · Пыжевые промывки каждые 200 м · 2 цикла перед каждым подъёмом · AGS для снижения трения
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ ПРОГРАММА РАСТВОРА ═══ -->
+<div class="view" id="view-mud">
+  <div class="ph"><div><div class="ph-title">Программа буровых растворов</div><div class="ph-sub">4 интервала · 2 системы растворов · реальные параметры по аналогам</div></div></div>
+
+  <div style="background:rgba(255,171,0,.08);border:1px solid rgba(255,171,0,.2);border-radius:9px;padding:11px 16px;margin-bottom:16px;font-size:11px;color:#92400E">
+    ⚠ Все параметры — на основе AI-анализа аналогичных скважин месторождения. Торговые наименования реагентов заменены функциональными описаниями.
+  </div>
+
+  <!-- Интервал 1 -->
+  <div class="mud-int int1">
+    <div class="mi-hdr">
+      <span class="mi-badge">Ø393.7 мм · 0–620 м MD</span>
+      <span class="mi-title">Кондуктор — Полимер-глинистый ВБР</span>
+      <span class="mi-dens blue">ρ = 1.18 г/см³</span>
+    </div>
+    <div class="mi-params">
+      <div class="mi-p"><div class="mi-p-label">Плотность</div><div class="mi-p-val blue">1 180 кг/м³</div></div>
+      <div class="mi-p"><div class="mi-p-label">УВ (Марш)</div><div class="mi-p-val">45–90 с</div></div>
+      <div class="mi-p"><div class="mi-p-label">ПВ</div><div class="mi-p-val">18–27 мПа·с</div></div>
+      <div class="mi-p"><div class="mi-p-label">ДНС</div><div class="mi-p-val">15–25 lb/100ft²</div></div>
+      <div class="mi-p"><div class="mi-p-label">СНС 10с/10мин</div><div class="mi-p-val">6-9/8-15</div></div>
+      <div class="mi-p"><div class="mi-p-label">API фильтрация</div><div class="mi-p-val">&lt;10 мл</div></div>
+      <div class="mi-p"><div class="mi-p-label">МВТ (бентонит)</div><div class="mi-p-val">&lt;80 кг/м³</div></div>
+      <div class="mi-p"><div class="mi-p-label">pH</div><div class="mi-p-val">8.5–9.5</div></div>
+    </div>
+    <div class="mi-reagents">
+      <span class="mi-chem"><b>Бентонит</b> 40–60 кг/м³</span>
+      <span class="mi-chem"><b>Регулятор pH</b> (NaOH) 1 кг/м³</span>
+      <span class="mi-chem"><b>КМЦ</b> (фильтрация) 4 кг/м³</span>
+      <span class="mi-chem"><b>Смазочная добавка</b> 4 кг/м³</span>
+      <span class="mi-chem"><b>Полиакрилат</b> (стаб. глин) 4 кг/м³</span>
+      <span class="mi-chem"><b>Бактерицид</b> 0.5 кг/м³</span>
+    </div>
+    <div class="mi-warning">⚠ Зона ВМ 0–150 м: контроль температуры раствора — не допускать &gt;5°C перепада с температурой пласта. Аварийный раствор (бентонит + опилки + волокно) 35 м³ — готовность до начала бурения.</div>
+  </div>
+
+  <!-- Интервал 2 -->
+  <div class="mud-int int2">
+    <div class="mi-hdr">
+      <span class="mi-badge">Ø295.3 мм · 620–1780 м MD</span>
+      <span class="mi-title">Тех. колонна — Полимер-глинистый ВБР (усиленный)</span>
+      <span class="mi-dens green">ρ = 1.13 г/см³</span>
+    </div>
+    <div class="mi-params">
+      <div class="mi-p"><div class="mi-p-label">Плотность</div><div class="mi-p-val green">1 130 кг/м³</div></div>
+      <div class="mi-p"><div class="mi-p-label">УВ (Марш)</div><div class="mi-p-val">35–50 с</div></div>
+      <div class="mi-p"><div class="mi-p-label">ПВ</div><div class="mi-p-val">12–25 мПа·с</div></div>
+      <div class="mi-p"><div class="mi-p-label">ДНС</div><div class="mi-p-val">10–20 lb/100ft²</div></div>
+      <div class="mi-p"><div class="mi-p-label">СНС 10с/10мин</div><div class="mi-p-val">4-8/8-12</div></div>
+      <div class="mi-p"><div class="mi-p-label">API фильтрация</div><div class="mi-p-val">&lt;6 мл</div></div>
+      <div class="mi-p"><div class="mi-p-label">МВТ</div><div class="mi-p-val">&lt;60 кг/м³</div></div>
+      <div class="mi-p"><div class="mi-p-label">pH</div><div class="mi-p-val">9–10</div></div>
+    </div>
+    <div class="mi-reagents">
+      <span class="mi-chem"><b>Ксантановый биополимер</b> 2 кг/м³</span>
+      <span class="mi-chem"><b>ПАЦ низковязкая</b> 4–5 кг/м³</span>
+      <span class="mi-chem"><b>Ингибитор набух. глин</b> 1–2 кг/м³</span>
+      <span class="mi-chem"><b>Стабилизатор ствола</b> 5 кг/м³</span>
+      <span class="mi-chem"><b>CaCO₃ 50 мкм</b> 60–80 кг/м³</span>
+      <span class="mi-chem"><b>Смазочная добавка</b> 4 кг/м³</span>
+      <span class="mi-chem"><b>Бактерицид</b> 0.5 кг/м³</span>
+    </div>
+    <div class="mi-warning" style="color:var(--w);background:rgba(255,171,0,.06);border-color:rgba(255,171,0,.2)">⚠ При вскрытии газа Долганской (1005–1031 м): плотность немедленно до 1.16 г/см³. ГВА мониторинг каждые 15 мин. ПВО в боеготовности.</div>
+  </div>
+
+  <!-- Интервал 3 -->
+  <div class="mud-int int3">
+    <div class="mi-hdr">
+      <span class="mi-badge">Ø219.1 мм · 1780–3100 м MD</span>
+      <span class="mi-title">Экспл. колонна — Полимер-глинистый ВБР (вскрытие Нх I)</span>
+      <span class="mi-dens amber">ρ = 1.12–1.20 г/см³</span>
+    </div>
+    <div class="mi-params">
+      <div class="mi-p"><div class="mi-p-label">Плотность (норм.)</div><div class="mi-p-val">1 120 кг/м³</div></div>
+      <div class="mi-p"><div class="mi-p-label">Плотность (кровля Нх)</div><div class="mi-p-val crit">1 180–1 200</div></div>
+      <div class="mi-p"><div class="mi-p-label">УВ (Марш)</div><div class="mi-p-val">40–60 с</div></div>
+      <div class="mi-p"><div class="mi-p-label">ПВ</div><div class="mi-p-val">12–25 мПа·с</div></div>
+      <div class="mi-p"><div class="mi-p-label">ДНС</div><div class="mi-p-val amber">15–20 lb/100ft²</div></div>
+      <div class="mi-p"><div class="mi-p-label">API фильтрация</div><div class="mi-p-val">&lt;6 мл</div></div>
+      <div class="mi-p"><div class="mi-p-label">МВТ</div><div class="mi-p-val">&lt;50 кг/м³</div></div>
+      <div class="mi-p"><div class="mi-p-label">pH</div><div class="mi-p-val">8.5–10.5</div></div>
+    </div>
+    <div class="mi-reagents">
+      <span class="mi-chem"><b>Ксантановый биополимер</b> 2–3 кг/м³</span>
+      <span class="mi-chem"><b>ПАЦ высоковязкая</b> 5 кг/м³</span>
+      <span class="mi-chem"><b>Стабилизатор аргиллитов ★</b> 10–14 кг/м³</span>
+      <span class="mi-chem"><b>Ингибитор набух. глин</b> 2 кг/м³</span>
+      <span class="mi-chem"><b>Смазочная добавка</b> 5–10 кг/м³</span>
+      <span class="mi-chem"><b>CaCO₃ 50 мкм</b> 85 кг/м³</span>
+      <span class="mi-chem"><b>Бактерицид</b> 0.5 кг/м³</span>
+    </div>
+    <div class="mi-warning">🚨 КРИТИЧНО: Стабилизатор аргиллитов вводить с 2200 м TVD (10–14 кг/м³) — ПРЕВЕНТИВНО, до кровли Нх I. При вскрытии кровли Нх I (2665–2727 м TVD): РОП ≤5 м/ч · ЗАПРЕТ промывания при наращивании · ρ не снижать &gt;0.02 г/см³ от плановой.</div>
+  </div>
+
+  <!-- Интервал 4 -->
+  <div class="mud-int int4">
+    <div class="mi-hdr">
+      <span class="mi-badge" style="color:var(--purple)">Ø152.4 мм · 3100–4650 м ГС</span>
+      <span class="mi-title">Горизонтальный ствол — KCl-полимерный ВБР (некольматирующий)</span>
+      <span class="mi-dens purple">ρ = 1.06 г/см³</span>
+    </div>
+    <div class="mi-params">
+      <div class="mi-p"><div class="mi-p-label">Плотность</div><div class="mi-p-val purple">1 060 кг/м³</div></div>
+      <div class="mi-p"><div class="mi-p-label">УВ (Марш)</div><div class="mi-p-val">40–65 с</div></div>
+      <div class="mi-p"><div class="mi-p-label">ПВ</div><div class="mi-p-val">14–20 мПа·с</div></div>
+      <div class="mi-p"><div class="mi-p-label">ДНС (выс.!)</div><div class="mi-p-val purple">20–35 lb/100ft²</div></div>
+      <div class="mi-p"><div class="mi-p-label">СНС 10с/10мин</div><div class="mi-p-val">6-16/9-30</div></div>
+      <div class="mi-p"><div class="mi-p-label">API фильтрация</div><div class="mi-p-val">&lt;6 мл</div></div>
+      <div class="mi-p"><div class="mi-p-label">KCl концентрация</div><div class="mi-p-val purple">30 кг/м³</div></div>
+      <div class="mi-p"><div class="mi-p-label">pH</div><div class="mi-p-val">9–10</div></div>
+    </div>
+    <div class="mi-reagents">
+      <span class="mi-chem"><b>Ксантан высокой чистоты</b> 3–5 кг/м³</span>
+      <span class="mi-chem"><b>Неионный крахмал</b> 14–20 кг/м³</span>
+      <span class="mi-chem"><b>Хлорид калия KCl</b> 20–30 кг/м³</span>
+      <span class="mi-chem"><b>Смазочная добавка</b> 10–20 кг/м³</span>
+      <span class="mi-chem"><b>CaCO₃ 5 мкм</b> 40 кг/м³</span>
+      <span class="mi-chem"><b>CaCO₃ 50 мкм</b> 40 кг/м³</span>
+      <span class="mi-chem"><b>CaCO₃ 150 мкм</b> 20 кг/м³</span>
+      <span class="mi-chem"><b>Бактерицид</b> 0.5 кг/м³</span>
+    </div>
+    <div style="margin-top:8px;padding:8px 10px;background:rgba(167,139,250,.08);border:1px solid rgba(167,139,250,.2);border-radius:6px;font-size:11px;color:var(--purple);line-height:1.6">
+      Чистка ГС: Расход мин. 30 л/с · Вращение 120 об/мин · Маловязкий пыж (УВ ≤40с) → высоковязкий (УВ ≥90с) каждые 200 м · 2 полных цикла перед ПЗ · Система кислоторастворимая (КОЭ 100%)
+    </div>
+  </div>
+</div>
+
+<!-- ═══ ОСЛОЖНЕНИЯ ═══ -->
+<div class="view" id="view-risks">
+  <div class="ph"><div><div class="ph-title">Осложнения · Алерты · Превентивные меры</div><div class="ph-sub">9 зон осложнений · AI-предиктивный анализ по аналогам · планы ликвидации</div></div></div>
+
+  <div class="g2">
+    <div>
+      <div class="card-hdr" style="padding:0 0 10px"><span class="card-title">🔴 Критичные зоны</span></div>
+      <div class="alert-item crit"><div class="ai-icon">❄️</div><div class="ai-body"><div class="ai-title">Вечная мерзлота · Поглощения 0–540 м</div><div class="ai-desc">Зона трещинно-каверновых поглощений. По аналогам: полная потеря циркуляции с 70 м, интенсивность 36–60 м³/ч.</div><div class="ai-meta">Интервал: 0–540 м · Риск: КРИТИЧНО · Вероятность: 85%</div></div></div>
+      <div class="alert-item crit"><div class="ai-icon">💊</div><div class="ai-body"><div class="ai-title">Кровля Нх I · Нестабильные аргиллиты 2665–2727 м TVD</div><div class="ai-desc">Наиболее опасная зона. Прихваты зафиксированы на нескольких скважинах. Стабилизатор аргиллитов вводить с 2200 м TVD.</div><div class="ai-meta">TVD: 2665–2727 м · Вероятность прихвата без мер: 70%+</div></div></div>
+      <div class="alert-item crit"><div class="ai-icon">🚨</div><div class="ai-body"><div class="ai-title">Вход в Нх III-IV · АВПД P=274 атм</div><div class="ai-desc">Флуоресценция 100%. Переход на KCl-полимерный раствор ρ=1.06. Контроль плотности ежечасно.</div><div class="ai-meta">TVD: 2841 м · P=274 атм · T=65°C · АВПД</div></div></div>
+
+      <div style="margin-top:14px"><div class="card-hdr" style="padding:0 0 10px"><span class="card-title">🟠 Высокие риски</span></div></div>
+      <div class="alert-item high"><div class="ai-icon">⛽</div><div class="ai-body"><div class="ai-title">Газопроявление · Долганская 1005–1031 м</div><div class="ai-desc">Газоносный горизонт ρ газа 0.58 г/см³. ГВА мониторинг. Плотность до 1.16 г/см³. ПВО в боеготовности.</div><div class="ai-meta">MD: 1005–1031 м · ρ газа 0.58</div></div></div>
+      <div class="alert-item high"><div class="ai-icon">🛢️</div><div class="ai-body"><div class="ai-title">Яковлевская Як III-VII · P=16.2 МПа</div><div class="ai-desc">Нефтегазоносный коллектор. Газ 1645–1650 м, нефть 1650–1680 м. Инженер по растворам на буровой при вскрытии.</div><div class="ai-meta">TVD: 1630–1937 м · P=16.2 МПа · ρ нефти 0.846</div></div></div>
+      <div class="alert-item high"><div class="ai-icon">🛢️</div><div class="ai-body"><div class="ai-title">Нх I коллектор · P=254 атм</div><div class="ai-desc">Нефтепроявления 2630–2785 м TVD. P=254 атм. Контроль плотности ежечасно. ρ строго 1.18–1.20 г/см³.</div><div class="ai-meta">TVD: 2570–2750 м · P=254 атм</div></div></div>
+    </div>
+
+    <div>
+      <div class="card-hdr" style="padding:0 0 10px"><span class="card-title">🟡 Умеренные риски</span></div>
+      <div class="alert-item warn"><div class="ai-icon">⚓</div><div class="ai-body"><div class="ai-title">Прихватоопасная зона · Насоновская 1000–1350 м</div><div class="ai-desc">Непрерывная циркуляция. Ясс + нефтяная ванна в готовности. Промывка 2 цикла перед каждым подъёмом.</div><div class="ai-meta">MD: 1000–1350 м · Риск: умеренный</div></div></div>
+      <div class="alert-item warn"><div class="ai-icon">🔧</div><div class="ai-body"><div class="ai-title">Тугой ход · Малохетская 2040–2570 м</div><div class="ai-desc">Периодические сужения ствола. Проработка каждые 72 ч. 2 цикла промывки перед каждым подъёмом.</div><div class="ai-meta">MD: ~2450–3200 м · Малохетская свита</div></div></div>
+      <div class="alert-item warn"><div class="ai-icon">📈</div><div class="ai-body"><div class="ai-title">AI-предиктор: ДНС↑ + РОП↓ → прихват 48–72 ч</div><div class="ai-desc">При тренде роста ДНС +2 lb/100ft² за сутки + снижение РОП &gt;20% — ввести дефлокулянт немедленно.</div><div class="ai-meta">Триггер: ДНС &gt;24 + РОП &lt;80% плана</div></div></div>
+      <div class="alert-item info"><div class="ai-icon">🔄</div><div class="ai-body"><div class="ai-title">Горизонтальный ствол · Вынос шлама</div><div class="ai-desc">Расход мин. 30 л/с. ДНС ≥20 lb/100ft² для выноса. Пыжевые промывки каждые 200 м. Вращение 120 об/мин.</div><div class="ai-meta">MD: 3100–4650 м · Горизонт. участок</div></div></div>
+
+      <!-- Превентивные меры -->
+      <div style="margin-top:14px">
+        <div class="card">
+          <div class="card-hdr"><span class="card-title">Аварийный инструментарий · обязателен на буровой</span></div>
+          <div class="card-body">
+            <div style="font-size:12px;line-height:2.2">
+              <div>🪛 <b>Ясс гидромеханический</b> — на каждой КНБК</div>
+              <div>🛢 <b>Нефтяная ванна</b> — 5–8 м³ в готовности 24/7</div>
+              <div>🔧 <b>Ловильный инструмент</b>: колокол + овершот + метчик</div>
+              <div>💧 <b>Аварийный раствор</b> ≥35 м³ (для поглощений)</div>
+              <div>📊 <b>LCM материалы</b>: CaCO₃ грубый + волокнистый + хлопья</div>
+              <div>🧪 <b>Стабилизатор аргиллитов</b> — запас 20% сверх расчётного</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ ОПЕРАЦИОННЫЙ ПЛАН ═══ -->
+<div class="view" id="view-phases">
+  <div class="ph"><div><div class="ph-title">Операционный план · Фазы бурения</div><div class="ph-sub">16 фаз · от забивки кондуктора до финального ГИС</div></div></div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="card-hdr"><span class="card-title">Фазы строительства скважины</span></div>
+      <div class="card-body">
+        <div class="phase-timeline">
+          <div class="phase-item"><div class="phase-dot" style="background:var(--cyan)"></div><div class="phase-line"></div><div class="phase-body"><div class="phase-name">Бурение кондуктора Ø393.7 мм</div><div class="phase-detail">Полимер-глин. ВБР ρ=1.18 · аварийный р-р готов · отрывы КНБК</div><div class="phase-depth">0 → 620 м MD · ~3 суток</div></div></div>
+          <div class="phase-item"><div class="phase-dot" style="background:var(--muted)"></div><div class="phase-line"></div><div class="phase-body"><div class="phase-name">Подъём КНБК №1</div><div class="phase-detail">2 цикла промывки · замена долота</div><div class="phase-depth">~0.5 суток</div></div></div>
+          <div class="phase-item"><div class="phase-dot" style="background:#7eb8f0"></div><div class="phase-line"></div><div class="phase-body"><div class="phase-name">Спуск кондуктора Ø324 мм · ОЗЦ</div><div class="phase-detail">Цемент до устья · ОЗЦ 10 ч · ГК через 24 ч</div><div class="phase-depth">@620 м · 1 сутки</div></div></div>
+          <div class="phase-item"><div class="phase-dot" style="background:var(--g)"></div><div class="phase-line"></div><div class="phase-body"><div class="phase-name">Бурение Ø295.3 мм · тех. колонна</div><div class="phase-detail">Полимер ρ=1.13 · MWD · ⚠ газ 1005 м · ⚠ прихват 1000–1350 м</div><div class="phase-depth">620 → 1780 м MD · ~10 суток</div></div></div>
+          <div class="phase-item"><div class="phase-dot" style="background:var(--muted)"></div><div class="phase-line"></div><div class="phase-body"><div class="phase-name">Подъём КНБК №2 · ГИС по Яковлевской</div><div class="phase-detail">ГИС при выходе из Яковлевской</div><div class="phase-depth">~1 сутки</div></div></div>
+          <div class="phase-item"><div class="phase-dot" style="background:#a0c8a0"></div><div class="phase-line"></div><div class="phase-body"><div class="phase-name">Спуск тех. колонны Ø245 мм · ОЗЦ</div><div class="phase-detail">Цемент до устья · ОЗЦ 14 ч</div><div class="phase-depth">@1780 м · 1 сутки</div></div></div>
+          <div class="phase-item"><div class="phase-dot" style="background:var(--w)"></div><div class="phase-line"></div><div class="phase-body"><div class="phase-name">Бурение Ø219.1 мм · экспл. колонна</div><div class="phase-detail">RSS + LWD · ρ=1.12–1.20 · ⚠ стабил. с 2200 м TVD · ⚠ кровля Нх I РОП≤5 м/ч</div><div class="phase-depth">1780 → 3100 м MD · ~18 суток</div></div></div>
+          <div class="phase-item"><div class="phase-dot" style="background:var(--muted)"></div><div class="phase-line"></div><div class="phase-body"><div class="phase-name">Подъём КНБК №3 · ГИС по Нх I</div><div class="phase-detail">Полный LWD-каротаж · интерпретация Нх I</div><div class="phase-depth">~1.5 суток</div></div></div>
+          <div class="phase-item"><div class="phase-dot" style="background:#d4a060"></div><div class="phase-line"></div><div class="phase-body"><div class="phase-name">Спуск экспл. колонны Ø178 мм · ОЗЦ</div><div class="phase-detail">Цемент до 800 м · ОЗЦ 18 ч</div><div class="phase-depth">@3100 м · 1.5 суток</div></div></div>
+          <div class="phase-item"><div class="phase-dot" style="background:var(--purple)"></div><div class="phase-line"></div><div class="phase-body"><div class="phase-name">Бурение Ø152.4 мм · горизонтальный ствол</div><div class="phase-detail">KCl-полимер ρ=1.06 · RSS + геонавигация · пыжевые промывки · AGS</div><div class="phase-depth">3100 → 4650 м MD · ~15 суток</div></div></div>
+          <div class="phase-item"><div class="phase-dot" style="background:var(--muted)"></div><div class="phase-line"></div><div class="phase-body"><div class="phase-name">Подъём КНБК №4</div><div class="phase-detail">2 цикла промывки · контроль параметров раствора</div><div class="phase-depth">~1 сутки</div></div></div>
+          <div class="phase-item"><div class="phase-dot" style="background:#a78bfa"></div><div class="phase-line"></div><div class="phase-body"><div class="phase-name">Спуск хвостовика Ø114 мм (щелевого)</div><div class="phase-detail">Перфорированный хвостовик · центраторы каждые 3 трубы</div><div class="phase-depth">@4650 м · 1 сутки</div></div></div>
+          <div class="phase-item"><div class="phase-dot" style="background:var(--g)"></div><div class="phase-line"></div><div class="phase-body"><div class="phase-name">Финальный ГИС + освоение</div><div class="phase-detail">Финальный каротаж · перфорация · освоение · ожидаемый дебит 100+ т/сут</div><div class="phase-depth">~3 суток · КОНЕЦ СТРОИТЕЛЬСТВА</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Итоговые показатели -->
+    <div>
+      <div class="card" style="margin-bottom:12px">
+        <div class="card-hdr"><span class="card-title">Плановые показатели</span></div>
+        <div class="card-body">
+          <table class="tbl">
+            <tr><td class="muted">Общий срок строительства</td><td class="mono bold green">~56 суток</td></tr>
+            <tr><td class="muted">Из них: бурение</td><td class="mono">~46 суток</td></tr>
+            <tr><td class="muted">СПО и ОЗЦ</td><td class="mono">~10 суток</td></tr>
+            <tr><td class="muted">Плановые НПВ</td><td class="mono warn">~9 суток</td></tr>
+            <tr><td class="muted">Стоимость раствора (план)</td><td class="mono">~4.5 млн руб.</td></tr>
+            <tr><td class="muted">Стоимость р-ра за метр</td><td class="mono">~968 руб./м</td></tr>
+            <tr><td class="muted">Объём раствора</td><td class="mono">~420 м³</td></tr>
+            <tr><td class="muted">Ожидаемый дебит нефти</td><td class="mono bold cyan">100+ т/сут</td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="card" style="margin-bottom:12px">
+        <div class="card-hdr"><span class="card-title">Критичный путь · не допустить</span></div>
+        <div class="card-body">
+          <div style="font-size:12px;line-height:2.1">
+            <div class="crit">🚫 Прихват кровли Нх I → +9 суток НПВ</div>
+            <div class="crit">🚫 Потеря циркуляции в ВМ зоне → перебурка</div>
+            <div class="warn">⚠ Задержка поставки стабилизатора аргиллитов</div>
+            <div class="warn">⚠ Выход ДНС > 28 lb/100ft² без обработки</div>
+            <div class="warn">⚠ Потеря геонавигации в ГС → выход из пласта</div>
+            <div class="info">ℹ Превентивные отрывы КНБК — каждые 2 м в ВМ</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="card-title">AI · Уроки аналогичных скважин</span></div>
+        <div class="card-body">
+          <div style="font-size:11px;line-height:1.8;color:var(--muted)">
+            <div style="color:var(--t);font-weight:700;margin-bottom:4px">Самые частые ошибки по аналогам:</div>
+            <div>• Стабилизатор аргиллитов введён поздно (не с 2200 м TVD) — прихват</div>
+            <div>• РОП превышен при вскрытии кровли Нх (>5 м/ч) — кавернообразование</div>
+            <div>• Задержка перехода на KCl-систему в ГС — кольматация</div>
+            <div>• Недостаточный ДНС в ГС (&lt;20 lb/100ft²) — накопление шлама, прихват</div>
+            <div>• Промывание при наращивании в зоне 2665–2727 м — критично</div>
+            <div style="color:var(--g);margin-top:6px">• Соблюдение плана даёт экономию 25–37% от бюджета НПВ</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ СИМУЛЯТОР ═══ -->
+<div class="view" id="view-sim">
+  <iframe id="dwop-frame" src="vankor_ai_demo.html" title="DWOP Симулятор — Горизонтальная Нх III-IV"></iframe>
+</div>
+
+</div><!-- /main -->
+
+<script>
+'use strict';
+
+const VIEWS = ['overview','casing','traj','bha','mud','risks','phases','sim'];
+
+function showView(name) {
+  VIEWS.forEach(v => {
+    const el = document.getElementById('view-' + v);
+    if (el) el.classList.toggle('active', v === name);
+    const nav = document.getElementById('nav-' + v);
+    if (nav) nav.classList.toggle('active', v === name);
+  });
+  if (name === 'traj') drawTrajectory();
+  window.scrollTo && document.getElementById('main').scrollTo(0, 0);
+}
+
+// ── Trajectory Canvas
+function drawTrajectory() {
+  const canvas = document.getElementById('trajCanvas');
+  if (!canvas) return;
+  const W = canvas.offsetWidth || 600;
+  canvas.width = W;
+  canvas.height = 500;
+  const ctx = canvas.getContext('2d');
+
+  // Well path points [MD, TVD, HD]
+  const path = [
+    [0, 0, 0],
+    [620, 620, 0],
+    [1780, 1780, 0],
+    [2100, 2100, 0],
+    [2300, 2287, 46],
+    [2500, 2449, 127],
+    [2700, 2555, 225],
+    [2900, 2640, 341],
+    [3000, 2693, 411],
+    [3100, 2841, 438],
+    [3500, 2841, 722],
+    [4000, 2841, 1075],
+    [4650, 2841, 1534],
+  ];
+
+  const maxTVD = 3000, maxHD = 1600;
+  const padL = 50, padT = 30, padR = 30, padB = 40;
+  const plotW = W - padL - padR;
+  const plotH = 500 - padT - padB;
+
+  function scX(hd) { return padL + (hd / maxHD) * plotW; }
+  function scY(tvd) { return padT + (tvd / maxTVD) * plotH; }
+
+  // Grid
+  ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+  ctx.lineWidth = 1;
+  for (let t = 0; t <= maxTVD; t += 500) {
+    ctx.beginPath(); ctx.moveTo(padL, scY(t)); ctx.lineTo(W - padR, scY(t)); ctx.stroke();
+    ctx.fillStyle = 'rgba(107,127,150,.7)'; ctx.font = '9px monospace'; ctx.textAlign = 'right';
+    ctx.fillText(t + 'м', padL - 3, scY(t) + 3);
+  }
+  for (let h = 0; h <= maxHD; h += 400) {
+    ctx.beginPath(); ctx.moveTo(scX(h), padT); ctx.lineTo(scX(h), 500 - padB); ctx.stroke();
+    ctx.fillStyle = 'rgba(107,127,150,.7)'; ctx.font = '9px monospace'; ctx.textAlign = 'center';
+    ctx.fillText(h + 'м', scX(h), 500 - padB + 12);
+  }
+
+  // Formation bands
+  const forms = [
+    [0, 150, 'rgba(74,90,74,.3)', 'Q+ВМ'],
+    [150, 905, 'rgba(90,100,85,.2)', 'Дл/Спд'],
+    [905, 1050, 'rgba(139,120,75,.3)', 'Дл-газ'],
+    [1050, 1630, 'rgba(85,90,100,.2)', 'Нсн/Вхт'],
+    [1630, 1937, 'rgba(136,90,70,.35)', 'Як III-VII'],
+    [1937, 2570, 'rgba(80,80,90,.2)', 'Схд/Млх'],
+    [2570, 2750, 'rgba(80,72,96,.4)', 'Нх I ⚠'],
+    [2750, 3000, 'rgba(48,64,96,.45)', 'Нх III-IV ★'],
+  ];
+  forms.forEach(([t1, t2, col, lbl]) => {
+    const y1 = scY(t1), y2 = Math.min(scY(t2), 500 - padB);
+    ctx.fillStyle = col;
+    ctx.fillRect(padL, y1, plotW, y2 - y1);
+    if (y2 - y1 > 12) {
+      ctx.fillStyle = 'rgba(255,255,255,.4)';
+      ctx.font = 'bold 9px system-ui';
+      ctx.textAlign = 'right';
+      ctx.fillText(lbl, W - padR - 4, y1 + (y2-y1)/2 + 3);
+    }
+  });
+
+  // Well path
+  ctx.beginPath();
+  ctx.strokeStyle = '#00d4ff';
+  ctx.lineWidth = 2.5;
+  ctx.shadowColor = 'rgba(0,212,255,.4)';
+  ctx.shadowBlur = 6;
+  path.forEach(([md, tvd, hd], i) => {
+    const x = scX(hd), y = scY(tvd);
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  });
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+
+  // Key markers
+  const marks = [
+    [620, 620, 0, '#7eb8f0', 'Кондуктор @620м'],
+    [1780, 1780, 0, '#a0c8a0', 'Тех.кол @1780м'],
+    [2100, 2100, 0, '#ffab00', 'KOP'],
+    [3100, 2841, 438, '#ff3d3d', 'EOB · Нх III-IV'],
+    [4650, 2841, 1534, '#00e676', 'ТД 4650м'],
+  ];
+  marks.forEach(([md, tvd, hd, col, lbl]) => {
+    const x = scX(hd), y = scY(tvd);
+    ctx.beginPath(); ctx.arc(x, y, 5, 0, Math.PI*2);
+    ctx.fillStyle = col; ctx.fill();
+    ctx.strokeStyle = 'rgba(0,0,0,.5)'; ctx.lineWidth = 1; ctx.stroke();
+    ctx.fillStyle = col; ctx.font = 'bold 9px system-ui'; ctx.textAlign = 'left';
+    ctx.fillText(lbl, x + 8, y + 3);
+  });
+
+  // Axis labels
+  ctx.fillStyle = 'rgba(107,127,150,.8)';
+  ctx.font = 'bold 10px system-ui';
+  ctx.textAlign = 'center';
+  ctx.fillText('Горизонтальное смещение, м →', padL + plotW/2, 500 - 5);
+  ctx.save(); ctx.translate(12, padT + plotH/2); ctx.rotate(-Math.PI/2);
+  ctx.fillText('TVD, м ↓', 0, 0); ctx.restore();
+}
+
+// ── Init
+showView('overview');
+
+// Refresh canvas on resize
+window.addEventListener('resize', () => {
+  if (document.getElementById('view-traj').classList.contains('active')) drawTrajectory();
+});
+
+// Принимаем команду переключения вида от командного центра
+window.addEventListener('message', e => {
+  if (e.data && e.data.type === 'show_view' && e.data.view) {
+    showView(e.data.view);
+  }
+});
+</script>
+</body>
+</html>

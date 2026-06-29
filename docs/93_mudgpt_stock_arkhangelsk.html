@@ -1,0 +1,836 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>93 · Склад Архангельск</title>
+  <style>
+    :root {
+      --bg: #09111b;
+      --panel: rgba(14, 21, 34, 0.84);
+      --panel-strong: rgba(18, 28, 44, 0.96);
+      --line: rgba(190, 214, 255, 0.1);
+      --text: #edf4ff;
+      --muted: #93a4c2;
+      --cyan: #56d0ff;
+      --gold: #ffbf57;
+      --green: #46d987;
+      --violet: #9d8dff;
+      --pink: #ff8fae;
+      --shadow: 0 24px 72px rgba(0, 0, 0, 0.34);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Bahnschrift", "Trebuchet MS", sans-serif;
+      color: var(--text);
+      background:
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(255,255,255,0.03) 1px, transparent 1px),
+        radial-gradient(circle at 10% 12%, rgba(86, 208, 255, 0.16), transparent 20%),
+        radial-gradient(circle at 85% 20%, rgba(255, 191, 87, 0.12), transparent 24%),
+        linear-gradient(180deg, #071019 0%, #0a111a 46%, #071019 100%);
+      background-size: 56px 56px, 56px 56px, auto, auto, auto;
+    }
+
+    .shell {
+      width: min(1480px, calc(100vw - 32px));
+      margin: 28px auto 40px;
+    }
+
+    .topbar,
+    .hero,
+    .summary-card,
+    .controls,
+    .table-panel {
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(16px);
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      padding: 14px 18px;
+      margin-bottom: 18px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .brand-badge {
+      width: 12px;
+      height: 12px;
+      border-radius: 4px;
+      background: linear-gradient(135deg, var(--green), var(--cyan));
+      box-shadow: 0 0 18px rgba(70, 217, 135, 0.45);
+    }
+
+    .topbar-links {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .topbar a {
+      color: var(--text);
+      text-decoration: none;
+      font-size: 14px;
+      padding: 10px 14px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .hero {
+      padding: 26px 28px;
+      margin-bottom: 18px;
+    }
+
+    .hero-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      color: var(--cyan);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 30px;
+      height: 1px;
+      background: currentColor;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(36px, 5vw, 58px);
+      letter-spacing: -0.04em;
+      line-height: 0.94;
+    }
+
+    .hero p {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .date-chip,
+    .toolbar button,
+    .toolbar a {
+      min-height: 42px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text);
+      font: inherit;
+      text-decoration: none;
+      padding: 0 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .date-chip label {
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .date-chip input {
+      border: 0;
+      outline: none;
+      background: transparent;
+      color: var(--text);
+      font: inherit;
+      font-weight: 700;
+    }
+
+    .toolbar .today-btn { border-color: rgba(86, 208, 255, 0.35); color: var(--cyan); }
+    .toolbar .save-btn { background: linear-gradient(130deg, #8ff6ea, #56d0ff); color: #06202b; font-weight: 900; }
+    .toolbar .csv-btn { border-color: rgba(255, 191, 87, 0.28); color: var(--gold); }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .summary-card {
+      padding: 18px;
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .summary-card .label {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .summary-card strong {
+      display: block;
+      font-size: 38px;
+      line-height: 1;
+    }
+
+    .summary-card.cyan strong { color: var(--cyan); }
+    .summary-card.gold strong { color: var(--gold); }
+    .summary-card.green strong { color: var(--green); }
+    .summary-card.violet strong { color: var(--violet); }
+
+    .summary-card span {
+      display: block;
+      margin-top: 8px;
+      color: var(--muted);
+      line-height: 1.5;
+      font-size: 13px;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 14px 16px;
+      margin-bottom: 18px;
+    }
+
+    .search-box {
+      flex: 1 1 360px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 46px;
+      padding: 0 14px;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .search-box input {
+      width: 100%;
+      border: 0;
+      outline: none;
+      background: transparent;
+      color: var(--text);
+      font: inherit;
+    }
+
+    .search-box input::placeholder { color: rgba(237, 244, 255, 0.35); }
+
+    .control-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .ghost-btn,
+    .accent-btn {
+      min-height: 44px;
+      border-radius: 14px;
+      padding: 0 14px;
+      border: 1px solid var(--line);
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .ghost-btn {
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text);
+    }
+
+    .accent-btn {
+      background: linear-gradient(130deg, rgba(157, 141, 255, 0.24), rgba(86, 208, 255, 0.24));
+      color: #eaf8ff;
+      border-color: rgba(157, 141, 255, 0.35);
+    }
+
+    .table-panel {
+      overflow: hidden;
+      background: var(--panel-strong);
+    }
+
+    .table-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255,255,255,0.03);
+    }
+
+    .table-head strong {
+      font-size: 14px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .table-head span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      min-width: 1880px;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      padding: 14px 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      text-align: left;
+      vertical-align: middle;
+    }
+
+    th {
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.02);
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+
+    th.col-product { color: var(--cyan); }
+    th.col-unit { color: var(--gold); }
+    th.col-weight { color: var(--violet); }
+    th.col-opening { color: #84dfff; }
+    th.col-arrival { color: var(--green); }
+    th.col-expected { color: var(--gold); }
+    th.col-shipped { color: var(--pink); }
+    th.col-ending { color: var(--green); }
+    th.col-load { color: var(--violet); }
+    th.col-price { color: var(--cyan); }
+    th.col-note { color: #d5dff7; }
+
+    tbody tr:hover { background: rgba(86, 208, 255, 0.04); }
+
+    .row-index {
+      display: inline-flex;
+      min-width: 28px;
+      min-height: 28px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .cell-input,
+    .cell-select {
+      width: 100%;
+      min-height: 38px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text);
+      font: inherit;
+      padding: 0 10px;
+      outline: none;
+      white-space: nowrap;
+    }
+
+    .product-select { min-width: 260px; }
+    .package-select { min-width: 190px; }
+    .unit-select { min-width: 120px; }
+    .weight-input { min-width: 120px; }
+    .qty-input { min-width: 128px; }
+    .expected-input { min-width: 120px; }
+    .expected-date { min-width: 150px; }
+    .load-select { min-width: 180px; }
+    .price-input { min-width: 170px; }
+    .note-input { min-width: 180px; }
+
+    .cell-input:focus,
+    .cell-select:focus {
+      border-color: rgba(86, 208, 255, 0.4);
+      box-shadow: 0 0 0 3px rgba(86, 208, 255, 0.08);
+    }
+
+    .cell-select option { color: #0a1220; }
+
+    .metric-chip {
+      display: inline-flex;
+      min-height: 38px;
+      align-items: center;
+      justify-content: center;
+      padding: 0 12px;
+      border-radius: 12px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      background: rgba(70, 217, 135, 0.08);
+      color: #7af0aa;
+      border: 1px solid rgba(70, 217, 135, 0.16);
+    }
+
+    .load-badge {
+      display: inline-flex;
+      min-height: 36px;
+      align-items: center;
+      padding: 0 12px;
+      border-radius: 999px;
+      background: rgba(157, 141, 255, 0.12);
+      color: #d8d1ff;
+      border: 1px solid rgba(157, 141, 255, 0.2);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .expected-stack {
+      display: grid;
+      gap: 8px;
+    }
+
+    .row-remove {
+      min-height: 38px;
+      padding: 0 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 143, 174, 0.24);
+      background: rgba(255, 143, 174, 0.08);
+      color: #ffb4c5;
+      cursor: pointer;
+      font: inherit;
+    }
+
+    .footer-note {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 980px) {
+      .shell { width: min(1480px, calc(100vw - 16px)); }
+      .summary-grid { grid-template-columns: 1fr 1fr; }
+      .hero-head,
+      .controls { align-items: stretch; }
+    }
+
+    @media (max-width: 720px) {
+      .summary-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+  <main class="shell">
+    <div class="topbar">
+      <div class="brand"><span class="brand-badge" aria-hidden="true"></span><span>MudGPT · Stocks</span></div>
+      <div class="topbar-links">
+        <a href="92_mudgpt_admin_dashboard.html">Admin dashboard</a>
+        <a href="91_mudgpt_materials_admin.html">Модуль химреагентов</a>
+        <a href="87_mudgpt_chemicals_materials.html">User page</a>
+      </div>
+    </div>
+
+    <section class="hero">
+      <div class="hero-head">
+        <div>
+          <div class="eyebrow">Warehouse control</div>
+          <h1>Склад АРХАНГЕЛЬСК</h1>
+          <p id="heroDateLabel">Остатки и ожидаемые поступления на 18 апр 2026</p>
+        </div>
+        <div class="toolbar">
+          <div class="date-chip">
+            <label for="stockDateInput">Дата</label>
+            <input id="stockDateInput" type="date" value="2026-04-18" />
+          </div>
+          <button class="today-btn" id="todayBtn" type="button">Сегодня</button>
+          <button class="save-btn" id="saveBtn" type="button">Сохранить</button>
+          <button class="csv-btn" id="csvBtn" type="button">CSV</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="summary-grid">
+      <article class="summary-card cyan">
+        <span class="label">Позиций в таблице</span>
+        <strong id="summaryRows">0</strong>
+        <span>активных строк по складу Архангельск</span>
+      </article>
+      <article class="summary-card gold">
+        <span class="label">Ненулевой остаток</span>
+        <strong id="summaryStocked">0</strong>
+        <span>сколько позиций сейчас есть на складе</span>
+      </article>
+      <article class="summary-card green">
+        <span class="label">Ожидается</span>
+        <strong id="summaryExpected">0</strong>
+        <span>позиций с ожидаемым приходом и датой</span>
+      </article>
+      <article class="summary-card violet">
+        <span class="label">EXW заполнено</span>
+        <strong id="summaryPriced">0</strong>
+        <span>строк, где задана цена EXW склад</span>
+      </article>
+    </section>
+
+    <section class="controls">
+      <label class="search-box" for="searchInput">
+        <span>🔎</span>
+        <input id="searchInput" type="text" placeholder="Поиск по продукту, примечанию или типу загрузки..." />
+      </label>
+      <div class="control-actions">
+        <button class="ghost-btn" id="addRowBtn" type="button">Добавить позицию</button>
+        <button class="accent-btn" id="resetBtn" type="button">Сбросить склад</button>
+      </div>
+    </section>
+
+    <section class="table-panel">
+      <div class="table-head">
+        <strong>Все остатки · Архангельск</strong>
+        <span id="visibleRowsLabel">Показано: 0</span>
+      </div>
+      <div class="table-wrap">
+        <table aria-label="Склад Архангельск">
+          <thead>
+            <tr>
+              <th>№</th>
+              <th class="col-product">Наименование</th>
+              <th class="col-unit">Тара</th>
+              <th class="col-unit">Ед.</th>
+              <th class="col-weight">Вес ед. (кг)</th>
+              <th class="col-opening">На начало</th>
+              <th class="col-arrival">Приход</th>
+              <th class="col-expected">Ожидается</th>
+              <th class="col-shipped">Отгрузка</th>
+              <th class="col-ending">На конец</th>
+              <th class="col-load">Полная загрузка модуля</th>
+              <th class="col-price">Цена EXW склад</th>
+              <th class="col-note">Примечание</th>
+              <th>Действие</th>
+            </tr>
+          </thead>
+          <tbody id="stockTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <p class="footer-note">Наименование выбирается из выпадающего списка продуктов. Для тары доступны варианты: мешок бум, мешок п/п, бочка металл, бочка ПЭТ, биг-бэг. Значение «На конец» считается автоматически как начало + приход - отгрузка.</p>
+  </main>
+
+  <script src="assets/js/mudgpt-materials-catalog.js"></script>
+  <script src="assets/js/mudgpt-stock-arkhangelsk.js"></script>
+  <script>
+    (function () {
+      var materialsCatalog = window.MudGPTMaterialsCatalog;
+      var stockStore = window.MudGPTStockArkhangelsk;
+      var PACKAGE_OPTIONS = ['мешок бум', 'мешок п/п', 'бочка металл', 'бочка ПЭТ', 'биг-бэг'];
+      var UNIT_OPTIONS = ['мешок', 'бочка', 'биг-бэг', 'IBC'];
+      var LOAD_OPTIONS = ['автофура', '20фт контейнер', 'ж/д вагон'];
+      var state = stockStore.loadState();
+
+      var stockDateInput = document.getElementById('stockDateInput');
+      var heroDateLabel = document.getElementById('heroDateLabel');
+      var searchInput = document.getElementById('searchInput');
+      var stockTableBody = document.getElementById('stockTableBody');
+      var visibleRowsLabel = document.getElementById('visibleRowsLabel');
+      var summaryRows = document.getElementById('summaryRows');
+      var summaryStocked = document.getElementById('summaryStocked');
+      var summaryExpected = document.getElementById('summaryExpected');
+      var summaryPriced = document.getElementById('summaryPriced');
+      var addRowBtn = document.getElementById('addRowBtn');
+      var resetBtn = document.getElementById('resetBtn');
+      var saveBtn = document.getElementById('saveBtn');
+      var csvBtn = document.getElementById('csvBtn');
+      var todayBtn = document.getElementById('todayBtn');
+
+      function parseNumber(value) {
+        var normalized = String(value || '').replace(',', '.').replace(/[^0-9.-]/g, '');
+        var parsed = Number(normalized);
+        return Number.isFinite(parsed) ? parsed : 0;
+      }
+
+      function formatDateLabel(value) {
+        if (!value) {
+          return 'без даты';
+        }
+
+        var date = new Date(value + 'T00:00:00');
+        if (Number.isNaN(date.getTime())) {
+          return value;
+        }
+
+        return new Intl.DateTimeFormat('ru-RU', {
+          day: 'numeric',
+          month: 'short',
+          year: 'numeric'
+        }).format(date);
+      }
+
+      function getProductOptions() {
+        var rows = materialsCatalog ? materialsCatalog.loadState() : {};
+        var titles = Object.keys(rows).map(function (key) {
+          return rows[key].title;
+        });
+        return titles.filter(Boolean);
+      }
+
+      function saveState() {
+        state = stockStore.saveState(state);
+      }
+
+      function updateHeroDate() {
+        heroDateLabel.textContent = 'Остатки и ожидаемые поступления на ' + formatDateLabel(state.date);
+      }
+
+      function buildSelect(options, value, className, extraAttrs) {
+        var attrs = extraAttrs || '';
+        var classes = ['cell-select'];
+        if (className) {
+          classes.push(className);
+        }
+        return '<select class="' + classes.join(' ') + '" ' + attrs + '>' + options.map(function (option) {
+          return '<option value="' + option + '"' + (option === value ? ' selected' : '') + '>' + option + '</option>';
+        }).join('') + '</select>';
+      }
+
+      function renderTable() {
+        var query = String(searchInput.value || '').trim().toLowerCase();
+        var productOptions = getProductOptions();
+        var visibleCount = 0;
+
+        stockTableBody.innerHTML = state.rows.map(function (row, index) {
+          var endingQty = parseNumber(row.openingQty) + parseNumber(row.arrivalQty) - parseNumber(row.shippedQty);
+          var haystack = [row.product, row.packageType, row.note, row.fullLoad, row.exwPrice].join(' ').toLowerCase();
+          var visible = !query || haystack.indexOf(query) !== -1;
+          if (visible) {
+            visibleCount += 1;
+          }
+
+          return '<tr data-row-id="' + row.id + '"' + (visible ? '' : ' hidden') + '>' +
+            '<td><span class="row-index">' + (index + 1) + '</span></td>' +
+            '<td>' + buildSelect(productOptions, row.product, 'product-select', 'data-field="product"') + '</td>' +
+            '<td>' + buildSelect(PACKAGE_OPTIONS, row.packageType, 'package-select', 'data-field="packageType"') + '</td>' +
+            '<td>' + buildSelect(UNIT_OPTIONS, row.unit, 'unit-select', 'data-field="unit"') + '</td>' +
+            '<td><input class="cell-input weight-input" data-field="unitWeight" type="text" value="' + row.unitWeight + '" placeholder="в кг" /></td>' +
+            '<td><input class="cell-input qty-input" data-field="openingQty" type="text" value="' + row.openingQty + '" placeholder="0" /></td>' +
+            '<td><input class="cell-input qty-input" data-field="arrivalQty" type="text" value="' + row.arrivalQty + '" placeholder="0" /></td>' +
+            '<td><div class="expected-stack"><input class="cell-input expected-input" data-field="expectedQty" type="text" value="' + row.expectedQty + '" placeholder="0" /><input class="cell-input expected-date" data-field="expectedDate" type="date" value="' + row.expectedDate + '" /></div></td>' +
+            '<td><input class="cell-input qty-input" data-field="shippedQty" type="text" value="' + row.shippedQty + '" placeholder="0" /></td>' +
+            '<td><span class="metric-chip">' + endingQty + '</span></td>' +
+            '<td><div class="load-badge">' + row.fullLoad + '</div><div style="margin-top:8px">' + buildSelect(LOAD_OPTIONS, row.fullLoad, 'load-select', 'data-field="fullLoad"') + '</div></td>' +
+            '<td><input class="cell-input price-input" data-field="exwPrice" type="text" value="' + row.exwPrice + '" placeholder="например 1 250 USD/т" /></td>' +
+            '<td><input class="cell-input note-input" data-field="note" type="text" value="' + row.note + '" placeholder="комментарий" /></td>' +
+            '<td><button class="row-remove" type="button" data-remove-row="' + row.id + '">Убрать</button></td>' +
+          '</tr>';
+        }).join('');
+
+        visibleRowsLabel.textContent = 'Показано: ' + visibleCount;
+        updateSummary();
+      }
+
+      function updateRowView(rowElement, row) {
+        if (!rowElement || !row) {
+          return;
+        }
+
+        var endingQty = parseNumber(row.openingQty) + parseNumber(row.arrivalQty) - parseNumber(row.shippedQty);
+        var endingChip = rowElement.querySelector('.metric-chip');
+        var loadBadge = rowElement.querySelector('.load-badge');
+        if (endingChip) {
+          endingChip.textContent = String(endingQty);
+        }
+        if (loadBadge) {
+          loadBadge.textContent = row.fullLoad;
+        }
+        updateSummary();
+      }
+
+      function updateSummary() {
+        summaryRows.textContent = String(state.rows.length);
+        summaryStocked.textContent = String(state.rows.filter(function (row) {
+          return parseNumber(row.openingQty) + parseNumber(row.arrivalQty) - parseNumber(row.shippedQty) > 0;
+        }).length);
+        summaryExpected.textContent = String(state.rows.filter(function (row) {
+          return parseNumber(row.expectedQty) > 0 || !!row.expectedDate;
+        }).length);
+        summaryPriced.textContent = String(state.rows.filter(function (row) {
+          return !!String(row.exwPrice || '').trim();
+        }).length);
+      }
+
+      function findRow(rowId) {
+        return state.rows.find(function (row) {
+          return row.id === rowId;
+        }) || null;
+      }
+
+      function exportCsv() {
+        var headers = ['№', 'Наименование', 'Тара', 'Ед.', 'Вес ед. (кг)', 'На начало', 'Приход', 'Ожидается', 'Дата ожидания', 'Отгрузка', 'На конец', 'Полная загрузка модуля', 'Цена EXW склад', 'Примечание'];
+        var lines = [headers.join(';')];
+
+        state.rows.forEach(function (row, index) {
+          var endingQty = parseNumber(row.openingQty) + parseNumber(row.arrivalQty) - parseNumber(row.shippedQty);
+          var values = [
+            index + 1,
+            row.product,
+            row.packageType,
+            row.unit,
+            row.unitWeight,
+            row.openingQty,
+            row.arrivalQty,
+            row.expectedQty,
+            row.expectedDate,
+            row.shippedQty,
+            endingQty,
+            row.fullLoad,
+            row.exwPrice,
+            row.note
+          ].map(function (value) {
+            return '"' + String(value == null ? '' : value).replace(/"/g, '""') + '"';
+          });
+          lines.push(values.join(';'));
+        });
+
+        var blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
+        var url = URL.createObjectURL(blob);
+        var link = document.createElement('a');
+        link.href = url;
+        link.download = 'arkhangelsk-stock-' + state.date + '.csv';
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(url);
+      }
+
+      stockDateInput.value = state.date;
+      updateHeroDate();
+      renderTable();
+
+      stockDateInput.addEventListener('input', function () {
+        state.date = stockDateInput.value || stockStore.DEFAULT_DATE;
+        saveState();
+        updateHeroDate();
+      });
+
+      searchInput.addEventListener('input', renderTable);
+
+      stockTableBody.addEventListener('input', function (event) {
+        var field = event.target.getAttribute('data-field');
+        var rowElement = event.target.closest('[data-row-id]');
+        var row = rowElement ? findRow(rowElement.getAttribute('data-row-id')) : null;
+        if (!field || !row) {
+          return;
+        }
+        row[field] = event.target.value;
+        saveState();
+        updateRowView(rowElement, row);
+      });
+
+      stockTableBody.addEventListener('change', function (event) {
+        var field = event.target.getAttribute('data-field');
+        var rowElement = event.target.closest('[data-row-id]');
+        var row = rowElement ? findRow(rowElement.getAttribute('data-row-id')) : null;
+        if (!field || !row) {
+          return;
+        }
+        row[field] = event.target.value;
+        saveState();
+        updateRowView(rowElement, row);
+      });
+
+      stockTableBody.addEventListener('click', function (event) {
+        var removeButton = event.target.closest('[data-remove-row]');
+        if (!removeButton) {
+          return;
+        }
+        state.rows = state.rows.filter(function (row) {
+          return row.id !== removeButton.getAttribute('data-remove-row');
+        });
+        saveState();
+        renderTable();
+      });
+
+      addRowBtn.addEventListener('click', function () {
+        state.rows.push(stockStore.createRow());
+        saveState();
+        renderTable();
+      });
+
+      resetBtn.addEventListener('click', function () {
+        state = stockStore.saveState({
+          date: stockStore.DEFAULT_DATE,
+          rows: stockStore.DEFAULT_ROWS
+        });
+        stockDateInput.value = state.date;
+        searchInput.value = '';
+        updateHeroDate();
+        renderTable();
+      });
+
+      saveBtn.addEventListener('click', function () {
+        saveState();
+        saveBtn.textContent = 'Сохранено';
+        window.setTimeout(function () {
+          saveBtn.textContent = 'Сохранить';
+        }, 1200);
+      });
+
+      csvBtn.addEventListener('click', exportCsv);
+
+      todayBtn.addEventListener('click', function () {
+        var today = new Date();
+        var month = String(today.getMonth() + 1).padStart(2, '0');
+        var day = String(today.getDate()).padStart(2, '0');
+        state.date = today.getFullYear() + '-' + month + '-' + day;
+        stockDateInput.value = state.date;
+        saveState();
+        updateHeroDate();
+      });
+    }());
+  </script>
+  <script src="assets/js/global-auth-widget.js"></script>
+</body>
+</html>

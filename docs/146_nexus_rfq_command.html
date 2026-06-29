@@ -1,0 +1,449 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>146 · Nexus RFQ Command</title>
+	<style>
+		@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600;700&family=IBM+Plex+Sans+Condensed:wght@600;700&display=swap");
+		:root {
+			--line: rgba(18,48,71,0.12);
+			--text: #17324a;
+			--muted: #617487;
+			--mint: #0e7490;
+			--gold: #ba7a1f;
+			--ok: #1f7a4f;
+			--warn: #b7791f;
+			--risk: #c0563c;
+			--panel: rgba(255,255,255,0.96);
+			--shadow: 0 22px 56px rgba(28,51,84,0.1);
+		}
+		* { box-sizing: border-box; }
+		body {
+			margin: 0;
+			font-family: "IBM Plex Sans", sans-serif;
+			color: var(--text);
+			background:
+				radial-gradient(820px 420px at 0% 0%, rgba(14,116,144,0.08), transparent 70%),
+				radial-gradient(780px 420px at 100% 0%, rgba(192,86,60,0.06), transparent 72%),
+				linear-gradient(180deg, #f7fafc 0%, #eef3f6 54%, #e9eef2 100%);
+		}
+		.page { width: min(1400px, calc(100% - 28px)); margin: 0 auto; padding: 18px 0 36px; }
+		.topbar, .hero, .panel, .card {
+			border: 1px solid var(--line);
+			border-radius: 24px;
+			background: var(--panel);
+			box-shadow: var(--shadow);
+		}
+		.topbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 14px 16px; margin-bottom: 14px; }
+		.brand { font-size: 13px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; }
+		.hero { display: grid; grid-template-columns: minmax(0,1fr) 300px; gap: 14px; padding: 22px; margin-bottom: 14px; }
+		.rfq-id { margin: 10px 0; font-family: "IBM Plex Sans Condensed", sans-serif; font-size: clamp(38px,4.8vw,62px); line-height: 0.9; text-transform: uppercase; }
+		.badge { display: inline-flex; align-items: center; min-height: 28px; padding: 0 12px; border-radius: 999px; font-size: 11px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; }
+		.badge.mint { background: rgba(14,116,144,0.1); color: var(--mint); }
+		.badge.ok { background: rgba(31,122,79,0.1); color: var(--ok); }
+		.badge.warn { background: rgba(183,121,31,0.1); color: var(--warn); }
+		.badge.risk { background: rgba(192,86,60,0.1); color: var(--risk); }
+		.toggles { display: flex; gap: 8px; flex-wrap: wrap; }
+		button, .link-btn {
+			border: 1px solid var(--line);
+			background: rgba(255,255,255,0.92);
+			color: var(--text);
+			min-height: 38px;
+			border-radius: 999px;
+			padding: 0 14px;
+			font: inherit;
+			font-size: 12px;
+			font-weight: 800;
+			letter-spacing: 0.08em;
+			text-transform: uppercase;
+			cursor: pointer;
+			text-decoration: none;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+		}
+		.link-btn.primary, button.primary { background: linear-gradient(135deg,#d38b28 0%,#b56f16 100%); color: #fff; border-color: rgba(181,111,22,0.45); }
+		.toggle.active { background: rgba(14,116,144,0.1); color: var(--mint); border-color: rgba(14,116,144,0.3); }
+		.stage-strip { display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); gap: 8px; margin-bottom: 14px; }
+		.stage-node { border: 1px solid var(--line); border-radius: 999px; min-height: 44px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); background: var(--panel); }
+		.stage-node.done { color: var(--ok); border-color: rgba(31,122,79,0.35); background: rgba(31,122,79,0.08); }
+		.stage-node.active { color: var(--mint); border-color: rgba(14,116,144,0.35); background: rgba(14,116,144,0.1); }
+		.grid { display: grid; grid-template-columns: minmax(0,1fr) 340px; gap: 14px; }
+		.panel { padding: 16px; }
+		.head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 10px; }
+		.title { margin: 0; font-family: "IBM Plex Sans Condensed", sans-serif; font-size: 24px; letter-spacing: 0.03em; text-transform: uppercase; }
+		.copy { margin: 6px 0 0; color: var(--muted); font-size: 13px; line-height: 1.5; }
+		.table-head, .row { display: grid; grid-template-columns: minmax(170px,1.4fr) 110px 110px 110px 90px 90px 120px; gap: 10px; align-items: center; }
+		.table-head { margin-bottom: 8px; color: var(--muted); font-size: 11px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+		.row { margin-bottom: 8px; padding: 12px; border: 1px solid var(--line); border-radius: 16px; background: #fff; }
+		.row.win { border-color: rgba(31,122,79,0.35); background: rgba(31,122,79,0.05); }
+		.supplier { font-family: "IBM Plex Sans Condensed", sans-serif; font-size: 18px; text-transform: uppercase; }
+		.small { color: var(--muted); font-size: 11px; }
+		.status-col { display: flex; gap: 8px; flex-wrap: wrap; }
+		.list { display: grid; gap: 8px; }
+		.card { padding: 12px; }
+		.card-title { font-weight: 700; font-size: 14px; }
+		.card-copy { margin-top: 4px; color: var(--muted); font-size: 12px; }
+		.card-line { display: flex; justify-content: space-between; gap: 8px; align-items: center; }
+		.journal-input { display: flex; gap: 8px; margin-top: 10px; }
+		.journal-input input { flex: 1; min-height: 38px; border-radius: 999px; border: 1px solid var(--line); padding: 0 12px; font: inherit; }
+		.summary-row { display: grid; grid-template-columns: 120px 1fr; gap: 8px; padding: 6px 0; border-bottom: 1px solid rgba(18,48,71,0.08); }
+		.summary-row:last-child { border-bottom: none; }
+		@media (max-width: 1120px) { .grid { grid-template-columns: 1fr; } }
+		@media (max-width: 860px) {
+			.hero { grid-template-columns: 1fr; }
+			.stage-strip { grid-template-columns: repeat(2,minmax(0,1fr)); }
+			.table-head, .row { grid-template-columns: 1fr 1fr; }
+		}
+	</style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+	<main class="page">
+		<section class="topbar">
+			<div class="brand">Nexus RFQ Command</div>
+			<div style="display:flex;gap:8px;flex-wrap:wrap;">
+				<a class="link-btn" href="143_nexus_marketplace_hub.html">Marketplace Hub</a>
+				<a class="link-btn" href="144_nexus_catalog_workbench.html">Catalog</a>
+				<a class="link-btn" href="145_nexus_supplier_trust_desk.html" id="supplierLink">Supplier Desk</a>
+			</div>
+		</section>
+
+		<section class="hero">
+			<article>
+				<span class="badge mint" id="heroEyebrow"></span>
+				<div class="rfq-id" id="rfqId"></div>
+				<div style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 10px;">
+					<span class="badge mint" id="stageBadge"></span>
+					<span class="badge mint" id="supplierBadge"></span>
+					<span class="badge mint" id="lineBadge"></span>
+				</div>
+				<p class="copy" id="heroCopy"></p>
+				<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;">
+					<button class="primary" data-action="advance" id="advanceButton"></button>
+					<a class="link-btn" href="145_nexus_supplier_trust_desk.html" id="openSupplier"></a>
+				</div>
+			</article>
+			<aside class="panel">
+				<div class="head">
+					<div>
+						<p class="title" style="font-size:18px;" id="langTitle"></p>
+						<p class="copy" id="langCopy"></p>
+					</div>
+					<span class="badge mint" id="langState"></span>
+				</div>
+				<div class="toggles">
+					<button class="toggle active" data-lang="ru" type="button">RU</button>
+					<button class="toggle" data-lang="en" type="button">EN</button>
+				</div>
+			</aside>
+		</section>
+
+		<section class="stage-strip" id="stageStrip"></section>
+
+		<section class="grid">
+			<div style="display:grid;gap:14px;">
+				<article class="panel">
+					<div class="head">
+						<div>
+							<h2 class="title" id="compareTitle"></h2>
+							<p class="copy" id="compareCopy"></p>
+						</div>
+						<span class="badge mint" id="compareState"></span>
+					</div>
+					<div class="table-head" id="tableHead"></div>
+					<div id="bidList"></div>
+				</article>
+
+				<article class="panel">
+					<div class="head">
+						<div>
+							<h2 class="title" id="blockerTitle"></h2>
+							<p class="copy" id="blockerCopy"></p>
+						</div>
+						<span class="badge warn" id="blockerState"></span>
+					</div>
+					<div class="list" id="blockerList"></div>
+				</article>
+			</div>
+
+			<div style="display:grid;gap:14px;">
+				<article class="panel">
+					<div class="head"><h2 class="title" id="journalTitle"></h2></div>
+					<div class="list" id="journalList"></div>
+					<div class="journal-input">
+						<input id="journalInput" />
+						<button id="journalAdd" type="button"></button>
+					</div>
+				</article>
+
+				<article class="panel">
+					<div class="head"><h2 class="title" id="summaryTitle"></h2></div>
+					<div id="summaryList"></div>
+				</article>
+			</div>
+		</section>
+	</main>
+
+	<script src="assets/js/global-auth-widget.js"></script>
+	<script>
+		(function () {
+			var CONTEXT_KEY = 'nexus-marketplace-context';
+			var RFQ_STATE_KEY = 'nexus-rfq-state';
+			var RFQ_JOURNAL_KEY = 'nexus-rfq-journal';
+			var STAGES = ['draft', 'qualified', 'unlocked', 'quoted', 'po'];
+			var STAGE_IDX = { draft: 0, qualified: 1, unlocked: 2, quoted: 3, po: 4 };
+
+			var i18n = {
+				ru: {
+					eyebrow: 'RFQ negotiation workspace',
+					hero: 'Вся сделка в одном окне: котировки, блокеры, журнал переговоров, award.',
+					langTitle: 'Язык',
+					langCopy: 'Одна логика, два языка.',
+					openSupplier: 'Открыть Supplier Desk',
+					compareTitle: 'Сравнение Котировок',
+					compareCopy: 'Решение award принимается прямо в таблице.',
+					compareState: '3 bids',
+					tableHead: ['Поставщик', 'Сумма', 'Delivery', 'Lead', 'Score', 'Coverage', 'Действие'],
+					blockerTitle: 'Блокеры',
+					blockerCopy: 'Все, что мешает PO.',
+					journalTitle: 'Журнал Переговоров',
+					journalInput: 'Добавить запись...',
+					journalAdd: 'Добавить',
+					summaryTitle: 'Итог',
+					stages: ['Черновик', 'Квалификация', 'Открыт', 'Котировки', 'PO'],
+					advance: { draft: 'Квалифицировать', qualified: 'Открыть', unlocked: 'Принять котировки', quoted: 'Выдать PO', po: 'Сделка закрыта' },
+					labels: { awarded: 'Присвоен', rejected: 'Отклонен', open: 'Открыт', resolved: 'Закрыт', po: 'PO выдан' },
+					summary: [['RFQ ID', 'RFQ-2026-041'], ['Дедлайн', '30 апреля 2026'], ['Бюджет', '$15 000 target']]
+				},
+				en: {
+					eyebrow: 'RFQ negotiation workspace',
+					hero: 'One workspace for quote compare, blockers, journal, and award decision.',
+					langTitle: 'Language',
+					langCopy: 'One logic model, two languages.',
+					openSupplier: 'Open Supplier Desk',
+					compareTitle: 'Quote Comparison',
+					compareCopy: 'Award decisions are made directly in the table.',
+					compareState: '3 bids',
+					tableHead: ['Supplier', 'Total', 'Delivery', 'Lead', 'Score', 'Coverage', 'Action'],
+					blockerTitle: 'Blockers',
+					blockerCopy: 'Everything blocking PO.',
+					journalTitle: 'Negotiation Journal',
+					journalInput: 'Add note...',
+					journalAdd: 'Add',
+					summaryTitle: 'Summary',
+					stages: ['Draft', 'Qualified', 'Unlocked', 'Quoted', 'PO'],
+					advance: { draft: 'Qualify RFQ', qualified: 'Unlock', unlocked: 'Accept quotes', quoted: 'Issue PO', po: 'Deal closed' },
+					labels: { awarded: 'Awarded', rejected: 'Rejected', open: 'Open', resolved: 'Resolved', po: 'PO issued' },
+					summary: [['RFQ ID', 'RFQ-2026-041'], ['Deadline', 'April 30, 2026'], ['Budget', '$15,000 target']]
+				}
+			};
+
+			var params = new URLSearchParams(window.location.search);
+			var ctx = {};
+			var rfq = {};
+			var journal = [];
+			try { ctx = JSON.parse(localStorage.getItem(CONTEXT_KEY) || '{}') || {}; } catch (e) { ctx = {}; }
+			try { rfq = JSON.parse(localStorage.getItem(RFQ_STATE_KEY) || '{}') || {}; } catch (e) { rfq = {}; }
+			try { journal = JSON.parse(localStorage.getItem(RFQ_JOURNAL_KEY) || '[]'); } catch (e) { journal = []; }
+
+			var state = {
+				lang: ctx.lang === 'en' ? 'en' : 'ru',
+				stage: STAGE_IDX[ctx.rfqStage] !== undefined ? ctx.rfqStage : 'quoted',
+				supplier: params.get('supplier') || ctx.supplierName || 'MI-SWACO'
+			};
+
+			if (!Array.isArray(rfq.bids)) {
+				rfq.bids = [
+					{ supplier: 'MI-SWACO', totalRu: '$14 200', totalEn: '$14,200', delivery: 'Houston → DAP', lead: '5d', score: 91, coverage: '100%', status: 'awarded' },
+					{ supplier: 'Nouryon', totalRu: '$15 800', totalEn: '$15,800', delivery: 'Rotterdam → FCA', lead: '7d', score: 74, coverage: '60%', status: 'quoted' },
+					{ supplier: 'TETRA', totalRu: '$16 200', totalEn: '$16,200', delivery: 'GCC → CIF', lead: '10d', score: 62, coverage: '40%', status: 'rejected' }
+				];
+			}
+			rfq.bids = rfq.bids.map(function (bid) {
+				return {
+					supplier: bid.supplier,
+					totalRu: bid.totalRu || bid.total_ru || '$0',
+					totalEn: bid.totalEn || bid.total_en || bid.totalRu || bid.total_ru || '$0',
+					delivery: bid.delivery || '-',
+					lead: bid.lead || '-',
+					score: typeof bid.score === 'number' ? bid.score : 0,
+					coverage: bid.coverage || '-',
+					status: bid.status || 'quoted'
+				};
+			});
+			if (!Array.isArray(rfq.blockers)) {
+				rfq.blockers = [
+					{ ru: 'COA от MI-SWACO не получен', en: 'COA from MI-SWACO is missing', status: 'open' },
+					{ ru: 'Цена TETRA выше бюджета на 8%', en: 'TETRA is 8% above budget', status: 'open' }
+				];
+			}
+			rfq.blockers = rfq.blockers.map(function (blocker) {
+				return {
+					ru: blocker.ru || blocker.title_ru || 'Блокер',
+					en: blocker.en || blocker.title_en || 'Blocker',
+					status: blocker.status || 'open'
+				};
+			});
+
+			function persist() {
+				ctx.lang = state.lang;
+				ctx.rfqStage = state.stage;
+				ctx.supplierName = state.supplier;
+				localStorage.setItem(CONTEXT_KEY, JSON.stringify(ctx));
+				localStorage.setItem(RFQ_STATE_KEY, JSON.stringify(rfq));
+				localStorage.setItem(RFQ_JOURNAL_KEY, JSON.stringify(journal));
+			}
+
+			function statusClass(status) {
+				if (status === 'awarded' || status === 'resolved' || status === 'po') return 'ok';
+				if (status === 'open') return 'warn';
+				return 'risk';
+			}
+
+			function render() {
+				var t = i18n[state.lang];
+				var idx = STAGE_IDX[state.stage];
+
+				document.getElementById('heroEyebrow').textContent = t.eyebrow;
+				document.getElementById('rfqId').textContent = 'RFQ-2026-041';
+				document.getElementById('heroCopy').textContent = t.hero;
+				document.getElementById('stageBadge').textContent = t.stages[idx];
+				document.getElementById('supplierBadge').textContent = state.supplier;
+				document.getElementById('lineBadge').textContent = '6 lines';
+				document.getElementById('advanceButton').textContent = t.advance[state.stage];
+				document.getElementById('openSupplier').textContent = t.openSupplier;
+				document.getElementById('openSupplier').href = '145_nexus_supplier_trust_desk.html?supplier=' + encodeURIComponent(state.supplier);
+
+				document.getElementById('langTitle').textContent = t.langTitle;
+				document.getElementById('langCopy').textContent = t.langCopy;
+				document.getElementById('langState').textContent = state.lang.toUpperCase();
+
+				document.querySelectorAll('[data-lang]').forEach(function (el) {
+					el.classList.toggle('active', el.getAttribute('data-lang') === state.lang);
+				});
+
+				document.getElementById('stageStrip').innerHTML = STAGES.map(function (stage, i) {
+					var cls = i < idx ? 'stage-node done' : i === idx ? 'stage-node active' : 'stage-node';
+					return '<div class="' + cls + '">' + t.stages[i] + '</div>';
+				}).join('');
+
+				document.getElementById('compareTitle').textContent = t.compareTitle;
+				document.getElementById('compareCopy').textContent = t.compareCopy;
+				document.getElementById('compareState').textContent = t.compareState;
+				document.getElementById('tableHead').innerHTML = t.tableHead.map(function (h) { return '<div>' + h + '</div>'; }).join('');
+
+				document.getElementById('bidList').innerHTML = rfq.bids.map(function (bid) {
+					var total = state.lang === 'ru' ? bid.totalRu : bid.totalEn;
+					var action = bid.status === 'awarded'
+						? '<span class="badge ok">' + t.labels.awarded + '</span>'
+						: bid.status === 'rejected'
+							? '<span class="badge risk">' + t.labels.rejected + '</span>'
+							: '<button class="primary" data-award="' + bid.supplier + '" type="button">' + t.labels.awarded + '</button>';
+					return '<div class="row' + (bid.status === 'awarded' ? ' win' : '') + '">' +
+						'<div><div class="supplier">' + bid.supplier + '</div><div class="small">' + bid.delivery + '</div></div>' +
+						'<div>' + total + '</div>' +
+						'<div>' + bid.delivery.split('→')[1] + '</div>' +
+						'<div>' + bid.lead + '</div>' +
+						'<div>' + bid.score + '</div>' +
+						'<div>' + bid.coverage + '</div>' +
+						'<div class="status-col">' + action + '</div>' +
+					'</div>';
+				}).join('');
+
+				document.getElementById('blockerTitle').textContent = t.blockerTitle;
+				document.getElementById('blockerCopy').textContent = t.blockerCopy;
+				var openCount = rfq.blockers.filter(function (b) { return b.status === 'open'; }).length;
+				document.getElementById('blockerState').textContent = openCount + ' open';
+				document.getElementById('blockerState').className = 'badge ' + (openCount ? 'warn' : 'ok');
+				document.getElementById('blockerList').innerHTML = rfq.blockers.map(function (blocker, i) {
+					var text = state.lang === 'ru' ? blocker.ru : blocker.en;
+					var label = blocker.status === 'resolved' ? t.labels.resolved : t.labels.open;
+					var buttonText = blocker.status === 'resolved' ? (state.lang === 'ru' ? 'Открыть' : 'Reopen') : (state.lang === 'ru' ? 'Закрыть' : 'Resolve');
+					return '<div class="card card-line">' +
+						'<div><div class="card-title">' + text + '</div></div>' +
+						'<div style="display:flex;gap:8px;align-items:center;">' +
+							'<span class="badge ' + statusClass(blocker.status) + '">' + label + '</span>' +
+							'<button data-resolve="' + i + '" type="button">' + buttonText + '</button>' +
+						'</div>' +
+					'</div>';
+				}).join('');
+
+				document.getElementById('journalTitle').textContent = t.journalTitle;
+				document.getElementById('journalInput').placeholder = t.journalInput;
+				document.getElementById('journalAdd').textContent = t.journalAdd;
+				document.getElementById('journalList').innerHTML = journal.map(function (item) {
+					return '<div class="card"><div class="card-line"><strong>' + item.actor + '</strong><span class="small">' + item.time + '</span></div><div class="card-copy">' + item.text + '</div></div>';
+				}).join('') || '<div class="card"><div class="card-copy">' + (state.lang === 'ru' ? 'Записей пока нет.' : 'No entries yet.') + '</div></div>';
+
+				document.getElementById('summaryTitle').textContent = t.summaryTitle;
+				document.getElementById('summaryList').innerHTML = t.summary.map(function (row) {
+					return '<div class="summary-row"><div class="small">' + row[0] + '</div><div><strong>' + row[1] + '</strong></div></div>';
+				}).join('');
+
+				persist();
+			}
+
+			document.addEventListener('click', function (event) {
+				var lang = event.target.getAttribute('data-lang');
+				if (lang) {
+					state.lang = lang;
+					render();
+					return;
+				}
+
+				if (event.target.getAttribute('data-action') === 'advance') {
+					var idx = STAGE_IDX[state.stage];
+					if (idx < STAGES.length - 1) {
+						state.stage = STAGES[idx + 1];
+						render();
+					}
+					return;
+				}
+
+				var award = event.target.getAttribute('data-award');
+				if (award) {
+					rfq.bids.forEach(function (bid) {
+						bid.status = bid.supplier === award ? 'awarded' : 'rejected';
+					});
+					if (state.stage === 'quoted') {
+						state.stage = 'po';
+					}
+					state.supplier = award;
+					render();
+					return;
+				}
+
+				var resolve = event.target.getAttribute('data-resolve');
+				if (resolve !== null) {
+					var i = parseInt(resolve, 10);
+					if (!isNaN(i) && rfq.blockers[i]) {
+						rfq.blockers[i].status = rfq.blockers[i].status === 'resolved' ? 'open' : 'resolved';
+						render();
+					}
+				}
+			});
+
+			document.getElementById('journalAdd').addEventListener('click', function () {
+				var input = document.getElementById('journalInput');
+				var text = input.value.trim();
+				if (!text) return;
+				var now = new Date();
+				var stamp = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+				journal.push({ actor: 'Buyer', time: stamp, text: text });
+				input.value = '';
+				render();
+			});
+
+			document.getElementById('journalInput').addEventListener('keydown', function (event) {
+				if (event.key === 'Enter') {
+					document.getElementById('journalAdd').click();
+				}
+			});
+
+			render();
+		}());
+	</script>
+</body>
+</html>

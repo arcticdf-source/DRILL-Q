@@ -1,0 +1,517 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Раздел 2 · Геология · Южно-Русское</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap");
+    :root{
+      --bg0:#06101a;
+      --bg1:#0d1e2e;
+      --bg2:#17314a;
+      --panel:rgba(8,18,31,.88);
+      --line:rgba(226,237,255,.16);
+      --soft:rgba(226,237,255,.1);
+      --text:#edf5ff;
+      --muted:#a8bdd2;
+      --cyan:#24d7c4;
+      --amber:#ffbf66;
+      --sand:#8db4ff;
+      --clay:#c6a6ff;
+      --prod:#8df0ff;
+      --risk:#ff8d84;
+      --mix:#ffd989;
+      --slate:#8ac0d0;
+      --shadow:0 28px 62px rgba(0,0,0,.42);
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;font-family:"Manrope",sans-serif;color:var(--text);background:radial-gradient(920px 500px at 0% -12%,rgba(36,215,196,.18),transparent),radial-gradient(900px 540px at 100% 0%,rgba(255,191,102,.16),transparent),linear-gradient(145deg,var(--bg0),var(--bg1) 48%,var(--bg2))}
+    .wrap{width:min(1360px,94vw);margin:0 auto;padding:24px 0 64px}
+    .top{display:flex;justify-content:space-between;align-items:center;gap:10px;border:1px solid var(--soft);border-radius:14px;padding:12px 14px;background:rgba(8,15,24,.66);position:sticky;top:12px;z-index:20}
+    .brand{display:flex;align-items:center;gap:10px;font-family:"Oswald",sans-serif;text-transform:uppercase;letter-spacing:.05em;font-size:20px}
+    .dot{width:12px;height:12px;border-radius:999px;background:radial-gradient(circle at 35% 35%,#d6fff7,var(--cyan))}
+    .nav{display:flex;flex-wrap:wrap;gap:8px}
+    .nav a{text-decoration:none;font-size:12px;text-transform:uppercase;letter-spacing:.06em;font-weight:800;border-radius:10px;padding:8px 12px;color:#082922;background:linear-gradient(130deg,#a0f9eb,#22d7b4);border:1px solid rgba(34,215,180,.75)}
+    .hero,.panel{margin-top:18px;border:1px solid var(--line);border-radius:24px;background:var(--panel);box-shadow:var(--shadow);padding:24px}
+    .hero h1{margin:0 0 10px;font-family:"Oswald",sans-serif;font-size:clamp(30px,4vw,48px)}
+    .hero p{margin:0;color:#c8d9ed;line-height:1.68;max-width:980px}
+    .hero-grid{margin-top:18px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+    .hero-stat{border:1px solid var(--soft);border-radius:16px;padding:14px;background:rgba(255,255,255,.03)}
+    .hero-stat strong{display:block;font-size:22px}
+    .hero-stat span{display:block;margin-top:5px;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.08em}
+    .legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+    .legend-chip{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--soft);border-radius:999px;padding:5px 11px;font-size:12px;color:#d6e5f7;background:rgba(255,255,255,.03)}
+    .legend-dot{width:12px;height:12px;border-radius:999px}
+    .section-head{display:flex;justify-content:space-between;align-items:flex-end;gap:10px;margin-bottom:14px}
+    .section-head h2{margin:0;font-size:23px}
+    .section-head span{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.08em}
+    .main-grid{display:grid;grid-template-columns:.94fr 1.06fr;gap:18px}
+    .column-wrap{border:1px solid var(--soft);border-radius:18px;background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.015));padding:12px}
+    .strat-column{display:grid;gap:8px;max-height:1220px;overflow:auto;padding-right:4px}
+    .layer{display:grid;grid-template-columns:104px 1fr;gap:8px;border:1px solid var(--soft);border-radius:14px;overflow:hidden;background:rgba(255,255,255,.02)}
+    .layer-depth{padding:12px 8px;border-right:1px solid var(--soft);background:rgba(255,255,255,.03);font-size:12px;line-height:1.35;color:#d8e8fa}
+    .layer-body{padding:12px;border-left:6px solid transparent}
+    .layer-body h3{margin:0 0 4px;font-size:14px}
+    .layer-body p{margin:0;color:#cbdbef;font-size:12px;line-height:1.54}
+    .layer-meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+    .pill{display:inline-flex;align-items:center;border-radius:999px;padding:4px 8px;border:1px solid var(--soft);background:rgba(255,255,255,.04);font-size:11px;color:#d8e7f8}
+    .l-sand .layer-body{border-left-color:var(--sand)}
+    .l-clay .layer-body{border-left-color:var(--clay)}
+    .l-prod .layer-body{border-left-color:var(--prod)}
+    .l-risk .layer-body{border-left-color:var(--risk)}
+    .l-mix .layer-body{border-left-color:var(--mix)}
+    .cards{display:grid;gap:12px}
+    .card,.metric,.risk,.fluid-card,.data-card,.chart-wrap,.table-card{border:1px solid var(--soft);border-radius:16px;background:rgba(255,255,255,.03);padding:14px}
+    .card h3,.risk h3,.fluid-card h3,.data-card h3,.chart-wrap h3,.table-card h3{margin:0 0 8px;font-size:16px}
+    .card p,.risk p,.fluid-item span,.data-card p,.chart-caption{margin:0;color:#ccdcf0;font-size:13px;line-height:1.6}
+    .metric-grid,.data-grid,.fluid-grid,.risk-grid,.chart-grid{display:grid;gap:12px}
+    .metric-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .metric .k{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+    .metric .v{margin-top:6px;font-size:15px;line-height:1.45}
+    .chart-grid{grid-template-columns:1.06fr .94fr}
+    .chart-shell{width:100%;overflow:auto}
+    .chart-shell svg{width:100%;height:auto;display:block}
+    .bars{display:grid;gap:10px}
+    .bar-row{display:grid;grid-template-columns:124px 1fr 64px;gap:10px;align-items:center}
+    .bar-label,.bar-val{font-size:12px;color:#dbe8f8}
+    .bar-track{height:12px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden}
+    .bar-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--cyan),var(--sand))}
+    .bar-val{text-align:right;color:#bfd3e8}
+    .risk-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .risk-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+    .risk-tag{display:inline-flex;border-radius:999px;border:1px solid rgba(255,141,120,.38);background:rgba(255,141,120,.14);padding:4px 8px;font-size:11px;color:#ffd8d1}
+    .fluid-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .fluid-list{display:grid;gap:8px}
+    .fluid-item{border:1px solid var(--soft);border-radius:12px;padding:10px;background:rgba(255,255,255,.025)}
+    .fluid-item strong{display:block;font-size:13px;margin-bottom:4px}
+    .table-wrap{overflow:auto}
+    table{width:100%;border-collapse:collapse;font-size:13px}
+    th,td{border:1px solid var(--soft);padding:9px 10px;text-align:left;vertical-align:top}
+    th{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#bfd3e8;background:rgba(255,255,255,.04)}
+    td{color:#d5e2f2;line-height:1.45}
+    .note{margin-top:12px;border:1px solid rgba(198,166,255,.24);border-radius:14px;background:rgba(198,166,255,.08);padding:12px;color:#e2d8ff;font-size:13px;line-height:1.55}
+    .footer{margin-top:14px;color:var(--muted);font-size:12px;text-align:center;text-transform:uppercase;letter-spacing:.08em}
+    @media (max-width:1200px){.main-grid,.chart-grid,.fluid-grid{grid-template-columns:1fr}.hero-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media (max-width:900px){.top{position:static;flex-direction:column;align-items:flex-start}.hero-grid,.metric-grid,.risk-grid{grid-template-columns:1fr}.bar-row{grid-template-columns:1fr}.section-head{flex-direction:column;align-items:flex-start}}
+  </style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+  <main class="wrap">
+    <header class="top">
+      <div class="brand"><span class="dot"></span><span>Nexus Oilfield AI</span></div>
+      <nav class="nav" id="nav"></nav>
+    </header>
+
+    <section class="hero">
+      <h1 id="title">Раздел 2. Геология</h1>
+      <p id="desc">Цветная литолого-стратиграфическая модель, продуктивные интервалы, давления, температура и осложнения по геологическому приложению. Страница собрана как инженерный геоблок для быстрого перехода от документа к решениям по конструкции, профилю и буровым растворам.</p>
+      <div class="hero-grid">
+        <div class="hero-stat"><strong>35-2630 м</strong><span>интервал разреза MD</span></div>
+        <div class="hero-stat"><strong>16 слоев</strong><span>цветная колонка</span></div>
+        <div class="hero-stat"><strong>2616-2630 м</strong><span>баженовский интервал</span></div>
+        <div class="hero-stat"><strong>до 86 °C</strong><span>максимальная температура</span></div>
+      </div>
+      <div class="legend">
+        <span class="legend-chip"><span class="legend-dot" style="background:var(--sand)"></span>Песчаники и алевролиты</span>
+        <span class="legend-chip"><span class="legend-dot" style="background:var(--clay)"></span>Глины и аргиллиты</span>
+        <span class="legend-chip"><span class="legend-dot" style="background:var(--mix)"></span>Смешанные терригенные пачки</span>
+        <span class="legend-chip"><span class="legend-dot" style="background:var(--prod)"></span>Коллекторы и целевые интервалы</span>
+        <span class="legend-chip"><span class="legend-dot" style="background:var(--risk)"></span>Зоны осложнений</span>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="section-head">
+        <h2>Цветная стратиграфическая колонка</h2>
+        <span>по таблице 2.1 и свойствам 2.11</span>
+      </div>
+      <div class="main-grid">
+        <div class="column-wrap">
+          <div class="strat-column" id="stratColumn"></div>
+        </div>
+        <div class="cards">
+          <article class="card">
+            <h3>Инженерная рамка разреза</h3>
+            <p>Верхняя часть представлена рыхлыми четвертичными и палеогеновыми отложениями, затем разрез переходит в мощный глинистый меловой пакет и серию нижнемеловых песчано-алевритовых коллекторов. Финал секции закрывается пимскими глинами и баженовской свитой, где меняются требования к устойчивости и контролю репрессии.</p>
+          </article>
+          <div class="metric-grid" id="metricGrid"></div>
+          <article class="card">
+            <h3>Что важно для проектирования</h3>
+            <p>По геологическому приложению многолетнемерзлые породы в разрезе не прогнозируются. Критические инженерные переходы приходятся на блок 1850-2539 м с пластами НП и на нижний экран 2539-2630 м, где возрастает градиент горного давления и концентрация геологических рисков.</p>
+          </article>
+          <article class="card">
+            <h3>Продуктивный акцент</h3>
+            <p>Наиболее насыщенный блок связан с интервалами НП8-0, НП8, НП9, НП9-1, НП10, НП11 и НП12. Для этих объектов в приложении приведены органическое вещество, остаточный потенциал генерации и температурные маркеры, которые удобно использовать как геологический фильтр для последующих инженерных разделов.</p>
+          </article>
+        </div>
+      </div>
+      <div class="note">Глубины на странице даны по MD из приложения. Все подписи и интервалы собраны из уже извлеченного геолого-технического блока: стратиграфия, физико-механические свойства, давления, температура, коэффициенты аномальности, осложнения, продуктивные пласты и ГИС.</div>
+    </section>
+
+    <section class="panel">
+      <div class="section-head">
+        <h2>Давление и температура по глубине</h2>
+        <span>по таблице 2.12.1</span>
+      </div>
+      <div class="chart-grid">
+        <div class="chart-wrap">
+          <h3>Профиль горного давления и температуры</h3>
+          <div class="chart-shell" id="pressureChart"></div>
+          <p class="chart-caption">График совмещает температурный профиль и градиент горного давления по ключевым стратиграфическим окнам. Нижний блок 2394-2630 м заметно выделяется ростом температуры и максимальными градиентами давления.</p>
+        </div>
+        <div class="data-card">
+          <h3>Ключевые глубинные акценты</h3>
+          <div class="bars" id="pressureBars"></div>
+          <div class="note">В диапазоне НП8-НП12 коэффициент аномальности постепенно растет от 1,04-1,10 до 1,18-1,40 в зоне подошвы НП11 и пимских глин. Это главный геомеханический сигнал для последующих модулей по БР и креплению.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="section-head">
+        <h2>Коллекторы и геохимические акценты</h2>
+        <span>по таблицам 2.11.2 и 2.16</span>
+      </div>
+      <div class="fluid-grid">
+        <article class="fluid-card">
+          <h3>Пласты с ОВ</h3>
+          <div class="fluid-list" id="organicList"></div>
+        </article>
+        <article class="fluid-card">
+          <h3>Продуктивные окна</h3>
+          <div class="fluid-list" id="reservoirList"></div>
+        </article>
+        <article class="fluid-card">
+          <h3>Физико-механическая рамка</h3>
+          <div class="fluid-list" id="mechanicsList"></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="section-head">
+        <h2>Геологические осложнения</h2>
+        <span>по таблице 2.14.1</span>
+      </div>
+      <div class="risk-grid" id="riskGrid"></div>
+    </section>
+
+    <section class="panel">
+      <div class="section-head">
+        <h2>ГИС и инженерное сопровождение</h2>
+        <span>по таблице 2.19.1</span>
+      </div>
+      <div class="fluid-grid">
+        <article class="fluid-card">
+          <h3>Комплекс в открытом стволе</h3>
+          <div class="fluid-list" id="gisOpenList"></div>
+        </article>
+        <article class="fluid-card">
+          <h3>Комплекс по колоннам</h3>
+          <div class="fluid-list" id="gisCasedList"></div>
+        </article>
+        <article class="fluid-card">
+          <h3>Навигационные ориентиры</h3>
+          <div class="fluid-list" id="gisSupportList"></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="section-head">
+        <h2>Сводная таблица по интервалам</h2>
+        <span>основные решения для проекта</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Интервал, м</th>
+              <th>Горизонт</th>
+              <th>Литология</th>
+              <th>Инженерный сигнал</th>
+              <th>Риск / акцент</th>
+            </tr>
+          </thead>
+          <tbody id="summaryTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <p class="footer">Южно-Русское · Раздел 2 · Геология</p>
+  </main>
+  <script>
+    function getParam(name, fallback) {
+      const params = new URLSearchParams(window.location.search);
+      return params.get(name) || fallback;
+    }
+
+    function buildProjectLink(page, projectName, wellName) {
+      const params = new URLSearchParams();
+      params.set("name", projectName);
+      if (wellName) {
+        params.set("well", wellName);
+      }
+      return `${page}?${params.toString()}`;
+    }
+
+    function formatNumber(value, digits = 1) {
+      if (typeof value !== "number") {
+        return value;
+      }
+      const rounded = Math.abs(value - Math.round(value)) < 0.001 ? String(Math.round(value)) : value.toFixed(digits);
+      return rounded.replace(".", ",");
+    }
+
+    const projectName = getParam("name", "Южно-Русское месторождение");
+    const wellName = getParam("well", "5101");
+
+    document.title = `${projectName} · Раздел 2 · Геология`;
+    document.getElementById("title").textContent = `${projectName} · Раздел 2. Геология`;
+    document.getElementById("desc").textContent = `Геологический раздел для скважины ${wellName}. Страница собирает стратиграфию, физико-механические свойства, давления, температуру, осложнения и программу ГИС в одном инженерном представлении.`;
+    document.getElementById("nav").innerHTML = `
+      <a href="${buildProjectLink("64_yuzhno_russkoe_project_dashboard.html", projectName, wellName)}">К дашборду</a>
+      <a href="${buildProjectLink("68_yuzhno_russkoe_general_data.html", projectName, wellName)}">Раздел 1</a>
+      <a href="${buildProjectLink("69_yuzhno_russkoe_well_construction.html", projectName, wellName)}">Раздел 3</a>
+      <a href="${buildProjectLink("70_yuzhno_russkoe_well_profile.html", projectName, wellName)}">Раздел 4</a>
+      <a href="${buildProjectLink("72_yuzhno_russkoe_mud_section.html", projectName, wellName)}">Раздел 5</a>
+    `;
+
+    const stratData = [
+      { top: 35, bottom: 180, index: "Q+N", name: "Четвертичная и неогеновая системы", type: "mix", lith: "Пески, супеси, суглинки, алевриты и глины с повышенной неоднородностью верхнего блока.", summary: "Рыхлый верхний интервал с требованием к аккуратной стабилизации ствола.", markers: ["верхний разрез", "рыхлые породы"] },
+      { top: 180, bottom: 280, index: "P", name: "Палеогеновая система", type: "mix", lith: "Переходная пачка мелкообломочных и глинистых пород.", summary: "Граница между рыхлым верхом и более устойчивым мезозойским блоком.", markers: ["переход", "связные породы"] },
+      { top: 280, bottom: 789, index: "K2t,K2km,K2m", name: "Ганькинская, березовская, кузнецовская свиты", type: "clay", lith: "Преобладают глины и опоковидные породы, высокая глинистость 95-100%.", summary: "Мощный глинистый экран верхнемелового возраста.", markers: ["глины", "экранирующий блок"] },
+      { top: 789, bottom: 1178, index: "K2s", name: "Кровля сеномана, пласт ПК1", type: "sand", lith: "Песчанистый интервал с выраженным водоносным маркером ПК1.", summary: "Первый заметный коллекторный акцент и ориентир по водопроявлениям.", markers: ["ПК1", "вода"] },
+      { top: 1178, bottom: 1375, index: "K1al", name: "Кровля альба, пласты ХМ", type: "sand", lith: "Песчаники и алевролиты со средней и твердой категорией породы.", summary: "Переход к нижнемеловому терригенному разрезу.", markers: ["ХМ", "терригенный блок"] },
+      { top: 1375, bottom: 1586, index: "K1a", name: "Кровля апта, пласты ТП1-4", type: "sand", lith: "Песчаники с прослоями алевролитов и локальными аргиллитами.", summary: "Стабильный коллекторный пакет в зоне роста температуры.", markers: ["ТП1-4", "рост температуры"] },
+      { top: 1586, bottom: 1850, index: "K1br", name: "Баррем / низы апта, пласты ТП13-16", type: "sand", lith: "Терригенный интервал с хорошей пористостью и ростом горного давления.", summary: "Подготовка к переходу в арктическую и сеяхинскую пачки.", markers: ["ТП13-16", "давление"] },
+      { top: 1850, bottom: 1885, index: "K1h", name: "Арктическая пачка", type: "prod", lith: "Короткий реперный интервал с повышенным органическим веществом.", summary: "Первый выраженный геохимический маркер нижней части разреза.", markers: ["Арк", "ОВ"] },
+      { top: 1885, bottom: 1905, index: "K1h", name: "Сеяхинские глины", type: "clay", lith: "Компактные глины с повышенным коэффициентом аномальности.", summary: "Короткий, но важный глинистый экран.", markers: ["Сеях", "аномальность"] },
+      { top: 1905, bottom: 1932, index: "K1b-K1v", name: "НП5", type: "prod", lith: "Песчанистый коллекторный пласт новопортовской толщи.", summary: "Начало продуктивной серии НП.", markers: ["НП5", "генерационный потенциал"] },
+      { top: 1932, bottom: 1976, index: "K1b-K1v", name: "НП6", type: "prod", lith: "Терригенный пласт с высокой органикой и остаточным потенциалом.", summary: "Геохимически насыщенный интервал средней мощности.", markers: ["НП6", "ОВ 1,29%"] },
+      { top: 1976, bottom: 2023, index: "K1b-K1v", name: "НП7", type: "prod", lith: "Коллекторный пласт в зоне роста температур до 67 °C.", summary: "Один из самых насыщенных интервалов по органическому веществу.", markers: ["НП7", "ОВ 1,72%"] },
+      { top: 2023, bottom: 2085, index: "K1b-K1v", name: "НП8-0", type: "prod", lith: "Целевой коллекторный пакет, выделенный в приложении как продуктивное окно.", summary: "Реперный продуктивный интервал с температурой около 65 °C.", markers: ["НП8-0", "продуктивный"] },
+      { top: 2085, bottom: 2126, index: "K1b-K1v", name: "НП8", type: "prod", lith: "Песчанистый пласт с органикой и растущим коэффициентом аномальности.", summary: "Ключевое окно для геологического сопровождения и ГИС.", markers: ["НП8", "ГИС"] },
+      { top: 2126, bottom: 2539, index: "K1b-K1v", name: "НП9-НП12 и глинистые перемычки", type: "risk", lith: "Чередование продуктивных песчаников НП9, НП9-1, НП10, НП11, НП12 и глинистых экранов.", summary: "Главный риск-блок по осложнениям, аномальности и интерпретации коллекторов.", markers: ["НП9-12", "риски", "аномальность"] },
+      { top: 2539, bottom: 2616, index: "-", name: "Пимские глины", type: "clay", lith: "Плотный глинистый экран с коэффициентом аномальности до 1,40.", summary: "Критическая подготовка к входу в баженовский интервал.", markers: ["экран", "1,18-1,40"] },
+      { top: 2616, bottom: 2630, index: "J3tt", name: "Баженовская свита", type: "risk", lith: "Органогенные глины и аргиллиты нижней части разреза.", summary: "Финишный геологический маркер с максимальной температурой около 86 °C.", markers: ["Бажен", "86 °C"] }
+    ];
+
+    const metricItems = [
+      { key: "ММП", value: "По приложению многолетнемерзлые породы в разрезе не прогнозируются." },
+      { key: "Плотность пород", value: "От 1500-2300 кг/м³ в верхней части до 2500 кг/м³ в песчаниках и аргиллитах." },
+      { key: "Глинистость", value: "До 95-100% в верхнемеловых глинистых свитах и экранирующих пачках." },
+      { key: "Температура", value: "От 1-9 °C в Q+N до 86 °C в баженовской свите." }
+    ];
+
+    const pressureTemp = [
+      { label: "Q+N", top: 35, bottom: 180, pressure: 1.8, gradient: 0.0168, temp: 9 },
+      { label: "P", top: 180, bottom: 280, pressure: 2.8, gradient: 0.0171, temp: 21 },
+      { label: "K2t..K2m", top: 280, bottom: 789, pressure: 7.9, gradient: 0.0193, temp: 35 },
+      { label: "K2s", top: 789, bottom: 1178, pressure: 11.8, gradient: 0.0203, temp: 42 },
+      { label: "K1al", top: 1178, bottom: 1375, pressure: 13.8, gradient: 0.0206, temp: 49 },
+      { label: "K1a", top: 1375, bottom: 1586, pressure: 15.9, gradient: 0.0208, temp: 59 },
+      { label: "K1br", top: 1586, bottom: 1850, pressure: 18.6, gradient: 0.0213, temp: 61 },
+      { label: "K1h", top: 1850, bottom: 1905, pressure: 19.1, gradient: 0.0214, temp: 61 },
+      { label: "NP5-NP8", top: 1905, bottom: 2085, pressure: 20.9, gradient: 0.0218, temp: 67 },
+      { label: "NP8-1", top: 2085, bottom: 2224, pressure: 22.4, gradient: 0.0220, temp: 72 },
+      { label: "NP9-1", top: 2275, bottom: 2394, pressure: 23.6, gradient: 0.0224, temp: 78 },
+      { label: "NP10-NP11", top: 2394, bottom: 2501, pressure: 25.1, gradient: 0.0228, temp: 82 },
+      { label: "Пимские глины", top: 2539, bottom: 2616, pressure: 26.2, gradient: 0.0231, temp: 86 },
+      { label: "J3tt", top: 2616, bottom: 2630, pressure: 26.4, gradient: 0.0232, temp: 86 }
+    ];
+
+    const organicData = [
+      { name: "OG_G", ov: 0.81, potential: 83.56, note: "Сеноманский маркер" },
+      { name: "OG_M", ov: 1.30, potential: 174.01, note: "Один из лидеров по остаточному потенциалу" },
+      { name: "OG_NP7", ov: 1.72, potential: 113.50, note: "Насыщенный интервал новопортовской толщи" },
+      { name: "OG_NP10_pod", ov: 2.05, potential: 23.52, note: "Рост ОВ на подошве НП10" },
+      { name: "OG_NP11_pod", ov: 2.81, potential: 354.98, note: "Максимальный потенциал в нижнем продуктивном блоке" },
+      { name: "OG_B", ov: 1.62, potential: 85.55, note: "Баженовская свита" }
+    ];
+
+    const reservoirData = [
+      { name: "НП8-0", interval: "2023-2085 м", pressure: "20,3 МПа", temp: "65 °C", note: "До 215 мг/л, продуктивный пласт" },
+      { name: "НП8", interval: "2085-2224 м", pressure: "20,9 МПа", temp: "67 °C", note: "Ключевое окно по ГИС и геонавигации" },
+      { name: "НП9", interval: "2224-2275 м", pressure: "22,3 МПа", temp: "72 °C", note: "Рост аномальности и фильтрационных рисков" },
+      { name: "НП9-1", interval: "2275-2394 м", pressure: "22,8 МПа", temp: "74 °C", note: "Стабильно продуктивная пачка" },
+      { name: "НП10", interval: "2394-2446 м", pressure: "24,0 МПа", temp: "78 °C", note: "Переход к более напряженной геомеханике" },
+      { name: "НП11", interval: "2446-2501 м", pressure: "24,5 МПа", temp: "80 °C", note: "Подошва НП11 выделяется максимумом ОВ" },
+      { name: "НП12", interval: "2501-2539 м", pressure: "25,1 МПа", temp: "82 °C", note: "Нижний продуктивный пласт перед глинистым экраном" }
+    ];
+
+    const mechanicsData = [
+      { title: "Q+P · 0-230 м", text: "Пески, супеси, алевриты и глины. Плотность 1500-2300 кг/м³, пористость 35-40%, категория породы средняя." },
+      { title: "K2br · 230-730 м", text: "Глины и опоковидные глины. Глинистость 95-100%, абразивность 3-4, устойчивый экран верхнего разреза." },
+      { title: "K1mr-K1tn · 806-1600 м", text: "Песчаники и алевролиты, проницаемость местами до 100 мкм², переход от мягких к твердым породам." },
+      { title: "Аргиллиты · нижний блок", text: "Плотность около 2500 кг/м³, пористость около 5%, низкая проницаемость и повышенная устойчивость." }
+    ];
+
+    const risks = [
+      { title: "35-789 м", tags: ["обвалы", "каверны", "размыв"], text: "Верхний блок склонен к неустойчивости стенок и технологическим размывам. Основной акцент здесь на механическое качество ствола и плавный режим углубления." },
+      { title: "380-600 м", tags: ["газ"], text: "Локальный газовый сигнал внутри верхнемелового блока требует дисциплины по контролю циркуляции и ранней диагностике проявлений." },
+      { title: "789-1586 м", tags: ["осыпи", "поглощения", "неустойчивость"], text: "В интервале ПК1-ТП наблюдается переход между песчанистыми и глинистыми пачками, что повышает чувствительность к окну плотности и очистке ствола." },
+      { title: "1586-2616 м", tags: ["НГВП", "прихваты"], text: "Основной продуктивный блок. Требуется аккуратная работа с репрессией, своевременный контроль признаков прихватов и высокая дисциплина по гидравлике." },
+      { title: "2616-2630 м", tags: ["аргиллиты", "тяжелый экран"], text: "Баженовский интервал короткий, но чувствительный к режиму бурения. Здесь концентрируются требования к устойчивости и качеству финального вскрытия." }
+    ];
+
+    const gisOpenData = [
+      { title: "Открытый ствол 1905-2630 м", text: "ГК, АК, ПС, кавернометрия, инклинометрия, боковые и зондовые методы, комплекс отбора керна и исследований." },
+      { title: "Навигация по разрезу", text: "Привязка по пластам НП8-НП12 и баженовскому интервалу с уточнением кровли и подошвы по ГИС." },
+      { title: "Керн и шлам", text: "Отбор ориентирован на продуктивные пачки и зоны смены литологии для ускоренной инженерной интерпретации." }
+    ];
+
+    const gisCasedData = [
+      { title: "После спуска колонны 339,7 мм", text: "ГК, АКЦ, ЦМ, ЛМ и контроль качества цементирования в верхнем интервале." },
+      { title: "После промежуточной колонны 245 мм", text: "ГК, АК, ПС, термометрия, цементометрия и уточнение положения границ пластов." },
+      { title: "Контроль изоляции", text: "Отдельный акцент на качестве разобщения интервалов продуктивной серии и глинистых экранов." }
+    ];
+
+    const gisSupportData = [
+      { title: "Водная глубина", text: "Глубина воды в точке бурения 5,5 м учитывается в отсчете глубин геоблока." },
+      { title: "Температурная рамка", text: "От 1-9 °C в верхних породах до 86 °C в нижнем интервале, что критично для выбора раствора и оценки термостабильности." },
+      { title: "Аномальность", text: "На подошве НП11 и в пимских глинах коэффициент аномальности достигает 1,40." }
+    ];
+
+    const summaryRows = [
+      { interval: "35-280", horizon: "Q+N / P", lith: "Рыхлые песчано-глинистые отложения", signal: "Низкие давления, верхняя стабилизация", risk: "Размыв и механическая неустойчивость" },
+      { interval: "280-789", horizon: "K2t-K2m", lith: "Мощный глинистый верхнемеловой пакет", signal: "Экран, высокая глинистость", risk: "Кавернообразование и локальные газовые признаки" },
+      { interval: "789-1586", horizon: "K2s / K1al / K1a", lith: "Песчаники и алевролиты с водоносными маркерами", signal: "Рост температуры до 59 °C", risk: "Поглощения и водопроявления" },
+      { interval: "1586-2126", horizon: "K1br / K1h / НП5-НП8", lith: "Терригенные коллекторы и короткие глинистые экраны", signal: "Рост давления и аномальности", risk: "НГВП, прихваты, чувствительность к ECD" },
+      { interval: "2126-2539", horizon: "НП9-НП12", lith: "Чередование продуктивных песчаников и глин", signal: "Главный продуктивный блок", risk: "Комплекс осложнений и геонавигация" },
+      { interval: "2539-2630", horizon: "Пимские глины / J3tt", lith: "Глинистый экран и баженовская свита", signal: "Максимум температуры и аномальности", risk: "Финишная устойчивость и контроль репрессии" }
+    ];
+
+    function typeClass(type) {
+      if (type === "sand") return "l-sand";
+      if (type === "clay") return "l-clay";
+      if (type === "prod") return "l-prod";
+      if (type === "risk") return "l-risk";
+      return "l-mix";
+    }
+
+    document.getElementById("stratColumn").innerHTML = stratData.map((layer) => `
+      <article class="layer ${typeClass(layer.type)}">
+        <div class="layer-depth">${formatNumber(layer.top, 0)}-${formatNumber(layer.bottom, 0)} м</div>
+        <div class="layer-body">
+          <h3>${layer.name} (${layer.index})</h3>
+          <p>${layer.lith} ${layer.summary}</p>
+          <div class="layer-meta">${layer.markers.map((item) => `<span class="pill">${item}</span>`).join("")}</div>
+        </div>
+      </article>
+    `).join("");
+
+    document.getElementById("metricGrid").innerHTML = metricItems.map((item) => `
+      <div class="metric">
+        <div class="k">${item.key}</div>
+        <div class="v">${item.value}</div>
+      </div>
+    `).join("");
+
+    const maxDepth = Math.max(...pressureTemp.map((item) => item.bottom));
+    const maxTemp = Math.max(...pressureTemp.map((item) => item.temp));
+    const minGrad = Math.min(...pressureTemp.map((item) => item.gradient));
+    const maxGrad = Math.max(...pressureTemp.map((item) => item.gradient));
+
+    function mapX(value, left, right, min, max) {
+      if (max === min) return left;
+      return left + ((value - min) / (max - min)) * (right - left);
+    }
+
+    function mapY(value, top, bottom, maxValue) {
+      return top + (value / maxValue) * (bottom - top);
+    }
+
+    const chartWidth = 760;
+    const chartHeight = 420;
+    const chartTop = 28;
+    const chartBottom = 360;
+    const tempPoints = pressureTemp.map((item) => `${mapX(item.temp, 80, 330, 0, maxTemp)},${mapY(item.bottom, chartTop, chartBottom, maxDepth)}`).join(" ");
+    const gradPoints = pressureTemp.map((item) => `${mapX(item.gradient, 420, 680, minGrad, maxGrad)},${mapY(item.bottom, chartTop, chartBottom, maxDepth)}`).join(" ");
+
+    document.getElementById("pressureChart").innerHTML = `
+      <svg viewBox="0 0 ${chartWidth} ${chartHeight}" role="img" aria-label="График температуры и градиента давления">
+        <defs>
+          <linearGradient id="tempLine" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#ffbf66"/><stop offset="100%" stop-color="#ffd989"/></linearGradient>
+          <linearGradient id="gradLine" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#24d7c4"/><stop offset="100%" stop-color="#8db4ff"/></linearGradient>
+        </defs>
+        <rect x="0" y="0" width="${chartWidth}" height="${chartHeight}" rx="20" fill="rgba(255,255,255,.02)" stroke="rgba(226,237,255,.1)"/>
+        ${[0, 500, 1000, 1500, 2000, 2500].map((depth) => `<g><line x1="70" y1="${mapY(depth, chartTop, chartBottom, maxDepth)}" x2="700" y2="${mapY(depth, chartTop, chartBottom, maxDepth)}" stroke="rgba(226,237,255,.08)"/><text x="20" y="${mapY(depth, chartTop, chartBottom, maxDepth) + 4}" fill="#9fb6cb" font-size="11">${depth}</text></g>`).join("")}
+        <text x="80" y="18" fill="#ffd38f" font-size="12" font-weight="700">Температура, °C</text>
+        <text x="520" y="18" fill="#9beee4" font-size="12" font-weight="700">Градиент горного давления</text>
+        <polyline points="${tempPoints}" fill="none" stroke="url(#tempLine)" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+        <polyline points="${gradPoints}" fill="none" stroke="url(#gradLine)" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+        ${pressureTemp.map((item) => `
+          <g>
+            <circle cx="${mapX(item.temp, 80, 330, 0, maxTemp)}" cy="${mapY(item.bottom, chartTop, chartBottom, maxDepth)}" r="4.5" fill="#ffbf66"/>
+            <circle cx="${mapX(item.gradient, 420, 680, minGrad, maxGrad)}" cy="${mapY(item.bottom, chartTop, chartBottom, maxDepth)}" r="4.5" fill="#24d7c4"/>
+            <text x="690" y="${mapY(item.bottom, chartTop, chartBottom, maxDepth) + 4}" fill="#dce8f7" font-size="11">${item.label}</text>
+          </g>
+        `).join("")}
+      </svg>
+    `;
+
+    const maxPressure = Math.max(...pressureTemp.map((item) => item.pressure));
+    document.getElementById("pressureBars").innerHTML = pressureTemp.slice(-6).map((item) => `
+      <div class="bar-row">
+        <div class="bar-label">${item.label}</div>
+        <div class="bar-track"><div class="bar-fill" style="width:${(item.pressure / maxPressure) * 100}%"></div></div>
+        <div class="bar-val">${formatNumber(item.pressure)} МПа</div>
+      </div>
+    `).join("");
+
+    document.getElementById("organicList").innerHTML = organicData.map((item) => `
+      <div class="fluid-item">
+        <strong>${item.name}</strong>
+        <span>ОВ: ${formatNumber(item.ov, 2)}% · Остаточный потенциал: ${formatNumber(item.potential, 2)}</span>
+        <span>${item.note}</span>
+      </div>
+    `).join("");
+
+    document.getElementById("reservoirList").innerHTML = reservoirData.map((item) => `
+      <div class="fluid-item">
+        <strong>${item.name} · ${item.interval}</strong>
+        <span>${item.pressure} · ${item.temp}</span>
+        <span>${item.note}</span>
+      </div>
+    `).join("");
+
+    document.getElementById("mechanicsList").innerHTML = mechanicsData.map((item) => `
+      <div class="fluid-item">
+        <strong>${item.title}</strong>
+        <span>${item.text}</span>
+      </div>
+    `).join("");
+
+    document.getElementById("riskGrid").innerHTML = risks.map((item) => `
+      <article class="risk">
+        <h3>${item.title}</h3>
+        <div class="risk-tags">${item.tags.map((tag) => `<span class="risk-tag">${tag}</span>`).join("")}</div>
+        <p>${item.text}</p>
+      </article>
+    `).join("");
+
+    document.getElementById("gisOpenList").innerHTML = gisOpenData.map((item) => `
+      <div class="fluid-item"><strong>${item.title}</strong><span>${item.text}</span></div>
+    `).join("");
+    document.getElementById("gisCasedList").innerHTML = gisCasedData.map((item) => `
+      <div class="fluid-item"><strong>${item.title}</strong><span>${item.text}</span></div>
+    `).join("");
+    document.getElementById("gisSupportList").innerHTML = gisSupportData.map((item) => `
+      <div class="fluid-item"><strong>${item.title}</strong><span>${item.text}</span></div>
+    `).join("");
+
+    document.getElementById("summaryTableBody").innerHTML = summaryRows.map((row) => `
+      <tr>
+        <td>${row.interval}</td>
+        <td>${row.horizon}</td>
+        <td>${row.lith}</td>
+        <td>${row.signal}</td>
+        <td>${row.risk}</td>
+      </tr>
+    `).join("");
+  </script>
+</body>
+</html>

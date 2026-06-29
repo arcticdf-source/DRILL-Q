@@ -1,0 +1,291 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Раздел 4 · Профиль ствола скважины · Южно-Русское</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap");
+    :root{--bg0:#070d15;--bg1:#111f33;--bg2:#1d3247;--panel:rgba(10,20,33,.85);--line:rgba(226,237,255,.16);--soft:rgba(226,237,255,.1);--text:#ecf4ff;--muted:#a8bdd2;--cyan:#20d9b4;--amber:#ffbf66;--violet:#c6a6ff;--blue:#8db4ff;--shadow:0 24px 56px rgba(0,0,0,.42)}
+    *{box-sizing:border-box} html,body{margin:0;min-height:100%;font-family:"Manrope",sans-serif;color:var(--text);background:radial-gradient(900px 460px at 0% -10%,rgba(32,217,180,.2),transparent),radial-gradient(820px 460px at 100% 0%,rgba(255,191,102,.2),transparent),linear-gradient(145deg,var(--bg0),var(--bg1) 46%,var(--bg2))}
+    .wrap{width:min(1260px,92vw);margin:0 auto;padding:24px 0 64px}.top{display:flex;justify-content:space-between;align-items:center;gap:10px;border:1px solid var(--soft);border-radius:14px;padding:12px 14px;background:rgba(8,15,24,.66);position:sticky;top:12px;z-index:20}
+    .brand{display:flex;align-items:center;gap:10px;font-family:"Oswald",sans-serif;text-transform:uppercase;letter-spacing:.05em;font-size:20px}.dot{width:12px;height:12px;border-radius:999px;background:radial-gradient(circle at 35% 35%,#d6fff7,var(--cyan))}
+    .nav{display:flex;flex-wrap:wrap;gap:8px}.nav a{text-decoration:none;font-size:12px;text-transform:uppercase;letter-spacing:.06em;font-weight:800;border-radius:10px;padding:8px 12px;color:#082922;background:linear-gradient(130deg,#a0f9eb,#22d7b4);border:1px solid rgba(34,215,180,.75)}
+    .hero,.panel{margin-top:18px;border:1px solid var(--line);border-radius:22px;background:var(--panel);box-shadow:var(--shadow);padding:22px}.hero h1{margin:0 0 10px;font-family:"Oswald",sans-serif;font-size:clamp(28px,4vw,44px)}.hero p{margin:0;color:#c7d7ec;line-height:1.65}
+    .hero-grid{margin-top:16px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.hero-stat{border:1px solid var(--soft);border-radius:16px;padding:12px 14px;background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02))}.hero-stat strong{display:block;font-size:22px}.hero-stat span{display:block;margin-top:4px;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.08em}
+    h2{margin:0 0 12px;font-size:22px}.list{display:grid;gap:10px}.item{border:1px solid var(--soft);border-radius:12px;background:rgba(255,255,255,.03);padding:12px;color:#d5e2f2;line-height:1.6;font-size:14px}
+    .grid{display:grid;grid-template-columns:1.3fr .9fr;gap:16px}.stack{display:grid;gap:16px}
+    .chart-wrap{border:1px solid var(--soft);border-radius:18px;background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.015));padding:14px}.chart-title{margin:0 0 10px;font-size:16px}.chart-shell{width:100%;overflow:auto}.chart-shell svg{width:100%;height:auto;display:block}.chart-caption{margin-top:10px;color:var(--muted);font-size:12px;line-height:1.55}
+    .meta-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.meta-card{border:1px solid var(--soft);border-radius:14px;padding:14px;background:rgba(255,255,255,.03)}.meta-card strong{display:block;font-size:14px;margin-bottom:6px}.meta-card p{margin:0;color:#d5e2f2;line-height:1.55;font-size:13px}
+    .table-wrap{overflow:auto}.table{width:100%;border-collapse:collapse;font-size:13px}.table th,.table td{border:1px solid var(--soft);padding:8px 10px;text-align:left;vertical-align:top}.table th{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#bfd3e8;background:rgba(255,255,255,.04)}.table td{color:#d5e2f2;line-height:1.45}
+    .note{margin-top:14px;border:1px solid rgba(198,166,255,.25);border-radius:12px;background:rgba(198,166,255,.08);padding:12px;color:#e2d8ff;line-height:1.55;font-size:14px}
+    .footer{margin-top:14px;color:var(--muted);font-size:12px;text-align:center;text-transform:uppercase;letter-spacing:.08em}
+    @media (max-width:1100px){.grid,.hero-grid,.meta-grid{grid-template-columns:1fr}}
+    @media (max-width:900px){.top{position:static;flex-direction:column;align-items:flex-start}}
+  </style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+  <main class="wrap">
+    <header class="top">
+      <div class="brand"><span class="dot"></span><span>Nexus Oilfield AI</span></div>
+      <nav class="nav" id="nav"></nav>
+    </header>
+
+    <section class="hero">
+      <h1 id="title">Раздел 4. Профиль ствола скважины</h1>
+      <p id="desc">Траектория скважины с восходящим окончанием, расчетные интервалы по зенитному углу и визуальная схема профиля по данным из предоставленных JPG.</p>
+      <div class="hero-grid">
+        <div class="hero-stat"><strong>1900,19 м</strong><span>глубина по длине ствола</span></div>
+        <div class="hero-stat"><strong>1309,91 м</strong><span>общее отклонение</span></div>
+        <div class="hero-stat"><strong>106,73°</strong><span>зенит в конце ствола</span></div>
+        <div class="hero-stat"><strong>772,0-832,0 м</strong><span>продуктивный интервал</span></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Основные параметры профиля</h2>
+      <div class="list" id="profileSummary"></div>
+    </section>
+
+    <section class="panel">
+      <h2>Графика траектории</h2>
+      <div class="grid">
+        <div class="chart-wrap">
+          <h3 class="chart-title">Рисунок 1 · Проектный профиль скважины</h3>
+          <div class="chart-shell" id="trajectoryChart"></div>
+          <div class="chart-caption">График построен вручную по таблице 2. По оси X отложено отклонение от вертикали, по оси Y - глубина по вертикали. Желтая зона выделяет продуктивный интервал 772-832 м.</div>
+        </div>
+        <div class="stack">
+          <div class="chart-wrap">
+            <h3 class="chart-title">Ключевые реперные точки</h3>
+            <div class="meta-grid" id="milestoneCards"></div>
+          </div>
+          <div class="chart-wrap">
+            <h3 class="chart-title">Паспорт траектории</h3>
+            <div class="list" id="profilePassport"></div>
+          </div>
+        </div>
+      </div>
+      <div class="note" id="note"></div>
+    </section>
+
+    <section class="panel">
+      <h2>Таблица 2 · Результаты расчета профиля</h2>
+      <div class="table-wrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Интервал по вертикали, от</th>
+              <th>Интервал по вертикали, до</th>
+              <th>Длина</th>
+              <th>Зенит в начале</th>
+              <th>Зенит в конце</th>
+              <th>Средний зенит</th>
+              <th>Отклонение за интервал</th>
+              <th>Отклонение общее</th>
+              <th>Удлинение за интервал</th>
+              <th>Удлинение общее</th>
+              <th>Глубина по длине ствола</th>
+            </tr>
+          </thead>
+          <tbody id="profileTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <p class="footer">South-Russian field · Well profile</p>
+  </main>
+  <script>
+    function getProjectNameFromUrl() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('name') || 'Южно-Русское месторождение';
+    }
+
+    function getWellFromUrl() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('well') || '5101';
+    }
+
+    function buildProjectLink(page, name, well) {
+      const params = new URLSearchParams();
+      params.set('name', name);
+      if (well) {
+        params.set('well', well);
+      }
+      return `${page}?${params.toString()}`;
+    }
+
+    const projectName = getProjectNameFromUrl();
+    const wellName = getWellFromUrl();
+    document.title = `${projectName} · Скважина ${wellName} · Раздел 4`;
+    document.getElementById('title').textContent = `${projectName} · Скважина ${wellName} · Раздел 4. Профиль ствола скважины`;
+    document.getElementById('desc').textContent = `Ручное наполнение раздела траектории по проекту "${projectName}" для скважины ${wellName} на основе таблицы расчета и проектного рисунка из предоставленных JPG.`;
+
+    document.getElementById('nav').innerHTML = `
+      <a href="${buildProjectLink('64_yuzhno_russkoe_project_dashboard.html', projectName, wellName)}">К скважине ${wellName}</a>
+      <a href="${buildProjectLink('69_yuzhno_russkoe_well_construction.html', projectName, wellName)}">Раздел 3</a>
+      <a href="${buildProjectLink('68_yuzhno_russkoe_general_data.html', projectName, wellName)}">Раздел 1</a>
+    `;
+
+    const profileRows = [
+      { from: 0.00, to: 315.00, length: 315.00, zenStart: 0.00, zenEnd: 0.00, zenAvg: 0.00, devInterval: 0.00, devTotal: 0.00, extInterval: 0.00, extTotal: 0.00, md: 315.00 },
+      { from: 315.00, to: 600.03, length: 285.03, zenStart: 0.00, zenEnd: 38.45, zenAvg: 19.23, devInterval: 99.40, devTotal: 99.40, extInterval: 22.57, extTotal: 22.57, md: 622.60 },
+      { from: 600.03, to: 614.98, length: 14.95, zenStart: 38.45, zenEnd: 38.45, zenAvg: 38.45, devInterval: 11.87, devTotal: 111.27, extInterval: 4.15, extTotal: 26.72, md: 641.70 },
+      { from: 614.98, to: 700.00, length: 85.02, zenStart: 38.45, zenEnd: 57.59, zenAvg: 48.02, devInterval: 94.49, devTotal: 205.76, extInterval: 42.68, extTotal: 69.40, md: 769.40 },
+      { from: 700.00, to: 718.71, length: 18.71, zenStart: 57.59, zenEnd: 57.59, zenAvg: 57.59, devInterval: 29.47, devTotal: 235.23, extInterval: 16.19, extTotal: 85.59, md: 804.30 },
+      { from: 718.71, to: 772.00, length: 53.29, zenStart: 57.59, zenEnd: 79.92, zenAvg: 68.76, devInterval: 137.07, devTotal: 372.30, extInterval: 94.71, extTotal: 180.30, md: 952.30 },
+      { from: 772.00, to: 807.00, length: 35.00, zenStart: 79.92, zenEnd: 79.92, zenAvg: 79.92, devInterval: 196.91, devTotal: 569.21, extInterval: 165.00, extTotal: 345.30, md: 1152.30 },
+      { from: 807.00, to: 814.00, length: 7.00, zenStart: 79.92, zenEnd: 86.59, zenAvg: 83.26, devInterval: 59.02, devTotal: 628.23, extInterval: 52.47, extTotal: 397.77, md: 1211.77 },
+      { from: 814.00, to: 832.00, length: 18.00, zenStart: 86.59, zenEnd: 86.59, zenAvg: 86.59, devInterval: 299.46, devTotal: 927.69, extInterval: 281.89, extTotal: 679.66, md: 1511.66 },
+      { from: 832.00, to: 832.91, length: 0.91, zenStart: 86.59, zenEnd: 90.00, zenAvg: 88.00, devInterval: 32.38, devTotal: 960.07, extInterval: 30.44, extTotal: 710.21, md: 1544.10 },
+      { from: 832.91, to: 814.00, length: 18.91, zenStart: 90.00, zenEnd: 101.43, zenAvg: 96.00, devInterval: 189.24, devTotal: 1149.31, extInterval: 190.48, extTotal: 900.69, md: 1734.58 },
+      { from: 814.00, to: 807.07, length: 6.93, zenStart: 101.43, zenEnd: 102.50, zenAvg: 102.00, devInterval: 32.71, devTotal: 1182.03, extInterval: 60.24, extTotal: 960.93, md: 1768.01 },
+      { from: 807.07, to: 773.74, length: 33.33, zenStart: 102.50, zenEnd: 106.73, zenAvg: 103.00, devInterval: 127.89, devTotal: 1309.91, extInterval: 165.61, extTotal: 1066.30, md: 1900.19 }
+    ];
+
+    const summaryItems = [
+      'Профиль скважины задан как траектория с восходящим окончанием и выходом на продуктивный интервал в зоне 772,0-832,0 м по вертикали.',
+      'Забуривание наклонного участка начинается на глубине 315,0 м.',
+      'Кровля продуктивного пласта по вертикали: 772,0 м, отклонение от вертикали на кровле: 372,3 м.',
+      'Длина ствола по продуктивному пласту: 332,523,855,0 м в исходном документе; на странице сохранено именно исходное представление, без домысливания формулы.',
+      'Зенитный угол в конце участка искривления: 106,73°.',
+      'Максимальная интенсивность набора зенитного угла: 1,5 град/10 м. Допускаемое отклонение зенитного угла в вертикальном участке: до 3°.'
+    ];
+
+    const milestoneCards = [
+      { title: 'Башмак направления 324 мм', text: '150 м (150 м зенит 0,00°), отклонение 0,00 м.' },
+      { title: 'Башмак кондуктора 245 мм', text: '600 м (622,60 м), зенит 38,45°, отклонение 99,40 м.' },
+      { title: 'Фильтр / ПФЩ-168', text: '772 м (952,30 м), зенит 79,92°, отклонение 372,30 м.' },
+      { title: 'Башмак эксплуатационной колонны 168 мм', text: '773 м (1900,19 м), угол 106,73°, отклонение 1309,91 м.' }
+    ];
+
+    const passportItems = [
+      'Глубина скважины по вертикали: 832,0-773,0 м.',
+      'Глубина забуривания наклонного участка: 315,0 м.',
+      'Глубина залегания кровли продуктивного пласта: 772,0 м по вертикали.',
+      'Отклонение от вертикали на кровле продуктивного пласта: 372,3 м.',
+      'Интенсивность увеличения зенитного угла: 0,0 град/10 м.',
+      'Максимальная интенсивность набора зенитного угла: 1,5 град/10 м.'
+    ];
+
+    function formatNumber(value) {
+      const rounded = Math.abs(value - Math.round(value)) < 0.001 ? String(Math.round(value)) : value.toFixed(2);
+      return rounded.replace('.', ',');
+    }
+
+    function renderTable() {
+      document.getElementById('profileTableBody').innerHTML = profileRows.map((row) => `
+        <tr>
+          <td>${formatNumber(row.from)}</td>
+          <td>${formatNumber(row.to)}</td>
+          <td>${formatNumber(row.length)}</td>
+          <td>${formatNumber(row.zenStart)}</td>
+          <td>${formatNumber(row.zenEnd)}</td>
+          <td>${formatNumber(row.zenAvg)}</td>
+          <td>${formatNumber(row.devInterval)}</td>
+          <td>${formatNumber(row.devTotal)}</td>
+          <td>${formatNumber(row.extInterval)}</td>
+          <td>${formatNumber(row.extTotal)}</td>
+          <td>${formatNumber(row.md)}</td>
+        </tr>
+      `).join('');
+    }
+
+    function createSvg(width, height, inner) {
+      return `<svg viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Профиль траектории скважины">${inner}</svg>`;
+    }
+
+    function renderTrajectoryChart() {
+      const width = 1120;
+      const height = 760;
+      const margin = { top: 26, right: 60, bottom: 70, left: 88 };
+      const maxX = 1350;
+      const maxY = 900;
+      const plotWidth = width - margin.left - margin.right;
+      const plotHeight = height - margin.top - margin.bottom;
+      const scaleX = (value) => margin.left + (value / maxX) * plotWidth;
+      const scaleY = (value) => margin.top + (value / maxY) * plotHeight;
+
+      const plotPoints = [{ x: 0, y: 0 }, ...profileRows.map((row) => ({ x: row.devTotal, y: row.to }))];
+
+      const verticalGrid = Array.from({ length: 15 }, (_, index) => {
+        const value = -100 + index * 100;
+        const x = scaleX(Math.max(0, value));
+        const displayX = margin.left + ((value + 100) / 1450) * plotWidth;
+        return `
+          <line x1="${displayX}" y1="${margin.top}" x2="${displayX}" y2="${height - margin.bottom}" stroke="${index % 2 === 0 ? 'rgba(226,237,255,0.16)' : 'rgba(226,237,255,0.08)'}" />
+          <text x="${displayX}" y="${height - margin.bottom + 24}" font-size="12" fill="#a8bdd2" text-anchor="middle">${value}</text>`;
+      }).join('');
+
+      const horizontalGrid = Array.from({ length: 10 }, (_, index) => {
+        const value = index * 100;
+        const y = scaleY(value);
+        return `
+          <line x1="${margin.left}" y1="${y}" x2="${width - margin.right}" y2="${y}" stroke="${index % 2 === 0 ? 'rgba(226,237,255,0.16)' : 'rgba(226,237,255,0.08)'}" />
+          <text x="${margin.left - 14}" y="${y + 4}" font-size="12" fill="#a8bdd2" text-anchor="end">${value}</text>`;
+      }).join('');
+
+      const productiveBand = `
+        <rect x="${margin.left}" y="${scaleY(832)}" width="${plotWidth}" height="${Math.max(1, scaleY(772) - scaleY(832))}" fill="rgba(255,225,0,0.28)" />
+        <line x1="${margin.left}" y1="${scaleY(772)}" x2="${width - margin.right}" y2="${scaleY(772)}" stroke="#fff36e" stroke-width="3" />
+        <line x1="${margin.left}" y1="${scaleY(814)}" x2="${width - margin.right}" y2="${scaleY(814)}" stroke="#fff36e" stroke-width="2" stroke-dasharray="10 8" />
+        <line x1="${margin.left}" y1="${scaleY(832)}" x2="${width - margin.right}" y2="${scaleY(832)}" stroke="#fff36e" stroke-width="3" />
+        <text x="${margin.left + 8}" y="${scaleY(777)}" font-size="12" fill="#fff9bf">772-807 м</text>
+        <text x="${margin.left + 8}" y="${scaleY(818)}" font-size="12" fill="#fff9bf">814-832 м</text>`;
+
+      const path = plotPoints.map((point, index) => {
+        const displayX = margin.left + ((point.x + 100) / 1450) * plotWidth;
+        return `${index === 0 ? 'M' : 'L'} ${displayX} ${scaleY(point.y)}`;
+      }).join(' ');
+
+      const points = profileRows.map((row, index) => {
+        const x = margin.left + ((row.devTotal + 100) / 1450) * plotWidth;
+        const y = scaleY(row.to);
+        const highlighted = [1, 5, 8, 12].includes(index);
+        return `<circle cx="${x}" cy="${y}" r="${highlighted ? 5 : 3.5}" fill="${highlighted ? '#ff5d5d' : '#20d9b4'}" stroke="#071018" stroke-width="2" />`;
+      }).join('');
+
+      const annotations = [
+        { x: 0, y: 150, label: 'Башмак направления 324 мм\n150 м (150 м, зенит 0,00°)\nотклонение 0,00 м', tx: 220, ty: 146 },
+        { x: 99.4, y: 600.03, label: 'Башмак кондуктора 245 мм\n600 м (622,60 м), зенит 38,45°\nотклонение 99,40 м', tx: 260, ty: 360 },
+        { x: 372.3, y: 772, label: 'ПФЩ-168\n772 м (952,30 м), зенит 79,92°\nотклонение 372,30 м', tx: 450, ty: 640 },
+        { x: 1309.91, y: 773.74, label: 'Башмак эксплуатационной колонны 168 мм\n773 м (1900,19 м), угол 106,73°\nотклонение 1309,91 м', tx: 705, ty: 645 }
+      ].map((item) => {
+        const x = margin.left + ((item.x + 100) / 1450) * plotWidth;
+        const y = scaleY(item.y);
+        const lines = item.label.split('\n');
+        const text = lines.map((line, index) => `<tspan x="${item.tx + 10}" dy="${index === 0 ? 0 : 15}">${line}</tspan>`).join('');
+        return `
+          <line x1="${x}" y1="${y}" x2="${item.tx}" y2="${item.ty}" stroke="rgba(255,255,255,0.7)" stroke-width="1.6" />
+          <rect x="${item.tx}" y="${item.ty - 18}" width="255" height="58" fill="rgba(255,255,255,0.92)" stroke="rgba(7,16,24,0.45)" />
+          <text x="${item.tx + 10}" y="${item.ty}" font-size="12" fill="#111a28" font-family="Manrope">${text}</text>`;
+      }).join('');
+
+      const svg = createSvg(width, height, `
+        <rect x="0" y="0" width="${width}" height="${height}" rx="20" fill="rgba(255,255,255,0.015)" />
+        ${verticalGrid}
+        ${horizontalGrid}
+        ${productiveBand}
+        <line x1="${margin.left}" y1="${margin.top}" x2="${margin.left}" y2="${height - margin.bottom}" stroke="#8db4ff" stroke-width="1.6" />
+        <line x1="${margin.left}" y1="${height - margin.bottom}" x2="${width - margin.right}" y2="${height - margin.bottom}" stroke="#8db4ff" stroke-width="1.6" />
+        <path d="${path}" fill="none" stroke="#1ba8ff" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" />
+        ${points}
+        ${annotations}
+        <text x="${width / 2}" y="${height - 18}" font-size="13" fill="#bfd3e8" text-anchor="middle">Отклонение от вертикали, м</text>
+        <text x="24" y="${height / 2}" font-size="13" fill="#bfd3e8" text-anchor="middle" transform="rotate(-90 24 ${height / 2})">Глубина по вертикали, м</text>
+      `);
+
+      document.getElementById('trajectoryChart').innerHTML = svg;
+    }
+
+    document.getElementById('profileSummary').innerHTML = summaryItems.map((item) => `<div class="item">${item}</div>`).join('');
+    document.getElementById('profilePassport').innerHTML = passportItems.map((item) => `<div class="item">${item}</div>`).join('');
+    document.getElementById('milestoneCards').innerHTML = milestoneCards.map((card) => `<article class="meta-card"><strong>${card.title}</strong><p>${card.text}</p></article>`).join('');
+    renderTable();
+    renderTrajectoryChart();
+    document.getElementById('note').textContent = `Раздел 4 собран вручную по двум предоставленным JPG: табличной части расчета траектории и проектному рисунку профиля. График перестроен в SVG, чтобы страница оставалась масштабируемой и читаемой для скважины ${wellName}.`;
+  </script>
+  <script src="assets/js/global-auth-widget.js"></script>
+</body>
+</html>

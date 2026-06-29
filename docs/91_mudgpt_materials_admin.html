@@ -1,0 +1,768 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>91 · Химреагенты для буровых растворов</title>
+  <style>
+    :root {
+      --bg: #0a1220;
+      --panel: rgba(17, 28, 46, 0.78);
+      --panel-strong: rgba(23, 36, 58, 0.92);
+      --line: rgba(197, 219, 255, 0.12);
+      --text: #edf4ff;
+      --muted: #a9b9d2;
+      --accent: #7ff0bf;
+      --accent-2: #ffd27e;
+      --accent-3: #8ab8ff;
+      --danger: #ffb58f;
+      --shadow: 0 28px 80px rgba(0, 0, 0, 0.35);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Bahnschrift", "Trebuchet MS", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(86, 130, 255, 0.18), transparent 28%),
+        radial-gradient(circle at 82% 14%, rgba(127, 240, 191, 0.13), transparent 24%),
+        linear-gradient(180deg, #0a1220 0%, #0d1526 48%, #09111c 100%);
+    }
+
+    .shell { width: min(1360px, calc(100vw - 40px)); margin: 28px auto 36px; }
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+      padding: 14px 18px;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: rgba(11, 19, 33, 0.68);
+      backdrop-filter: blur(16px);
+      box-shadow: var(--shadow);
+    }
+    .topbar-links { display: flex; gap: 12px; flex-wrap: wrap; }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #dfeaff;
+    }
+    .brand-badge {
+      width: 12px;
+      height: 12px;
+      border-radius: 4px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-3));
+      box-shadow: 0 0 18px rgba(127, 240, 191, 0.6);
+    }
+    .topbar a {
+      color: var(--text);
+      text-decoration: none;
+      font-size: 14px;
+      padding: 10px 14px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.03);
+    }
+    .hero {
+      overflow: hidden;
+      padding: 34px;
+      border: 1px solid var(--line);
+      border-radius: 30px;
+      background:
+        linear-gradient(135deg, rgba(23, 36, 58, 0.94), rgba(12, 22, 37, 0.88)),
+        linear-gradient(120deg, rgba(127, 240, 191, 0.12), transparent 42%);
+      box-shadow: var(--shadow);
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+      color: var(--accent);
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+    }
+    .eyebrow::before { content: ""; width: 34px; height: 1px; background: currentColor; }
+    h1 {
+      margin: 0;
+      max-width: 900px;
+      font-size: clamp(42px, 6vw, 76px);
+      line-height: 0.96;
+      letter-spacing: -0.04em;
+    }
+    .hero p,
+    .status-card span,
+    .access-panel p,
+    .field-note,
+    .search-meta {
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 14px;
+    }
+    .hero-grid,
+    .status-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 28px;
+    }
+    .stat,
+    .status-card,
+    .access-panel,
+    .section {
+      padding: 20px;
+      border-radius: 22px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.04);
+    }
+    .stat strong,
+    .status-card strong {
+      display: block;
+      font-size: 28px;
+      color: var(--accent-2);
+    }
+    .status-strip,
+    .section,
+    .access-panel {
+      margin-top: 20px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+      background: var(--panel);
+    }
+    .role-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 30px;
+      width: fit-content;
+      padding: 0 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(127, 240, 191, 0.26);
+      background: rgba(127, 240, 191, 0.1);
+      color: #d7fff3;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .section { padding: 24px; border-radius: 30px; }
+    .section-head,
+    .toolbar,
+    .editor-actions { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .section-head { align-items: flex-end; margin-bottom: 18px; }
+    .section-head h2,
+    .access-panel h2 { margin: 0; font-size: 30px; letter-spacing: -0.03em; }
+    .search-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: min(100%, 520px);
+      padding: 10px 14px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.04);
+    }
+    .search-box span { color: var(--accent); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; white-space: nowrap; }
+    .search-box input,
+    .access-form input,
+    .editor-field input {
+      width: 100%;
+      min-height: 52px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text);
+      font: inherit;
+      padding: 0 16px;
+      outline: none;
+    }
+    .search-box input {
+      min-height: auto;
+      border: 0;
+      padding: 0;
+      background: transparent;
+    }
+    .search-box input::placeholder,
+    .access-form input::placeholder,
+    .editor-field input::placeholder { color: rgba(237, 244, 255, 0.38); }
+    .table-shell {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: var(--panel-strong);
+    }
+    table { width: 100%; border-collapse: collapse; }
+    th,
+    td {
+      padding: 18px 16px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      vertical-align: middle;
+    }
+    th {
+      color: #d6e4fb;
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      background: rgba(255, 255, 255, 0.03);
+    }
+    tbody tr:hover { background: rgba(127, 240, 191, 0.06); }
+    tbody tr:last-child td { border-bottom: 0; }
+    .product-link {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    .product-link small {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0;
+    }
+    .arrow {
+      display: inline-flex;
+      width: 42px;
+      height: 42px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 14px;
+      background: rgba(138, 184, 255, 0.12);
+      color: var(--accent-3);
+      font-size: 20px;
+      flex: 0 0 auto;
+    }
+    .tag {
+      display: inline-flex;
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .metric-value,
+    .status-text { font-weight: 600; }
+    .row-actions { display: flex; justify-content: flex-end; }
+    .edit-row-button,
+    .access-btn,
+    .editor-btn,
+    .token-button,
+    .remove-chip {
+      appearance: none;
+      border: 1px solid rgba(127, 240, 191, 0.22);
+      background: linear-gradient(135deg, rgba(127, 240, 191, 0.16), rgba(138, 184, 255, 0.14));
+      color: var(--text);
+      border-radius: 14px;
+      min-height: 42px;
+      padding: 0 14px;
+      font: inherit;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+    .access-form { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; margin-top: 16px; }
+    .access-list { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+    .editor-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      color: var(--text);
+      font-size: 12px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .remove-chip {
+      min-height: 28px;
+      padding: 0 10px;
+      color: var(--danger);
+      background: rgba(255, 181, 143, 0.06);
+      border-color: rgba(255, 181, 143, 0.2);
+    }
+    .access-note,
+    .viewer-lock {
+      margin-top: 14px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 210, 126, 0.2);
+      background: rgba(255, 210, 126, 0.08);
+      color: #ffe4b5;
+      line-height: 1.55;
+      font-size: 14px;
+    }
+    .viewer-lock[hidden] { display: none !important; }
+    .editor-backdrop {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(5, 10, 20, 0.72);
+      backdrop-filter: blur(14px);
+      z-index: 40;
+    }
+    .editor-backdrop.is-open { display: flex; }
+    .editor-modal {
+      width: min(760px, 100%);
+      padding: 24px;
+      border-radius: 28px;
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(18, 28, 46, 0.98), rgba(11, 18, 32, 0.98));
+      box-shadow: 0 30px 90px rgba(0, 0, 0, 0.42);
+    }
+    .editor-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+    .editor-head h3 { margin: 0; font-size: 28px; letter-spacing: -0.03em; }
+    .icon-button {
+      appearance: none;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text);
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      font: inherit;
+      font-size: 18px;
+      cursor: pointer;
+    }
+    .editor-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    .editor-field { display: grid; gap: 8px; }
+    .editor-field.full { grid-column: 1 / -1; }
+    .editor-field label { color: var(--muted); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; }
+    .editor-field input[disabled] { opacity: 0.55; cursor: not-allowed; }
+    .editor-action-group { display: flex; gap: 10px; flex-wrap: wrap; }
+    .editor-btn.primary { color: #082321; background: linear-gradient(130deg, #c7fff0, #7ff0bf); border-color: rgba(127, 240, 191, 0.52); }
+    .editor-btn.secondary { color: var(--text); background: rgba(255, 255, 255, 0.06); border-color: var(--line); }
+    .editor-btn.ghost { color: #ffd7a1; background: rgba(255, 210, 126, 0.08); border-color: rgba(255, 210, 126, 0.2); }
+    .token-button { min-height: 38px; padding: 0 12px; font-size: 11px; }
+    @media (max-width: 1100px) {
+      .hero-grid,
+      .status-grid { grid-template-columns: 1fr; }
+      .access-form { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 980px) {
+      .shell { width: min(1360px, calc(100vw - 20px)); }
+      .hero,
+      .section,
+      .access-panel,
+      .status-strip { padding: 20px; }
+      .editor-grid { grid-template-columns: 1fr; }
+      table { min-width: 1080px; }
+      .table-shell { overflow-x: auto; }
+    }
+  </style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+  <main class="shell">
+    <div class="topbar">
+      <div class="brand"><span class="brand-badge" aria-hidden="true"></span><span>MudGPT · Materials Admin</span></div>
+      <div class="topbar-links">
+        <a href="92_mudgpt_admin_dashboard.html">Admin dashboard</a>
+        <a href="87_mudgpt_chemicals_materials.html">Клиентская витрина</a>
+        <a href="65_my_wells_auth.html">Аккаунт / admin access</a>
+        <a href="84_drilling_fluids_entry_dashboard.html">Назад к fluids dashboard</a>
+      </div>
+    </div>
+
+    <section class="hero">
+      <div class="eyebrow">Admin module 01</div>
+      <h1>Химреагенты для буровых растворов</h1>
+      <p>Это первый рабочий модуль админ-дашборда. Здесь вы заносите наличие на складах, цены, статус продуктовых карточек и при необходимости выдаете доступ партнерам на обновление ежедневных данных.</p>
+      <div class="hero-grid">
+        <div class="stat"><strong>01</strong><span>первый модуль нового admin dashboard</span></div>
+        <div class="stat"><strong>Stocks + Prices</strong><span>операционный ввод по складам и коммерческим условиям</span></div>
+        <div class="stat"><strong>One source</strong><span>один источник данных для admin page и user page</span></div>
+      </div>
+    </section>
+
+    <section class="status-strip">
+      <div class="status-grid">
+        <div class="status-card">
+          <div class="role-badge" id="materialsRoleBadge">Admin</div>
+          <strong id="materialsRoleTitle">Контур управления</strong>
+          <span id="materialsRoleCopy">Только владелец и партнеры с доступом работают с изменением данных.</span>
+        </div>
+        <div class="status-card">
+          <strong id="materialsEditorsCount">0</strong>
+          <span>партнеров с доступом к ежедневным данным</span>
+        </div>
+        <div class="status-card">
+          <strong id="materialsOwnerLabel">admin</strong>
+          <span>владелец каталога и продуктовых полей</span>
+        </div>
+      </div>
+      <div class="viewer-lock" id="materialsViewerLock" hidden>У вас нет admin-доступа. На этой странице редактирование недоступно.</div>
+    </section>
+
+    <section class="access-panel" id="materialsAccessPanel">
+      <h2>Доступ партнеров</h2>
+      <p>Здесь админ выдает доступ логинам, которым разрешено менять только оперативные поля: остатки на складах и цены. Название продукта, группа и статус страницы остаются под контролем владельца.</p>
+      <form class="access-form" id="materialsAccessForm">
+        <input id="materialsAccessLoginInput" type="text" list="materialsUsersList" placeholder="Логин партнера для доступа к складам и ценам" autocomplete="off" />
+        <button class="access-btn" type="submit">Дать доступ</button>
+      </form>
+      <datalist id="materialsUsersList"></datalist>
+      <div class="access-list" id="materialsEditorsList"></div>
+      <div class="access-note">Текущая версия работает на localStorage браузера. Позже можно заменить это backend-хранилищем без смены структуры страниц.</div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>Управление каталогом</h2>
+        <span>Админ редактирует все поля, editor меняет только цены и складские остатки</span>
+      </div>
+
+      <div class="toolbar">
+        <label class="search-box" for="productSearchInput">
+          <span>Поиск</span>
+          <input id="productSearchInput" type="text" placeholder="Асфальт, PAC, Ксантан, цена, склад..." autocomplete="off" />
+        </label>
+        <div class="search-meta" id="productSearchMeta">Показаны все 3 продукта</div>
+      </div>
+
+      <div class="table-shell">
+        <table aria-label="MudGPT materials admin catalog">
+          <thead>
+            <tr>
+              <th>Продукт</th>
+              <th>Группа</th>
+              <th>Остаток на складах</th>
+              <th>Цена</th>
+              <th>Статус страницы</th>
+              <th>Действие</th>
+            </tr>
+          </thead>
+          <tbody id="productCatalogBody">
+            <tr data-product-row data-product-id="asphalt">
+              <td><a class="product-link" href="88_mudgpt_product_asphalt.html"><span><span data-field="title">MudGPT - асфальт</span><small data-field="subtitle">Отдельная продуктовая страница-заготовка</small></span><span class="arrow">↗</span></a></td>
+              <td><span class="tag" data-field="group">Material</span></td>
+              <td><span class="metric-value" data-field="stock">Нет данных</span></td>
+              <td><span class="metric-value" data-field="price">По запросу</span></td>
+              <td><span class="status-text" data-field="status">Готова под наполнение</span></td>
+              <td><div class="row-actions"><button class="edit-row-button" type="button" data-edit-product="asphalt">Изменить продукт</button></div></td>
+            </tr>
+            <tr data-product-row data-product-id="pac">
+              <td><a class="product-link" href="89_mudgpt_product_pac.html"><span><span data-field="title">MudGPT - PAC</span><small data-field="subtitle">Отдельная продуктовая страница-заготовка</small></span><span class="arrow">↗</span></a></td>
+              <td><span class="tag" data-field="group">Chemical</span></td>
+              <td><span class="metric-value" data-field="stock">Нет данных</span></td>
+              <td><span class="metric-value" data-field="price">По запросу</span></td>
+              <td><span class="status-text" data-field="status">Готова под наполнение</span></td>
+              <td><div class="row-actions"><button class="edit-row-button" type="button" data-edit-product="pac">Изменить продукт</button></div></td>
+            </tr>
+            <tr data-product-row data-product-id="xanthan">
+              <td><a class="product-link" href="90_mudgpt_product_xanthan.html"><span><span data-field="title">MudGPT - Ксантан</span><small data-field="subtitle">Отдельная продуктовая страница-заготовка</small></span><span class="arrow">↗</span></a></td>
+              <td><span class="tag" data-field="group">Biopolymer</span></td>
+              <td><span class="metric-value" data-field="stock">Нет данных</span></td>
+              <td><span class="metric-value" data-field="price">По запросу</span></td>
+              <td><span class="status-text" data-field="status">Готова под наполнение</span></td>
+              <td><div class="row-actions"><button class="edit-row-button" type="button" data-edit-product="xanthan">Изменить продукт</button></div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <div class="editor-backdrop" id="productEditorBackdrop" aria-hidden="true">
+    <div class="editor-modal" role="dialog" aria-modal="true" aria-labelledby="productEditorTitle">
+      <div class="editor-head">
+        <div>
+          <h3 id="productEditorTitle">Изменить продукт</h3>
+          <p id="productEditorCopy">Админ меняет всю карточку. Партнер с доступом меняет только остатки и цены.</p>
+          <button class="token-button" id="showAllowedFieldsBtn" type="button">Показать разрешенные поля</button>
+        </div>
+        <button class="icon-button" id="productEditorClose" type="button" aria-label="Закрыть">×</button>
+      </div>
+      <form id="productEditorForm">
+        <div class="editor-grid">
+          <div class="editor-field full"><label for="editorTitleInput">Название продукта</label><input id="editorTitleInput" name="title" type="text" required /><span class="field-note">Только админ.</span></div>
+          <div class="editor-field full"><label for="editorSubtitleInput">Подпись под названием</label><input id="editorSubtitleInput" name="subtitle" type="text" required /><span class="field-note">Только админ.</span></div>
+          <div class="editor-field"><label for="editorGroupInput">Группа</label><input id="editorGroupInput" name="group" type="text" required /><span class="field-note">Только админ.</span></div>
+          <div class="editor-field"><label for="editorStatusInput">Статус страницы</label><input id="editorStatusInput" name="status" type="text" required /><span class="field-note">Только админ.</span></div>
+          <div class="editor-field"><label for="editorStockInput">Остаток на складах</label><input id="editorStockInput" name="stock" type="text" required /><span class="field-note">Админ и партнер с доступом.</span></div>
+          <div class="editor-field"><label for="editorPriceInput">Цена</label><input id="editorPriceInput" name="price" type="text" required /><span class="field-note">Админ и партнер с доступом.</span></div>
+        </div>
+        <div class="editor-actions">
+          <button class="editor-btn ghost" id="productEditorReset" type="button">Сбросить запись</button>
+          <div class="editor-action-group">
+            <button class="editor-btn secondary" id="productEditorCancel" type="button">Отмена</button>
+            <button class="editor-btn primary" type="submit">Сохранить</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="assets/js/nexus-auth.js"></script>
+  <script src="assets/js/mudgpt-materials-catalog.js"></script>
+  <script>
+    (function () {
+      var auth = window.NexusAuth;
+      var catalog = window.MudGPTMaterialsCatalog;
+      var session = auth ? auth.getSession() : null;
+      var role = auth ? auth.getMaterialsRole(session) : 'viewer';
+      var rows = Array.from(document.querySelectorAll('[data-product-row]'));
+      var activeProductId = '';
+      var searchInput = document.getElementById('productSearchInput');
+      var searchMeta = document.getElementById('productSearchMeta');
+      var roleBadge = document.getElementById('materialsRoleBadge');
+      var roleTitle = document.getElementById('materialsRoleTitle');
+      var roleCopy = document.getElementById('materialsRoleCopy');
+      var editorsCount = document.getElementById('materialsEditorsCount');
+      var ownerLabel = document.getElementById('materialsOwnerLabel');
+      var viewerLock = document.getElementById('materialsViewerLock');
+      var accessPanel = document.getElementById('materialsAccessPanel');
+      var accessForm = document.getElementById('materialsAccessForm');
+      var accessLoginInput = document.getElementById('materialsAccessLoginInput');
+      var usersList = document.getElementById('materialsUsersList');
+      var editorsList = document.getElementById('materialsEditorsList');
+      var editorBackdrop = document.getElementById('productEditorBackdrop');
+      var editorForm = document.getElementById('productEditorForm');
+      var editorClose = document.getElementById('productEditorClose');
+      var editorCancel = document.getElementById('productEditorCancel');
+      var editorReset = document.getElementById('productEditorReset');
+      var allowedFieldsBtn = document.getElementById('showAllowedFieldsBtn');
+      var editorCopy = document.getElementById('productEditorCopy');
+      var fieldInputs = {
+        title: document.getElementById('editorTitleInput'),
+        subtitle: document.getElementById('editorSubtitleInput'),
+        group: document.getElementById('editorGroupInput'),
+        status: document.getElementById('editorStatusInput'),
+        stock: document.getElementById('editorStockInput'),
+        price: document.getElementById('editorPriceInput')
+      };
+
+      function renderCatalog() {
+        var state = catalog.loadState();
+        rows.forEach(function (row) {
+          var productId = row.getAttribute('data-product-id');
+          var record = state[productId];
+          Object.keys(record).forEach(function (fieldName) {
+            var node = row.querySelector('[data-field="' + fieldName + '"]');
+            if (node) {
+              node.textContent = record[fieldName];
+            }
+          });
+        });
+      }
+
+      function renderRoleState() {
+        ownerLabel.textContent = auth ? auth.getDedicatedAdminLogin() : 'admin';
+        if (role === 'admin') {
+          roleBadge.textContent = 'Admin';
+          roleTitle.textContent = 'Полный доступ владельца';
+          roleCopy.textContent = 'Вы можете менять карточки продуктов, выдавать партнерский доступ и обновлять ежедневные операционные поля.';
+          accessPanel.hidden = false;
+          viewerLock.hidden = true;
+          return;
+        }
+        if (role === 'editor') {
+          roleBadge.textContent = 'Editor';
+          roleTitle.textContent = 'Партнерский режим';
+          roleCopy.textContent = 'Можно менять только остатки и цены. Доступы и продуктовые поля остаются у владельца.';
+          accessPanel.hidden = true;
+          viewerLock.hidden = true;
+          return;
+        }
+        roleBadge.textContent = 'Viewer';
+        roleTitle.textContent = 'Нет доступа на редактирование';
+        roleCopy.textContent = 'На этой странице вы не можете менять каталог. Используйте клиентскую витрину или войдите под admin.';
+        accessPanel.hidden = true;
+        viewerLock.hidden = false;
+      }
+
+      function renderUsersOptions() {
+        if (!auth) {
+          usersList.innerHTML = '';
+          return;
+        }
+        usersList.innerHTML = auth.loadUsers().filter(function (user) {
+          return auth.normalizeLogin(user.login) !== auth.getDedicatedAdminLogin();
+        }).map(function (user) {
+          return '<option value="' + user.login + '">' + (user.name || user.login) + '</option>';
+        }).join('');
+      }
+
+      function renderEditorsList() {
+        var editors = auth ? auth.listMaterialsEditors() : [];
+        editorsCount.textContent = String(editors.length);
+        editorsList.innerHTML = editors.length ? editors.map(function (login) {
+          return '<span class="editor-chip">' + login + '<button class="remove-chip" type="button" data-remove-editor="' + login + '">убрать</button></span>';
+        }).join('') : '<span class="editor-chip">Пока никто не добавлен</span>';
+      }
+
+      function filterRows() {
+        var query = String(searchInput.value || '').trim().toLowerCase();
+        var visibleCount = 0;
+        rows.forEach(function (row) {
+          var isVisible = !query || row.textContent.toLowerCase().indexOf(query) !== -1;
+          row.hidden = !isVisible;
+          if (isVisible) {
+            visibleCount += 1;
+          }
+        });
+        searchMeta.textContent = query ? 'Найдено ' + visibleCount + ' из ' + rows.length + ' продуктов' : 'Показаны все ' + rows.length + ' продукта';
+      }
+
+      function configureEditorFields() {
+        Object.keys(fieldInputs).forEach(function (fieldName) {
+          fieldInputs[fieldName].disabled = !auth || !auth.canEditMaterialsField(session, fieldName);
+        });
+        editorCopy.textContent = role === 'admin' ? 'Админ меняет всю карточку. Партнер с доступом меняет только остатки и цены.' : 'В этом режиме доступны только оперативные поля: остатки и цены.';
+      }
+
+      function openEditor(productId) {
+        if (!auth || !auth.canEditMaterials(session)) {
+          return;
+        }
+        var record = catalog.loadState()[productId];
+        if (!record) {
+          return;
+        }
+        activeProductId = productId;
+        Object.keys(fieldInputs).forEach(function (fieldName) {
+          fieldInputs[fieldName].value = record[fieldName];
+        });
+        configureEditorFields();
+        editorBackdrop.classList.add('is-open');
+        editorBackdrop.setAttribute('aria-hidden', 'false');
+      }
+
+      function closeEditor() {
+        activeProductId = '';
+        editorBackdrop.classList.remove('is-open');
+        editorBackdrop.setAttribute('aria-hidden', 'true');
+      }
+
+      function saveActiveRecord() {
+        if (!activeProductId) {
+          return;
+        }
+        var patch = {};
+        Object.keys(fieldInputs).forEach(function (fieldName) {
+          if (auth && auth.canEditMaterialsField(session, fieldName)) {
+            patch[fieldName] = fieldInputs[fieldName].value.trim();
+          }
+        });
+        catalog.updateRecord(activeProductId, patch);
+        renderCatalog();
+        filterRows();
+        closeEditor();
+      }
+
+      function resetActiveRecord() {
+        if (!activeProductId || role !== 'admin') {
+          return;
+        }
+        catalog.resetRecord(activeProductId);
+        renderCatalog();
+        filterRows();
+        closeEditor();
+      }
+
+      renderRoleState();
+      renderUsersOptions();
+      renderEditorsList();
+      renderCatalog();
+      filterRows();
+
+      searchInput.addEventListener('input', filterRows);
+      rows.forEach(function (row) {
+        var button = row.querySelector('[data-edit-product]');
+        if (!button) {
+          return;
+        }
+        if (!auth || !auth.canEditMaterials(session)) {
+          button.hidden = true;
+          return;
+        }
+        button.addEventListener('click', function () {
+          openEditor(button.getAttribute('data-edit-product'));
+        });
+      });
+      accessForm.addEventListener('submit', function (event) {
+        event.preventDefault();
+        if (!auth || !auth.canManageMaterialsAccess(session)) {
+          return;
+        }
+        var login = accessLoginInput.value.trim();
+        if (!login) {
+          return;
+        }
+        auth.grantMaterialsEditor(login);
+        accessLoginInput.value = '';
+        renderEditorsList();
+      });
+      editorsList.addEventListener('click', function (event) {
+        var button = event.target.closest('[data-remove-editor]');
+        if (!button || !auth || !auth.canManageMaterialsAccess(session)) {
+          return;
+        }
+        auth.revokeMaterialsEditor(button.getAttribute('data-remove-editor'));
+        renderEditorsList();
+      });
+      editorForm.addEventListener('submit', function (event) {
+        event.preventDefault();
+        saveActiveRecord();
+      });
+      editorClose.addEventListener('click', closeEditor);
+      editorCancel.addEventListener('click', closeEditor);
+      editorReset.addEventListener('click', resetActiveRecord);
+      allowedFieldsBtn.addEventListener('click', function () {
+        var fields = Object.keys(fieldInputs).filter(function (fieldName) {
+          return auth && auth.canEditMaterialsField(session, fieldName);
+        });
+        window.alert('Разрешенные поля: ' + fields.join(', '));
+      });
+      editorBackdrop.addEventListener('click', function (event) {
+        if (event.target === editorBackdrop) {
+          closeEditor();
+        }
+      });
+      window.addEventListener('storage', function (event) {
+        if (event.key === catalog.STORAGE_KEY) {
+          renderCatalog();
+          filterRows();
+        }
+        if (auth && event.key === auth.AUTH_SESSION_KEY) {
+          session = auth.getSession();
+          role = auth.getMaterialsRole(session);
+          renderRoleState();
+        }
+      });
+    }());
+  </script>
+  <script src="assets/js/global-auth-widget.js"></script>
+</body>
+</html>

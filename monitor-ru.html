@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DRILL-Q · Operations Monitor · Powered by Cloto</title>
+  <link rel="stylesheet" href="drill-q.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+  <style>
+    /* ═══════════════════════════════
+       UPLOAD
+    ═══════════════════════════════ */
+    .upload-wrap {
+      min-height: 72vh; display:flex; flex-direction:column;
+      align-items:center; justify-content:center; padding:var(--s10) var(--s8);
+    }
+    .upload-zone {
+      width:100%; max-width:560px; border:2px dashed var(--b-02);
+      border-radius:var(--r3); padding:52px 36px; text-align:center;
+      cursor:pointer; transition:border-color .2s,background .2s;
+    }
+    .upload-zone:hover,.upload-zone.drag-over{border-color:var(--blue-border);background:var(--blue-subtle);}
+    .upload-zone.uploading{border-color:var(--amber-border);background:var(--amber-subtle);cursor:default;}
+    .u-icon{font-size:32px;color:var(--t-03);margin-bottom:var(--s4);}
+    .u-title{font-size:16px;font-weight:700;color:var(--t-01);margin-bottom:var(--s2);}
+    .u-sub{font-size:12px;color:var(--t-03);}
+    .u-hint{margin-top:var(--s4);font-size:11px;color:var(--t-04);font-family:var(--mono);}
+    .u-fmts{margin-top:var(--s5);display:flex;gap:var(--s3);justify-content:center;}
+    .u-fmt{padding:3px 10px;border:1px solid var(--b-02);border-radius:var(--r1);font-size:10px;font-family:var(--mono);color:var(--t-04);}
+    #parse-status{margin-top:var(--s5);font-size:12px;color:var(--t-03);font-family:var(--mono);text-align:center;min-height:18px;}
+    #file-input{display:none;}
+
+    /* ═══════════════════════════════
+       DASHBOARD
+    ═══════════════════════════════ */
+    #dashboard{display:none;}
+
+    .mon-header{
+      padding:var(--s5) var(--s8) var(--s4);
+      border-bottom:1px solid var(--b-01);
+      display:flex;align-items:flex-start;justify-content:space-between;gap:var(--s4);
+    }
+    .mon-id{font-size:10px;font-family:var(--mono);color:var(--t-04);text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px;}
+    .mon-title{font-size:20px;font-weight:700;color:var(--t-01);}
+    .mon-meta{font-size:12px;color:var(--t-03);margin-top:3px;}
+    .mon-reset{
+      padding:7px 14px;background:var(--bg-03);border:1px solid var(--b-02);
+      border-radius:var(--r2);color:var(--t-02);font-size:11px;cursor:pointer;
+      font-family:var(--mono);white-space:nowrap;flex-shrink:0;
+    }
+    .mon-reset:hover{border-color:var(--b-03);color:var(--t-01);}
+
+    /* KPI */
+    .kpi-strip{display:grid;grid-template-columns:repeat(6,1fr);border-bottom:1px solid var(--b-01);}
+    .kpi-cell{padding:var(--s4) var(--s5);border-right:1px solid var(--b-01);}
+    .kpi-cell:last-child{border-right:none;}
+    .kpi-lbl{font-size:10px;color:var(--t-04);font-family:var(--mono);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;}
+    .kpi-val{font-size:20px;font-weight:700;line-height:1;}
+    .kpi-val.c-blue{color:var(--blue);} .kpi-val.c-green{color:var(--green);}
+    .kpi-val.c-amber{color:var(--amber);} .kpi-val.c-red{color:var(--red);}
+    .kpi-val.c-white{color:var(--t-01);}
+    .kpi-sub{font-size:11px;color:var(--t-04);margin-top:4px;}
+
+    /* TABS */
+    .tab-bar{
+      display:flex;border-bottom:1px solid var(--b-01);
+      padding:0 var(--s8);background:var(--bg-01);
+    }
+    .tab-btn{
+      padding:12px 18px;font-size:12px;font-weight:600;color:var(--t-03);
+      cursor:pointer;border-bottom:2px solid transparent;
+      font-family:var(--mono);letter-spacing:.04em;white-space:nowrap;
+      transition:color .15s;background:none;border-top:none;border-left:none;border-right:none;
+    }
+    .tab-btn:hover{color:var(--t-01);}
+    .tab-btn.active{color:var(--blue);border-bottom-color:var(--blue);}
+    .tab-pane{display:none;padding:var(--s5) var(--s8);}
+    .tab-pane.active{display:block;}
+
+    /* Charts layout */
+    .two-col{display:grid;grid-template-columns:2fr 1fr;gap:var(--s5);}
+    .three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:var(--s5);}
+    .chart-card{
+      background:var(--bg-02);border:1px solid var(--b-01);
+      border-radius:var(--r2);padding:var(--s4) var(--s5);
+    }
+    .cc-label{font-size:10px;font-family:var(--mono);color:var(--t-04);text-transform:uppercase;letter-spacing:.06em;margin-bottom:var(--s3);}
+    .cc-sub{font-size:11px;color:var(--t-03);margin-bottom:var(--s3);}
+
+    /* Tables */
+    .data-table{width:100%;border-collapse:collapse;font-size:11px;}
+    .data-table th{
+      padding:7px 10px;text-align:left;
+      font-size:10px;color:var(--t-04);font-family:var(--mono);
+      text-transform:uppercase;letter-spacing:.05em;
+      border-bottom:1px solid var(--b-01);white-space:nowrap;
+    }
+    .data-table td{
+      padding:7px 10px;color:var(--t-02);
+      border-bottom:1px solid var(--b-01);vertical-align:top;
+    }
+    .data-table tr:last-child td{border-bottom:none;}
+    .data-table tr:hover td{background:rgba(255,255,255,.02);}
+    .data-table td.mono{font-family:var(--mono);font-size:10px;}
+    .data-table td.ok{color:var(--green);}
+    .data-table td.warn{color:var(--amber);}
+    .data-table td.bad{color:var(--red);}
+
+    /* Badges */
+    .badge{display:inline-block;padding:2px 8px;border-radius:3px;font-size:10px;font-weight:600;}
+    .b-simple{background:rgba(245,158,11,.12);color:var(--amber);}
+    .b-repair{background:rgba(239,68,68,.12);color:var(--red);}
+    .b-green{background:rgba(16,185,129,.12);color:var(--green);}
+    .b-blue{background:rgba(59,130,246,.12);color:var(--blue);}
+    .b-gray{background:var(--bg-03);color:var(--t-03);}
+
+    /* Phase legend */
+    .phase-legend{display:flex;gap:var(--s4);flex-wrap:wrap;margin-bottom:var(--s3);}
+    .pl-item{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--t-03);}
+    .pl-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+
+    /* Deviation bar inline */
+    .dev-bar-wrap{display:flex;align-items:center;gap:6px;}
+    .dev-bar{height:6px;border-radius:3px;min-width:2px;}
+    .dev-val{font-size:10px;font-family:var(--mono);}
+
+    /* Scrollable chart container */
+    .scroll-chart{overflow-y:auto;overflow-x:hidden;}
+
+    .mon-footer{
+      padding:var(--s4) var(--s8);display:flex;align-items:center;gap:var(--s5);
+      border-top:1px solid var(--b-01);
+    }
+    .footer-note{font-size:11px;color:var(--t-04);font-family:var(--mono);}
+
+    .section-divider{height:1px;background:var(--b-01);margin:var(--s5) 0;}
+
+    .stat-row{
+      display:flex;gap:var(--s4);flex-wrap:wrap;margin-bottom:var(--s5);
+    }
+    .stat-chip{
+      padding:6px 14px;background:var(--bg-02);border:1px solid var(--b-01);
+      border-radius:var(--r2);font-size:11px;font-family:var(--mono);
+    }
+    .stat-chip span{font-weight:700;margin-left:4px;}
+    .stat-chip span.blue{color:var(--blue);}
+    .stat-chip span.green{color:var(--green);}
+    .stat-chip span.amber{color:var(--amber);}
+    .stat-chip span.red{color:var(--red);}
+  </style>
+</head>
+<body>
+
+<!-- ТИКЕР -->
+<div class="ticker-bar"><div class="ticker-track">
+  <span class="ticker-item"><span class="lbl">DRILL-Q</span><span class="t-blue">Operations Monitor</span></span>
+  <span class="ticker-item sep">·</span>
+  <span class="ticker-item"><span class="lbl">ДАННЫЕ</span><span class="t-blue">Баланс · КНБК · НПВ · Операции · Инклинометрия</span></span>
+  <span class="ticker-item sep">·</span>
+  <span class="ticker-item"><span class="lbl">БЕЗОПАСНО</span><span class="t-up">Файл обрабатывается локально · Сервер не задействован</span></span>
+  <span class="ticker-item sep">·</span>
+  <span class="ticker-item"><span class="lbl">DRILL-Q</span><span class="t-blue">Operations Monitor</span></span>
+  <span class="ticker-item sep">·</span>
+  <span class="ticker-item"><span class="lbl">ДАННЫЕ</span><span class="t-blue">Баланс · КНБК · НПВ · Операции · Инклинометрия</span></span>
+  <span class="ticker-item sep">·</span>
+  <span class="ticker-item"><span class="lbl">БЕЗОПАСНО</span><span class="t-up">Файл обрабатывается локально · Сервер не задействован</span></span>
+</div></div>
+
+<!-- НАВ -->
+<nav>
+  <a class="nav-logo" href="index-ru.html">
+    <div class="dq-mark">DQ</div>
+    <div class="dq-wordmark"><div class="dq-name">DRILL-Q</div><div class="dq-powered">powered by <span>cloto</span></div></div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index-ru.html#platform">Платформа</a></li>
+    <li><a href="index-ru.html#ai-demo">MudGPT</a></li>
+    <li><a href="index-ru.html#rfq">Тендеры</a></li>
+    <li><a href="tools-ru.html"><span class="nav-dot"></span>Инструменты</a></li>
+  </ul>
+  <div class="nav-right">
+    <a class="lang-link" href="#">EN</a>
+    <a class="btn-primary" href="proposal-ru.html">Запросить доступ</a>
+  </div>
+</nav>
+
+<!-- ЗАГРУЗКА -->
+<div id="upload-section">
+  <div class="upload-wrap">
+    <div class="section-label" style="justify-content:center;margin-bottom:var(--s5);"><span class="sl-dot"></span>Operations Monitor</div>
+    <h2 style="text-align:center;margin-bottom:var(--s3);">Анализ <span class="c">суточного рапорта</span></h2>
+    <p style="text-align:center;color:var(--t-03);font-size:14px;max-width:520px;margin:0 auto var(--s8);line-height:1.65;">
+      Загрузите Excel-файл суточного рапорта (DDR). DRILL-Q распознает все вкладки:
+      Баланс, КНБК, НПВ, Операции, Инклинометрия и построит полный дашборд.
+    </p>
+    <div class="upload-zone" id="upload-zone">
+      <div class="u-icon">⬆</div>
+      <div class="u-title">Загрузить суточный рапорт</div>
+      <div class="u-sub">Формат «Сводка супер» / DDR · листы Баланс · КНБК · НПВ · Операции</div>
+      <div class="u-hint">Нажмите или перетащите файл сюда</div>
+      <div class="u-fmts"><span class="u-fmt">.xlsx</span><span class="u-fmt">.xlsm</span><span class="u-fmt">.xls</span></div>
+    </div>
+    <input type="file" id="file-input" accept=".xlsx,.xlsm,.xls">
+    <div id="parse-status"></div>
+  </div>
+</div>
+
+<!-- ДАШБОРД -->
+<div id="dashboard">
+
+  <!-- Шапка -->
+  <div class="mon-header">
+    <div>
+      <div class="mon-id" id="dsh-id">Скважина ·</div>
+      <div class="mon-title" id="dsh-title">Операционный мониторинг</div>
+      <div class="mon-meta" id="dsh-meta"></div>
+    </div>
+    <button class="mon-reset" onclick="resetDashboard()">← Загрузить другой файл</button>
+  </div>
+
+  <!-- KPI -->
+  <div class="kpi-strip">
+    <div class="kpi-cell"><div class="kpi-lbl">Дней факт</div><div class="kpi-val c-blue" id="kpi-days">—</div><div class="kpi-sub" id="kpi-days-sub"></div></div>
+    <div class="kpi-cell"><div class="kpi-lbl">Отклонение от плана</div><div class="kpi-val" id="kpi-dev">—</div><div class="kpi-sub" id="kpi-dev-sub"></div></div>
+    <div class="kpi-cell"><div class="kpi-lbl">НПВ накоплено</div><div class="kpi-val c-amber" id="kpi-npt">—</div><div class="kpi-sub" id="kpi-npt-h"></div></div>
+    <div class="kpi-cell"><div class="kpi-lbl">КПД (ПВ %)</div><div class="kpi-val c-green" id="kpi-eff">—</div><div class="kpi-sub">Производительное время</div></div>
+    <div class="kpi-cell"><div class="kpi-lbl">Забой / Секция</div><div class="kpi-val c-white" id="kpi-depth">—</div><div class="kpi-sub" id="kpi-section"></div></div>
+    <div class="kpi-cell"><div class="kpi-lbl">Рейсов долота</div><div class="kpi-val c-blue" id="kpi-bits">—</div><div class="kpi-sub" id="kpi-bits-sub"></div></div>
+  </div>
+
+  <!-- ТАБЫ -->
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="showTab('overview',this)">Обзор</button>
+    <button class="tab-btn" onclick="showTab('balance',this)">Баланс план/факт</button>
+    <button class="tab-btn" onclick="showTab('ops',this)">Операции</button>
+    <button class="tab-btn" onclick="showTab('npt',this)">НПВ</button>
+    <button class="tab-btn" onclick="showTab('bha',this)">КНБК</button>
+    <button class="tab-btn" onclick="showTab('survey',this)">Инклинометрия</button>
+  </div>
+
+  <!-- ────────── TAB: ОБЗОР ────────── -->
+  <div class="tab-pane active" id="tab-overview">
+    <div class="two-col">
+      <div>
+        <div class="chart-card">
+          <div class="cc-label">График Глубина – Время · План vs Факт</div>
+          <div class="cc-sub" id="dt-sub"></div>
+          <div class="phase-legend" id="dt-legend">
+            <div class="pl-item"><div class="pl-dot" style="background:#3B82F6"></div>Факт</div>
+            <div class="pl-item"><div class="pl-dot" style="background:rgba(59,130,246,.4);border:1px dashed #3B82F6"></div>План</div>
+          </div>
+          <div style="position:relative;height:380px;">
+            <canvas id="chart-dt"></canvas>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:var(--s4);">
+        <div class="chart-card">
+          <div class="cc-label">Накопленное НПВ</div>
+          <div style="position:relative;height:180px;">
+            <canvas id="chart-npt-acc"></canvas>
+          </div>
+        </div>
+        <div class="chart-card">
+          <div class="cc-label">Баланс ПВ / НПВ</div>
+          <div style="position:relative;height:170px;">
+            <canvas id="chart-donut"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ────────── TAB: БАЛАНС ────────── -->
+  <div class="tab-pane" id="tab-balance">
+    <div class="stat-row" id="balance-stats"></div>
+    <div class="two-col">
+      <div class="chart-card" style="grid-column:1/-1;">
+        <div class="cc-label">Отклонение от плана по операциям · сутки (+отставание / −опережение)</div>
+        <div style="position:relative;height:340px;">
+          <canvas id="chart-deviation"></canvas>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:var(--s5);">
+      <div class="cc-label" style="margin-bottom:var(--s3);">Детальный план / факт по операциям</div>
+      <div style="overflow-x:auto;">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>№</th><th>Секция</th><th>Фаза</th><th>Операция</th>
+              <th>Глубина, м</th>
+              <th>План, ч</th><th>Факт, ч</th>
+              <th>Откл, сут</th>
+              <th>Нараст. план</th><th>Нараст. факт</th>
+              <th>Причина</th>
+            </tr>
+          </thead>
+          <tbody id="balance-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ────────── TAB: ОПЕРАЦИИ ────────── -->
+  <div class="tab-pane" id="tab-ops">
+    <div class="stat-row" id="ops-stats"></div>
+    <div class="chart-card" style="margin-bottom:var(--s5);">
+      <div class="cc-label">Распределение времени по фазам · часов</div>
+      <div style="position:relative;height:260px;">
+        <canvas id="chart-phases"></canvas>
+      </div>
+    </div>
+    <div class="cc-label" style="margin-bottom:var(--s3);">Хронология операций</div>
+    <div style="overflow-x:auto;">
+      <table class="data-table">
+        <thead>
+          <tr><th>Дата</th><th>Секция</th><th>Фаза</th><th>Начало</th><th>Конец</th><th>Часов</th><th>Забой, м</th><th>Проходка, м</th><th>Плотн., г/см³</th><th>ПВ/НПВ</th></tr>
+        </thead>
+        <tbody id="ops-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ────────── TAB: НПВ ────────── -->
+  <div class="tab-pane" id="tab-npt">
+    <div class="stat-row" id="npt-stats"></div>
+    <div class="two-col" style="margin-bottom:var(--s5);">
+      <div class="chart-card">
+        <div class="cc-label">НПВ по виновнику · часов</div>
+        <div style="position:relative;height:220px;">
+          <canvas id="chart-npt-contractor"></canvas>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="cc-label">НПВ по классификации</div>
+        <div style="position:relative;height:220px;">
+          <canvas id="chart-npt-class"></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="cc-label" style="margin-bottom:var(--s3);">Реестр событий НПВ (из листа «НПВ»)</div>
+    <table class="data-table">
+      <thead>
+        <tr><th>№</th><th>Секция</th><th>Дата</th><th>Общ.время, ч</th><th>АРКТИКГАЗ</th><th>ЭНГС</th><th>БурСервис Долота</th><th>БурСервис ННБ</th><th>Классификация</th><th>АКТ НПВ</th><th>Описание</th></tr>
+      </thead>
+      <tbody id="npt-tbody"></tbody>
+    </table>
+    <div class="section-divider"></div>
+    <div class="cc-label" style="margin-bottom:var(--s3);">Детальные события (из листа «Операции»)</div>
+    <table class="data-table">
+      <thead>
+        <tr><th>Дата</th><th>Время</th><th>Часов</th><th>Секция</th><th>Классификация</th><th>Причина</th><th>Виновник</th></tr>
+      </thead>
+      <tbody id="npt-ops-tbody"></tbody>
+    </table>
+  </div>
+
+  <!-- ────────── TAB: КНБК ────────── -->
+  <div class="tab-pane" id="tab-bha">
+    <div class="stat-row" id="bha-stats"></div>
+    <div class="chart-card" style="margin-bottom:var(--s5);">
+      <div class="cc-label">МСП план vs факт по рейсам · м/ч</div>
+      <div style="position:relative;height:220px;">
+        <canvas id="chart-rop"></canvas>
+      </div>
+    </div>
+    <div class="cc-label" style="margin-bottom:var(--s3);">Рейсы долота (КНБК)</div>
+    <div style="overflow-x:auto;">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Рейс</th><th>Дата спуска</th><th>Дата подъёма</th>
+            <th>Диаметр, мм</th><th>Долото</th><th>Серийный №</th>
+            <th>Насадки</th><th>ВЗД/РУС</th>
+            <th>Интервал от, м</th><th>Интервал до, м</th>
+            <th>Проходка, м</th><th>Вр.мех.бур., ч</th>
+            <th>МСП план, м/ч</th><th>МСП факт, м/ч</th>
+            <th>Q, л/с</th><th>G, т</th><th>N, об/мин</th>
+          </tr>
+        </thead>
+        <tbody id="bha-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ────────── TAB: ИНКЛИНОМЕТРИЯ ────────── -->
+  <div class="tab-pane" id="tab-survey">
+    <div class="stat-row" id="survey-stats"></div>
+    <div id="survey-no-data" style="display:none;padding:40px;text-align:center;color:var(--t-04);font-family:var(--mono);">
+      Данные инклинометрии (факт) не заполнены в этом рапорте
+    </div>
+    <div id="survey-content">
+      <div class="two-col" style="margin-bottom:var(--s5);">
+        <div class="chart-card">
+          <div class="cc-label">Зенитный угол по стволу · план vs факт</div>
+          <div style="position:relative;height:280px;">
+            <canvas id="chart-inc"></canvas>
+          </div>
+        </div>
+        <div class="chart-card">
+          <div class="cc-label">TVD vs MD · план vs факт</div>
+          <div style="position:relative;height:280px;">
+            <canvas id="chart-tvd"></canvas>
+          </div>
+        </div>
+      </div>
+      <div class="cc-label" style="margin-bottom:var(--s3);">Таблица инклинометрии</div>
+      <div style="overflow-x:auto;max-height:360px;overflow-y:auto;">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th colspan="7" style="background:rgba(59,130,246,.08);text-align:center;border-bottom:1px solid var(--blue-border);">ПЛАН</th>
+              <th colspan="7" style="background:rgba(16,185,129,.08);text-align:center;border-bottom:1px solid var(--green-border);">ФАКТ</th>
+            </tr>
+            <tr>
+              <th>Глубина</th><th>Зен.угол</th><th>Азимут</th><th>TVD</th><th>А.о</th><th>DLS</th><th>Отход</th>
+              <th>Глубина</th><th>Зен.угол</th><th>Азимут</th><th>TVD</th><th>А.о</th><th>DLS</th><th>Отход</th>
+            </tr>
+          </thead>
+          <tbody id="survey-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="mon-footer">
+    <span class="footer-note">⚑ Данные обрабатываются локально в браузере · Ничего не отправляется на сервер</span>
+    <span class="footer-note" id="footer-file"></span>
+  </div>
+
+</div><!-- /dashboard -->
+
+<!-- ФУТЕР -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <a class="nav-logo" href="index-ru.html" style="margin-bottom:var(--s4);display:inline-flex;">
+        <div class="dq-mark">DQ</div>
+        <div class="dq-wordmark"><div class="dq-name">DRILL-Q</div><div class="dq-powered">powered by <span>cloto</span></div></div>
+      </a>
+      <p class="footer-brand-desc">Платформа операционного интеллекта для буровых операций. На базе 33-летней экспертизы Клото.<br><br>ООО «КЛОТО» · Архангельск · с 1991 г.</p>
+    </div>
+    <div class="footer-col"><h4>Инструменты</h4><ul>
+      <li><a href="tools-ru.html">Все инструменты</a></li>
+      <li><a href="index-ru.html#ai-demo">MudGPT</a></li>
+      <li><a href="index-ru.html#rfq">RFQ Intelligence</a></li>
+    </ul></div>
+    <div class="footer-col"><h4>Компания</h4><ul>
+      <li><a href="proposal-ru.html">Запросить доступ</a></li>
+      <li><a href="catalog-ru.html">Каталог</a></li>
+      <li><a href="mailto:arcticdf@gmail.com">arcticdf@gmail.com</a></li>
+    </ul></div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 ООО «КЛОТО» · Платформа DRILL-Q · Все права защищены</span>
+  </div>
+</footer>
+
+<script>
+/* ══════════════════════════════════════════════════════════════════
+   DRILL-Q · Operations Monitor · Full Multi-Sheet Parser
+   Sheets: Рапорт · Операции · Баланс · КНБК · НПВ · Инклинометрия
+══════════════════════════════════════════════════════════════════ */
+(function () {
+  'use strict';
+
+  Chart.defaults.color = 'rgba(255,255,255,0.45)';
+
+  /* ── GLOBALS ── */
+  var uploadSection = document.getElementById('upload-section');
+  var dashboard     = document.getElementById('dashboard');
+  var uploadZone    = document.getElementById('upload-zone');
+  var fileInput     = document.getElementById('file-input');
+  var statusEl      = document.getElementById('parse-status');
+  var charts        = {};
+
+  /* ── PHASE COLORS ── */
+  var PC = {
+    'БУРНАП':'#3B82F6','КРЕПНАП':'#F59E0B','БУРКОНД':'#60A5FA',
+    'КРЕПКОНД':'#FCD34D','БУРТК':'#34D399','КРЕПТК':'#6EE7B7',
+    'БУРТК2':'#A78BFA','КРЕПТК2':'#C4B5FD','РТОиЦС':'#10B981',
+    'ПРОРАБ':'#8B5CF6','СПО':'#EC4899','ГФР':'#F472B6',
+    'ГТИ':'#FB923C','ЦЕМ':'#F59E0B','НПВ':'#EF4444',
+  };
+  function pc(phase) {
+    var ph = (phase||'').toUpperCase().trim();
+    for (var k in PC) { if (ph.indexOf(k)!==-1) return PC[k]; }
+    return '#6B7280';
+  }
+
+  /* ── UPLOAD ── */
+  uploadZone.addEventListener('click', function(){ fileInput.click(); });
+  fileInput.addEventListener('change', function(e){ if(e.target.files[0]) processFile(e.target.files[0]); });
+  uploadZone.addEventListener('dragover', function(e){ e.preventDefault(); uploadZone.classList.add('drag-over'); });
+  uploadZone.addEventListener('dragleave', function(){ uploadZone.classList.remove('drag-over'); });
+  uploadZone.addEventListener('drop', function(e){
+    e.preventDefault(); uploadZone.classList.remove('drag-over');
+    if(e.dataTransfer.files[0]) processFile(e.dataTransfer.files[0]);
+  });
+
+  function setStatus(m){ statusEl.textContent = m; }
+
+  function processFile(file) {
+    uploadZone.classList.add('uploading');
+    setStatus('Чтение файла...');
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        setStatus('Парсинг Excel...');
+        var data = new Uint8Array(e.target.result);
+        var wb   = XLSX.read(data, {type:'array', cellDates:true});
+        setStatus('Извлечение данных из всех листов...');
+
+        var wellInfo = extractWellInfo(wb);
+        var ops      = extractOperations(wb);
+        var balance  = extractBalance(wb);
+        var bha      = extractBHA(wb);
+        var nptSheet = extractNPTSheet(wb);
+        var survey   = extractSurvey(wb);
+
+        if (ops.length === 0 && balance.length === 0) {
+          uploadZone.classList.remove('uploading');
+          setStatus('Ошибка: данные не найдены. Проверьте формат файла (листы: Операции, Баланс).');
+          return;
+        }
+
+        setStatus('Построение дашборда...');
+        renderAll(wellInfo, ops, balance, bha, nptSheet, survey, file.name);
+        uploadSection.style.display = 'none';
+        dashboard.style.display = 'block';
+        uploadZone.classList.remove('uploading');
+        setStatus('');
+      } catch(err) {
+        uploadZone.classList.remove('uploading');
+        setStatus('Ошибка: '+err.message);
+        console.error(err);
+      }
+    };
+    reader.readAsArrayBuffer(file);
+  }
+
+  /* ════════════════════════════════
+     PARSERS
+  ════════════════════════════════ */
+
+  function getRows(wb, keywords) {
+    var name = wb.SheetNames.find(function(n){
+      return keywords.some(function(k){ return n.toLowerCase().includes(k.toLowerCase()); });
+    });
+    if (!name) return [];
+    return XLSX.utils.sheet_to_json(wb.Sheets[name], {header:1, defval:null});
+  }
+
+  function toDate(v) {
+    if (v instanceof Date) return v;
+    if (typeof v === 'number' && v > 40000) return new Date((v-25569)*86400000);
+    return null;
+  }
+  function toNum(v) { return typeof v === 'number' ? v : 0; }
+  function toStr(v) { return String(v||'').trim(); }
+
+  function fmtDate(d) {
+    if (!d) return '';
+    return d.toLocaleDateString('ru-RU',{day:'2-digit',month:'2-digit',year:'2-digit'});
+  }
+  function fmtTime(raw) {
+    if (!raw) return '—';
+    if (raw instanceof Date) return pad2(raw.getUTCHours())+':'+pad2(raw.getUTCMinutes());
+    if (typeof raw === 'number') {
+      var m = Math.round(raw*24*60);
+      return pad2(Math.floor(m/60)%24)+':'+pad2(m%60);
+    }
+    return String(raw).substring(0,5);
+  }
+  function pad2(n){ return String(n).padStart(2,'0'); }
+
+  /* ── Well Info ── */
+  function extractWellInfo(wb) {
+    var info = {well:'',pad:'',field:'',customer:'',contractor:'',reportDate:null};
+    var rows = getRows(wb, ['рапорт','report']);
+    rows.forEach(function(row){
+      if (!row) return;
+      row.forEach(function(cell, j){
+        var s = toStr(cell);
+        if (!s) return;
+        function nv(j2){ for(var k=j2;k<Math.min(j2+8,row.length);k++){ if(row[k]!==null&&row[k]!==''){ return toStr(row[k]); } } return ''; }
+        function nd(j2){ for(var k=j2;k<Math.min(j2+8,row.length);k++){ var d=toDate(row[k]); if(d) return d; } return null; }
+        if(s.includes('Месторождение')&&!info.field) info.field=nv(j+1);
+        if(s.match(/^Куст/)&&!info.pad) info.pad=nv(j+1);
+        if(s.match(/Скважина.*№/)&&!info.well) info.well=nv(j+1);
+        if(s==='Заказчик'&&!info.customer) info.customer=nv(j+1);
+        if(s.includes('Подрядчик по бурению')&&!info.contractor) info.contractor=nv(j+1);
+        if(s.includes('Дата отчета')&&!info.reportDate) info.reportDate=nd(j+1);
+      });
+    });
+    return info;
+  }
+
+  /* ── Operations ── */
+  function extractOperations(wb) {
+    var rows = getRows(wb, ['операци']);
+    var ops = [], dataStart = 5;
+    for (var i=0;i<Math.min(10,rows.length);i++) {
+      var r = rows[i];
+      if (r && r.some(function(v){ return toStr(v).includes('Фаза'); })) {
+        dataStart = i+3; break;
+      }
+    }
+    dataStart = Math.max(dataStart,5);
+    for (var ri=dataStart;ri<rows.length;ri++) {
+      var r = rows[ri];
+      if (!r||r[0]===null||r[0]===undefined) continue;
+      var d = toDate(r[0]); if (!d) continue;
+      var hrs = Math.abs(toNum(r[5])), depth = toNum(r[6]);
+      if (hrs===0&&depth===0) continue;
+      ops.push({
+        date:d, section:toStr(r[1]), phase:toStr(r[2]),
+        startRaw:r[3], endRaw:r[4],
+        hours:hrs, depth:depth, footage:toNum(r[7]),
+        density:typeof r[8]==='number'?r[8]:null,
+        accDays:toNum(r[10]), accNPT:toNum(r[12]),
+        pvNpv:toStr(r[21]), nptClass:toStr(r[22]),
+        nptCause:toStr(r[23]), nptDistrib:toStr(r[24]),
+      });
+    }
+    return ops;
+  }
+
+  /* ── Balance (Plan vs Fact) ── */
+  function extractBalance(wb) {
+    var rows = getRows(wb, ['баланс','balance']);
+    var items = [], dataStart = 6;
+    for (var i=0;i<Math.min(12,rows.length);i++) {
+      var r = rows[i];
+      if (r && r[0]==='№') { dataStart = i+2; break; }
+      if (r && toStr(r[0]).includes('Вид операции')) { dataStart = i+1; break; }
+    }
+    // add start point
+    items.push({n:0,section:'',phase:'',desc:'Начало строительства',depth:0,planH:0,factH:0,devDays:0,planAcc:0,factAcc:0,reason:''});
+    for (var ri=dataStart;ri<rows.length;ri++) {
+      var r = rows[ri];
+      if (!r||r[0]===null||r[0]===undefined) continue;
+      if (typeof r[0]!=='number'||r[0]<=0) continue;
+      items.push({
+        n:Math.round(r[0]), section:toStr(r[1]), phase:toStr(r[2]),
+        desc:toStr(r[3]), depth:toNum(r[4]),
+        planH:toNum(r[6]), factH:toNum(r[7]),
+        devDays:toNum(r[14]),
+        planAcc:toNum(r[18]), factAcc:toNum(r[19]),
+        reason:toStr(r[16]),
+      });
+    }
+    return items;
+  }
+
+  /* ── BHA Runs ── */
+  function extractBHA(wb) {
+    var rows = getRows(wb, ['кнбк','bha','кнб']);
+    var runs = [], dataStart = 3;
+    for (var i=0;i<Math.min(6,rows.length);i++) {
+      var r = rows[i];
+      if (r && r.some(function(v){ return toStr(v).includes('Дата спуска'); })) {
+        dataStart = i+2; break;
+      }
+    }
+    for (var ri=dataStart;ri<rows.length;ri++) {
+      var r = rows[ri];
+      if (!r||!r[2]||typeof r[2]!=='number') continue;
+      var dtSpusk = toDate(r[0]);
+      var dtPodem = toDate(r[1]);
+      if (!dtSpusk) continue;
+      runs.push({
+        dtSpusk:dtSpusk, dtPodem:dtPodem,
+        n:toNum(r[2]),
+        diam:toNum(r[3]),
+        model:toStr(r[4]),
+        serial:toStr(r[5]),
+        nozzles:toStr(r[6]),
+        vsd:toStr(r[9]),
+        fromM:toNum(r[10]), toM:toNum(r[11]),
+        footage:Math.abs(toNum(r[12])),
+        mechHrs:toNum(r[14]),
+        ropPlan:toNum(r[15]),
+        ropFact:toNum(r[16]),
+        flowRate:toStr(r[17]),
+        wob:toStr(r[18]),
+        rpm:toStr(r[19]),
+      });
+    }
+    return runs.filter(function(r){ return r.footage>0||r.diam>0; });
+  }
+
+  /* ── NPT Sheet ── */
+  function extractNPTSheet(wb) {
+    var rows = getRows(wb, ['нпв','npt','npv']);
+    var events = [], dataStart = 4;
+    for (var i=0;i<Math.min(8,rows.length);i++) {
+      var r = rows[i];
+      if (r && r.some(function(v){ return toStr(v).includes('№ п/п'); })) {
+        dataStart = i+1; break;
+      }
+    }
+    for (var ri=dataStart;ri<rows.length;ri++) {
+      var r = rows[ri];
+      if (!r||typeof r[0]!=='number'||r[0]<=0) continue;
+      var totalH = toNum(r[2]);
+      if (totalH===0) continue;
+      events.push({
+        n:Math.round(r[0]), section:toStr(r[1]),
+        totalH:totalH,
+        date:toDate(r[3]),
+        arctH:toNum(r[4]), engsH:toNum(r[5]),
+        bsRastH:toNum(r[6]), bsCemH:toNum(r[7]),
+        bsDolH:toNum(r[8]), bsNnbH:toNum(r[9]),
+        gisH:toNum(r[10]), normH:toNum(r[11]),
+        otherH:toNum(r[12]),
+        desc:toStr(r[13]),
+        actNum:toStr(r[14]),
+        cls:toStr(r[16]),
+      });
+    }
+    return events;
+  }
+
+  /* ── Survey ── */
+  function extractSurvey(wb) {
+    var rows = getRows(wb, ['инклинометри','survey']);
+    var planRows=[], factRows=[], dataStart=3;
+    for (var i=0;i<Math.min(6,rows.length);i++) {
+      var r=rows[i];
+      if (r && r.some(function(v){ return toStr(v).includes('Глубина'); })) {
+        dataStart=i+1; break;
+      }
+    }
+    for (var ri=dataStart;ri<rows.length;ri++) {
+      var r=rows[ri];
+      if (!r) continue;
+      // Plan: cols 11-17 (1-indexed) = cols 10-16 (0-indexed)
+      var pDepth=toNum(r[11]),pZen=toNum(r[12]),pAz=toNum(r[13]),pTVD=toNum(r[14]),pAo=toNum(r[15]),pDLS=toNum(r[16]),pOthod=toNum(r[17]);
+      // Fact: cols 20-26
+      var fDepth=toNum(r[20]),fZen=toNum(r[21]),fAz=toNum(r[22]),fTVD=toNum(r[23]),fAo=toNum(r[24]),fDLS=toNum(r[25]),fOthod=toNum(r[26]);
+      if (pDepth>0) planRows.push({depth:pDepth,zen:pZen,az:pAz,tvd:pTVD,ao:pAo,dls:pDLS,othod:pOthod});
+      if (fDepth>0) factRows.push({depth:fDepth,zen:fZen,az:fAz,tvd:fTVD,ao:fAo,dls:fDLS,othod:fOthod});
+    }
+    return {plan:planRows, fact:factRows};
+  }
+
+  /* ════════════════════════════════
+     RENDER ALL
+  ════════════════════════════════ */
+  function renderAll(info, ops, balance, bha, nptSheet, survey, fileName) {
+    /* ── derived stats ── */
+    var lastOp   = ops.length ? ops[ops.length-1] : null;
+    var lastBal  = balance.length ? balance[balance.length-1] : null;
+    var totalDays = lastOp ? lastOp.accDays : 0;
+    var totalNPT  = lastOp ? lastOp.accNPT  : 0;
+    var maxDepth  = ops.reduce(function(m,o){ return Math.max(m,o.depth); },0);
+    var pvOps    = ops.filter(function(o){ return o.pvNpv==='ПВ'; });
+    var nptOps   = ops.filter(function(o){ return o.pvNpv==='НПВ'; });
+    var pvH      = pvOps.reduce(function(a,o){ return a+o.hours; },0);
+    var nptH     = nptOps.reduce(function(a,o){ return a+o.hours; },0);
+    var eff      = (pvH+nptH)>0 ? (pvH/(pvH+nptH)*100).toFixed(1) : '—';
+    var devDays  = lastBal ? (lastBal.factAcc - lastBal.planAcc) : 0;
+
+    /* ── Header ── */
+    document.getElementById('dsh-id').textContent = 'Скважина '+info.well+' · Куст '+info.pad;
+    document.getElementById('dsh-title').textContent = (info.field||'Месторождение')+' · Операционный мониторинг';
+    document.getElementById('dsh-meta').textContent = [info.customer,'Подрядчик: '+info.contractor,info.reportDate?'Отчёт: '+fmtDate(info.reportDate):''].filter(Boolean).join(' · ');
+
+    /* ── KPIs ── */
+    document.getElementById('kpi-days').textContent    = totalDays.toFixed(2)+' сут';
+    document.getElementById('kpi-days-sub').textContent = ops[0]?'Начало: '+fmtDate(ops[0].date):'';
+    var devEl = document.getElementById('kpi-dev');
+    devEl.textContent = (devDays>=0?'+':'')+devDays.toFixed(2)+' сут';
+    devEl.className   = 'kpi-val '+(devDays>0?'c-red':devDays<0?'c-green':'c-white');
+    document.getElementById('kpi-dev-sub').textContent = devDays>0?'Отставание от плана':devDays<0?'Опережение плана':'По плану';
+    document.getElementById('kpi-npt').textContent   = totalNPT.toFixed(3)+' сут';
+    document.getElementById('kpi-npt-h').textContent = (totalNPT*24).toFixed(1)+' часов';
+    document.getElementById('kpi-eff').textContent   = eff+'%';
+    document.getElementById('kpi-depth').textContent  = maxDepth+' м';
+    document.getElementById('kpi-section').textContent= lastOp?lastOp.section.replace(/^\d+_/,''):'';
+    document.getElementById('kpi-bits').textContent   = bha.length;
+    document.getElementById('kpi-bits-sub').textContent = bha.length?'Последнее: '+(bha[bha.length-1].diam||'?')+'мм':'';
+
+    document.getElementById('footer-file').textContent = '📄 '+fileName;
+
+    /* ════ CHARTS ════ */
+    renderDepthTime(balance, ops);
+    renderNPTAccumulated(ops);
+    renderDonut(pvH, nptH);
+    renderDeviation(balance);
+    renderPhases(ops);
+    renderROP(bha);
+    renderNPTContractor(nptSheet);
+    renderNPTClass(nptSheet);
+    renderSurveyCharts(survey);
+
+    /* ════ TABLES ════ */
+    renderBalanceTable(balance);
+    renderOpsTable(ops);
+    renderNPTTable(nptSheet, nptOps);
+    renderBHATable(bha);
+    renderSurveyTable(survey);
+
+    /* ════ STATS CHIPS ════ */
+    renderChips('balance-stats',[
+      {label:'Операций', val:balance.length-1, cls:'blue'},
+      {label:'Плановых дней', val:lastBal?lastBal.planAcc.toFixed(2):'—', cls:'blue'},
+      {label:'Фактических дней', val:lastBal?lastBal.factAcc.toFixed(2):'—', cls:'blue'},
+      {label:'Отклонение', val:(devDays>=0?'+':'')+devDays.toFixed(2)+' сут', cls:devDays>0?'red':'green'},
+    ]);
+    renderChips('ops-stats',[
+      {label:'Операций всего', val:ops.length, cls:'blue'},
+      {label:'ПВ', val:pvH.toFixed(1)+' ч', cls:'green'},
+      {label:'НПВ', val:nptH.toFixed(1)+' ч', cls:'amber'},
+      {label:'КПД', val:eff+'%', cls:'green'},
+    ]);
+    renderChips('npt-stats',[
+      {label:'НПВ событий', val:nptSheet.length, cls:'red'},
+      {label:'Всего НПВ', val:(totalNPT*24).toFixed(1)+' ч', cls:'amber'},
+      {label:'% от общего времени', val:((pvH+nptH)>0?(nptH/(pvH+nptH)*100).toFixed(1):0)+'%', cls:'amber'},
+    ]);
+    renderChips('bha-stats',[
+      {label:'Рейсов долот', val:bha.length, cls:'blue'},
+      {label:'Общая проходка', val:bha.reduce(function(a,b){return a+b.footage;},0)+' м', cls:'green'},
+    ]);
+    renderChips('survey-stats',[
+      {label:'Точек плана', val:survey.plan.length, cls:'blue'},
+      {label:'Точек факта', val:survey.fact.length, cls:'green'},
+    ]);
+
+    /* Survey visibility */
+    if (survey.fact.length === 0) {
+      document.getElementById('survey-content').style.display = 'none';
+      document.getElementById('survey-no-data').style.display = 'block';
+    }
+  }
+
+  function renderChips(id, items) {
+    var el = document.getElementById(id);
+    el.innerHTML = items.map(function(it){
+      return '<div class="stat-chip">'+it.label+'<span class="'+it.cls+'">'+it.val+'</span></div>';
+    }).join('');
+  }
+
+  function destroyChart(key) {
+    if (charts[key]) { charts[key].destroy(); charts[key]=null; }
+  }
+
+  /* ── Depth-Time Plan vs Fact ── */
+  function renderDepthTime(balance, ops) {
+    destroyChart('dt');
+    // Build plan line from Баланс
+    var planData = [], factData = [];
+    balance.forEach(function(b){
+      if (b.planAcc>0||b.depth>0) planData.push({x:b.planAcc,y:b.depth});
+    });
+    balance.forEach(function(b){
+      if (b.factAcc>0||b.depth>0) factData.push({x:b.factAcc,y:b.depth});
+    });
+
+    // NPT bands from ops (where pvNpv=НПВ)
+    var maxAcc = balance.length ? balance[balance.length-1].factAcc : 0;
+    document.getElementById('dt-sub').textContent =
+      'Глубина: '+Math.max.apply(null,balance.map(function(b){return b.depth;}))+' м · '+
+      'Данные из листа "Баланс"';
+
+    charts['dt'] = new Chart(document.getElementById('chart-dt'),{
+      type:'line',
+      data:{datasets:[
+        {label:'Факт',data:factData,borderColor:'#3B82F6',backgroundColor:'rgba(59,130,246,.08)',fill:true,tension:.2,pointRadius:0,borderWidth:2.5,order:1},
+        {label:'План',data:planData,borderColor:'rgba(59,130,246,.5)',backgroundColor:'transparent',fill:false,tension:.2,pointRadius:0,borderWidth:1.5,borderDash:[5,3],order:2},
+      ]},
+      options:{
+        responsive:true,maintainAspectRatio:false,
+        scales:{
+          x:{type:'linear',title:{display:true,text:'Дней с начала строительства',color:'rgba(255,255,255,0.35)',font:{size:10}},grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'rgba(255,255,255,.4)',font:{size:10}}},
+          y:{reverse:true,title:{display:true,text:'Глубина, м',color:'rgba(255,255,255,0.35)',font:{size:10}},grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'rgba(255,255,255,.4)',font:{size:10}}},
+        },
+        plugins:{
+          legend:{display:true,position:'top',labels:{color:'rgba(255,255,255,.55)',font:{size:10},padding:16,boxWidth:20}},
+          tooltip:{callbacks:{label:function(ctx){return ctx.dataset.label+': '+ctx.parsed.y+' м / День '+ctx.parsed.x.toFixed(2);}}}
+        }
+      }
+    });
+  }
+
+  /* ── NPT Accumulated ── */
+  function renderNPTAccumulated(ops) {
+    destroyChart('nptAcc');
+    var pts=[], lastV=-1;
+    ops.forEach(function(o){ if(o.accDays>0&&o.accNPT!==lastV){pts.push({x:o.accDays,y:o.accNPT});lastV=o.accNPT;} });
+    charts['nptAcc'] = new Chart(document.getElementById('chart-npt-acc'),{
+      type:'line',
+      data:{datasets:[{label:'НПВ накопл., сут',data:pts,borderColor:'#F59E0B',backgroundColor:'rgba(245,158,11,.12)',fill:true,tension:0,stepped:'after',pointRadius:0,borderWidth:2}]},
+      options:{responsive:true,maintainAspectRatio:false,scales:{x:{type:'linear',grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'rgba(255,255,255,.4)',font:{size:9}}},y:{min:0,grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'rgba(255,255,255,.4)',font:{size:9}}}},plugins:{legend:{display:false},tooltip:{callbacks:{label:function(ctx){return 'НПВ: '+ctx.parsed.y.toFixed(3)+' сут ('+( ctx.parsed.y*24).toFixed(1)+' ч)';}}}}}
+    });
+  }
+
+  /* ── Donut ── */
+  function renderDonut(pvH, nptH) {
+    destroyChart('donut');
+    charts['donut'] = new Chart(document.getElementById('chart-donut'),{
+      type:'doughnut',
+      data:{labels:['ПВ','НПВ'],datasets:[{data:[pvH,nptH],backgroundColor:['rgba(16,185,129,.8)','rgba(245,158,11,.8)'],borderColor:['#10B981','#F59E0B'],borderWidth:1}]},
+      options:{responsive:true,maintainAspectRatio:false,cutout:'68%',plugins:{legend:{position:'bottom',labels:{color:'rgba(255,255,255,.55)',font:{size:10},padding:10,boxWidth:10}},tooltip:{callbacks:{label:function(ctx){var t=pvH+nptH;return ctx.label+': '+ctx.parsed.toFixed(1)+' ч ('+(t>0?(ctx.parsed/t*100).toFixed(1):0)+'%)';}}}}}
+    });
+  }
+
+  /* ── Deviation chart ── */
+  function renderDeviation(balance) {
+    destroyChart('dev');
+    var labels=[], vals=[], colors=[];
+    balance.forEach(function(b){
+      if (!b.n) return;
+      labels.push('№'+b.n+' '+b.desc.substring(0,22));
+      vals.push(b.devDays);
+      colors.push(b.devDays>0?'rgba(239,68,68,.75)':b.devDays<0?'rgba(16,185,129,.75)':'rgba(107,114,128,.5)');
+    });
+    charts['dev'] = new Chart(document.getElementById('chart-deviation'),{
+      type:'bar',
+      data:{labels:labels,datasets:[{label:'Отклонение от плана, сут',data:vals,backgroundColor:colors,borderRadius:2}]},
+      options:{
+        responsive:true,maintainAspectRatio:false,
+        scales:{
+          x:{ticks:{color:'rgba(255,255,255,.4)',font:{size:9},maxRotation:45},grid:{color:'rgba(255,255,255,.04)'}},
+          y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'rgba(255,255,255,.4)',font:{size:10}},title:{display:true,text:'Сутки (+отставание / −опережение)',color:'rgba(255,255,255,.35)',font:{size:10}}},
+        },
+        plugins:{legend:{display:false},tooltip:{callbacks:{label:function(ctx){return 'Откл: '+(ctx.parsed.y>0?'+':'')+ctx.parsed.y.toFixed(3)+' сут ('+(ctx.parsed.y*24).toFixed(1)+' ч)';}}}},
+      }
+    });
+  }
+
+  /* ── Phase breakdown ── */
+  function renderPhases(ops) {
+    destroyChart('phases');
+    var phMap={};
+    ops.forEach(function(o){ if(!o.phase) return; phMap[o.phase]=(phMap[o.phase]||0)+o.hours; });
+    var labels=Object.keys(phMap).sort(function(a,b){return phMap[b]-phMap[a];});
+    charts['phases'] = new Chart(document.getElementById('chart-phases'),{
+      type:'bar',
+      data:{labels:labels,datasets:[{label:'Часов',data:labels.map(function(l){return phMap[l];}),backgroundColor:labels.map(function(l){return pc(l)+'CC';}),borderColor:labels.map(pc),borderWidth:1,borderRadius:3}]},
+      options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'rgba(255,255,255,.4)',font:{size:10}}},y:{grid:{display:false},ticks:{color:'rgba(255,255,255,.55)',font:{size:10}}}},plugins:{legend:{display:false}}}
+    });
+  }
+
+  /* ── ROP ── */
+  function renderROP(bha) {
+    destroyChart('rop');
+    if (!bha.length) return;
+    var labels = bha.map(function(b){ return 'Рейс '+b.n+(b.diam?' ('+b.diam+'мм)':''); });
+    charts['rop'] = new Chart(document.getElementById('chart-rop'),{
+      type:'bar',
+      data:{labels:labels,datasets:[
+        {label:'МСП план, м/ч',data:bha.map(function(b){return b.ropPlan;}),backgroundColor:'rgba(59,130,246,.4)',borderColor:'#3B82F6',borderWidth:1,borderRadius:3},
+        {label:'МСП факт, м/ч',data:bha.map(function(b){return b.ropFact;}),backgroundColor:'rgba(16,185,129,.6)',borderColor:'#10B981',borderWidth:1,borderRadius:3},
+      ]},
+      options:{responsive:true,maintainAspectRatio:false,scales:{x:{grid:{display:false},ticks:{color:'rgba(255,255,255,.55)',font:{size:11}}},y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'rgba(255,255,255,.4)',font:{size:10}},title:{display:true,text:'м/ч',color:'rgba(255,255,255,.35)',font:{size:10}}}},plugins:{legend:{position:'top',labels:{color:'rgba(255,255,255,.55)',font:{size:10},padding:12,boxWidth:12}}}}
+    });
+  }
+
+  /* ── NPT Contractor ── */
+  function renderNPTContractor(nptSheet) {
+    destroyChart('nptCont');
+    var contMap = {
+      'АО "АРКТИКГАЗ"':0,'ООО "ЭНГС"':0,
+      'БурСервис Растворы':0,'БурСервис Цемент':0,
+      'БурСервис Долота':0,'БурСервис ННБ':0,
+      'ГИС/ГФР':0,'Превышение норм':0,'Другое':0
+    };
+    nptSheet.forEach(function(e){
+      contMap['АО "АРКТИКГАЗ"']+=e.arctH;
+      contMap['ООО "ЭНГС"']+=e.engsH;
+      contMap['БурСервис Растворы']+=e.bsRastH;
+      contMap['БурСервис Цемент']+=e.bsCemH;
+      contMap['БурСервис Долота']+=e.bsDolH;
+      contMap['БурСервис ННБ']+=e.bsNnbH;
+      contMap['ГИС/ГФР']+=e.gisH;
+      contMap['Превышение норм']+=e.normH;
+      contMap['Другое']+=e.otherH;
+    });
+    var labels=Object.keys(contMap).filter(function(k){return contMap[k]>0;});
+    charts['nptCont'] = new Chart(document.getElementById('chart-npt-contractor'),{
+      type:'bar',
+      data:{labels:labels,datasets:[{label:'НПВ часов',data:labels.map(function(l){return contMap[l];}),backgroundColor:['rgba(239,68,68,.7)','rgba(245,158,11,.7)','rgba(59,130,246,.7)','rgba(16,185,129,.7)','rgba(168,85,247,.7)','rgba(244,114,182,.7)','rgba(251,146,60,.7)','rgba(20,184,166,.7)','rgba(107,114,128,.7)'],borderRadius:3}]},
+      options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'rgba(255,255,255,.4)',font:{size:9}}},y:{grid:{display:false},ticks:{color:'rgba(255,255,255,.55)',font:{size:10}}}},plugins:{legend:{display:false}}}
+    });
+  }
+
+  /* ── NPT Classification ── */
+  function renderNPTClass(nptSheet) {
+    destroyChart('nptCls');
+    var clsMap={};
+    nptSheet.forEach(function(e){
+      var c=e.cls||'Прочее';
+      clsMap[c]=(clsMap[c]||0)+e.totalH;
+    });
+    var labels=Object.keys(clsMap);
+    charts['nptCls'] = new Chart(document.getElementById('chart-npt-class'),{
+      type:'doughnut',
+      data:{labels:labels,datasets:[{data:labels.map(function(l){return clsMap[l];}),backgroundColor:['rgba(245,158,11,.8)','rgba(239,68,68,.8)','rgba(107,114,128,.6)'],borderWidth:1}]},
+      options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{position:'bottom',labels:{color:'rgba(255,255,255,.55)',font:{size:10},padding:8,boxWidth:10}}}}
+    });
+  }
+
+  /* ── Survey Charts ── */
+  function renderSurveyCharts(survey) {
+    destroyChart('inc'); destroyChart('tvd');
+    if (!survey.plan.length && !survey.fact.length) return;
+    charts['inc'] = new Chart(document.getElementById('chart-inc'),{
+      type:'line',
+      data:{datasets:[
+        {label:'Зен.угол план',data:survey.plan.map(function(r){return {x:r.depth,y:r.zen};}),borderColor:'rgba(59,130,246,.6)',borderWidth:1.5,borderDash:[4,3],pointRadius:0,fill:false},
+        {label:'Зен.угол факт',data:survey.fact.map(function(r){return {x:r.depth,y:r.zen};}),borderColor:'#3B82F6',borderWidth:2,pointRadius:2,fill:false},
+      ]},
+      options:{responsive:true,maintainAspectRatio:false,scales:{x:{type:'linear',title:{display:true,text:'MD, м',color:'rgba(255,255,255,.35)',font:{size:10}},grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'rgba(255,255,255,.4)',font:{size:9}}},y:{title:{display:true,text:'Зен. угол, °',color:'rgba(255,255,255,.35)',font:{size:10}},grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'rgba(255,255,255,.4)',font:{size:9}}}},plugins:{legend:{position:'top',labels:{color:'rgba(255,255,255,.55)',font:{size:10},padding:10,boxWidth:12}}}}
+    });
+    charts['tvd'] = new Chart(document.getElementById('chart-tvd'),{
+      type:'line',
+      data:{datasets:[
+        {label:'TVD план',data:survey.plan.map(function(r){return {x:r.depth,y:r.tvd};}),borderColor:'rgba(16,185,129,.5)',borderWidth:1.5,borderDash:[4,3],pointRadius:0,fill:false},
+        {label:'TVD факт',data:survey.fact.map(function(r){return {x:r.depth,y:r.tvd};}),borderColor:'#10B981',borderWidth:2,pointRadius:2,fill:false},
+      ]},
+      options:{responsive:true,maintainAspectRatio:false,scales:{x:{type:'linear',title:{display:true,text:'MD, м',color:'rgba(255,255,255,.35)',font:{size:10}},grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'rgba(255,255,255,.4)',font:{size:9}}},y:{title:{display:true,text:'TVD, м',color:'rgba(255,255,255,.35)',font:{size:10}},grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'rgba(255,255,255,.4)',font:{size:9}}}},plugins:{legend:{position:'top',labels:{color:'rgba(255,255,255,.55)',font:{size:10},padding:10,boxWidth:12}}}}
+    });
+  }
+
+  /* ════ TABLES ════ */
+
+  function renderBalanceTable(balance) {
+    var tb = document.getElementById('balance-tbody');
+    tb.innerHTML = '';
+    balance.forEach(function(b){
+      if (!b.n) return;
+      var dev = b.devDays;
+      var devCls = dev>0.01?'bad':dev<-0.01?'ok':'';
+      var devStr = (dev>=0?'+':'')+dev.toFixed(3);
+      var tr = document.createElement('tr');
+      tr.innerHTML =
+        '<td class="mono">'+b.n+'</td>'+
+        '<td>'+b.section.replace(/^\d+_/,'')+'</td>'+
+        '<td><span class="badge" style="background:'+pc(b.phase)+'22;color:'+pc(b.phase)+'">'+b.phase+'</span></td>'+
+        '<td style="max-width:200px;font-size:11px;">'+b.desc+'</td>'+
+        '<td class="mono">'+b.depth+'</td>'+
+        '<td class="mono">'+b.planH.toFixed(1)+'</td>'+
+        '<td class="mono">'+b.factH.toFixed(1)+'</td>'+
+        '<td class="mono '+devCls+'">'+devStr+'</td>'+
+        '<td class="mono">'+b.planAcc.toFixed(3)+'</td>'+
+        '<td class="mono">'+b.factAcc.toFixed(3)+'</td>'+
+        '<td style="font-size:10px;color:var(--t-03);">'+b.reason.substring(0,45)+'</td>';
+      tb.appendChild(tr);
+    });
+  }
+
+  function renderOpsTable(ops) {
+    var tb = document.getElementById('ops-tbody');
+    tb.innerHTML = '';
+    ops.forEach(function(o){
+      var tr = document.createElement('tr');
+      tr.innerHTML =
+        '<td>'+fmtDate(o.date)+'</td>'+
+        '<td style="font-size:10px;">'+o.section.replace(/^\d+_/,'')+'</td>'+
+        '<td><span class="badge" style="background:'+pc(o.phase)+'22;color:'+pc(o.phase)+'">'+o.phase+'</span></td>'+
+        '<td class="mono">'+fmtTime(o.startRaw)+'</td>'+
+        '<td class="mono">'+fmtTime(o.endRaw)+'</td>'+
+        '<td class="mono">'+(o.hours>0?o.hours.toFixed(1):'—')+'</td>'+
+        '<td class="mono">'+o.depth+'</td>'+
+        '<td class="mono">'+(o.footage>0?o.footage:'—')+'</td>'+
+        '<td class="mono">'+(o.density!==null?o.density.toFixed(2):'—')+'</td>'+
+        '<td><span class="badge '+(o.pvNpv==='НПВ'?'b-simple':'b-green')+'">'+o.pvNpv+'</span></td>';
+      tb.appendChild(tr);
+    });
+  }
+
+  function renderNPTTable(nptSheet, nptOps) {
+    var tb = document.getElementById('npt-tbody');
+    tb.innerHTML = '';
+    nptSheet.forEach(function(e){
+      var tr = document.createElement('tr');
+      var clsCss = e.cls==='Простой'?'b-simple':e.cls==='Ремонт'?'b-repair':'b-gray';
+      tr.innerHTML =
+        '<td class="mono">'+e.n+'</td>'+
+        '<td>'+e.section.replace(/^\d+_/,'')+'</td>'+
+        '<td>'+fmtDate(e.date)+'</td>'+
+        '<td class="mono warn">'+e.totalH.toFixed(2)+'</td>'+
+        '<td class="mono">'+(e.arctH?e.arctH.toFixed(1):'—')+'</td>'+
+        '<td class="mono">'+(e.engsH?e.engsH.toFixed(1):'—')+'</td>'+
+        '<td class="mono">'+(e.bsDolH?e.bsDolH.toFixed(1):'—')+'</td>'+
+        '<td class="mono">'+(e.bsNnbH?e.bsNnbH.toFixed(1):'—')+'</td>'+
+        '<td><span class="badge '+clsCss+'">'+e.cls+'</span></td>'+
+        '<td class="mono ok">'+e.actNum+'</td>'+
+        '<td style="font-size:10px;color:var(--t-02);">'+e.desc.substring(0,80)+'</td>';
+      tb.appendChild(tr);
+    });
+    var tb2 = document.getElementById('npt-ops-tbody');
+    tb2.innerHTML = '';
+    nptOps.forEach(function(o){
+      var tr = document.createElement('tr');
+      var cls = o.nptClass==='Простой'?'b-simple':o.nptClass==='Ремонт'?'b-repair':'b-gray';
+      tr.innerHTML =
+        '<td>'+fmtDate(o.date)+'</td>'+
+        '<td class="mono">'+fmtTime(o.startRaw)+'–'+fmtTime(o.endRaw)+'</td>'+
+        '<td class="mono warn">'+o.hours.toFixed(1)+'</td>'+
+        '<td>'+o.section.replace(/^\d+_/,'')+'</td>'+
+        '<td><span class="badge '+cls+'">'+(o.nptClass||'—')+'</span></td>'+
+        '<td style="font-size:10px;">'+o.nptCause+'</td>'+
+        '<td style="font-size:10px;color:var(--t-03);">'+o.nptDistrib.substring(0,40)+'</td>';
+      tb2.appendChild(tr);
+    });
+  }
+
+  function renderBHATable(bha) {
+    var tb = document.getElementById('bha-tbody');
+    tb.innerHTML = '';
+    bha.forEach(function(b){
+      var ropOk = b.ropFact > b.ropPlan;
+      var tr = document.createElement('tr');
+      tr.innerHTML =
+        '<td class="mono">'+b.n+'</td>'+
+        '<td>'+fmtDate(b.dtSpusk)+'</td>'+
+        '<td>'+fmtDate(b.dtPodem)+'</td>'+
+        '<td class="mono">'+b.diam+'</td>'+
+        '<td>'+b.model+'</td>'+
+        '<td class="mono" style="font-size:10px;">'+b.serial+'</td>'+
+        '<td style="font-size:10px;">'+b.nozzles+'</td>'+
+        '<td class="mono">'+(b.vsd||'—')+'</td>'+
+        '<td class="mono">'+b.fromM+'</td>'+
+        '<td class="mono">'+(b.toM||'—')+'</td>'+
+        '<td class="mono ok">'+b.footage+'</td>'+
+        '<td class="mono">'+b.mechHrs.toFixed(1)+'</td>'+
+        '<td class="mono">'+b.ropPlan.toFixed(1)+'</td>'+
+        '<td class="mono '+(ropOk?'ok':'warn')+'">'+b.ropFact.toFixed(2)+'</td>'+
+        '<td class="mono">'+b.flowRate+'</td>'+
+        '<td class="mono">'+b.wob+'</td>'+
+        '<td class="mono">'+b.rpm+'</td>';
+      tb.appendChild(tr);
+    });
+  }
+
+  function renderSurveyTable(survey) {
+    var tb = document.getElementById('survey-tbody');
+    tb.innerHTML = '';
+    var maxLen = Math.max(survey.plan.length, survey.fact.length);
+    for (var i=0;i<maxLen;i++) {
+      var p = survey.plan[i]||{}, f = survey.fact[i]||{};
+      var tr = document.createElement('tr');
+      function cell(v,cls){ return '<td class="mono'+(cls?' '+cls:'')+'">'+( v!==undefined&&v!==0?typeof v==='number'?v.toFixed(2):v:'—')+'</td>'; }
+      tr.innerHTML =
+        cell(p.depth,'blue')+cell(p.zen)+cell(p.az)+cell(p.tvd)+cell(p.ao)+cell(p.dls)+cell(p.othod)+
+        cell(f.depth,'green')+cell(f.zen)+cell(f.az)+cell(f.tvd)+cell(f.ao)+cell(f.dls)+cell(f.othod);
+      tb.appendChild(tr);
+    }
+    if (!maxLen) {
+      tb.innerHTML = '<tr><td colspan="14" style="text-align:center;color:var(--t-04);padding:20px;">Данные не заполнены</td></tr>';
+    }
+  }
+
+  /* ── TABS ── */
+  window.showTab = function(name, btn) {
+    document.querySelectorAll('.tab-pane').forEach(function(p){ p.classList.remove('active'); });
+    document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+    document.getElementById('tab-'+name).classList.add('active');
+    btn.classList.add('active');
+    // Resize charts when tab becomes visible
+    setTimeout(function(){ Object.values(charts).forEach(function(c){ if(c) c.resize(); }); },50);
+  };
+
+  /* ── RESET ── */
+  window.resetDashboard = function() {
+    dashboard.style.display='none';
+    uploadSection.style.display='';
+    fileInput.value='';
+    setStatus('');
+    Object.keys(charts).forEach(function(k){ if(charts[k]){charts[k].destroy();charts[k]=null;} });
+  };
+
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,825 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>105 · Тамбейское · Конструкция скважин</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap");
+
+    :root {
+      --bg-0:#061018;
+      --bg-1:#112131;
+      --bg-2:#1c3545;
+      --panel:rgba(10,19,30,.86);
+      --panel-soft:rgba(255,255,255,.035);
+      --line:rgba(227,238,255,.14);
+      --line-soft:rgba(227,238,255,.08);
+      --text:#edf5ff;
+      --muted:#a8bdd2;
+      --cyan:#22d7b4;
+      --amber:#f8bd5f;
+      --blue:#8db4ff;
+      --violet:#c6a6ff;
+      --green:#7de0a7;
+      --coral:#ff9687;
+      --shadow:0 24px 56px rgba(0,0,0,.42);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      font-family: "Manrope", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(920px 460px at 0% -10%, rgba(34,215,180,.18), transparent),
+        radial-gradient(820px 440px at 100% 0%, rgba(141,180,255,.16), transparent),
+        radial-gradient(640px 320px at 50% 0%, rgba(248,189,95,.1), transparent),
+        linear-gradient(145deg, var(--bg-0), var(--bg-1) 46%, var(--bg-2));
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(to right, rgba(255,255,255,.02) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,.02) 1px, transparent 1px);
+      background-size: 38px 38px;
+      mask-image: radial-gradient(circle at 50% 20%, rgba(0,0,0,.96), transparent 72%);
+    }
+
+    .wrap {
+      position: relative;
+      z-index: 1;
+      width: min(1380px, 94vw);
+      margin: 0 auto;
+      padding: 24px 0 64px;
+    }
+
+    .top,
+    .hero,
+    .section,
+    .section-shell {
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+    }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 12px 16px;
+      border-radius: 16px;
+      background: rgba(8,15,24,.66);
+      position: sticky;
+      top: 12px;
+      z-index: 20;
+      backdrop-filter: blur(10px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: "Oswald", sans-serif;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      font-size: 20px;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 35% 35%, #d6fff7, var(--cyan));
+      box-shadow: 0 0 18px rgba(34,215,180,.45);
+    }
+
+    .nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .nav a {
+      text-decoration: none;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      font-weight: 800;
+      border-radius: 10px;
+      padding: 8px 12px;
+      color: #082922;
+      background: linear-gradient(130deg, #a0f9eb, #22d7b4);
+      border: 1px solid rgba(34,215,180,.75);
+    }
+
+    .hero,
+    .section,
+    .section-shell {
+      margin-top: 18px;
+      border-radius: 24px;
+      background: var(--panel);
+      padding: 22px;
+    }
+
+    .hero {
+      background:
+        radial-gradient(520px 260px at 0% 0%, rgba(34,215,180,.12), transparent),
+        radial-gradient(560px 280px at 100% 0%, rgba(141,180,255,.14), transparent),
+        var(--panel);
+    }
+
+    .eyebrow,
+    .tag,
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line-soft);
+      background: rgba(255,255,255,.04);
+      color: #d8e8f8;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    h1, h2, h3, h4 {
+      margin: 0;
+      font-family: "Oswald", sans-serif;
+      letter-spacing: -.01em;
+    }
+
+    .hero h1 {
+      margin: 14px 0 10px;
+      font-size: clamp(34px, 5vw, 60px);
+      line-height: .95;
+      max-width: 1080px;
+    }
+
+    .hero p,
+    .section p,
+    .metric p,
+    .card p,
+    .callout p,
+    .note,
+    td,
+    li {
+      color: #c9d9eb;
+      line-height: 1.65;
+      font-size: 14px;
+      margin: 0;
+    }
+
+    .hero-grid,
+    .overview-grid,
+    .metrics,
+    .graphic-grid,
+    .cards,
+    .table-grid,
+    .legend-list,
+    .insight-grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .hero-grid {
+      margin-top: 18px;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .hero-stat,
+    .metric,
+    .callout,
+    .card,
+    .table-box,
+    .schematic-shell,
+    .legend-shell,
+    .insight {
+      border: 1px solid var(--line-soft);
+      border-radius: 18px;
+      background: var(--panel-soft);
+      padding: 16px;
+    }
+
+    .hero-stat strong,
+    .metric strong {
+      display: block;
+      font-size: 26px;
+      line-height: 1;
+    }
+
+    .hero-stat span,
+    .metric span,
+    .micro,
+    .legend-meta {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .overview-grid {
+      margin-top: 16px;
+      grid-template-columns: 1.1fr .9fr;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .section-head h2 {
+      font-size: 28px;
+    }
+
+    .metrics {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .cards,
+    .insight-grid {
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    }
+
+    .card h3,
+    .table-box h3,
+    .schematic-shell h3,
+    .legend-shell h3,
+    .insight h3 {
+      font-size: 22px;
+      margin-bottom: 10px;
+    }
+
+    .graphic-grid {
+      grid-template-columns: minmax(600px, 1.05fr) minmax(280px, .95fr);
+      align-items: start;
+    }
+
+    .schematic-shell svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .schematic-shell {
+      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+    }
+
+    .legend-card {
+      border: 1px solid var(--line-soft);
+      border-radius: 16px;
+      padding: 14px;
+      background: rgba(255,255,255,.025);
+    }
+
+    .legend-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .legend-swatch {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      box-shadow: 0 0 0 4px currentColor;
+    }
+
+    .caption,
+    .note {
+      margin-top: 12px;
+      font-size: 13px;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border-radius: 16px;
+      border: 1px solid var(--line-soft);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 880px;
+    }
+
+    th,
+    td {
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      color: #eef6ff;
+      font-size: 12px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      background: rgba(255,255,255,.04);
+    }
+
+    .table-grid {
+      grid-template-columns: 1.1fr .9fr;
+    }
+
+    .insight {
+      background:
+        linear-gradient(145deg, rgba(255,255,255,.05), rgba(255,255,255,.02)),
+        rgba(255,255,255,.02);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .insight::after {
+      content: "";
+      position: absolute;
+      inset: auto -40px -60px auto;
+      width: 120px;
+      height: 120px;
+      border-radius: 999px;
+      background: radial-gradient(circle, rgba(255,255,255,.16), transparent 70%);
+      opacity: .35;
+      pointer-events: none;
+    }
+
+    .footer {
+      margin-top: 16px;
+      font-size: 12px;
+      color: #8ea2bc;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    @media (max-width: 1120px) {
+      .hero-grid,
+      .metrics,
+      .graphic-grid,
+      .table-grid,
+      .overview-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 980px) {
+      .top {
+        position: static;
+      }
+
+      .hero-grid,
+      .metrics,
+      .cards,
+      .insight-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+  <main class="wrap">
+    <header class="top">
+      <a class="brand" href="103_tambeyskoe_project_dashboard.html"><span class="dot" aria-hidden="true"></span><span>Тамбейское · Конструкция скважин</span></a>
+      <nav class="nav">
+        <a href="103_tambeyskoe_project_dashboard.html">К дашборду</a>
+        <a href="104_tambeyskoe_general_info.html">Общая информация</a>
+        <a href="56_fields_projects_dashboard.html">Все месторождения</a>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <span class="eyebrow">Раздел 2 · Конструкция скважин</span>
+      <h1>Тамбейское · Типовая конструкция специальных скважин с графической схемой</h1>
+      <p>Модуль собран по присланной таблице конструкции. Внутри вынесены три обсадные секции, интервалы спуска по вертикали и по стволу, условия по подъему цементного раствора и отдельный графический рисунок конструкции, чтобы компоновка считывалась сразу как инженерная схема.</p>
+      <div class="hero-grid">
+        <div class="hero-stat"><strong>3</strong><span>основные секции</span></div>
+        <div class="hero-stat"><strong>1819 м</strong><span>макс. глубина по стволу</span></div>
+        <div class="hero-stat"><strong>2</strong><span>цементируемые колонны до устья</span></div>
+        <div class="hero-stat"><strong>178 мм</strong><span>рабочая эксплуатационная колонна</span></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>Что важно сразу</h2>
+          <p>Конструкция здесь предельно чистая: короткое направление, глубокий кондуктор и основная эксплуатационная колонна. Верхние две секции цементируются до устья, а эксплуатационная колонна в исходной таблице прямо помечена как нецементируемая.</p>
+        </div>
+        <span class="tag">Источник: ручной перенос из таблицы</span>
+      </div>
+      <div class="overview-grid">
+        <div class="callout">
+          <h3 style="font-size:22px;margin-bottom:10px">Инженерная логика конструкции</h3>
+          <p>Верхний блок закрывает запуск и изоляцию устьевой зоны с коротким направлением 324 мм и кондуктором 244,5 мм до 639 м по стволу. Ниже сразу идет эксплуатационная колонна 178 мм до 1819 м, причем в таблице для нее указаны две толщины стенки: усиленный участок 10,36 мм на интервале 0-450 м и далее 9,2 мм по остальной длине.</p>
+        </div>
+        <div class="callout">
+          <h3 style="font-size:20px;margin-bottom:8px">Вертикаль и ствол</h3>
+          <p>Отклонение между глубиной по вертикали и по стволу у этой конструкции пока минимальное: 50/50 м для направления, 630/639 м для кондуктора и 1800/1819 м для эксплуатационной колонны. Это удобно для быстрого чтения посадки секций и контроля длины обсадных элементов.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>Паспорт секций</h2>
+          <p>Карточки по каждой колонне с диаметром, металлом, глубиной спуска и режимом цементирования.</p>
+        </div>
+      </div>
+      <div class="cards" id="sectionCards"></div>
+    </section>
+
+    <section class="section-shell">
+      <div class="section-head">
+        <div>
+          <h2>Графическая схема конструкции</h2>
+          <p>Слева показан графический рисунок колонн, справа вынесены легенда и инженерные пояснения по цементированию и металлу.</p>
+        </div>
+      </div>
+      <div class="graphic-grid">
+        <div class="schematic-shell">
+          <h3>Схематический рисунок</h3>
+          <div id="constructionSchematic"></div>
+          <div class="caption">Схема специально отрисована как телескопическая конструкция: цементируемые направление и кондуктор показаны с подсветкой цементного кольца до устья, а эксплуатационная колонна выделена отдельным сплошным каналом без цементного подъема.</div>
+        </div>
+        <div class="legend-shell">
+          <h3>Легенда и пояснения</h3>
+          <div class="legend-list" id="legendList"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>Ключевые инженерные сигналы</h2>
+          <p>Быстрый разбор того, что эта таблица говорит о компоновке и сервисном сценарии.</p>
+        </div>
+      </div>
+      <div class="insight-grid">
+        <article class="insight">
+          <h3>Верхний блок</h3>
+          <p>Направление и кондуктор полностью цементируются до устья, значит приоритетом являются защита верхних интервалов, устойчивость мерзлых пород и нормальная передача нагрузок на устьевую систему.</p>
+        </article>
+        <article class="insight">
+          <h3>Эксплуатационный ствол</h3>
+          <p>Эксплуатационная колонна дана как нецементируемая, поэтому она в модуле показана без кольцевой цементной рубашки и вынесена отдельно как рабочий транспортный канал конструкции.</p>
+        </article>
+        <article class="insight">
+          <h3>Металл по длине</h3>
+          <p>В исходнике у эксплуатационной колонны два металла по стенке: 10,36 мм на верхнем интервале 0-450 м и 9,2 мм ниже. Это важный признак, что верх усилен под локальные нагрузки и холодный режим.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>Таблица исходных данных</h2>
+          <p>Таблица повторяет присланный источник: название колонны, диаметр и сталь, интервалы спуска по вертикали и стволу, высота подъема цементного раствора.</p>
+        </div>
+      </div>
+      <div class="table-grid">
+        <div class="table-box">
+          <h3>Исходная таблица конструкции</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Наименование колонны</th>
+                  <th>Диаметр / сталь</th>
+                  <th>Интервал спуска, верт.</th>
+                  <th>Интервал спуска, ствол</th>
+                  <th>Подъем цемента</th>
+                </tr>
+              </thead>
+              <tbody id="constructionTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="table-box">
+          <h3>Ключевые замечания</h3>
+          <p>Для направления и кондуктора сохранены исходные обозначения TMK UP FMC и TMK UP PF с исполнением ХЛ. Для эксплуатационной колонны оставлены обе исходные строки по толщине стенки и марки стали TMK CENTUM L 80, потому что в таблице они описывают один и тот же ствол с усиленным верхом.</p>
+          <div class="note">Если пришлешь следующую таблицу или скрин по Тамбейскому, этот модуль можно сразу развить в полный инженерный паспорт: добавить башмак, башмачную оснастку, расчет кольцевых объемов, цементаж и связь с буровыми растворами.</div>
+        </div>
+      </div>
+    </section>
+
+    <p class="footer">Тамбейское · Doc 105</p>
+  </main>
+
+  <script>
+    const casingSections = [
+      {
+        name: "Направление",
+        diameterLabel: "324 x 9,5 мм",
+        steel: "TMK UP FMC J-55 · исполнение ХЛ",
+        vertical: 50,
+        measured: 50,
+        cement: "До устья",
+        color: "#f8bd5f",
+        note: "Короткое стартовое направление для устьевой стабилизации и безопасного запуска верхнего интервала."
+      },
+      {
+        name: "Кондуктор",
+        diameterLabel: "244,5 x 8,94 мм",
+        steel: "TMK UP PF L80 · исполнение ХЛ",
+        vertical: 630,
+        measured: 639,
+        cement: "До устья",
+        color: "#22d7b4",
+        note: "Основной верхний обсадной блок, который закрывает поверхностный интервал и принимает на себя полную цементацию до устья."
+      },
+      {
+        name: "Эксплуатационная колонна",
+        diameterLabel: "178 x 10,36 мм / 178 x 9,2 мм",
+        steel: "TMK CENTUM L 80 · исполнение ХЛ",
+        vertical: 1800,
+        measured: 1819,
+        cement: "Не цементируемый",
+        color: "#8db4ff",
+        note: "Основной рабочий ствол. Верх 0-450 м усилен стенкой 10,36 мм, ниже идет стенка 9,2 мм по той же марке стали."
+      }
+    ];
+
+    const tableRows = [
+      {
+        name: "Направление",
+        spec: "324*9,5 TMK UP FMC J-55, исполнение ХЛ",
+        vertical: "0-50",
+        measured: "0-50",
+        cement: "до устья"
+      },
+      {
+        name: "Кондуктор",
+        spec: "244,5*8,94 TMK UP PF L80, исполнение ХЛ",
+        vertical: "0-630",
+        measured: "0-639",
+        cement: "до устья"
+      },
+      {
+        name: "Эксплуатационная колонна",
+        spec: "178*10,36 TMK CENTUM L 80, исполнение ХЛ (в инт. 0-450 м.) · 178*9,2 TMK CENTUM L 80, исполнение ХЛ",
+        vertical: "0-1800",
+        measured: "0-1819",
+        cement: "не цементируемый"
+      }
+    ];
+
+    function formatNumber(value) {
+      return String(value).replace('.', ',');
+    }
+
+    function createSvg(width, height, inner) {
+      return `<svg viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Графическая схема конструкции">${inner}</svg>`;
+    }
+
+    function renderSectionCards() {
+      document.getElementById('sectionCards').innerHTML = casingSections.map((section) => `
+        <article class="card">
+          <h3>${section.name}</h3>
+          <p>${section.note}</p>
+          <div class="micro">Диаметр: ${section.diameterLabel}</div>
+          <div class="micro">Сталь: ${section.steel}</div>
+          <div class="micro">Глубина по вертикали: ${formatNumber(section.vertical)} м · по стволу: ${formatNumber(section.measured)} м</div>
+          <div class="micro">Цементирование: ${section.cement}</div>
+        </article>
+      `).join('');
+    }
+
+    function renderLegend() {
+      const legendItems = [
+        {
+          title: 'Направление',
+          text: '324 x 9,5 мм до 50 м. Цементирование до устья.',
+          meta: 'TMK UP FMC J-55 · исполнение ХЛ',
+          color: '#f8bd5f'
+        },
+        {
+          title: 'Кондуктор',
+          text: '244,5 x 8,94 мм до 630/639 м. Цементирование до устья.',
+          meta: 'TMK UP PF L80 · исполнение ХЛ',
+          color: '#22d7b4'
+        },
+        {
+          title: 'Эксплуатационная колонна',
+          text: '178 мм до 1800/1819 м. Верх 0-450 м усилен стенкой 10,36 мм.',
+          meta: 'TMK CENTUM L 80 · не цементируемый режим',
+          color: '#8db4ff'
+        },
+        {
+          title: 'Цементирование',
+          text: 'Подсветка кольцевого пространства дана только для направления и кондуктора.',
+          meta: 'Эксплуатационная колонна остается без подъема цемента в таблице',
+          color: '#ff9687'
+        }
+      ];
+
+      document.getElementById('legendList').innerHTML = legendItems.map((item) => `
+        <article class="legend-card">
+          <div class="legend-head">
+            <span class="legend-swatch" style="background:${item.color}; color:${item.color}"></span>
+            <strong>${item.title}</strong>
+          </div>
+          <p>${item.text}</p>
+          <span class="legend-meta">${item.meta}</span>
+        </article>
+      `).join('');
+    }
+
+    function renderTable() {
+      document.getElementById('constructionTableBody').innerHTML = tableRows.map((row) => `
+        <tr>
+          <td>${row.name}</td>
+          <td>${row.spec}</td>
+          <td>${row.vertical}</td>
+          <td>${row.measured}</td>
+          <td>${row.cement}</td>
+        </tr>
+      `).join('');
+    }
+
+    function renderConstructionSchematic() {
+      const width = 980;
+      const height = 1280;
+      const chartTop = 150;
+      const chartBottom = 1190;
+      const chartHeight = chartBottom - chartTop;
+      const rulerX = 92;
+      const centerX = 318;
+      const labelX = 640;
+      const totalDepth = 1819;
+      const scaleY = (depth) => chartTop + (depth / totalDepth) * chartHeight;
+      const ticks = [0, 50, 450, 630, 639, 1800, 1819];
+      const tickLabelOffsets = {
+        0: -8,
+        50: 12,
+        630: -8,
+        639: 14
+      };
+
+      const casingGeometry = [
+        {
+          name: 'Направление',
+          depth: 50,
+          color: '#f8bd5f',
+          hole: '406,0 мм ствол',
+          casing: '324 мм направление',
+          note: 'до устья',
+          left: centerX - 88,
+          right: centerX + 88,
+          innerLeft: centerX - 66,
+          innerRight: centerX + 66,
+          cementLeft: centerX - 110,
+          cementRight: centerX + 110,
+          labelYOffset: -2
+        },
+        {
+          name: 'Кондуктор',
+          depth: 639,
+          color: '#22d7b4',
+          hole: '311,5 мм ствол',
+          casing: '244,5 мм кондуктор',
+          note: 'до устья',
+          left: centerX - 58,
+          right: centerX + 58,
+          innerLeft: centerX - 44,
+          innerRight: centerX + 44,
+          cementLeft: centerX - 72,
+          cementRight: centerX + 72,
+          labelYOffset: -6
+        },
+        {
+          name: 'Эксплуатационная колонна',
+          depth: 1819,
+          color: '#8db4ff',
+          hole: '222,3 мм ствол',
+          casing: '178 мм эксплуатационная',
+          note: 'не цементируется',
+          left: centerX - 36,
+          right: centerX + 36,
+          innerLeft: centerX - 24,
+          innerRight: centerX + 24,
+          cementLeft: null,
+          cementRight: null,
+          labelYOffset: 0
+        }
+      ];
+
+      let svg = `
+        <defs>
+          <linearGradient id="cementGlow" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0%" stop-color="#ffcb7d" stop-opacity="0.34"/>
+            <stop offset="100%" stop-color="#ff8b63" stop-opacity="0.08"/>
+          </linearGradient>
+          <linearGradient id="wellBg" x1="0" x2="1" y1="0" y2="1">
+            <stop offset="0%" stop-color="#1b2735"/>
+            <stop offset="100%" stop-color="#141f2b"/>
+          </linearGradient>
+          <pattern id="dotField" width="8" height="8" patternUnits="userSpaceOnUse">
+            <circle cx="2" cy="2" r="1.1" fill="rgba(148,167,196,0.24)"/>
+          </pattern>
+          <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="8" result="blur"/>
+            <feMerge>
+              <feMergeNode in="blur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+        </defs>
+        <rect x="0" y="0" width="${width}" height="${height}" rx="28" fill="url(#wellBg)"/>
+        <text x="64" y="78" fill="#edf5ff" font-size="34" font-family="Oswald, sans-serif">Типовая конструкция специальных скважин</text>
+        <text x="64" y="110" fill="#8ea9c6" font-size="16" font-family="Manrope, sans-serif">Тамбейское · TVD и MD по обсадным секциям</text>
+        <text x="64" y="134" fill="#8ea9c6" font-size="16" font-family="Manrope, sans-serif">Подсветка кольцевого пространства показана только для цементируемых колонн</text>
+        <rect x="652" y="56" width="236" height="34" rx="17" fill="rgba(255,190,120,0.12)" stroke="rgba(255,190,120,0.55)"/>
+        <text x="670" y="78" fill="#ffbe78" font-size="13" font-family="Manrope, sans-serif">Цемент до устья выделен теплым контуром</text>
+        <rect x="${centerX - 112}" y="${chartTop + 18}" width="224" height="${chartBottom - chartTop - 36}" fill="url(#dotField)" opacity="0.46"/>
+        <rect x="${centerX - 78}" y="${chartTop + 2}" width="156" height="60" rx="4" fill="#e7e7e7"/>
+        <rect x="${centerX - 16}" y="${chartTop - 64}" width="32" height="66" fill="#efefef"/>
+        <rect x="${centerX - 38}" y="${chartTop - 86}" width="76" height="22" rx="2" fill="#f4f4f4" stroke="rgba(0,0,0,0.18)"/>
+        <line x1="${centerX - 12}" y1="${chartTop - 64}" x2="${centerX - 48}" y2="${chartTop + 2}" stroke="#b7c1cf" stroke-width="2"/>
+        <line x1="${centerX + 12}" y1="${chartTop - 64}" x2="${centerX + 48}" y2="${chartTop + 2}" stroke="#b7c1cf" stroke-width="2"/>
+        <line x1="${centerX - 12}" y1="${chartTop - 64}" x2="${centerX + 48}" y2="${chartTop + 2}" stroke="#b7c1cf" stroke-width="2"/>
+        <line x1="${centerX + 12}" y1="${chartTop - 64}" x2="${centerX - 48}" y2="${chartTop + 2}" stroke="#b7c1cf" stroke-width="2"/>
+      `;
+
+      ticks.forEach((tick) => {
+        const y = scaleY(tick);
+        const labelY = y + (tickLabelOffsets[tick] || 5);
+        svg += `
+          <line x1="${rulerX}" y1="${y}" x2="${width - 46}" y2="${y}" stroke="rgba(255,255,255,0.08)" stroke-dasharray="5 8"/>
+          <line x1="${rulerX}" y1="${y}" x2="${rulerX + 18}" y2="${y}" stroke="#e5f2ff" stroke-width="2"/>
+          <text x="24" y="${labelY}" fill="#b8cce4" font-size="14" font-family="Manrope, sans-serif">${tick} м</text>
+        `;
+      });
+
+      svg += `<text x="18" y="${scaleY(225)}" fill="#8ea9c6" font-size="13" font-family="Manrope, sans-serif">Глубина, м</text>`;
+
+      casingGeometry.forEach((section) => {
+        const topY = chartTop;
+        const bottomY = scaleY(section.depth);
+
+        if (section.cementLeft !== null) {
+          svg += `
+            <rect x="${section.cementLeft}" y="${topY}" width="${section.cementRight - section.cementLeft}" height="${bottomY - topY}" fill="url(#cementGlow)" opacity="0.92" filter="url(#softGlow)"/>
+          `;
+        }
+
+        svg += `
+          <rect x="${section.left}" y="${topY}" width="${section.right - section.left}" height="${bottomY - topY}" fill="rgba(255,255,255,0.02)" stroke="${section.color}" stroke-width="4"/>
+          <rect x="${section.innerLeft}" y="${topY}" width="${section.innerRight - section.innerLeft}" height="${bottomY - topY}" fill="#0a1320" stroke="${section.color}" stroke-width="1.8" stroke-dasharray="4 4" opacity="0.92"/>
+          <polygon points="${section.left},${bottomY} ${section.left - 10},${bottomY + 12} ${section.left},${bottomY + 12}" fill="${section.color}" opacity="0.85"/>
+          <polygon points="${section.right},${bottomY} ${section.right + 10},${bottomY + 12} ${section.right},${bottomY + 12}" fill="${section.color}" opacity="0.85"/>
+          <line x1="${section.right + 16}" y1="${bottomY - 4}" x2="${labelX - 24}" y2="${bottomY - 4}" stroke="${section.color}" stroke-width="2.5"/>
+          <circle cx="${labelX - 24}" cy="${bottomY}" r="6" fill="${section.color}"/>
+          <text x="${labelX}" y="${bottomY - 10 + section.labelYOffset}" fill="#edf5ff" font-size="20" font-family="Oswald, sans-serif">${section.name}</text>
+          <text x="${labelX}" y="${bottomY + 16 + section.labelYOffset}" fill="#b6cce5" font-size="14" font-family="Manrope, sans-serif">${section.hole} · ${section.casing}</text>
+          <text x="${labelX}" y="${bottomY + 36 + section.labelYOffset}" fill="#8ea9c6" font-size="13" font-family="Manrope, sans-serif">${section.note}</text>
+        `;
+      });
+
+      const reinforcementTop = scaleY(450);
+      svg += `
+        <rect x="${centerX - 31}" y="${chartTop}" width="62" height="${reinforcementTop - chartTop}" fill="rgba(141,180,255,0.14)" stroke="#8db4ff" stroke-width="2" stroke-dasharray="8 8"/>
+        <line x1="${centerX + 54}" y1="${reinforcementTop}" x2="${labelX - 24}" y2="${reinforcementTop}" stroke="#8db4ff" stroke-width="2" stroke-dasharray="8 8"/>
+        <circle cx="${labelX - 24}" cy="${reinforcementTop}" r="5" fill="#8db4ff"/>
+        <text x="${labelX}" y="${reinforcementTop - 10}" fill="#d9e8f8" font-size="14" font-family="Manrope, sans-serif">Усиление стенки 10,36 мм на интервале 0-450 м</text>
+      `;
+
+      svg += `
+        <line x1="${centerX - 4}" y1="${chartTop}" x2="${centerX - 4}" y2="${chartBottom}" stroke="rgba(255,255,255,0.08)" stroke-width="1.4" stroke-dasharray="3 6"/>
+        <line x1="${centerX + 4}" y1="${chartTop}" x2="${centerX + 4}" y2="${chartBottom}" stroke="rgba(255,255,255,0.08)" stroke-width="1.4" stroke-dasharray="3 6"/>
+        <text x="${centerX - 54}" y="${chartBottom + 48}" fill="#b6cce5" font-size="15" font-family="Manrope, sans-serif">Забой по стволу: 1819 м</text>
+        <text x="${labelX}" y="${chartBottom + 8}" fill="#8ea9c6" font-size="14" font-family="Manrope, sans-serif">Эксплуатационная колонна в источнике идет без цементирования</text>
+      `;
+
+      document.getElementById('constructionSchematic').innerHTML = createSvg(width, height, svg);
+    }
+
+    renderSectionCards();
+    renderLegend();
+    renderTable();
+    renderConstructionSchematic();
+  </script>
+  <script src="assets/js/global-auth-widget.js"></script>
+</body>
+</html>

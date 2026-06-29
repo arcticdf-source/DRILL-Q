@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DRILL-Q · Проекты</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #F5F5F7; --surface: #FFFFFF; --surface2: #F9F9FB;
+  --border: rgba(0,0,0,.08); --border2: rgba(0,0,0,.05);
+  --text: #1D1D1F; --text2: #6E6E73; --text3: #999;
+  --blue: #2563EB; --blue-light: #EFF6FF;
+  --green: #10B981; --green-light: #ECFDF5;
+  --amber: #F59E0B; --amber-light: #FFFBEB;
+  --red: #EF4444; --red-light: #FEF2F2;
+  --sidebar-w: 220px; --topbar-h: 56px;
+  --radius: 12px; --shadow: 0 1px 3px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.04);
+}
+body { font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; background:var(--bg); color:var(--text); font-size:14px; line-height:1.5; min-height:100vh; }
+
+/* TOPBAR */
+.topbar { position:fixed; top:0; left:0; right:0; z-index:100; height:var(--topbar-h); background:rgba(255,255,255,.92); backdrop-filter:blur(20px); border-bottom:1px solid var(--border); display:flex; align-items:center; padding:0 24px; gap:16px; }
+.brand { display:flex; align-items:center; gap:10px; text-decoration:none; }
+.brand-mark { width:28px; height:28px; background:var(--blue); border-radius:7px; display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:500; color:#fff; }
+.brand-name { font-size:14px; font-weight:700; letter-spacing:-.03em; color:var(--text); }
+.topbar-sep { width:1px; height:20px; background:var(--border); }
+.topbar-title { font-size:13px; color:var(--text2); }
+.topbar-right { margin-left:auto; display:flex; align-items:center; gap:10px; }
+.avatar { width:30px; height:30px; background:linear-gradient(135deg,#2563EB,#7C3AED); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:600; color:#fff; cursor:pointer; }
+.user-name { font-size:13px; color:var(--text2); }
+
+/* SIDEBAR */
+.sidebar { position:fixed; top:var(--topbar-h); left:0; bottom:0; width:var(--sidebar-w); background:var(--surface); border-right:1px solid var(--border); display:flex; flex-direction:column; overflow-y:auto; z-index:50; padding:16px 12px; }
+.nav-item { display:flex; align-items:center; gap:9px; padding:7px 10px; border-radius:8px; color:var(--text2); text-decoration:none; font-size:13px; transition:all .12s; cursor:pointer; margin-bottom:1px; }
+.nav-item:hover { background:var(--bg); color:var(--text); }
+.nav-item.active { background:var(--blue-light); color:var(--blue); font-weight:500; }
+.nav-section { font-size:10px; font-weight:600; color:var(--text3); text-transform:uppercase; letter-spacing:.08em; padding:12px 10px 4px; }
+.nav-icon { width:16px; height:16px; flex-shrink:0; opacity:.75; }
+.nav-item.active .nav-icon { opacity:1; }
+
+/* MAIN */
+.main { margin-left:var(--sidebar-w); margin-top:var(--topbar-h); padding:32px; min-height:calc(100vh - var(--topbar-h)); }
+
+/* PAGE HEADER */
+.page-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:28px; }
+.page-title { font-size:22px; font-weight:700; letter-spacing:-.04em; }
+.page-sub { font-size:13px; color:var(--text2); margin-top:3px; }
+
+/* SEARCH */
+.search-row { display:flex; gap:10px; margin-bottom:24px; }
+.search-wrap { position:relative; flex:1; max-width:480px; }
+.search-icon { position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--text3); width:16px; height:16px; }
+.search-input { width:100%; padding:9px 12px 9px 36px; border:1px solid var(--border); border-radius:9px; background:var(--surface); font-size:13px; color:var(--text); outline:none; transition:border .15s; font-family:inherit; }
+.search-input:focus { border-color:var(--blue); box-shadow:0 0 0 3px rgba(37,99,235,.1); }
+.search-input::placeholder { color:var(--text3); }
+.filter-btn { display:flex; align-items:center; gap:6px; padding:8px 14px; border:1px solid var(--border); border-radius:9px; background:var(--surface); font-size:13px; color:var(--text2); cursor:pointer; transition:all .12s; white-space:nowrap; }
+.filter-btn:hover { background:var(--bg); border-color:rgba(0,0,0,.14); }
+
+/* BTN */
+.btn { display:inline-flex; align-items:center; gap:6px; padding:8px 16px; border-radius:8px; font-size:13px; font-weight:500; cursor:pointer; border:none; transition:all .15s; text-decoration:none; font-family:inherit; }
+.btn-primary { background:var(--blue); color:#fff; }
+.btn-primary:hover { background:#1D4ED8; box-shadow:0 0 0 3px rgba(37,99,235,.15); }
+.btn-ghost { background:var(--surface); color:var(--text2); border:1px solid var(--border); }
+.btn-ghost:hover { background:var(--bg); }
+
+/* STATS ROW */
+.stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:28px; }
+.stat-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:16px 20px; box-shadow:var(--shadow); }
+.stat-label { font-size:11px; color:var(--text2); font-weight:500; text-transform:uppercase; letter-spacing:.05em; margin-bottom:5px; }
+.stat-value { font-size:24px; font-weight:700; letter-spacing:-.04em; font-family:'JetBrains Mono',monospace; }
+.stat-delta { font-size:11px; color:var(--text2); margin-top:3px; }
+.stat-delta.up { color:var(--green); }
+
+/* SECTION LABEL */
+.section-label { font-size:12px; font-weight:600; color:var(--text2); text-transform:uppercase; letter-spacing:.06em; margin-bottom:12px; display:flex; align-items:center; gap:8px; }
+.section-label::after { content:''; flex:1; height:1px; background:var(--border); }
+
+/* PROJECT CARDS */
+.projects-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(340px,1fr)); gap:16px; margin-bottom:32px; }
+.project-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; text-decoration:none; color:inherit; transition:all .18s; display:block; cursor:pointer; }
+.project-card:hover { border-color:rgba(37,99,235,.3); box-shadow:0 4px 20px rgba(37,99,235,.08); transform:translateY(-1px); }
+.pc-header { padding:16px 20px 12px; display:flex; align-items:flex-start; gap:12px; }
+.pc-icon { width:40px; height:40px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+.pc-icon.gas { background:linear-gradient(135deg,#DBEAFE,#EDE9FE); }
+.pc-icon.oil { background:linear-gradient(135deg,#FEF9C3,#FEF3C7); }
+.pc-icon.new { background:var(--bg); border:2px dashed var(--border); }
+.pc-meta { flex:1; min-width:0; }
+.pc-name { font-size:15px; font-weight:700; letter-spacing:-.02em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.pc-type { font-size:11px; color:var(--text2); margin-top:2px; }
+.pc-badge { padding:2px 8px; border-radius:999px; font-size:10px; font-weight:600; flex-shrink:0; margin-top:2px; }
+.badge-active { background:var(--green-light); color:#065F46; }
+.badge-demo { background:var(--blue-light); color:#1E40AF; }
+.badge-archive { background:var(--bg); color:var(--text3); }
+.badge-new { background:var(--amber-light); color:#92400E; }
+.pc-divider { height:1px; background:var(--border2); margin:0 20px; }
+.pc-body { padding:12px 20px; display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; }
+.pc-stat { text-align:center; }
+.pc-stat-val { font-size:15px; font-weight:700; font-family:'JetBrains Mono',monospace; letter-spacing:-.02em; }
+.pc-stat-lbl { font-size:10px; color:var(--text3); margin-top:1px; }
+.pc-footer { padding:10px 20px 14px; display:flex; align-items:center; justify-content:space-between; }
+.pc-alert { display:flex; align-items:center; gap:5px; font-size:11px; font-weight:500; color:#92400E; }
+.pc-updated { font-size:11px; color:var(--text3); }
+
+/* NEW PROJECT CARD */
+.new-card { background:var(--surface); border:2px dashed var(--border); border-radius:var(--radius); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; padding:40px 20px; cursor:pointer; transition:all .18s; text-decoration:none; color:inherit; min-height:180px; }
+.new-card:hover { border-color:var(--blue); background:var(--blue-light); }
+.new-card-icon { width:44px; height:44px; border-radius:12px; background:var(--bg); display:flex; align-items:center; justify-content:center; font-size:22px; }
+.new-card:hover .new-card-icon { background:rgba(37,99,235,.12); }
+.new-card-text { font-size:14px; font-weight:600; color:var(--text2); }
+.new-card:hover .new-card-text { color:var(--blue); }
+.new-card-sub { font-size:12px; color:var(--text3); text-align:center; }
+
+/* EMPTY STATE */
+.empty-search { display:none; flex-direction:column; align-items:center; gap:12px; padding:60px 20px; text-align:center; }
+.empty-search.visible { display:flex; }
+
+/* MODAL */
+.modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.25); backdrop-filter:blur(4px); z-index:200; display:none; align-items:center; justify-content:center; }
+.modal-overlay.open { display:flex; }
+.modal { background:var(--surface); border-radius:16px; padding:32px; width:100%; max-width:480px; box-shadow:0 20px 60px rgba(0,0,0,.15); }
+.modal-title { font-size:18px; font-weight:700; letter-spacing:-.03em; margin-bottom:6px; }
+.modal-sub { font-size:13px; color:var(--text2); margin-bottom:24px; }
+.field-group { margin-bottom:16px; }
+.field-label { font-size:12px; font-weight:600; color:var(--text2); margin-bottom:6px; display:block; }
+.field-input { width:100%; padding:9px 12px; border:1px solid var(--border); border-radius:8px; font-size:13px; color:var(--text); outline:none; font-family:inherit; transition:border .15s; }
+.field-input:focus { border-color:var(--blue); box-shadow:0 0 0 3px rgba(37,99,235,.1); }
+.field-select { width:100%; padding:9px 12px; border:1px solid var(--border); border-radius:8px; font-size:13px; color:var(--text); outline:none; font-family:inherit; background:var(--surface); cursor:pointer; }
+.modal-actions { display:flex; gap:10px; justify-content:flex-end; margin-top:24px; }
+
+::-webkit-scrollbar { width:5px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:var(--border); border-radius:999px; }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <a class="brand" href="index.html">
+    <div class="brand-mark">DQ</div>
+    <div class="brand-name">DRILL-Q</div>
+  </a>
+  <div class="topbar-sep"></div>
+  <span class="topbar-title">Мои проекты</span>
+  <div class="topbar-right">
+    <span class="user-name">Андрей Б.</span>
+    <div class="avatar">АБ</div>
+  </div>
+</header>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="nav-section">Главное</div>
+  <a class="nav-item active">
+    <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7a2 2 0 012-2h14a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+    Проекты
+  </a>
+  <a class="nav-item">
+    <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="8"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35"/></svg>
+    Поиск месторождений
+  </a>
+  <a class="nav-item">
+    <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+    Аналитика
+  </a>
+
+  <div class="nav-section" style="margin-top:8px">База знаний</div>
+  <a class="nav-item">
+    <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+    Месторождения
+  </a>
+  <a class="nav-item">
+    <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+    Документы
+  </a>
+
+  <div style="flex:1"></div>
+  <a class="nav-item" style="margin-top:8px">
+    <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><circle cx="12" cy="12" r="3"/></svg>
+    Настройки
+  </a>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+  <div class="page-header">
+    <div>
+      <div class="page-title">Мои проекты</div>
+      <div class="page-sub">Месторождения и скважины под вашим управлением</div>
+    </div>
+    <button class="btn btn-primary" onclick="openModal()">
+      <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+      Новый проект
+    </button>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-label">Проектов</div>
+      <div class="stat-value">3</div>
+      <div class="stat-delta">Ковыкта · Ванкор · Куюмба</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Активных скважин</div>
+      <div class="stat-value">2</div>
+      <div class="stat-delta">в бурении</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Алертов сегодня</div>
+      <div class="stat-value" style="color:var(--amber)">3</div>
+      <div class="stat-delta">2 критичных</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Документов в базе</div>
+      <div class="stat-value">455+</div>
+      <div class="stat-delta up">431 Куюмба + 24 Ванкор</div>
+    </div>
+  </div>
+
+  <!-- SEARCH -->
+  <div class="search-row">
+    <div class="search-wrap">
+      <svg class="search-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35"/></svg>
+      <input class="search-input" type="text" placeholder="Поиск по названию месторождения или скважины..." id="searchInput" oninput="filterProjects(this.value)">
+    </div>
+    <button class="filter-btn">
+      <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
+      Фильтр
+    </button>
+    <button class="filter-btn">Все регионы ▾</button>
+    <button class="filter-btn">Все статусы ▾</button>
+  </div>
+
+  <!-- ACTIVE SECTION -->
+  <div class="section-label" style="margin-bottom:14px">Активные</div>
+
+  <div class="projects-grid" id="projectsGrid">
+
+    <!-- KOVYKTA — demo project -->
+    <a class="project-card" href="app-project.html" data-name="ковыктинское">
+      <div class="pc-header">
+        <div class="pc-icon gas">⛽</div>
+        <div class="pc-meta">
+          <div class="pc-name">Ковыктинское ГКМ</div>
+          <div class="pc-type">Газоконденсатное · Иркутская обл. · ПАО «Газпром»</div>
+        </div>
+        <div class="pc-badge badge-demo">Демо</div>
+      </div>
+      <div class="pc-divider"></div>
+      <div class="pc-body">
+        <div class="pc-stat"><div class="pc-stat-val">1</div><div class="pc-stat-lbl">скважин</div></div>
+        <div class="pc-stat"><div class="pc-stat-val" style="color:var(--amber)">2</div><div class="pc-stat-lbl">алерта</div></div>
+        <div class="pc-stat"><div class="pc-stat-val">6</div><div class="pc-stat-lbl">документов</div></div>
+      </div>
+      <div class="pc-divider"></div>
+      <div class="pc-footer">
+        <div class="pc-alert">⚠ Поглощение · 156 м</div>
+        <div class="pc-updated">обновлено 10 мин назад</div>
+      </div>
+    </a>
+
+    <!-- VANKOR -->
+    <a class="project-card" href="app-vankor-project.html" data-name="ванкорское">
+      <div class="pc-header">
+        <div class="pc-icon oil">🛢</div>
+        <div class="pc-meta">
+          <div class="pc-name">Ванкорское НГМ</div>
+          <div class="pc-type">Нефтегазовое · Красноярский край · ПАО «Роснефть»</div>
+        </div>
+        <div class="pc-badge badge-active">Активный</div>
+      </div>
+      <div class="pc-divider"></div>
+      <div class="pc-body">
+        <div class="pc-stat"><div class="pc-stat-val">2</div><div class="pc-stat-lbl">скважин</div></div>
+        <div class="pc-stat"><div class="pc-stat-val" style="color:var(--red)">3</div><div class="pc-stat-lbl">алерта</div></div>
+        <div class="pc-stat"><div class="pc-stat-val">24</div><div class="pc-stat-lbl">документов</div></div>
+      </div>
+      <div class="pc-divider"></div>
+      <div class="pc-footer">
+        <div class="pc-alert">🚨 Кровля Нх · 165 м</div>
+        <div class="pc-updated">обновлено 5 мин назад</div>
+      </div>
+    </a>
+
+    <!-- NEW PROJECT CARD -->
+    <a class="new-card" onclick="openModal(); return false;" href="#">
+      <div class="new-card-icon">＋</div>
+      <div class="new-card-text">Добавить проект</div>
+      <div class="new-card-sub">Загрузите программу бурения и данные по скважинам вашего месторождения</div>
+    </a>
+
+  </div>
+
+  <!-- ARCHIVE SECTION -->
+  <div class="section-label" style="margin-bottom:14px">Архив</div>
+  <div class="projects-grid">
+    <a class="project-card" href="app-kuymba-project.html" data-name="куюмбинское">
+      <div class="pc-header">
+        <div class="pc-icon oil">🛢</div>
+        <div class="pc-meta">
+          <div class="pc-name">Куюмбинское НМ</div>
+          <div class="pc-type">Нефтяное · Красноярский край · Славнефть-КНГ / ЗАО ИГС</div>
+        </div>
+        <div class="pc-badge badge-archive">Архив</div>
+      </div>
+      <div class="pc-divider"></div>
+      <div class="pc-body">
+        <div class="pc-stat"><div class="pc-stat-val">7</div><div class="pc-stat-lbl">скважин</div></div>
+        <div class="pc-stat"><div class="pc-stat-val">—</div><div class="pc-stat-lbl">алертов</div></div>
+        <div class="pc-stat"><div class="pc-stat-val">431</div><div class="pc-stat-lbl">документов</div></div>
+      </div>
+      <div class="pc-divider"></div>
+      <div class="pc-footer">
+        <div class="pc-updated" style="color:var(--purple);font-weight:500">Рифей · INVERMUL · 2014–2015</div>
+        <div class="pc-updated">Кусты 3, 6</div>
+      </div>
+    </a>
+  </div>
+
+  <!-- EMPTY STATE -->
+  <div class="empty-search" id="emptyState">
+    <div style="font-size:40px">🔍</div>
+    <div style="font-size:16px;font-weight:600">Месторождение не найдено</div>
+    <div style="font-size:13px;color:var(--text2);max-width:320px;text-align:center">Такого месторождения пока нет в базе. Создайте новый проект и загрузите свои данные — AI проанализирует их автоматически.</div>
+    <button class="btn btn-primary" style="margin-top:8px" onclick="openModal()">Создать новый проект</button>
+  </div>
+
+</main>
+
+<!-- NEW PROJECT MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-title">Новый проект</div>
+    <div class="modal-sub">Введите основную информацию. Документы загрузите на следующем шаге.</div>
+
+    <div class="field-group">
+      <label class="field-label">Название месторождения</label>
+      <input class="field-input" type="text" placeholder="Например: Северо-Уренгойское ГМ">
+    </div>
+    <div class="field-group">
+      <label class="field-label">Тип месторождения</label>
+      <select class="field-select">
+        <option>Газоконденсатное (ГКМ)</option>
+        <option>Нефтяное (НМ)</option>
+        <option>Нефтегазовое (НГМ)</option>
+        <option>Нефтегазоконденсатное (НГКМ)</option>
+      </select>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="field-group">
+        <label class="field-label">Регион</label>
+        <input class="field-input" type="text" placeholder="ЯНАО, Иркутская обл...">
+      </div>
+      <div class="field-group">
+        <label class="field-label">Оператор</label>
+        <input class="field-input" type="text" placeholder="Газпром, Роснефть...">
+      </div>
+    </div>
+    <div class="field-group">
+      <label class="field-label">Язык документов</label>
+      <select class="field-select">
+        <option>Русский</option>
+        <option>English</option>
+        <option>Русский + English</option>
+      </select>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal()">Отмена</button>
+      <button class="btn btn-primary" onclick="createProject()">Создать и загрузить данные →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function openModal() {
+  document.getElementById('modalOverlay').classList.add('open');
+}
+function closeModal(e) {
+  if (!e || e.target === document.getElementById('modalOverlay')) {
+    document.getElementById('modalOverlay').classList.remove('open');
+  }
+}
+function createProject() {
+  window.location.href = 'app-project.html?new=1';
+}
+
+function filterProjects(val) {
+  const v = val.toLowerCase().trim();
+  const cards = document.querySelectorAll('.project-card[data-name]');
+  let visible = 0;
+  cards.forEach(c => {
+    const match = !v || c.dataset.name.includes(v) || c.querySelector('.pc-name').textContent.toLowerCase().includes(v);
+    c.style.display = match ? '' : 'none';
+    if (match) visible++;
+  });
+  document.getElementById('emptyState').classList.toggle('visible', v && visible === 0);
+}
+
+// Keyboard shortcut
+document.addEventListener('keydown', e => {
+  if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+    e.preventDefault();
+    document.getElementById('searchInput').focus();
+  }
+  if (e.key === 'Escape') closeModal();
+});
+</script>
+</body>
+</html>

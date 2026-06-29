@@ -1,0 +1,827 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digitalization Analysis Dashboard | Буровые скважины</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/plotly.js-dist"></script>
+    <style>
+        @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap");
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Manrope', 'Segoe UI', sans-serif;
+            background: radial-gradient(920px 500px at 0% -12%, rgba(26,216,181,.16), transparent), radial-gradient(900px 540px at 100% 0%, rgba(141,180,255,.14), transparent), linear-gradient(135deg, #060a10 0%, #0f1419 100%);
+            color: #e8e8e8;
+            line-height: 1.6;
+        }
+
+        .topbar {
+            max-width: 1400px;
+            margin: 24px auto 0;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            background: rgba(8,15,24,.66);
+            border: 1px solid rgba(226,237,255,.08);
+            border-radius: 14px;
+        }
+
+        .brandline { display:flex; align-items:center; gap:10px; font-family:'Oswald',sans-serif; font-size:20px; letter-spacing:.05em; text-transform:uppercase; color:#eef5ff; }
+        .branddot { width:12px; height:12px; border-radius:999px; background:radial-gradient(circle at 35% 35%, #d9fff8, #1ad8b5); }
+        .rail { display:flex; flex-wrap:wrap; gap:8px; }
+        .rail a { text-decoration:none; font-size:11px; text-transform:uppercase; letter-spacing:.07em; font-weight:800; border-radius:999px; padding:7px 11px; color:#9fb4cb; border:1px solid rgba(226,237,255,.08); background:rgba(255,255,255,.03); }
+        .rail a.active { color:#082922; background:linear-gradient(130deg,#a0f9eb,#22d7b4); border-color:rgba(34,215,180,.75); }
+        
+        header {
+            max-width: 1400px;
+            margin: 18px auto 0;
+            background: linear-gradient(145deg, rgba(26, 216, 181, 0.12), rgba(8,15,24,.92) 42%, rgba(141,180,255,.09));
+            border: 1px solid rgba(226,237,255,.1);
+            border-radius: 24px;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        
+        header h1 {
+            font-size: 2.5em;
+            color: #1ad8b5;
+            margin-bottom: 10px;
+            font-weight: 700;
+            font-family:'Oswald',sans-serif;
+            text-transform:uppercase;
+            letter-spacing:.03em;
+        }
+        
+        header p {
+            color: #999;
+            font-size: 1.1em;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        .metrics-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .metric-card {
+            background: rgba(26, 216, 181, 0.05);
+            border: 1px solid #1ad8b5;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .metric-card .value {
+            font-size: 2em;
+            color: #1ad8b5;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+        
+        .metric-card .label {
+            color: #999;
+            font-size: 0.9em;
+        }
+        
+        .chart-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .chart-box {
+            background: rgba(23, 35, 56, 0.8);
+            border: 1px solid rgba(26, 216, 181, 0.2);
+            border-radius: 8px;
+            padding: 20px;
+        }
+        
+        .chart-box h3 {
+            color: #1ad8b5;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+        
+        .chart-box canvas, .chart-box svg {
+            max-height: 400px;
+        }
+        
+        .table-section {
+            background: rgba(23, 35, 56, 0.8);
+            border: 1px solid rgba(26, 216, 181, 0.2);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 40px;
+            overflow-x: auto;
+        }
+        
+        .table-section h3 {
+            color: #1ad8b5;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        table th {
+            background: rgba(26, 216, 181, 0.1);
+            color: #1ad8b5;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #1ad8b5;
+        }
+        
+        table td {
+            padding: 12px;
+            border-bottom: 1px solid rgba(26, 216, 181, 0.1);
+        }
+        
+        table tr:hover {
+            background: rgba(26, 216, 181, 0.05);
+        }
+        
+        .initiative-card {
+            background: rgba(23, 35, 56, 0.8);
+            border-left: 4px solid #1ad8b5;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .initiative-card.i1 {
+            border-left-color: #1ad8b5;
+        }
+        .initiative-card.i2 {
+            border-left-color: #ffbc4c;
+        }
+        .initiative-card.i3 {
+            border-left-color: #ff6b9d;
+        }
+        .initiative-card.i4 {
+            border-left-color: #00d9ff;
+        }
+        .initiative-card.i5 {
+            border-left-color: #7c3aed;
+        }
+        
+        .initiative-card h4 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+        
+        .initiative-card .savings {
+            font-size: 1.5em;
+            color: #1ad8b5;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+        
+        .initiative-card .description {
+            color: #aaa;
+            font-size: 0.95em;
+            line-height: 1.5;
+        }
+        
+        .roi-label {
+            display: inline-block;
+            background: rgba(26, 216, 181, 0.2);
+            color: #1ad8b5;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+        
+        .gantt-container {
+            background: rgba(23, 35, 56, 0.8);
+            border: 1px solid rgba(26, 216, 181, 0.2);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 40px;
+            overflow-x: auto;
+        }
+        
+        .gantt-container h3 {
+            color: #1ad8b5;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+        
+        #ganttChart {
+            min-width: 800px;
+            height: 600px;
+        }
+        
+        .footer {
+            text-align: center;
+            color: #666;
+            padding: 20px;
+            border-top: 1px solid rgba(26, 216, 181, 0.1);
+            margin-top: 40px;
+        }
+        
+        .emoji {
+            font-size: 1.2em;
+        }
+        
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+            
+            header h1 {
+                font-size: 1.8em;
+            }
+        }
+        @media (max-width: 900px) {
+            .topbar { flex-direction: column; align-items: flex-start; }
+        }
+    </style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+    <div class="topbar">
+        <div class="brandline"><span class="branddot"></span><span>Digitalization Analysis Dashboard</span></div>
+        <nav class="rail"><a href="25_digitalization_i5_document_pipeline_charter.html">25 I5</a><a href="26_digitalization_master_roadmap.html">26 Roadmap</a><a class="active" href="27_digitalization_analysis_dashboard_v2.html">27 Analysis</a><a href="28_well_gantt_critical_path.html">28 Critical Path</a><a href="29_roi_calculator_interactive.html">29 ROI</a><a href="30_gantt_665_operations_detailed.html">30 Detailed Gantt</a></nav>
+    </div>
+    <header>
+        <h1>📊 Digitalization Analysis Dashboard</h1>
+        <p>Анализ проектов скважин 1–7 | Roadmap 5 инициатив</p>
+    </header>
+    
+    <div class="container">
+        <!-- Key Metrics -->
+        <div class="metrics-row">
+            <div class="metric-card">
+                <div class="label">Общие часы операций</div>
+                <div class="value">8,637.5h</div>
+                <div class="label">~360 дней</div>
+            </div>
+            <div class="metric-card">
+                <div class="label">Потенциал экономии</div>
+                <div class="value">986.2h</div>
+                <div class="label">~41 день/скважина</div>
+            </div>
+            <div class="metric-card">
+                <div class="label">Процент оптимизации</div>
+                <div class="value">11.4%</div>
+                <div class="label">от всего времени</div>
+            </div>
+            <div class="metric-card">
+                <div class="label">Top инициатива</div>
+                <div class="value">I1</div>
+                <div class="label">381.7 часов</div>
+            </div>
+        </div>
+        
+        <!-- Charts Row -->
+        <div class="chart-section">
+            <div class="chart-box">
+                <h3>📈 Распределение часов по операциям</h3>
+                <canvas id="operationsChart"></canvas>
+            </div>
+            
+            <div class="chart-box">
+                <h3>💰 Экономия по инициативам</h3>
+                <canvas id="savingsChart"></canvas>
+            </div>
+        </div>
+        
+        <div class="chart-section">
+            <div class="chart-box">
+                <h3>🧮 AI Readiness Score (по файлам)</h3>
+                <canvas id="readinessChart"></canvas>
+            </div>
+            
+            <div class="chart-box">
+                <h3>📊 Плотность расчётов (Calc Ratio)</h3>
+                <canvas id="calcRatioChart"></canvas>
+            </div>
+        </div>
+        
+        <!-- Operations Data Table -->
+        <div class="table-section">
+            <h3>📋 Анализ операций по типам</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Тип операции</th>
+                        <th>Часов</th>
+                        <th>% от плана</th>
+                        <th>Экономия %</th>
+                        <th>Часов сбережений</th>
+                        <th>Целевая инициатива</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Drilling (бурение)</strong></td>
+                        <td>2,742.5h</td>
+                        <td>31.8%</td>
+                        <td>6%</td>
+                        <td style="color: #ffbc4c;">164.5h</td>
+                        <td>I2 Hydraulics</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Tripping (СПО)</strong></td>
+                        <td>2,627.5h</td>
+                        <td>30.4%</td>
+                        <td>8%</td>
+                        <td style="color: #1ad8b5;">210.2h</td>
+                        <td>I1 Depth-Day</td>
+                    </tr>
+                    <tr>
+                        <td><strong>GIS/Core</strong></td>
+                        <td>849.0h</td>
+                        <td>9.8%</td>
+                        <td>7%</td>
+                        <td style="color: #7c3aed;">59.4h</td>
+                        <td>I1 Optimization</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Assembly (сборка)</strong></td>
+                        <td>728.0h</td>
+                        <td>8.4%</td>
+                        <td>12%</td>
+                        <td style="color: #1ad8b5;">87.4h</td>
+                        <td>I1 Critical Path</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Other (прочее)</strong></td>
+                        <td>582.5h</td>
+                        <td>6.7%</td>
+                        <td>5%</td>
+                        <td style="color: #ff6b9d;">29.1h</td>
+                        <td>I1 General</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Washing (травление)</strong></td>
+                        <td>550.0h</td>
+                        <td>6.4%</td>
+                        <td>10%</td>
+                        <td style="color: #1ad8b5;">55.0h</td>
+                        <td>I1 Optimization</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Casing (ОК)</strong></td>
+                        <td>370.0h</td>
+                        <td>4.3%</td>
+                        <td>4%</td>
+                        <td style="color: #00d9ff;">14.8h</td>
+                        <td>I4 Casing</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Prep/Misc</strong></td>
+                        <td>72.0h</td>
+                        <td>0.8%</td>
+                        <td>10%</td>
+                        <td style="color: #ffbc4c;">7.2h</td>
+                        <td>I5 Pipeline</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cementing (ЦО)</strong></td>
+                        <td>116.0h</td>
+                        <td>1.3%</td>
+                        <td>4%</td>
+                        <td style="color: #00d9ff;">4.6h</td>
+                        <td>I4 Casing</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- PDF Analysis Table -->
+        <div class="table-section">
+            <h3>📄 AI Readiness: Анализ исходных документов</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Файл PDF</th>
+                        <th>Всего строк</th>
+                        <th>Расчётных строк</th>
+                        <th>Плотность (ratio)</th>
+                        <th>AI Readiness</th>
+                        <th>Главное содержимое</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>1.pdf</strong></td>
+                        <td>810</td>
+                        <td>575</td>
+                        <td><strong style="color: #1ad8b5;">0.71</strong></td>
+                        <td><span class="roi-label">⭐⭐⭐ 100%</span></td>
+                        <td>Гидравлические расчёты, муд система, БХА</td>
+                    </tr>
+                    <tr>
+                        <td><strong>2.pdf</strong></td>
+                        <td>1,455</td>
+                        <td>974</td>
+                        <td><strong style="color: #1ad8b5;">0.669</strong></td>
+                        <td><span class="roi-label">⭐⭐⭐ 100%</span></td>
+                        <td>План операций (665 ops, 0–4830m), время</td>
+                    </tr>
+                    <tr>
+                        <td><strong>3.pdf</strong></td>
+                        <td>291</td>
+                        <td>103</td>
+                        <td style="color: #999;">0.354</td>
+                        <td><span class="roi-label">⭐⭐ 91%</span></td>
+                        <td>Общие данные, резюме проекта</td>
+                    </tr>
+                    <tr>
+                        <td><strong>5.pdf</strong></td>
+                        <td>573</td>
+                        <td>346</td>
+                        <td><strong style="color: #ffbc4c;">0.604</strong></td>
+                        <td><span class="roi-label">⭐⭐ 92%</span></td>
+                        <td>Обсадные колонны, давления, цементаж</td>
+                    </tr>
+                    <tr>
+                        <td><strong>6.pdf</strong></td>
+                        <td>347</td>
+                        <td>156</td>
+                        <td style="color: #999;">0.45</td>
+                        <td><span class="roi-label">⭐ 81%</span></td>
+                        <td>Доп. данные, резервные системы</td>
+                    </tr>
+                    <tr>
+                        <td><strong>7.pdf</strong></td>
+                        <td>144</td>
+                        <td>80</td>
+                        <td style="color: #999;">0.556</td>
+                        <td><span class="roi-label">⭐ 80%</span></td>
+                        <td>Матрица потерь (30 правил), процедуры</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- 5 Initiatives -->
+        <h2 style="color: #1ad8b5; margin: 40px 0 20px 0;">🎯 5 Инициатив цифровизации</h2>
+        
+        <div class="initiative-card i1">
+            <h4><span class="emoji">⏱️</span> I1: Depth-Day Optimizer + Critical Path Control</h4>
+            <div class="savings">381.7 часов сбережений</div>
+            <div class="roi-label">ROI: 67x | Payback: <1 week</div>
+            <p class="description">
+                Система оптимизации глубины-дней и критического пути. Использует operation_plan_from_2.csv (665 операций).
+                <br><strong>Фокус:</strong> Трубопровод (210.2h), сборка (87.4h), травление (55h)
+                <br><strong>30д:</strong> Baseline ETA predictor | <strong>60д:</strong> Critical path engine | <strong>90д:</strong> Interactive Gantt + next-best-action
+            </p>
+        </div>
+        
+        <div class="initiative-card i2">
+            <h4><span class="emoji">💧</span> I2: Hydraulics Digital Twin</h4>
+            <div class="savings">284.5 часов сбережений</div>
+            <div class="roi-label">ROI: 14x | Payback: ~2 months</div>
+            <p class="description">
+                Цифровой близнец гидравлических систем. Использует 1.pdf гидравлические расчёты (860 строк, ratio 0.71).
+                <br><strong>Фокус:</strong> Бурение (164.5h), GIS (59.4h), научётность ECD
+                <br><strong>30д:</strong> Static ECD calculator | <strong>60д:</strong> Real-time WITS integration | <strong>90д:</strong> ML forecaster ±0.05 ppg
+            </p>
+        </div>
+        
+        <div class="initiative-card i3">
+            <h4><span class="emoji">⚠️</span> I3: Losses Response Engine</h4>
+            <div class="savings">140.0 часов сбережений</div>
+            <div class="roi-label">ROI: 12x | Payback: <1 month</div>
+            <p class="description">
+                Цифровой рекомендатор действий при поглощениях. Использует loss_response_matrix_from_7.csv (30 структурированных правил).
+                <br><strong>Фокус:</strong> Быстрая рекомендация (<5 минут), правилоориентированная система
+                <br><strong>30д:</strong> 30 rules playbook UI | <strong>60д:</strong> Real-time detection | <strong>90д:</strong> RL-based optimizer
+            </p>
+        </div>
+        
+        <div class="initiative-card i4">
+            <h4><span class="emoji">🔩</span> I4: Casing & Cementing Stress Check Automation</h4>
+            <div class="savings">85.0 часов сбережений</div>
+            <div class="roi-label">ROI: 43x | Payback: <1 week</div>
+            <p class="description">
+                Автоматизация расчётов прочности обсадных колонн. Использует 5.pdf дизайн (440 строк, ratio 0.604).
+                <br><strong>Фокус:</strong> Обсадные колонны (14.8h), цементаж (4.6h), API валидация
+                <br><strong>30д:</strong> Stress calculator (collapse, burst) | <strong>60д:</strong> Multi-standard support | <strong>90д:</strong> Automated calc sheets + approval
+            </p>
+        </div>
+        
+        <div class="initiative-card i5">
+            <h4><span class="emoji">📑</span> I5: Document-to-Data Ingestion Pipeline</h4>
+            <div class="savings">95.0 часов сбережений</div>
+            <div class="roi-label">ROI: 54x | Payback: ~1 week</div>
+            <p class="description">
+                Полностью автоматизированная обработка PDF в структурированные данные. Enabler для всех I1–I4.
+                <br><strong>Фокус:</strong> PDF парсинг (1–7.pdf уже проанализирована), OCR, semantic mapping
+                <br><strong>30д:</strong> Text extraction + section detection | <strong>60д:</strong> Table extraction + semantic mapping | <strong>90д:</strong> CI/CD pipeline, auto-ingest
+            </p>
+        </div>
+        
+        <!-- Gantt Chart -->
+        <div class="gantt-container">
+            <h3>📅 Gantt: 90-Day Execution Timeline</h3>
+            <div id="ganttChart"></div>
+        </div>
+        
+        <!-- Budget & ROI -->
+        <div class="chart-section">
+            <div class="chart-box">
+                <h3>💵 Инвестиция по инициативам</h3>
+                <canvas id="budgetChart"></canvas>
+            </div>
+            
+            <div class="chart-box">
+                <h3>📈 ROI и Payback Period</h3>
+                <canvas id="roiChart"></canvas>
+            </div>
+        </div>
+        
+        <div class="table-section">
+            <h3>💰 Финансовый анализ</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Инициатива</th>
+                        <th>Сбережение (часов)</th>
+                        <th>Стоимость часа</th>
+                        <th>Прямой доход</th>
+                        <th>Инвестиция</th>
+                        <th>ROI</th>
+                        <th>Payback</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>I1 Depth-Day</strong></td>
+                        <td>381.7h</td>
+                        <td>$300/h</td>
+                        <td style="color: #1ad8b5;">$114,510</td>
+                        <td>$120K</td>
+                        <td><span class="roi-label">67x</span></td>
+                        <td><1 неделя</td>
+                    </tr>
+                    <tr>
+                        <td><strong>I2 Hydraulics</strong></td>
+                        <td>284.5h</td>
+                        <td>$300/h</td>
+                        <td style="color: #1ad8b5;">$85,350</td>
+                        <td>$145K</td>
+                        <td><span class="roi-label">14x</span></td>
+                        <td>~2 месяца</td>
+                    </tr>
+                    <tr>
+                        <td><strong>I3 Losses</strong></td>
+                        <td>140h</td>
+                        <td>$300/h</td>
+                        <td style="color: #1ad8b5;">$42,000</td>
+                        <td>$71K</td>
+                        <td><span class="roi-label">12x</span></td>
+                        <td><1 месяца</td>
+                    </tr>
+                    <tr>
+                        <td><strong>I4 Casing</strong></td>
+                        <td>85h</td>
+                        <td>$300/h</td>
+                        <td style="color: #1ad8b5;">$25,500</td>
+                        <td>$69K</td>
+                        <td><span class="roi-label">43x</span></td>
+                        <td><1 неделя</td>
+                    </tr>
+                    <tr>
+                        <td><strong>I5 Pipeline</strong></td>
+                        <td>95h</td>
+                        <td>$300/h</td>
+                        <td style="color: #1ad8b5;">$28,500</td>
+                        <td>$121K</td>
+                        <td><span class="roi-label">54x</span></td>
+                        <td>~1 неделя</td>
+                    </tr>
+                    <tr style="background: rgba(26, 216, 181, 0.1); font-weight: 700;">
+                        <td><strong>TOTAL / СРЕДНЕЕ</strong></td>
+                        <td><strong>986.2h</strong></td>
+                        <td><strong>$300/h</strong></td>
+                        <td style="color: #1ad8b5;"><strong>$295,860</strong></td>
+                        <td><strong>$526K</strong></td>
+                        <td><span class="roi-label">23x average</span></td>
+                        <td><strong><1 месяца</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="footer">
+            <p>Создано на основе глубокого анализа PDFs проектов скважин 1–7</p>
+            <p style="font-size: 0.9em; margin-top: 10px;">Data: operation_plan (665 ops, 8637.5h) | Hydraulics (860 rows, ratio 0.71) | Casing (440 rows, ratio 0.604) | Losses (30 rules)</p>
+        </div>
+    </div>
+    
+    <script>
+        // Chart.js configuration
+        const chartConfig = {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    labels: { color: '#aaa', font: { family: "'Manrope'" } }
+                }
+            },
+            scales: {
+                y: { ticks: { color: '#aaa' }, grid: { color: 'rgba(26, 216, 181, 0.1)' } },
+                x: { ticks: { color: '#aaa' }, grid: { color: 'rgba(26, 216, 181, 0.1)' } }
+            }
+        };
+        
+        // Operations Chart
+        const operationsCtx = document.getElementById('operationsChart').getContext('2d');
+        new Chart(operationsCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Drilling (31.8%)', 'Tripping (30.4%)', 'GIS/Core (9.8%)', 'Assembly (8.4%)', 'Other (6.7%)', 'Washing (6.4%)', 'Casing (4.3%)', 'Cementing (1.3%)'],
+                datasets: [{
+                    data: [2742.5, 2627.5, 849, 728, 582.5, 550, 370, 116],
+                    backgroundColor: ['#1ad8b5', '#ffbc4c', '#00d9ff', '#ff6b9d', '#7c3aed', '#ffbc4c', '#00d9ff', '#ff6b9d'],
+                    borderColor: '#0f1419',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                ...chartConfig,
+                plugins: { ...chartConfig.plugins, legend: { position: 'bottom', labels: chartConfig.plugins.legend.labels } }
+            }
+        });
+        
+        // Savings Chart
+        const savingsCtx = document.getElementById('savingsChart').getContext('2d');
+        new Chart(savingsCtx, {
+            type: 'bar',
+            data: {
+                labels: ['I1\nDepth-Day', 'I2\nHydraulics', 'I3\nLosses', 'I4\nCasing', 'I5\nPipeline'],
+                datasets: [{
+                    label: 'Часов сбережений',
+                    data: [381.7, 284.5, 140, 85, 95],
+                    backgroundColor: ['#1ad8b5', '#ffbc4c', '#ff6b9d', '#00d9ff', '#7c3aed'],
+                    borderRadius: 5
+                }]
+            },
+            options: {
+                ...chartConfig,
+                indexAxis: undefined,
+                scales: {
+                    y: { ...chartConfig.scales.y, beginAtZero: true, max: 400 }
+                }
+            }
+        });
+        
+        // AI Readiness Chart
+        const readinessCtx = document.getElementById('readinessChart').getContext('2d');
+        new Chart(readinessCtx, {
+            type: 'radar',
+            data: {
+                labels: ['1.pdf', '2.pdf', '3.pdf', '5.pdf', '6.pdf', '7.pdf'],
+                datasets: [{
+                    label: 'AI Readiness (%)',
+                    data: [100, 100, 91, 92, 81, 80],
+                    borderColor: '#1ad8b5',
+                    backgroundColor: 'rgba(26, 216, 181, 0.2)',
+                    pointBackgroundColor: '#1ad8b5',
+                    pointBorderColor: '#0f1419',
+                    pointBorderWidth: 2
+                }]
+            },
+            options: {
+                ...chartConfig,
+                scales: {
+                    r: { beginAtZero: true, max: 100, ticks: { color: '#aaa' }, grid: { color: 'rgba(26, 216, 181, 0.1)' } }
+                }
+            }
+        });
+        
+        // Calc Ratio Chart
+        const calcRatioCtx = document.getElementById('calcRatioChart').getContext('2d');
+        new Chart(calcRatioCtx, {
+            type: 'bar',
+            data: {
+                labels: ['1.pdf', '2.pdf', '3.pdf', '5.pdf', '6.pdf', '7.pdf'],
+                datasets: [{
+                    label: 'Calc Density Ratio',
+                    data: [0.71, 0.669, 0.354, 0.604, 0.45, 0.556],
+                    backgroundColor: ['#1ad8b5', '#1ad8b5', '#ffbc4c', '#ffbc4c', '#ff6b9d', '#ff6b9d'],
+                    borderRadius: 5
+                }]
+            },
+            options: {
+                ...chartConfig,
+                scales: {
+                    y: { ...chartConfig.scales.y, beginAtZero: true, max: 0.8 }
+                }
+            }
+        });
+        
+        // Budget Chart
+        const budgetCtx = document.getElementById('budgetChart').getContext('2d');
+        new Chart(budgetCtx, {
+            type: 'bar',
+            data: {
+                labels: ['I1', 'I2', 'I3', 'I4', 'I5'],
+                datasets: [{
+                    label: 'Инвестиция ($K)',
+                    data: [120, 145, 71, 69, 121],
+                    backgroundColor: ['#1ad8b5', '#ffbc4c', '#ff6b9d', '#00d9ff', '#7c3aed'],
+                    borderRadius: 5
+                }]
+            },
+            options: {
+                ...chartConfig,
+                scales: {
+                    y: { ...chartConfig.scales.y, beginAtZero: true, max: 160 }
+                }
+            }
+        });
+        
+        // ROI Chart
+        const roiCtx = document.getElementById('roiChart').getContext('2d');
+        new Chart(roiCtx, {
+            type: 'bar',
+            data: {
+                labels: ['I1', 'I2', 'I3', 'I4', 'I5'],
+                datasets: [{
+                    label: 'ROI (x раз)',
+                    data: [67, 14, 12, 43, 54],
+                    backgroundColor: ['#1ad8b5', '#ffbc4c', '#ff6b9d', '#00d9ff', '#7c3aed'],
+                    borderRadius: 5
+                }]
+            },
+            options: {
+                ...chartConfig,
+                scales: {
+                    y: { ...chartConfig.scales.y, beginAtZero: true, max: 70 }
+                }
+            }
+        });
+        
+        // Gantt Chart (Plotly)
+        const ganttData = [
+            { x: [new Date('2026-04-12'), new Date('2026-05-12')], y: ['I1: MVP & Baseline'], name: 'I1 Phase 1', marker: { color: '#1ad8b5' } },
+            { x: [new Date('2026-05-13'), new Date('2026-06-12')], y: ['I1: MVP & Baseline'], name: 'I1 Phase 2', marker: { color: '#00d9ff' } },
+            { x: [new Date('2026-06-13'), new Date('2026-07-12')], y: ['I1: MVP & Baseline'], name: 'I1 Phase 3', marker: { color: '#ffbc4c' } },
+            
+            { x: [new Date('2026-04-12'), new Date('2026-05-12')], y: ['I2: Hydraulics'], name: 'I2 Phase 1', marker: { color: '#1ad8b5' } },
+            { x: [new Date('2026-05-13'), new Date('2026-06-12')], y: ['I2: Hydraulics'], name: 'I2 Phase 2', marker: { color: '#00d9ff' } },
+            { x: [new Date('2026-06-13'), new Date('2026-07-12')], y: ['I2: Hydraulics'], name: 'I2 Phase 3', marker: { color: '#ffbc4c' } },
+            
+            { x: [new Date('2026-04-12'), new Date('2026-05-12')], y: ['I3: Losses'], name: 'I3 Phase 1', marker: { color: '#1ad8b5' } },
+            { x: [new Date('2026-05-13'), new Date('2026-06-12')], y: ['I3: Losses'], name: 'I3 Phase 2', marker: { color: '#00d9ff' } },
+            { x: [new Date('2026-06-13'), new Date('2026-07-12')], y: ['I3: Losses'], name: 'I3 Phase 3', marker: { color: '#ffbc4c' } },
+            
+            { x: [new Date('2026-04-12'), new Date('2026-05-12')], y: ['I4: Casing'], name: 'I4 Phase 1', marker: { color: '#1ad8b5' } },
+            { x: [new Date('2026-05-13'), new Date('2026-06-12')], y: ['I4: Casing'], name: 'I4 Phase 2', marker: { color: '#00d9ff' } },
+            { x: [new Date('2026-06-13'), new Date('2026-07-12')], y: ['I4: Casing'], name: 'I4 Phase 3', marker: { color: '#ffbc4c' } },
+            
+            { x: [new Date('2026-04-12'), new Date('2026-05-12')], y: ['I5: Pipeline'], name: 'I5 Phase 1', marker: { color: '#1ad8b5' } },
+            { x: [new Date('2026-05-13'), new Date('2026-06-12')], y: ['I5: Pipeline'], name: 'I5 Phase 2', marker: { color: '#00d9ff' } },
+            { x: [new Date('2026-06-13'), new Date('2026-07-12')], y: ['I5: Pipeline'], name: 'I5 Phase 3', marker: { color: '#ffbc4c' } }
+        ];
+        
+        const layout = {
+            title: 'Phase 1 (1-30d) | Phase 2 (31-60d) | Phase 3 (61-90d)',
+            xaxis: { type: 'date', color: '#aaa' },
+            yaxis: { color: '#aaa' },
+            plot_bgcolor: 'rgba(23, 35, 56, 0.3)',
+            paper_bgcolor: 'rgba(23, 35, 56, 0.8)',
+            font: { color: '#aaa', family: "'Manrope'" },
+            margin: { l: 150, r: 50, t: 50, b: 50 },
+            height: 500
+        };
+        
+        Plotly.newPlot('ganttChart', ganttData, layout, { responsive: true });
+    </script>
+  <script src="assets/js/global-auth-widget.js"></script>
+</body>
+</html>

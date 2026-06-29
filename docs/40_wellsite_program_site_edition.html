@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>40 · WS2000 Site Edition</title>
+<style>
+  :root{--bg:#0b1220;--panel:#121a2b;--card:#182338;--line:#2b3954;--txt:#e6edf7;--muted:#9caecc;--a:#1ad8b5;--w:#ffbc4c;--r:#f85149;--g:#3fb950}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:radial-gradient(1200px 600px at 15% -10%,rgba(26,216,181,.15),transparent),linear-gradient(160deg,#09101d,#111b2c 50%,#16243a);color:var(--txt);min-height:100vh}
+  .app{max-width:1500px;margin:0 auto;padding:18px}
+  .top{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid var(--line);border-radius:12px;background:rgba(11,18,33,.72);padding:10px 12px;position:sticky;top:8px;z-index:20}
+  .brand{font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+  .brand span{color:var(--a)}
+  .top-actions{display:flex;gap:8px;flex-wrap:wrap}
+  .btn{border:1px solid var(--line);background:#1b2840;color:#cfe3ff;border-radius:8px;padding:7px 11px;cursor:pointer;font-weight:600}
+  .btn:hover{border-color:var(--a)}
+  .btn.main{background:linear-gradient(135deg,#8bf5e6,#1ad8b5);color:#0a1d1a;border-color:#1ad8b5}
+  .btn.tag-edit{border-color:#38608f;background:#1a2943}
+  .btn.tag-auto{border-color:#2f6a53;background:#163a31}
+  .btn.tag-edit::after,.btn.tag-auto::after{margin-left:8px;font-size:10px;font-weight:800;letter-spacing:.04em;padding:2px 6px;border-radius:999px;vertical-align:middle}
+  .btn.tag-edit::after{content:'EDIT';background:#264d7a;color:#d7eaff}
+  .btn.tag-auto::after{content:'AUTO';background:#1f5c49;color:#d4ffef}
+  .legend{display:flex;gap:8px;align-items:center;flex-wrap:wrap;color:var(--muted);font-size:12px}
+  .chip-edit,.chip-auto{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:999px;padding:3px 8px}
+  .chip-edit{background:#1a2943;border-color:#38608f;color:#d7eaff}
+  .chip-auto{background:#163a31;border-color:#2f6a53;color:#d4ffef}
+  .toggle{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:4px 8px;background:#111f34;color:#cfe3ff}
+  .layout{display:grid;grid-template-columns:280px 1fr;gap:12px;margin-top:12px}
+  .side,.work{border:1px solid var(--line);border-radius:12px;background:rgba(13,22,37,.76)}
+  .side{padding:12px;position:sticky;top:64px;height:calc(100vh - 82px);overflow:auto}
+  .work{padding:14px}
+  h1{font-size:21px;color:var(--a)}
+  .sub{margin-top:4px;color:var(--muted);font-size:13px}
+  .modules{margin-top:14px;display:grid;gap:6px}
+  .mod-btn{width:100%;text-align:left;padding:10px 10px;border-radius:8px;border:1px solid var(--line);background:#16243a;color:#d5e4fb;cursor:pointer}
+  .mod-btn:hover,.mod-btn.active{border-color:var(--a);background:#1a2b44}
+  .mod-title{font-weight:700;font-size:13px}
+  .mod-sub{font-size:11px;color:#98afcf;margin-top:2px}
+  .status{margin-top:14px;border:1px solid var(--line);border-radius:8px;background:#111a2b;padding:10px;font-size:12px}
+  .srow{display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px dotted #273b59}
+  .srow:last-child{border-bottom:none}
+  .ok{color:var(--g)} .warn{color:var(--w)} .bad{color:var(--r)}
+
+  .module{display:none}
+  .module.active{display:block}
+  h2{font-size:18px;color:var(--a);margin-bottom:10px;border-bottom:1px solid var(--line);padding-bottom:6px}
+  h3{font-size:14px;color:var(--w);margin:10px 0 6px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+  .card{border:1px solid var(--line);border-radius:10px;background:#17253b;padding:10px}
+  label{display:block;font-size:12px;color:var(--muted);margin:7px 0 4px}
+  input,select,textarea{width:100%;border:1px solid var(--line);border-radius:6px;background:#0c1526;color:var(--txt);padding:7px 8px;font-size:13px}
+  input.ro{background:#0f2135;border-color:#2c4b73;color:#9ee9d7;font-weight:700}
+  input.ro.fail{border-color:#f85149;background:#3a1418;color:#ffd7d5;box-shadow:0 0 0 2px rgba(248,81,73,.22)}
+  textarea{min-height:70px;resize:vertical}
+  .row{display:flex;gap:8px;align-items:center}
+  .row>*{flex:1}
+  table{width:100%;border-collapse:collapse;margin-top:7px}
+  th,td{border:1px solid var(--line);padding:6px;font-size:12px;vertical-align:top}
+  th{background:#111d31;color:var(--a)}
+  .small{font-size:11px;color:var(--muted)}
+  .out{margin-top:10px;border:1px solid #20436b;background:#0a1a2e;border-radius:8px;padding:8px}
+  .orow{display:flex;justify-content:space-between;border-bottom:1px dotted #1f3d61;padding:3px 0;font-size:12px}
+  .orow:last-child{border-bottom:none}
+  .mono{font-family:Consolas,monospace;color:var(--a);font-weight:700}
+
+  @media (max-width:1100px){.layout{grid-template-columns:1fr}.side{position:static;height:auto}}
+  @media (max-width:800px){.grid2,.grid3{grid-template-columns:1fr}}
+</style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <div class="brand"><span>WS2000</span> Site Edition · Модуль БУРЕНИЕ</div>
+    <div class="top-actions">
+      <button class="btn" onclick="loadState()">Загрузить</button>
+      <button class="btn" onclick="saveState()">Сохранить</button>
+      <button class="btn" onclick="runQC()">Quality Check</button>
+      <button class="btn" onclick="openModById('data')">Data Exchange</button>
+      <button class="btn" onclick="openPrintManager()">Print Manager</button>
+      <button class="btn" onclick="exportJSON()">Export JSON</button>
+      <button class="btn main" onclick="generateReport()">Generate Report</button>
+      <button class="btn" onclick="openReportManager()">Report Manager</button>
+      <a class="btn" href="37_drilling_modules.html" style="text-decoration:none;display:inline-flex;align-items:center">Назад в БУРЕНИЕ</a>
+      <a class="btn main" href="50_tender_project_calc.html" style="background:linear-gradient(135deg,#ffe7b0,#ffbc4c);color:#222;font-weight:700;">Рассчитать проект</a>
+    </div>
+  </div>
+  <div class="legend" style="margin-top:8px">
+    <span class="chip-edit">EDIT: действия ввода/управления</span>
+    <span class="chip-auto">AUTO: проверка/расчет/генерация</span>
+    <label class="toggle"><input id="auto_calc" type="checkbox" checked onchange="toggleAutoCalc()"> Авторасчет при изменении полей</label>
+  </div>
+
+  <div class="layout">
+    <aside class="side">
+      <h1>Рабочий стол</h1>
+      <div class="sub">Аналог WS2000/WELLSIGHT на сайте</div>
+      <div class="modules">
+          <button class="mod-btn" data-mod="pilot" onclick="openMod('pilot',this)"><div class="mod-title">Этап 2: Пилот</div><div class="mod-sub">Shadow mode, калибровка порогов, rollout</div></button>
+        <button class="mod-btn active" data-mod="well" onclick="openMod('well',this)"><div class="mod-title">Well Data</div><div class="mod-sub">Паспорт скважины и единицы</div></button>
+        <button class="mod-btn" data-mod="design" onclick="openMod('design',this)"><div class="mod-title">Этап 1: Проектирование</div><div class="mod-sub">Perimeter, baseline, архитектура, метрики</div></button>
+        <button class="mod-btn" data-mod="casing" onclick="openMod('casing',this)"><div class="mod-title">Well Casing & Sections</div><div class="mod-sub">Обсадные и интервалы</div></button>
+        <button class="mod-btn" data-mod="lith" onclick="openMod('lith',this)"><div class="mod-title">Lithology</div><div class="mod-sub">Породы и интервалы</div></button>
+        <button class="mod-btn" data-mod="survey" onclick="openMod('survey',this)"><div class="mod-title">Well Surveys</div><div class="mod-sub">Траектория MD/TVD/Azimuth</div></button>
+        <button class="mod-btn" data-mod="testing" onclick="openMod('testing',this)"><div class="mod-title">Well Testings</div><div class="mod-sub">Испытания и результаты</div></button>
+        <button class="mod-btn" data-mod="bit" onclick="openMod('bit',this)"><div class="mod-title">Bit Records</div><div class="mod-sub">Рейсы долота, ROP</div></button>
+        <button class="mod-btn" data-mod="fluid" onclick="openMod('fluid',this)"><div class="mod-title">Fluid Sets & Properties</div><div class="mod-sub">Свойства раствора</div></button>
+        <button class="mod-btn" data-mod="products" onclick="openMod('products',this)"><div class="mod-title">Product Lists</div><div class="mod-sub">Компоненты и SG</div></button>
+        <button class="mod-btn" data-mod="inv" onclick="openMod('inv',this)"><div class="mod-title">Inventory & Costing</div><div class="mod-sub">Материалы и стоимость</div></button>
+        <button class="mod-btn" data-mod="vol" onclick="openMod('vol',this)"><div class="mod-title">Volumes / Losses & Gains</div><div class="mod-sub">Блокирующая сверка балансов</div></button>
+        <button class="mod-btn" data-mod="hyd" onclick="openMod('hyd',this)"><div class="mod-title">Hydraulics</div><div class="mod-sub">ECD, режимы, риски</div></button>
+        <button class="mod-btn" data-mod="zero" onclick="openMod('zero',this)"><div class="mod-title">Zero Defects Tracking</div><div class="mod-sub">Критичные проверки качества</div></button>
+        <button class="mod-btn" data-mod="mud" onclick="openMod('mud',this)"><div class="mod-title">Mud Reports</div><div class="mod-sub">Суточные и сводные отчеты</div></button>
+        <button class="mod-btn" data-mod="audit" onclick="openMod('audit',this)"><div class="mod-title">Post Well Audit</div><div class="mod-sub">Интервальные recap</div></button>
+        <button class="mod-btn" data-mod="data" onclick="openMod('data',this)"><div class="mod-title">Data Management</div><div class="mod-sub">Server exchange и DIMS</div></button>
+        <button class="mod-btn" data-mod="print" onclick="openMod('print',this)"><div class="mod-title">Print Manager</div><div class="mod-sub">Пакеты отчетов и печать</div></button>
+        <button class="mod-btn" data-mod="report" onclick="openMod('report',this)"><div class="mod-title">Report Manager</div><div class="mod-sub">Шаблоны и выгрузка отчетов</div></button>
+      </div>
+
+      <div class="status" id="qcPanel">
+        <div class="srow"><span>Well mandatory</span><span class="mono">PENDING</span></div>
+        <div class="srow"><span>Volume reconciliation</span><span class="mono">PENDING</span></div>
+        <div class="srow"><span>Cost consistency</span><span class="mono">PENDING</span></div>
+        <div class="srow"><span>Audit readiness</span><span class="mono">PENDING</span></div>
+      </div>
+    </aside>
+
+    <section class="work">
+      <div id="m_well" class="module active">
+        <h2>Well Data</h2>
+        <div class="grid2">
+          <div class="card">
+            <h3>Общие данные</h3>
+            <label>Well name *</label><input id="well_name" value="Well-12 North">
+            <div class="row"><div><label>API/PCN *</label><input id="well_api" value="API-78431"></div><div><label>Operator *</label><input id="well_operator" value="NEXUS OIL"></div></div>
+            <div class="row"><div><label>Contractor</label><input id="well_contractor" value="NEXUS Drilling"></div><div><label>Rig</label><input id="well_rig" value="Rig-07"></div></div>
+            <div class="row"><div><label>Well function</label><select id="well_func"><option>Exploration</option><option selected>Development</option><option>Appraisal</option><option>Workover</option></select></div><div><label>Profile</label><select id="well_profile"><option>Vertical</option><option selected>Deviated</option><option>Horizontal</option></select></div></div>
+            <div class="row"><div><label>MD (m) *</label><input id="well_md" type="number" value="3667"></div><div><label>TVD (m) *</label><input id="well_tvd" type="number" value="3600"></div></div>
+          </div>
+          <div class="card">
+            <h3>Локация и контроль доступа</h3>
+            <div class="row"><div><label>Country</label><input id="well_country" value="RU"></div><div><label>Region</label><input id="well_region" value="YNAO"></div></div>
+            <div class="row"><div><label>Field</label><input id="well_field" value="North Field"></div><div><label>Basin</label><input id="well_basin" value="West Siberia"></div></div>
+            <div class="row"><div><label>Latitude</label><input id="well_lat" value="67.25"></div><div><label>Longitude</label><input id="well_lon" value="74.91"></div></div>
+            <div class="row"><div><label>Unit system</label><select id="well_units"><option selected>Metric (SI)</option><option>API/Imperial</option></select></div><div><label>Priority level</label><select id="well_priority"><option>Level I</option><option selected>Level II</option><option>Level III</option></select></div></div>
+            <label><input id="well_tight" type="checkbox"> Tight Hole</label>
+            <div class="row"><div><label>MD/TVD check (AUTO)</label><input id="well_status_auto" class="ro" readonly value="PENDING"></div><div><label>Depth margin (AUTO, m)</label><input id="well_margin_auto" class="ro" readonly value="0.00"></div></div>
+            <button class="btn" onclick="validateWell()">Validate Well Data</button>
+            <div id="well_out" class="out" style="display:none"></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="m_casing" class="module">
+        <h2>Well Casing & Sections</h2>
+        <div class="grid2">
+          <div class="card">
+            <h3>Обсадные колонны</h3>
+            <table>
+              <tr><th>String</th><th>OD (mm)</th><th>Shoe TVD (m)</th></tr>
+              <tr><td>Surface</td><td><input id="cs_od1" type="number" value="244.5"></td><td><input id="cs_tv1" type="number" value="600"></td></tr>
+              <tr><td>Intermediate</td><td><input id="cs_od2" type="number" value="177.8"></td><td><input id="cs_tv2" type="number" value="1800"></td></tr>
+              <tr><td>Production</td><td><input id="cs_od3" type="number" value="139.7"></td><td><input id="cs_tv3" type="number" value="3200"></td></tr>
+            </table>
+          </div>
+          <div class="card">
+            <h3>Интервалы ствола</h3>
+            <table>
+              <tr><th>Section</th><th>From (m)</th><th>To (m)</th><th>Hole OD (mm)</th></tr>
+              <tr><td>17-1/2"</td><td><input id="sec_f1" type="number" value="0"></td><td><input id="sec_t1" type="number" value="600"></td><td><input id="sec_d1" type="number" value="444.5"></td></tr>
+              <tr><td>12-1/4"</td><td><input id="sec_f2" type="number" value="600"></td><td><input id="sec_t2" type="number" value="3200"></td><td><input id="sec_d2" type="number" value="311.1"></td></tr>
+              <tr><td>8-1/2"</td><td><input id="sec_f3" type="number" value="3200"></td><td><input id="sec_t3" type="number" value="3667"></td><td><input id="sec_d3" type="number" value="215.9"></td></tr>
+            </table>
+            <button class="btn" onclick="calcGeometry()">Check geometry</button>
+            <div id="casing_out" class="out" style="display:none"></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="m_lith" class="module">
+        <h2>Lithology</h2>
+        <div class="card">
+          <h3>Интервалы пород</h3>
+          <table>
+            <tr><th>From</th><th>To</th><th>Lithology</th><th>Formation</th></tr>
+            <tr><td><input id="l_f1" type="number" value="0"></td><td><input id="l_t1" type="number" value="900"></td><td><input id="l_ty1" value="Shale"></td><td><input id="l_fr1" value="Nord Fm"></td></tr>
+            <tr><td><input id="l_f2" type="number" value="900"></td><td><input id="l_t2" type="number" value="2600"></td><td><input id="l_ty2" value="Sandstone"></td><td><input id="l_fr2" value="Beta Fm"></td></tr>
+            <tr><td><input id="l_f3" type="number" value="2600"></td><td><input id="l_t3" type="number" value="3667"></td><td><input id="l_ty3" value="Interbedded"></td><td><input id="l_fr3" value="Gamma Fm"></td></tr>
+          </table>
+          <div class="small">Для Level I рекомендуется максимальная детализация литологии.</div>
+        </div>
+      </div>
+
+      <div id="m_survey" class="module">
+        <h2>Well Surveys</h2>
+        <div class="card">
+          <h3>Точки траектории</h3>
+          <table>
+            <tr><th>MD (m)</th><th>Inclination (deg)</th><th>Azimuth (deg)</th><th>TVD (m)</th></tr>
+            <tr><td><input id="sv_md1" type="number" value="1200"></td><td><input id="sv_in1" type="number" value="12"></td><td><input id="sv_az1" type="number" value="110"></td><td><input id="sv_tv1" type="number" value="1189"></td></tr>
+            <tr><td><input id="sv_md2" type="number" value="2400"></td><td><input id="sv_in2" type="number" value="22"></td><td><input id="sv_az2" type="number" value="118"></td><td><input id="sv_tv2" type="number" value="2310"></td></tr>
+            <tr><td><input id="sv_md3" type="number" value="3667"></td><td><input id="sv_in3" type="number" value="35"></td><td><input id="sv_az3" type="number" value="126"></td><td><input id="sv_tv3" type="number" value="3600"></td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div id="m_testing" class="module">
+        <h2>Well Testings</h2>
+        <div class="grid2">
+          <div class="card">
+            <h3>Испытание пласта/интервала</h3>
+            <div class="row"><div><label>Test type</label><select id="wt_type"><option selected>Flow test</option><option>Pressure build-up</option><option>Leak-off test</option></select></div><div><label>Section</label><input id="wt_section" value="8-1/2 OH"></div></div>
+            <div class="row"><div><label>From MD (m)</label><input id="wt_from" type="number" value="3520"></div><div><label>To MD (m)</label><input id="wt_to" type="number" value="3667"></div></div>
+            <div class="row"><div><label>Pressure (MPa)</label><input id="wt_p" type="number" value="27.5" step="0.1"></div><div><label>Duration (h)</label><input id="wt_h" type="number" value="3.5" step="0.1"></div></div>
+            <label>Result</label><textarea id="wt_result">Стабильное давление, утечек не выявлено.</textarea>
+            <div class="row"><div><label>Interval (AUTO, m)</label><input id="wt_int_auto" class="ro" readonly value="0.00"></div><div><label>Status (AUTO)</label><input id="wt_status_auto" class="ro" readonly value="PENDING"></div></div>
+            <button class="btn" onclick="runTestingCheck()">Validate testing</button>
+            <div id="wt_out" class="out" style="display:none"></div>
+          </div>
+          <div class="card">
+            <h3>История тестов</h3>
+            <table>
+              <tr><th>Date</th><th>Type</th><th>Status</th></tr>
+              <tr><td>2026-02-15</td><td>Leak-off</td><td>PASS</td></tr>
+              <tr><td>2026-02-19</td><td>Flow test</td><td>PASS</td></tr>
+              <tr><td>2026-02-22</td><td>Build-up</td><td>WATCH</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div id="m_bit" class="module">
+        <h2>Bit Records</h2>
+        <div class="grid2">
+          <div class="card">
+            <h3>Текущий рейс долота</h3>
+            <div class="row"><div><label>Bit type</label><input id="bit_type" value="PDC 8-1/2"></div><div><label>IADC</label><input id="bit_iadc" value="M323"></div></div>
+            <div class="row"><div><label>From MD (m)</label><input id="bit_from" type="number" value="3200"></div><div><label>To MD (m)</label><input id="bit_to" type="number" value="3667"></div></div>
+            <div class="row"><div><label>Drilling hours</label><input id="bit_h" type="number" value="26"></div><div><label>NPT hours</label><input id="bit_npt" type="number" value="4"></div></div>
+            <div class="row"><div><label>Footage (AUTO, m)</label><input id="bit_footage_auto" class="ro" readonly value="0.00"></div><div><label>ROP (AUTO, m/h)</label><input id="bit_rop_auto" class="ro" readonly value="0.00"></div></div>
+            <button class="btn" onclick="calcBit()">Calc ROP/NPT</button>
+            <div id="bit_out" class="out" style="display:none"></div>
+          </div>
+          <div class="card">
+            <h3>Time Breakdown</h3>
+            <table>
+              <tr><th>Phase</th><th>Hours</th></tr>
+              <tr><td>Drilling</td><td><input id="tb_d" type="number" value="14"></td></tr>
+              <tr><td>Circulation</td><td><input id="tb_c" type="number" value="6"></td></tr>
+              <tr><td>Tripping</td><td><input id="tb_t" type="number" value="5"></td></tr>
+              <tr><td>NPT</td><td><input id="tb_n" type="number" value="3"></td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div id="m_fluid" class="module">
+        <h2>Fluid Sets & Properties</h2>
+        <div class="grid2">
+          <div class="card">
+            <h3>Fluid set</h3>
+            <label>Fluid type</label><select id="fl_type"><option>WBM KCl</option><option selected>OBM Petrofree</option><option>Synthetic</option></select>
+            <div class="row"><div><label>Mud weight (g/cc)</label><input id="fl_rho" type="number" value="1.42" step="0.01"></div><div><label>PV (mPa·s)</label><input id="fl_pv" type="number" value="24"></div></div>
+            <div class="row"><div><label>YP (lb/100ft2)</label><input id="fl_yp" type="number" value="14"></div><div><label>Filtrate (ml)</label><input id="fl_flt" type="number" value="7"></div></div>
+            <label>Chlorides (mg/L)</label><input id="fl_cl" type="number" value="55000">
+            <div class="row"><div><label>PV limit (AUTO)</label><input id="fl_pv_lim_auto" class="ro" readonly value="0.00"></div><div><label>PV status (AUTO)</label><input id="fl_pv_status_auto" class="ro" readonly value="PENDING"></div></div>
+            <button class="btn" onclick="checkFluidProps()">Validate fluid properties</button>
+            <div id="fluid_out" class="out" style="display:none"></div>
+          </div>
+          <div class="card">
+            <h3>Product concentration</h3>
+            <table>
+              <tr><th>Product</th><th>Conc.</th><th>Unit</th></tr>
+              <tr><td>Barite</td><td><input id="pc1" type="number" value="58"></td><td>kg/m3</td></tr>
+              <tr><td>Emulsifier</td><td><input id="pc2" type="number" value="7.2"></td><td>kg/m3</td></tr>
+              <tr><td>Lime</td><td><input id="pc3" type="number" value="3.5"></td><td>kg/m3</td></tr>
+            </table>
+            <div class="small">В WS2000 SG компонентов обязателен для корректных расчетов концентраций.</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="m_products" class="module">
+        <h2>Product Lists</h2>
+        <div class="grid2">
+          <div class="card">
+            <h3>Каталог компонентов</h3>
+            <table>
+              <tr><th>Product</th><th>Class</th><th>SG *</th><th>Unit price</th></tr>
+              <tr><td><input id="pl_n1" value="Barite"></td><td><input id="pl_c1" value="Weighting"></td><td><input id="pl_sg1" type="number" step="0.01" value="4.20"></td><td><input id="pl_p1" type="number" step="0.01" value="0.52"></td></tr>
+              <tr><td><input id="pl_n2" value="Emulsifier"></td><td><input id="pl_c2" value="Chemical"></td><td><input id="pl_sg2" type="number" step="0.01" value="0.96"></td><td><input id="pl_p2" type="number" step="0.01" value="4.80"></td></tr>
+              <tr><td><input id="pl_n3" value="Lime"></td><td><input id="pl_c3" value="Alkalinity"></td><td><input id="pl_sg3" type="number" step="0.01" value="2.20"></td><td><input id="pl_p3" type="number" step="0.01" value="0.34"></td></tr>
+            </table>
+            <div class="row"><div><label>Missing SG (AUTO)</label><input id="pl_missing_auto" class="ro" readonly value="0"></div><div><label>Rule status (AUTO)</label><input id="pl_status_auto" class="ro" readonly value="PENDING"></div></div>
+            <button class="btn" onclick="calcProductList()">Check product list</button>
+            <div id="pl_out" class="out" style="display:none"></div>
+          </div>
+          <div class="card">
+            <h3>Примечание WS2000</h3>
+            <div class="small">Specific Gravity (SG) обязателен для корректного расчета концентраций и инвентаря.</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="m_inv" class="module">
+        <h2>Inventory & Costing</h2>
+        <div class="grid2">
+          <div class="card">
+            <h3>Inventory</h3>
+            <div class="row"><div><label>Opening stock (m3)</label><input id="inv_open" type="number" value="40"></div><div><label>Received (m3)</label><input id="inv_in" type="number" value="18"></div></div>
+            <div class="row"><div><label>Consumed (m3)</label><input id="inv_out" type="number" value="22"></div><div><label>Closing reported (m3)</label><input id="inv_close" type="number" value="36"></div></div>
+            <div class="row"><div><label>Closing calculated (AUTO, m3)</label><input id="inv_calc_auto" class="ro" readonly value="0.00"></div><div><label>Difference (AUTO, m3)</label><input id="inv_diff_auto" class="ro" readonly value="0.00"></div></div>
+            <button class="btn" onclick="checkInventory()">Check inventory</button>
+            <div id="inv_outbox" class="out" style="display:none"></div>
+          </div>
+          <div class="card">
+            <h3>Costing</h3>
+            <table>
+              <tr><th>Product</th><th>Qty</th><th>Price</th></tr>
+              <tr><td>Barite</td><td><input id="co_q1" type="number" value="4200"></td><td><input id="co_p1" type="number" value="0.52"></td></tr>
+              <tr><td>Emulsifier</td><td><input id="co_q2" type="number" value="180"></td><td><input id="co_p2" type="number" value="4.8"></td></tr>
+              <tr><td>Caustic</td><td><input id="co_q3" type="number" value="95"></td><td><input id="co_p3" type="number" value="1.9"></td></tr>
+            </table>
+            <label>Other charges (USD)</label><input id="co_other" type="number" value="2200">
+            <label>Total costing (AUTO, USD)</label><input id="co_total_auto" class="ro" readonly value="0.00">
+            <button class="btn" onclick="calcCosting()">Calc costing</button>
+            <div id="cost_out" class="out" style="display:none"></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="m_vol" class="module">
+        <h2>Volumes / Losses & Gains</h2>
+        <div class="grid2">
+          <div class="card">
+            <h3>Volumes</h3>
+            <div class="row"><div><label>Prev system volume (m3)</label><input id="vo_prev" type="number" value="180"></div><div><label>Current system volume (m3)</label><input id="vo_cur" type="number" value="176"></div></div>
+            <div class="row"><div><label>Annular volume (m3)</label><input id="vo_ann" type="number" value="20.5"></div><div><label>Pits total (m3)</label><input id="vo_pits" type="number" value="120"></div></div>
+            <label>Net change (AUTO, m3)</label><input id="vo_delta_auto" class="ro" readonly value="0.00">
+            <button class="btn" onclick="calcVolumeDelta()">Calc net change</button>
+            <div id="vol_out" class="out" style="display:none"></div>
+          </div>
+          <div class="card">
+            <h3>Losses & Gains</h3>
+            <div class="row"><div><label>Documented gains (m3)</label><input id="lg_gain" type="number" value="2"></div><div><label>Documented losses (m3)</label><input id="lg_loss" type="number" value="6"></div></div>
+            <label>Loss type</label><select id="lg_type"><option>Differential pressure</option><option>Downhole</option><option>Surface handling</option></select>
+            <label>Comment</label><textarea id="lg_comment">Observed losses in open hole interval</textarea>
+            <div class="row"><div><label>Documented delta (AUTO, m3)</label><input id="lg_doc_auto" class="ro" readonly value="0.00"></div><div><label>Reconcile diff (AUTO, m3)</label><input id="lg_diff_auto" class="ro" readonly value="0.000"></div></div>
+            <button class="btn" onclick="reconcileLG()">Reconcile (blocking rule)</button>
+            <div id="lg_out" class="out" style="display:none"></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="m_hyd" class="module">
+        <h2>Hydraulics</h2>
+        <div class="grid2">
+          <div class="card">
+            <h3>Input</h3>
+            <div class="row"><div><label>Flow rate (L/min)</label><input id="hy_q" type="number" value="2000"></div><div><label>Annular dP (MPa)</label><input id="hy_dp" type="number" value="2.4" step="0.1"></div></div>
+            <div class="row"><div><label>TVD (m)</label><input id="hy_tvd" type="number" value="3600"></div><div><label>Nozzle velocity (m/s)</label><input id="hy_v" type="number" value="98"></div></div>
+            <div class="row"><div><label>ECD (AUTO, g/cc)</label><input id="hy_ecd_auto" class="ro" readonly value="0.0000"></div><div><label>Nozzle status (AUTO)</label><input id="hy_noz_auto" class="ro" readonly value="PENDING"></div></div>
+            <button class="btn" onclick="calcHyd()">Calculate ECD</button>
+            <div id="hyd_out" class="out" style="display:none"></div>
+          </div>
+          <div class="card">
+            <h3>Quick WS thresholds</h3>
+            <table>
+              <tr><th>Параметр</th><th>Норма</th></tr>
+              <tr><td>PV</td><td>&lt; 17×ρ</td></tr>
+              <tr><td>Nozzle velocity</td><td>76-137 m/s</td></tr>
+              <tr><td>ECD increment</td><td>контроль до FG</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div id="m_zero" class="module">
+        <h2>Zero Defects Tracking</h2>
+        <div class="grid2">
+          <div class="card">
+            <h3>Контроль дефектов</h3>
+            <div class="row"><div><label>Open issues</label><input id="zd_open" type="number" value="1"></div><div><label>Critical issues</label><input id="zd_critical" type="number" value="0"></div></div>
+            <div class="row"><div><label>Overdue actions</label><input id="zd_overdue" type="number" value="0"></div><div><label>Closed this day</label><input id="zd_closed" type="number" value="3"></div></div>
+            <label>Risk note</label><textarea id="zd_note">Контроль потерь выполнен, отклонений по ECD нет.</textarea>
+            <div class="row"><div><label>Zero score (AUTO)</label><input id="zd_score_auto" class="ro" readonly value="0"></div><div><label>Status (AUTO)</label><input id="zd_status_auto" class="ro" readonly value="PENDING"></div></div>
+            <button class="btn" onclick="runZeroDefects()">Run zero-defects check</button>
+            <div id="zd_out" class="out" style="display:none"></div>
+          </div>
+          <div class="card">
+            <h3>Критерии</h3>
+            <table>
+              <tr><th>Rule</th><th>Target</th></tr>
+              <tr><td>Critical issues</td><td>0</td></tr>
+              <tr><td>Overdue actions</td><td>0</td></tr>
+              <tr><td>Open issues trend</td><td>Non-increasing</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div id="m_mud" class="module">
+              <div id="m_design" class="module">
+                      <div id="m_pilot" class="module">
+                        <h2>Этап 2: Пилот</h2>
+                        <div class="grid2">
+                          <div class="card">
+                            <h2>Этап 2: Пилот</h2>
+                            <div class="grid2">
+                              <div class="card">
+                                <h3>Описание пилота</h3>
+                                <div class="small">Подтвердить практическую эффективность AI-модулей в реальных операциях бурения на ограниченном периметре.</div>
+                                <label>Периметр пилота</label>
+                                <textarea id="pilot_perimeter" readonly>1-2 буровые бригады
+                  <div class="card">
+                    <h3>Описание этапа</h3>
+                                <label>Ключевые задачи</label>
+                                <textarea id="pilot_tasks" readonly>1. Запуск shadow mode для NPT Predictor и ROP Advisor
+                    <div class="small">Периметр, baseline, архитектура и метрики. Заполните ключевые параметры для старта проекта.</div>
+                    <label>Периметр проекта</label>
+                    <textarea id="design_perimeter" placeholder="Опишите границы и охват проекта"></textarea>
+                                <label>KPI этапа</label>
+                                <textarea id="pilot_kpi" readonly>- NPT Reduction >= 10%
+                                <label>Критерии завершения</label>
+                                <textarea id="pilot_criteria" readonly>- Подтвержден эффект минимум по 2 KPI
+                              </div>
+                              <div class="card">
+                                <h3>Чек-лист пилота</h3>
+                                <label><input type="checkbox" id="pilot_chk1"> Shadow mode проведён</label><br>
+                                <label><input type="checkbox" id="pilot_chk2"> Пороги откалиброваны</label><br>
+                                <label><input type="checkbox" id="pilot_chk3"> Rollout согласован</label><br>
+                                <label><input type="checkbox" id="pilot_chk4"> Критерии успеха определены</label><br>
+                                <label><input type="checkbox" id="pilot_chk5"> Команда обучена</label><br>
+                                <label><input type="checkbox" id="pilot_chk6"> Отчёт по пилоту готов</label>
+                                <div style="margin-top:12px">
+                                  <button class="btn" onclick="alert('Сохранено!')">Сохранить этап</button>
+                                </div>
+                              </div>
+                            </div>
+                    <textarea id="design_metrics" placeholder="Какие метрики будут использоваться для оценки?"></textarea>
+                  </div>
+                  <div class="card">
+                    <h3>Чек-лист запуска этапа</h3>
+                    <label><input type="checkbox" id="design_chk1"> Периметр согласован</label><br>
+                    <label><input type="checkbox" id="design_chk2"> Baseline зафиксирован</label><br>
+                    <label><input type="checkbox" id="design_chk3"> Архитектура утверждена</label><br>
+                    <label><input type="checkbox" id="design_chk4"> Метрики определены</label><br>
+                    <label><input type="checkbox" id="design_chk5"> Команда назначена</label><br>
+                    <label><input type="checkbox" id="design_chk6"> План внедрения готов</label>
+                    <div style="margin-top:12px">
+                      <button class="btn" onclick="alert('Сохранено!')">Сохранить этап</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+        <h2>Mud Reports</h2>
+        <div class="grid2">
+          <div class="card">
+            <h3>Daily mud report</h3>
+            <div class="row"><div><label>Report date</label><input id="mr_date" type="date" value="2026-02-24"></div><div><label>Shift</label><select id="mr_shift"><option>Day</option><option selected>Night</option></select></div></div>
+            <div class="row"><div><label>Mud used (m3)</label><input id="mr_used" type="number" value="22"></div><div><label>Mud treated (m3)</label><input id="mr_treated" type="number" value="18"></div></div>
+            <label>Operations summary</label><textarea id="mr_ops">Бурение 8-1/2 секции, обработка раствора, контроль потерь.</textarea>
+            <label>Treatment ratio (AUTO, %)</label><input id="mr_util_auto" class="ro" readonly value="0.0">
+            <button class="btn" onclick="buildMudReport()">Build mud report summary</button>
+            <div id="mr_out" class="out" style="display:none"></div>
+          </div>
+          <div class="card">
+            <h3>Быстрые действия</h3>
+            <button class="btn" onclick="openReportManager()">Open Report Manager</button>
+            <div class="small" style="margin-top:8px">Из Mud Reports доступна генерация Daily/Summary/Recap отчетов.</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="m_audit" class="module">
+        <h2>Post Well Audit</h2>
+        <div class="grid2">
+          <div class="card">
+            <h3>Intervals recap</h3>
+            <table>
+              <tr><th>Interval</th><th>From</th><th>To</th><th>Cost USD</th></tr>
+              <tr><td>12-1/4" OH</td><td><input id="au_f1" type="number" value="2500"></td><td><input id="au_t1" type="number" value="3200"></td><td><input id="au_c1" type="number" value="82400"></td></tr>
+              <tr><td>8-1/2" OH</td><td><input id="au_f2" type="number" value="3200"></td><td><input id="au_t2" type="number" value="3667"></td><td><input id="au_c2" type="number" value="76800"></td></tr>
+            </table>
+            <div class="row"><div><label>Interval meters (AUTO)</label><input id="au_m_auto" class="ro" readonly value="0.0"></div><div><label>Total cost (AUTO)</label><input id="au_total_auto" class="ro" readonly value="0.00"></div></div>
+            <label>Average cost (AUTO, USD/m)</label><input id="au_cpm_auto" class="ro" readonly value="0.00">
+            <button class="btn" onclick="buildAudit()">Build recap</button>
+            <div id="audit_out" class="out" style="display:none"></div>
+          </div>
+          <div class="card">
+            <h3>Conclusions</h3>
+            <label>Engineering summary</label>
+            <textarea id="au_sum">Mud system stable, losses controlled, ECD within operational envelope.</textarea>
+            <label>Recommendations</label>
+            <textarea id="au_rec">Maintain solids control efficiency and monitor annular pressure trend.</textarea>
+          </div>
+        </div>
+      </div>
+
+      <div id="m_data" class="module">
+        <h2>Data Management</h2>
+        <div class="grid2">
+          <div class="card">
+            <h3>Exchange Data with Server</h3>
+            <div class="row"><div><label>Server profile</label><input id="dm_profile" value="Field-Server-A"></div><div><label>Well package</label><input id="dm_pkg" value="Well-12_North.pkg"></div></div>
+            <div class="row"><div><label>Last sync</label><input id="dm_last" value="2026-02-24 07:40"></div><div><label>Status</label><select id="dm_status"><option selected>Ready</option><option>Pending</option><option>Error</option></select></div></div>
+            <div class="row" style="margin-top:8px">
+              <button class="btn" onclick="exchangeServer('Download Well Data')">Download Well Data</button>
+              <button class="btn" onclick="exchangeServer('Retrieve Well Data')">Retrieve Well Data</button>
+            </div>
+            <div class="row" style="margin-top:8px">
+              <button class="btn" onclick="exchangeServer('Upload Daily Reports')">Upload Daily Reports</button>
+              <button class="btn" onclick="exportDIMS()">Export to DIMS</button>
+            </div>
+            <div id="dm_out" class="out" style="display:none"></div>
+          </div>
+          <div class="card">
+            <h3>Backup / Restore</h3>
+            <div class="row">
+              <button class="btn" onclick="backupData()">Backup local data</button>
+              <button class="btn" onclick="restoreData()">Restore local data</button>
+            </div>
+            <div class="small" style="margin-top:8px">Имитация операций управления данными WELLSIGHT: server exchange, восстановление, контроль статуса передачи.</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="m_print" class="module">
+        <h2>Print Manager</h2>
+        <div class="grid2">
+          <div class="card">
+            <h3>Пакет печати</h3>
+            <label>Output folder</label><input id="pm_path" value="C:/Baroid/WELLSIGHT/Reports/Report Manager/Report_Documents/">
+            <label>Include sections</label>
+            <select id="pm_pack"><option selected>Daily + Summary + Recap</option><option>Daily only</option><option>Post Well Audit only</option></select>
+            <div class="row" style="margin-top:8px">
+              <button class="btn" onclick="openReportManager()">Launch Report Manager</button>
+              <button class="btn" onclick="printPDF(collectReportData())">Print current report</button>
+            </div>
+            <div id="pm_out" class="out" style="display:none"></div>
+          </div>
+          <div class="card">
+            <h3>Точки запуска Report Manager</h3>
+            <table>
+              <tr><th>Экран</th><th>Доступ</th></tr>
+              <tr><td>Well Data</td><td>Через верхнюю панель</td></tr>
+              <tr><td>Mud Reports</td><td>Кнопка Open Report Manager</td></tr>
+              <tr><td>Post Well Audit</td><td>Кнопка Launch в модуле</td></tr>
+              <tr><td>Print Manager</td><td>Launch Report Manager</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div id="m_report" class="module">
+        <h2>Report Manager</h2>
+        <div class="grid2">
+          <div class="card">
+            <h3>Экран 1: Task Selection</h3>
+            <label>Task</label>
+            <select id="rp_task">
+              <option selected>Create New Report</option>
+              <option>Use Existing Report</option>
+            </select>
+            <h3>Экран 2: Report Type Selection</h3>
+            <label>Report type</label>
+            <select id="rp_type">
+              <option>Daily Report</option>
+              <option>Summary Report</option>
+              <option>Recap Costs</option>
+              <option>Recap Volumes</option>
+            </select>
+            <div class="row">
+              <div>
+                <label>Format</label>
+                <select id="rp_format">
+                  <option>TXT</option>
+                  <option>CSV</option>
+                  <option>XLS</option>
+                  <option>Print-PDF</option>
+                </select>
+              </div>
+              <div>
+                <label>Language</label>
+                <select id="rp_lang">
+                  <option>Русский</option>
+                  <option>English</option>
+                  <option>Español</option>
+                  <option>Deutsch</option>
+                  <option>Português</option>
+                </select>
+              </div>
+            </div>
+            <h3>Экран 3: Report Selection</h3>
+            <label>Template name</label>
+            <input id="rp_template_name" value="Default Daily Template">
+            <div class="row" style="margin-top:8px">
+              <button class="btn" onclick="saveTemplate()">Save Template</button>
+              <button class="btn" onclick="generateReport()">Generate</button>
+            </div>
+            <div class="row" style="margin-top:8px">
+              <button class="btn" onclick="exportTemplates()">Export Templates</button>
+              <button class="btn" onclick="el('rp_template_file').click()">Import Templates</button>
+            </div>
+            <input id="rp_template_file" type="file" accept="application/json" style="display:none" onchange="importTemplates(event)">
+            <div id="rp_out" class="out" style="display:none"></div>
+          </div>
+          <div class="card">
+            <h3>Экран 4: Results</h3>
+            <div class="small">Результаты генерации, путь сохранения и предпросмотр.</div>
+            <label>Report output path</label>
+            <input id="rp_path" value="C:/Baroid/WELLSIGHT/Reports/Report Manager/Report/">
+            <h3>Сохраненные шаблоны</h3>
+            <label>Template list</label>
+            <select id="rp_template_list" size="8" style="min-height:170px"></select>
+            <div class="row" style="margin-top:8px">
+              <button class="btn" onclick="applyTemplate()">Apply</button>
+              <button class="btn" onclick="deleteTemplate()">Delete</button>
+            </div>
+            <h3>Предпросмотр</h3>
+            <div id="rp_preview" class="out">Нет данных для preview.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<script>
+const KEY='ws2000SiteEditionStateV1';
+const TEMPLATE_KEY='ws2000SiteEditionTemplatesV1';
+const state={wellOk:false,volDelta:null,docDelta:null,costTotal:null,auditReady:false,autoCalc:true};
+
+function el(id){return document.getElementById(id);} 
+function fv(id){return el(id).value;}
+function fn(id){return Number(el(id).value||0);} 
+function row(k,v,c=''){return `<div class="orow"><span>${k}</span><span class="mono">${v} ${c}</span></div>`;}
+
+function openMod(id,btn){
+  document.querySelectorAll('.module').forEach(m=>m.classList.remove('active'));
+  document.querySelectorAll('.mod-btn').forEach(b=>b.classList.remove('active'));
+  el('m_'+id).classList.add('active'); btn.classList.add('active');
+}
+
+function openModById(id){
+  const btn=[...document.querySelectorAll('.mod-btn')].find(b=>b.dataset.mod===id);
+  if(btn) openMod(id,btn);
+}
+
+function tagButtonsByRole(){
+  const autoKeywords=['calc','check','validate','reconcile','build','run','generateReport','exchangeServer','exportDIMS','printPDF'];
+  document.querySelectorAll('button.btn').forEach(b=>{
+    b.classList.remove('tag-edit','tag-auto');
+    const action=(b.getAttribute('onclick')||'').toLowerCase();
+    const isAuto=autoKeywords.some(k=>action.includes(k.toLowerCase()));
+    b.classList.add(isAuto?'tag-auto':'tag-edit');
+    b.title=isAuto?'Автоматический расчет/проверка':'Редактируемое действие';
+  });
+}
+
+let autoCalcTimer=null;
+function scheduleAutoCalc(){
+  if(!state.autoCalc) return;
+  if(autoCalcTimer) clearTimeout(autoCalcTimer);
+  autoCalcTimer=setTimeout(()=>{
+    validateWell();
+    calcGeometry();
+    runTestingCheck();
+    calcBit();
+    checkFluidProps();
+    calcProductList();
+    checkInventory();
+    calcCosting();
+    calcVolumeDelta();
+    reconcileLG();
+    calcHyd();
+    runZeroDefects();
+    buildMudReport();
+    buildAudit();
+    runQC();
+  },200);
+}
+
+function bindAutoCalc(){
+  const selectors=[
+    '#m_well input,#m_well select',
+    '#m_casing input,#m_casing select',
+    '#m_testing input,#m_testing select,#m_testing textarea',
+    '#m_bit input,#m_bit select',
+    '#m_fluid input,#m_fluid select',
+    '#m_products input,#m_products select',
+    '#m_inv input,#m_inv select',
+    '#m_vol input,#m_vol select,#m_vol textarea',
+    '#m_hyd input,#m_hyd select',
+    '#m_zero input,#m_zero select,#m_zero textarea',
+    '#m_mud input,#m_mud select,#m_mud textarea',
+    '#m_audit input,#m_audit select,#m_audit textarea'
+  ];
+  document.querySelectorAll(selectors.join(',')).forEach(x=>{
+    x.addEventListener('input',scheduleAutoCalc);
+    x.addEventListener('change',scheduleAutoCalc);
+  });
+}
+
+function toggleAutoCalc(){
+  state.autoCalc=!!el('auto_calc').checked;
+  if(state.autoCalc) scheduleAutoCalc();
+}
+
+function openReportManager(){
+  openModById('report');
+}
+
+function openPrintManager(){
+  openModById('print');
+}
+
+function validateWell(){
+  const name=fv('well_name').trim(), api=fv('well_api').trim(), op=fv('well_operator').trim();
+  const md=fn('well_md'), tvd=fn('well_tvd');
+  state.wellOk=!!name&&!!api&&!!op&&md>0&&tvd>0&&md>=tvd;
+  const margin=md-tvd;
+  el('well_status_auto').value=state.wellOk?'PASS':'FAIL';
+  el('well_margin_auto').value=margin.toFixed(2);
+  const out=el('well_out'); out.style.display='';
+  out.innerHTML=row('Well',name)+row('API',api)+row('Operator',op)+row('MD/TVD',`${md}/${tvd}`,'m')+
+    `<div class="orow"><span>Validation</span><span class="mono ${state.wellOk?'ok':'bad'}">${state.wellOk?'PASS':'FAIL'}</span></div>`;
+}
+
+function calcGeometry(){
+  const d1=fn('sec_d1'),d2=fn('sec_d2'),d3=fn('sec_d3');
+  const valid=(d1>d2)&&(d2>d3);
+  const out=el('casing_out'); out.style.display='';
+  out.innerHTML=row('Hole diameters',`${d1} > ${d2} > ${d3}`,'mm')+
+    `<div class="orow"><span>Geometry trend</span><span class="mono ${valid?'ok':'warn'}">${valid?'OK':'CHECK'}</span></div>`;
+}
+
+function calcBit(){
+  const from=fn('bit_from'),to=fn('bit_to'),h=fn('bit_h'),npt=fn('bit_npt');
+  const m=Math.max(0,to-from),rop=h>0?m/h:0;
+  el('bit_footage_auto').value=m.toFixed(2);
+  el('bit_rop_auto').value=rop.toFixed(2);
+  const out=el('bit_out'); out.style.display='';
+  out.innerHTML=row('Footage',m.toFixed(1),'m')+row('ROP',rop.toFixed(2),'m/h')+row('NPT',npt.toFixed(1),'h')+
+    `<div class="orow"><span>Performance</span><span class="mono ${rop>=15?'ok':'warn'}">${rop>=15?'GOOD':'WATCH'}</span></div>`;
+}
+
+function runTestingCheck(){
+  const from=fn('wt_from'),to=fn('wt_to'),p=fn('wt_p'),h=fn('wt_h');
+  const interval=Math.max(0,to-from);
+  const ok=interval>0 && p>0 && h>0;
+  el('wt_int_auto').value=interval.toFixed(2);
+  el('wt_status_auto').value=ok?'PASS':'CHECK';
+  const out=el('wt_out'); out.style.display='';
+  out.innerHTML=row('Interval',interval.toFixed(1),'m')+row('Pressure',p.toFixed(1),'MPa')+row('Duration',h.toFixed(1),'h')+
+    `<div class="orow"><span>Testing status</span><span class="mono ${ok?'ok':'warn'}">${ok?'PASS':'CHECK'}</span></div>`;
+}
+
+function checkFluidProps(){
+  const rho=fn('fl_rho'),pv=fn('fl_pv'),flt=fn('fl_flt');
+  const lim=17*rho;
+  el('fl_pv_lim_auto').value=lim.toFixed(2);
+  el('fl_pv_status_auto').value=pv<=lim?'OK':'HIGH';
+  const out=el('fluid_out'); out.style.display='';
+  out.innerHTML=row('Mud weight',rho.toFixed(2),'g/cc')+row('PV limit',lim.toFixed(1),'mPa·s')+
+    `<div class="orow"><span>PV check</span><span class="mono ${pv<=lim?'ok':'warn'}">${pv<=lim?'OK':'HIGH'}</span></div>`+
+    `<div class="orow"><span>Filtrate check</span><span class="mono ${flt<=8?'ok':'warn'}">${flt<=8?'OK':'WATCH'}</span></div>`;
+}
+
+function calcProductList(){
+  const sg=[fn('pl_sg1'),fn('pl_sg2'),fn('pl_sg3')];
+  const missing=sg.filter(v=>!(v>0)).length;
+  const ok=missing===0;
+  el('pl_missing_auto').value=String(missing);
+  el('pl_status_auto').value=ok?'PASS':'FAIL';
+  const out=el('pl_out'); out.style.display='';
+  out.innerHTML=row('Items',String(sg.length))+row('Missing SG',String(missing))+`<div class="orow"><span>WS SG rule</span><span class="mono ${ok?'ok':'bad'}">${ok?'PASS':'FAIL'}</span></div>`;
+}
+
+function checkInventory(){
+  const open=fn('inv_open'),iin=fn('inv_in'),iout=fn('inv_out'),close=fn('inv_close');
+  const calc=open+iin-iout; const ok=Math.abs(calc-close)<0.01;
+  el('inv_calc_auto').value=calc.toFixed(2);
+  el('inv_diff_auto').value=(calc-close).toFixed(2);
+  const out=el('inv_outbox'); out.style.display='';
+  out.innerHTML=row('Calculated closing',calc.toFixed(2),'m3')+row('Reported closing',close.toFixed(2),'m3')+
+    `<div class="orow"><span>Inventory</span><span class="mono ${ok?'ok':'warn'}">${ok?'OK':'MISMATCH'}</span></div>`;
+}
+
+function calcCosting(){
+  const q1=fn('co_q1'),p1=fn('co_p1'),q2=fn('co_q2'),p2=fn('co_p2'),q3=fn('co_q3'),p3=fn('co_p3'),other=fn('co_other');
+  state.costTotal=q1*p1+q2*p2+q3*p3+other;
+  el('co_total_auto').value=state.costTotal.toFixed(2);
+  const out=el('cost_out'); out.style.display='';
+  out.innerHTML=row('Materials subtotal',(state.costTotal-other).toFixed(2),'USD')+row('Other',(other).toFixed(2),'USD')+row('Total',state.costTotal.toFixed(2),'USD');
+}
+
+function calcVolumeDelta(){
+  const prev=fn('vo_prev'),cur=fn('vo_cur');
+  state.volDelta=cur-prev;
+  el('vo_delta_auto').value=state.volDelta.toFixed(2);
+  const out=el('vol_out'); out.style.display='';
+  out.innerHTML=row('Prev',prev.toFixed(2),'m3')+row('Current',cur.toFixed(2),'m3')+row('Net change',state.volDelta.toFixed(2),'m3');
+}
+
+function reconcileLG(){
+  const gain=fn('lg_gain'),loss=fn('lg_loss');
+  state.docDelta=gain-loss;
+  el('lg_doc_auto').value=state.docDelta.toFixed(2);
+  const out=el('lg_out'); out.style.display='';
+  if(state.volDelta===null){ el('lg_diff_auto').value='N/A'; out.innerHTML='<div class="bad">Сначала посчитайте Volumes.</div>'; return; }
+  const diff=Math.abs(state.volDelta-state.docDelta);
+  el('lg_diff_auto').value=diff.toFixed(3);
+  const ok=diff<0.01;
+  out.innerHTML=row('Documented change',state.docDelta.toFixed(2),'m3')+row('Difference',diff.toFixed(3),'m3')+
+    `<div class="orow"><span>Blocking rule</span><span class="mono ${ok?'ok':'bad'}">${ok?'PASS':'FAIL'}</span></div>`;
+}
+
+function calcHyd(){
+  const rho=fn('fl_rho'),dp=fn('hy_dp'),tvd=fn('hy_tvd'),v=fn('hy_v');
+  const ecd=rho + dp/(tvd*0.00981);
+  const vClass=v<76?'warn':(v>137?'bad':'ok');
+  el('hy_ecd_auto').value=ecd.toFixed(4);
+  el('hy_noz_auto').value=vClass==='ok'?'OK':'OUT OF RANGE';
+  const out=el('hyd_out'); out.style.display='';
+  out.innerHTML=row('ECD',ecd.toFixed(4),'g/cc')+row('Nozzle velocity',v.toFixed(1),'m/s')+
+    `<div class="orow"><span>Nozzle range</span><span class="mono ${vClass}">${vClass==='ok'?'OK':'OUT OF RANGE'}</span></div>`;
+}
+
+function runZeroDefects(){
+  const open=fn('zd_open'),critical=fn('zd_critical'),over=fn('zd_overdue'),closed=fn('zd_closed');
+  const score=Math.max(0,100-critical*40-over*25-Math.max(0,open-closed)*10);
+  const ok=critical===0 && over===0;
+  el('zd_score_auto').value=score.toFixed(0);
+  el('zd_status_auto').value=ok?'PASS':'WATCH';
+  const out=el('zd_out'); out.style.display='';
+  out.innerHTML=row('Score',score.toFixed(0),'/100')+row('Open',open)+row('Closed today',closed)+`<div class="orow"><span>Zero Defects</span><span class="mono ${ok?'ok':'warn'}">${ok?'PASS':'WATCH'}</span></div>`;
+}
+
+function buildMudReport(){
+  const used=fn('mr_used'),treated=fn('mr_treated');
+  const util=used>0?(treated/used*100):0;
+  el('mr_util_auto').value=util.toFixed(1);
+  const out=el('mr_out'); out.style.display='';
+  out.innerHTML=row('Date',fv('mr_date'))+row('Shift',fv('mr_shift'))+row('Treatment ratio',util.toFixed(1),'%')+row('Summary','READY');
+}
+
+function buildAudit(){
+  const f1=fn('au_f1'),t1=fn('au_t1'),c1=fn('au_c1'),f2=fn('au_f2'),t2=fn('au_t2'),c2=fn('au_c2');
+  const m=(t1-f1)+(t2-f2), c=c1+c2;
+  state.auditReady=(m>0 && c>0);
+  el('au_m_auto').value=m.toFixed(1);
+  el('au_total_auto').value=c.toFixed(2);
+  el('au_cpm_auto').value=(c/Math.max(1,m)).toFixed(2);
+  const out=el('audit_out'); out.style.display='';
+  out.innerHTML=row('Interval meters',m.toFixed(1),'m')+row('Total cost',c.toFixed(2),'USD')+row('Avg cost',(c/Math.max(1,m)).toFixed(2),'USD/m');
+  const p=el('pm_out');
+  if(p){
+    p.style.display='';
+    p.innerHTML=row('Post Well Audit','Prepared')+row('Print package',fv('pm_pack'));
+  }
+}
+
+function exchangeServer(action){
+  const out=el('dm_out');
+  out.style.display='';
+  out.innerHTML=row('Action',action)+row('Profile',fv('dm_profile'))+row('Package',fv('dm_pkg'))+row('Status','SUCCESS')+row('Timestamp',new Date().toLocaleString());
+  el('dm_status').value='Ready';
+  el('dm_last').value=new Date().toLocaleString();
+}
+
+function exportDIMS(){
+  const payload={
+    action:'Export to DIMS',
+    well:fv('well_name'),
+    reportType:el('rp_type')?fv('rp_type'):'Daily Report',
+    generatedAt:new Date().toISOString()
+  };
+  downloadBlob(JSON.stringify(payload,null,2),'application/json','dims_export_payload.json');
+  const out=el('dm_out');
+  out.style.display='';
+  out.innerHTML=row('Action','Export to DIMS')+row('Status','QUEUED');
+}
+
+function backupData(){
+  downloadBlob(JSON.stringify(gatherState(),null,2),'application/json','ws2000_backup.json');
+}
+
+function restoreData(){
+  loadState();
+}
+
+function runQC(){
+  const volOk=(state.volDelta!==null&&state.docDelta!==null&&Math.abs(state.volDelta-state.docDelta)<0.01);
+  const costOk=(state.costTotal!==null && state.costTotal>0);
+  const auditOk=state.auditReady && volOk && costOk;
+  const gate=getAutoGateStatus();
+  const autoGateOk=gate.ok;
+  applyAutoGateHighlights(gate);
+  const p=el('qcPanel');
+  p.innerHTML =
+    `<div class="srow"><span>Well mandatory</span><span class="mono ${state.wellOk?'ok':'bad'}">${state.wellOk?'PASS':'FAIL'}</span></div>`+
+    `<div class="srow"><span>Volume reconciliation</span><span class="mono ${volOk?'ok':'bad'}">${volOk?'PASS':'FAIL'}</span></div>`+
+    `<div class="srow"><span>Cost consistency</span><span class="mono ${costOk?'ok':'warn'}">${costOk?'PASS':'PENDING'}</span></div>`+
+    `<div class="srow"><span>Audit readiness</span><span class="mono ${auditOk?'ok':'warn'}">${auditOk?'READY':'IN PROGRESS'}</span></div>`+
+    `<div class="srow"><span>AUTO cells gate</span><span class="mono ${autoGateOk?'ok':'bad'}">${autoGateOk?'PASS':'FAIL'}</span></div>`;
+  return {volOk,costOk,auditOk,autoGateOk};
+}
+
+function getAutoGateStatus(){
+  const checks=[
+    {name:'MD/TVD check', fieldId:'well_status_auto', ok:fv('well_status_auto')==='PASS'},
+    {name:'Testing status', fieldId:'wt_status_auto', ok:fv('wt_status_auto')==='PASS'},
+    {name:'PV status', fieldId:'fl_pv_status_auto', ok:fv('fl_pv_status_auto')==='OK'},
+    {name:'Product SG rule', fieldId:'pl_status_auto', ok:fv('pl_status_auto')==='PASS'},
+    {name:'Nozzle status', fieldId:'hy_noz_auto', ok:fv('hy_noz_auto')==='OK'},
+    {name:'Zero Defects status', fieldId:'zd_status_auto', ok:fv('zd_status_auto')==='PASS'}
+  ];
+  const invDiff=Math.abs(Number(fv('inv_diff_auto')||0));
+  const lgDiff=Math.abs(Number(fv('lg_diff_auto')||999));
+  checks.push({name:'Inventory difference', fieldId:'inv_diff_auto', ok:invDiff<0.01});
+  checks.push({name:'L/G reconcile difference', fieldId:'lg_diff_auto', ok:lgDiff<0.01});
+
+  const failed=checks.filter(x=>!x.ok).map(x=>x.name);
+  const failedFieldIds=checks.filter(x=>!x.ok).map(x=>x.fieldId).filter(Boolean);
+  return {ok:failed.length===0,failed,failedFieldIds};
+}
+
+function applyAutoGateHighlights(gate){
+  document.querySelectorAll('input.ro.fail').forEach(x=>x.classList.remove('fail'));
+  (gate.failedFieldIds||[]).forEach(id=>{
+    const x=el(id);
+    if(x) x.classList.add('fail');
+  });
+}
+
+function gatherState(){
+  const ids=[...document.querySelectorAll('input,select,textarea')].map(x=>x.id).filter(Boolean);
+  const data={};
+  ids.forEach(id=>{ const x=el(id); data[id]=x.type==='checkbox'?x.checked:x.value; });
+  data._meta={savedAt:new Date().toISOString(),state};
+  return data;
+}
+
+function applyState(data){
+  Object.keys(data).forEach(id=>{
+    if(id==='_meta') return;
+    const x=el(id); if(!x) return;
+    if(x.type==='checkbox') x.checked=!!data[id]; else x.value=data[id];
+  });
+  if(data._meta&&data._meta.state){ Object.assign(state,data._meta.state); }
+}
+
+function saveState(){
+  localStorage.setItem(KEY,JSON.stringify(gatherState()));
+  alert('Состояние сохранено локально.');
+}
+
+function loadState(){
+  const raw=localStorage.getItem(KEY);
+  if(!raw){ alert('Сохранение не найдено.'); return; }
+  try{
+    applyState(JSON.parse(raw));
+    if(el('auto_calc')) el('auto_calc').checked=state.autoCalc;
+    runQC();
+    if(state.autoCalc) scheduleAutoCalc();
+    alert('Состояние загружено.');
+  }
+  catch(e){ alert('Ошибка загрузки state.'); }
+}
+
+function exportJSON(){
+  const data=gatherState();
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='ws2000_site_edition_export.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function getTemplates(){
+  const raw=localStorage.getItem(TEMPLATE_KEY);
+  if(!raw) return [];
+  try { return JSON.parse(raw); } catch(e){ return []; }
+}
+
+function setTemplates(list){
+  localStorage.setItem(TEMPLATE_KEY, JSON.stringify(list));
+}
+
+function refreshTemplateList(){
+  const sel=el('rp_template_list');
+  if(!sel) return;
+  const list=getTemplates();
+  sel.innerHTML='';
+  list.forEach((t,idx)=>{
+    const o=document.createElement('option');
+    o.value=String(idx);
+    o.textContent=`${t.name} · ${t.type} · ${t.format} · ${t.lang}`;
+    sel.appendChild(o);
+  });
+  if(list.length===0){
+    const o=document.createElement('option');
+    o.value='';
+    o.textContent='(нет сохраненных шаблонов)';
+    sel.appendChild(o);
+  }
+}
+
+function saveTemplate(){
+  const name=fv('rp_template_name').trim() || 'Template';
+  const tpl={
+    name,
+    type:fv('rp_type'),
+    format:fv('rp_format'),
+    lang:fv('rp_lang'),
+    savedAt:new Date().toISOString()
+  };
+  const list=getTemplates();
+  const existing=list.findIndex(t=>t.name===name);
+  if(existing>=0) list[existing]=tpl; else list.push(tpl);
+  setTemplates(list);
+  refreshTemplateList();
+  const out=el('rp_out'); out.style.display='';
+  out.innerHTML=row('Template',name)+row('Status','Saved');
+}
+
+function applyTemplate(){
+  const sel=el('rp_template_list');
+  const idx=Number(sel.value);
+  const list=getTemplates();
+  if(!isFinite(idx) || idx<0 || idx>=list.length) return;
+  const t=list[idx];
+  el('rp_template_name').value=t.name;
+  el('rp_type').value=t.type;
+  el('rp_format').value=t.format;
+  el('rp_lang').value=t.lang;
+  const p=el('rp_preview');
+  p.innerHTML=row('Name',t.name)+row('Type',t.type)+row('Format',t.format)+row('Language',t.lang)+row('Saved',new Date(t.savedAt).toLocaleString());
+}
+
+function deleteTemplate(){
+  const sel=el('rp_template_list');
+  const idx=Number(sel.value);
+  const list=getTemplates();
+  if(!isFinite(idx) || idx<0 || idx>=list.length) return;
+  list.splice(idx,1);
+  setTemplates(list);
+  refreshTemplateList();
+  el('rp_preview').innerHTML='Шаблон удален.';
+}
+
+function exportTemplates(){
+  const list=getTemplates();
+  const blob=new Blob([JSON.stringify(list,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='ws2000_templates.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function importTemplates(event){
+  const f=event.target.files && event.target.files[0];
+  if(!f) return;
+  const r=new FileReader();
+  r.onload=()=>{
+    try {
+      const imported=JSON.parse(String(r.result));
+      if(!Array.isArray(imported)) throw new Error('invalid');
+      const merged=[...getTemplates()];
+      imported.forEach(t=>{
+        if(!t || !t.name) return;
+        const ix=merged.findIndex(x=>x.name===t.name);
+        if(ix>=0) merged[ix]=t; else merged.push(t);
+      });
+      setTemplates(merged);
+      refreshTemplateList();
+      el('rp_preview').innerHTML=`Импортировано шаблонов: ${imported.length}`;
+    } catch(e){
+      alert('Ошибка импорта шаблонов. Проверьте JSON формат.');
+    }
+  };
+  r.readAsText(f,'utf-8');
+  event.target.value='';
+}
+
+function collectReportData(){
+  return {
+    well: fv('well_name'),
+    api: fv('well_api'),
+    operator: fv('well_operator'),
+    md: fv('well_md'),
+    tvd: fv('well_tvd'),
+    fluid: fv('fl_type'),
+    mudWeight: fv('fl_rho'),
+    totalCost: state.costTotal ?? 'N/A',
+    volumeDelta: state.volDelta ?? 'N/A',
+    documentedDelta: state.docDelta ?? 'N/A',
+    summary: fv('au_sum'),
+    recommendations: fv('au_rec'),
+    type: el('rp_type') ? fv('rp_type') : 'Daily Report',
+    format: el('rp_format') ? fv('rp_format') : 'TXT',
+    lang: el('rp_lang') ? fv('rp_lang') : 'Русский'
+  };
+}
+
+function reportLines(d){
+  return [
+    'WS2000 Site Edition Report',
+    `Type: ${d.type}`,
+    `Language: ${d.lang}`,
+    `Well: ${d.well}`,
+    `API: ${d.api}`,
+    `Operator: ${d.operator}`,
+    `MD/TVD: ${d.md}/${d.tvd} m`,
+    `Fluid: ${d.fluid}, MW=${d.mudWeight}`,
+    `Cost Total USD: ${d.totalCost}`,
+    `Volume delta: ${d.volumeDelta}; Documented: ${d.documentedDelta}`,
+    `Audit summary: ${d.summary}`,
+    `Recommendations: ${d.recommendations}`
+  ];
+}
+
+function downloadBlob(content, mime, fileName){
+  const blob=new Blob([content],{type:mime});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=fileName;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function exportCSV(d){
+  const rows=[
+    ['Field','Value'],
+    ['Type',d.type],['Language',d.lang],['Well',d.well],['API',d.api],['Operator',d.operator],
+    ['MD',d.md],['TVD',d.tvd],['Fluid',d.fluid],['MudWeight',d.mudWeight],
+    ['TotalCostUSD',d.totalCost],['VolumeDelta',d.volumeDelta],['DocumentedDelta',d.documentedDelta],
+    ['Summary',d.summary],['Recommendations',d.recommendations]
+  ];
+  const esc=v=>`"${String(v).replace(/"/g,'""')}"`;
+  const csv=rows.map(r=>r.map(esc).join(',')).join('\
+');
+  downloadBlob(csv,'text/csv;charset=utf-8','ws2000_report.csv');
+}
+
+function exportXLS(d){
+  const html=`<table border="1"><tr><th>Field</th><th>Value</th></tr>${[
+    ['Type',d.type],['Language',d.lang],['Well',d.well],['API',d.api],['Operator',d.operator],
+    ['MD',d.md],['TVD',d.tvd],['Fluid',d.fluid],['MudWeight',d.mudWeight],
+    ['TotalCostUSD',d.totalCost],['VolumeDelta',d.volumeDelta],['DocumentedDelta',d.documentedDelta],
+    ['Summary',d.summary],['Recommendations',d.recommendations]
+  ].map(r=>`<tr><td>${r[0]}</td><td>${String(r[1]).replace(/</g,'&lt;')}</td></tr>`).join('')}</table>`;
+  downloadBlob(html,'application/vnd.ms-excel','ws2000_report.xls');
+}
+
+function printPDF(d){
+  const w=window.open('','_blank');
+  if(!w){ alert('Разрешите pop-up для печати отчета.'); return; }
+  w.document.write(`<html><head><title>WS2000 Report</title><style>body{font-family:Segoe UI;padding:20px}h1{font-size:20px}table{border-collapse:collapse;width:100%}td,th{border:1px solid #999;padding:6px;text-align:left}</style>  <script src="../nav-inject.js"></script>
+</head><body><h1>WS2000 Site Edition Report</h1><table><tr><th>Field</th><th>Value</th></tr>${[
+    ['Type',d.type],['Language',d.lang],['Well',d.well],['API',d.api],['Operator',d.operator],['MD/TVD',d.md+'/'+d.tvd],
+    ['Fluid',d.fluid],['Mud Weight',d.mudWeight],['Total Cost USD',d.totalCost],['Volume Delta',d.volumeDelta],
+    ['Documented Delta',d.documentedDelta],['Summary',d.summary],['Recommendations',d.recommendations]
+    ].map(r=>`<tr><td>${r[0]}</td><td>${String(r[1]).replace(/</g,'&lt;')}</td></tr>`).join('')}</table>
+</body></html>`);
+  w.document.close();
+  w.focus();
+  w.print();
+}
+
+function generateReport(){
+  const qc=runQC();
+  const gate=getAutoGateStatus();
+  if(!state.wellOk || !qc.volOk || !qc.costOk || !qc.auditOk || !gate.ok){
+    const details=gate.failed.length?`\
+AUTO FAIL: ${gate.failed.join(', ')}`:'';
+    alert('Отчет заблокирован: проверьте mandatory fields, Volumes/Losses, Costing/Audit и AUTO-ячейки.'+details);
+    return;
+  }
+  const d=collectReportData();
+  const fmt=(d.format||'TXT').toUpperCase();
+  const lines=reportLines(d);
+  if(fmt==='CSV') exportCSV(d);
+  else if(fmt==='XLS') exportXLS(d);
+  else if(fmt==='PRINT-PDF') printPDF(d);
+  else downloadBlob(lines.join('\
+'),'text/plain;charset=utf-8','ws2000_site_report.txt');
+
+  if(el('rp_preview')){
+    el('rp_preview').innerHTML = row('Last generated',new Date().toLocaleString()) + row('Type',d.type) + row('Format',d.format) + row('Language',d.lang);
+  }
+  if(el('rp_out')){
+    const o=el('rp_out'); o.style.display='';
+    o.innerHTML = row('Generation','SUCCESS') + row('Format',d.format) + row('Report type',d.type);
+  }
+}
+
+// initial load if available
+(function(){
+  const raw=localStorage.getItem(KEY);
+  if(raw){ try{applyState(JSON.parse(raw));}catch(e){} }
+  if(el('auto_calc')) el('auto_calc').checked=state.autoCalc;
+  tagButtonsByRole();
+  bindAutoCalc();
+  refreshTemplateList();
+  runQC();
+  if(state.autoCalc) scheduleAutoCalc();
+})();
+</script>
+  <script src="assets/js/global-auth-widget.js"></script>
+</body>
+</html>

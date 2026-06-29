@@ -1,0 +1,1664 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>54 · Тендер · Раздел 4 · Буровые растворы</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap");
+
+    :root {
+      --bg-0:#070d15;
+      --bg-1:#111f33;
+      --bg-2:#1d3247;
+      --panel:rgba(10,20,33,.86);
+      --panel-soft:rgba(255,255,255,.035);
+      --line:rgba(226,237,255,.16);
+      --line-soft:rgba(226,237,255,.10);
+      --text:#ecf4ff;
+      --muted:#a8bdd2;
+      --cyan:#20d9b4;
+      --amber:#ffbf66;
+      --blue:#8db4ff;
+      --violet:#c6a6ff;
+      --rose:#ff8d78;
+      --ok:#83f0bf;
+      --shadow:0 24px 56px rgba(0,0,0,.42);
+      --s1:#6fd7b7;
+      --s2:#8db4ff;
+      --s3:#ffd089;
+      --s4:#ff9d89;
+      --s5:#c6a6ff;
+      --s6:#7ed9d1;
+      --s7:#f7a6d8;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      font-family: "Manrope", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(900px 460px at 0% -10%, rgba(32,217,180,.18), transparent),
+        radial-gradient(820px 460px at 100% 0%, rgba(255,191,102,.18), transparent),
+        linear-gradient(145deg, var(--bg-0), var(--bg-1) 46%, var(--bg-2));
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(to right, rgba(255,255,255,.02) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,.02) 1px, transparent 1px);
+      background-size: 36px 36px;
+      mask-image: radial-gradient(circle at 50% 20%, rgba(0,0,0,.95), transparent 72%);
+    }
+
+    .wrap {
+      position: relative;
+      z-index: 1;
+      width: min(1420px, 95vw);
+      margin: 0 auto;
+      padding: 24px 0 64px;
+    }
+
+    .top,
+    .hero,
+    .panel {
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+    }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: rgba(8,15,24,.66);
+      position: sticky;
+      top: 12px;
+      z-index: 20;
+      backdrop-filter: blur(10px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: "Oswald", sans-serif;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      font-size: 20px;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 35% 35%, #d6fff7, var(--cyan));
+      box-shadow: 0 0 18px rgba(32,217,180,.42);
+    }
+
+    .nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .nav a {
+      text-decoration: none;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      font-weight: 800;
+      border-radius: 10px;
+      padding: 8px 12px;
+      color: #082922;
+      background: linear-gradient(130deg,#a0f9eb,#22d7b4);
+      border: 1px solid rgba(34,215,180,.75);
+    }
+
+    .hero,
+    .panel {
+      margin-top: 18px;
+      border-radius: 24px;
+      background: var(--panel);
+      padding: 22px;
+    }
+
+    .hero {
+      background:
+        radial-gradient(520px 220px at 6% 0%, rgba(34,215,180,.12), transparent),
+        radial-gradient(560px 240px at 100% 0%, rgba(255,191,102,.1), transparent),
+        var(--panel);
+    }
+
+    .eyebrow,
+    .tag,
+    .chip,
+    .stage-chip,
+    .type-tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--line-soft);
+      border-radius: 999px;
+      background: rgba(255,255,255,.04);
+      color: #d8e8f8;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .eyebrow,
+    .tag,
+    .chip,
+    .stage-chip {
+      padding: 6px 10px;
+    }
+
+    .hero h1,
+    h2,
+    h3,
+    h4 {
+      font-family: "Oswald", sans-serif;
+      letter-spacing: -.01em;
+      margin: 0;
+    }
+
+    .hero h1 {
+      margin-top: 14px;
+      font-size: clamp(32px, 4.8vw, 54px);
+      line-height: .98;
+    }
+
+    .hero p,
+    .panel p,
+    .note,
+    td,
+    li {
+      color: #c7d7ec;
+      line-height: 1.68;
+      font-size: 14px;
+    }
+
+    .hero-grid,
+    .summary-grid,
+    .type-stats,
+    .chart-grid,
+    .interval-grid,
+    .special-grid,
+    .matrix-grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .hero-grid {
+      margin-top: 18px;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .summary-grid {
+      margin-top: 16px;
+      grid-template-columns: 1.1fr .9fr;
+    }
+
+    .hero-stat,
+    .summary-box,
+    .metric,
+    .chart-box,
+    .interval-card,
+    .matrix-box,
+    .special-card,
+    .type-shell,
+    .type-info {
+      border: 1px solid var(--line-soft);
+      border-radius: 18px;
+      background: var(--panel-soft);
+      padding: 16px;
+    }
+
+    .hero-stat strong,
+    .metric strong {
+      display: block;
+      font-size: 26px;
+      line-height: 1;
+    }
+
+    .hero-stat span,
+    .metric span {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .section-head h2 {
+      font-size: 28px;
+    }
+
+    .list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .list-item {
+      border-top: 1px solid var(--line-soft);
+      padding-top: 10px;
+    }
+
+    .type-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .type-tab {
+      padding: 12px 16px;
+      cursor: pointer;
+      font-family: "Manrope", sans-serif;
+      font-weight: 800;
+      transition: transform .2s ease, background .2s ease, border-color .2s ease;
+    }
+
+    .type-tab:hover,
+    .type-tab.active {
+      transform: translateY(-1px);
+      border-color: transparent;
+      color: #071826;
+    }
+
+    .type-shell {
+      margin-top: 18px;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .type-head {
+      padding: 18px 18px 0;
+    }
+
+    .type-head h2 {
+      font-size: 30px;
+    }
+
+    .type-head p {
+      margin: 8px 0 0;
+      max-width: 104ch;
+    }
+
+    .type-stats {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      padding: 18px;
+    }
+
+    .type-body {
+      padding: 0 18px 18px;
+      display: grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap: 16px;
+    }
+
+    .type-info {
+      display: grid;
+      gap: 10px;
+    }
+
+    .type-info svg,
+    .chart-box svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .completion-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .stage-chip {
+      background: rgba(255,255,255,.05);
+      border-radius: 14px;
+      padding: 8px 10px;
+      text-transform: none;
+      letter-spacing: 0;
+      font-size: 12px;
+    }
+
+    .chart-grid {
+      margin-top: 16px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .chart-box h3,
+    .interval-card h3,
+    .matrix-box h3,
+    .special-card h3 {
+      font-size: 22px;
+      margin-bottom: 10px;
+    }
+
+    .chart-caption,
+    .caption {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .interval-grid {
+      margin-top: 16px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .interval-card {
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .interval-strip {
+      padding: 16px 18px;
+      color: #071826;
+    }
+
+    .interval-strip h3 {
+      font-size: 26px;
+    }
+
+    .interval-strip p {
+      margin: 6px 0 0;
+      color: rgba(7,24,38,.82);
+    }
+
+    .interval-content {
+      padding: 16px 18px 18px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .mini-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .interval-split {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .interval-section {
+      border: 1px solid var(--line-soft);
+      border-radius: 16px;
+      background: rgba(255,255,255,.025);
+      padding: 14px;
+    }
+
+    .section-label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+      color: #dbe9f8;
+    }
+
+    .section-note {
+      margin: -2px 0 10px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.45;
+    }
+
+    .mini-card {
+      border: 1px solid var(--line-soft);
+      border-radius: 14px;
+      background: rgba(255,255,255,.03);
+      padding: 12px;
+    }
+
+    .mini-card .k {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .mini-card .v {
+      display: block;
+      margin-top: 5px;
+      font-size: 16px;
+      font-weight: 800;
+    }
+
+    .param-list,
+    .reagent-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .param-row,
+    .reagent-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      border-bottom: 1px solid var(--line-soft);
+      padding-bottom: 8px;
+    }
+
+    .param-row:last-child,
+    .reagent-row:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .param-name,
+    .reagent-name {
+      color: #dce8f7;
+      font-weight: 700;
+    }
+
+    .param-val,
+    .reagent-role {
+      text-align: right;
+      color: var(--muted);
+    }
+
+    .reagent-main {
+      display: grid;
+      gap: 3px;
+      min-width: 0;
+      flex: 1 1 auto;
+    }
+
+    .reagent-role {
+      text-align: left;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .reagent-dose {
+      flex: 0 0 auto;
+      min-width: 118px;
+      text-align: right;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--amber);
+      line-height: 1.45;
+    }
+
+    .matrix-grid,
+    .special-grid {
+      margin-top: 16px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    th, td {
+      border: 1px solid var(--line-soft);
+      padding: 9px 10px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: #bfd3e8;
+      background: rgba(255,255,255,.04);
+    }
+
+    .cell-hit,
+    .cell-miss {
+      text-align: center;
+      font-weight: 800;
+    }
+
+    .cell-hit { color: var(--ok); }
+    .cell-miss { color: rgba(255,255,255,.2); }
+
+    .note {
+      margin-top: 12px;
+      border: 1px solid rgba(198,166,255,.25);
+      border-radius: 14px;
+      background: rgba(198,166,255,.08);
+      padding: 12px 14px;
+      color: #e2d8ff;
+    }
+
+    .footer {
+      margin-top: 16px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      font-size: 12px;
+      text-align: center;
+    }
+
+    @media (max-width: 1180px) {
+      .hero-grid,
+      .summary-grid,
+      .type-stats,
+      .type-body,
+      .chart-grid,
+      .interval-grid,
+      .matrix-grid,
+      .special-grid,
+      .mini-grid,
+      .interval-split {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 860px) {
+      .top {
+        position: static;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+  <main class="wrap">
+    <header class="top">
+      <a class="brand" href="57_vchng_project_dashboard.html"><span class="dot"></span><span>ВЧНГ · Mud Program</span></a>
+      <nav class="nav">
+        <a href="57_vchng_project_dashboard.html">К дашборду</a>
+        <a href="51_tender_general_data.html">Раздел 1</a>
+        <a href="52_tender_lithology_stratigraphy.html">Раздел 2</a>
+        <a href="53_tender_well_constructions.html">Раздел 3</a>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <span class="eyebrow">Mud design cockpit · Приложения 4.1, 4.2, 4.4, 4.5 и 13 · ВЧНГ</span>
+      <h1>Раздел 4. Буровые растворы</h1>
+      <p>Модуль собирает mud-program layer по ВЧНГ так же, как в полевом проекте по Уренгою: с разбивкой по интервалам, рабочими параметрами раствора, объемами приготовления, номенклатурой химреагентов, кольматационными материалами и специальными требованиями к сервису. Ниже развернуты три разных сценария, потому что для каждого типа скважины архитектура БР отличается по числу стадий, системам БС и материалоемкости.</p>
+      <div class="hero-grid">
+        <div class="hero-stat"><strong>3</strong><span>типа программ БР</span></div>
+        <div class="hero-stat"><strong>18</strong><span>стадий и интервалов</span></div>
+        <div class="hero-stat"><strong>5</strong><span>систем БР и заканчиваний</span></div>
+        <div class="hero-stat"><strong>645-805 м³</strong><span>приготовление по типу</span></div>
+      </div>
+      <div class="summary-grid">
+        <article class="summary-box">
+          <h3>Что внутри страницы</h3>
+          <div class="list">
+            <div class="list-item">Цветной интервальный разрез по каждому типу скважины с привязкой к системам БР.</div>
+            <div class="list-item">Профиль плотностей, объемов приготовления и переходов между стадиями.</div>
+            <div class="list-item">Паспорт каждого интервала: тип раствора, насосы, МСП, диаметр долота, кавернозность, параметры и служебные ограничения.</div>
+            <div class="list-item">Матрица химреагентов и отдельный блок спецтребований по кольматантам, смазке, KCl, гидрооснове и очистке.</div>
+          </div>
+        </article>
+        <article class="summary-box">
+          <h3>Фактура источника</h3>
+          <p>Основа страницы собрана из таблиц по параметрам БР для трех типов скважин и номенклатурных требований к химреагентам и материалам. Там, где приложение задает не дозировку, а только обязательную номенклатуру, это отражено как матрица обязательного наличия, а не как выдуманный расход.</p>
+          <div class="note">На этой странице объемы приготовления и интервальные параметры взяты из таблиц. Для химреагентов добавлен инженерный ориентир по стартовым концентрациям в кг/м³: это рабочие диапазоны для стартовой рецептуры и лабораторной доводки, а не подмена тендерной таблицы.</div>
+        </article>
+      </div>
+      <div class="type-tabs" id="typeTabs"></div>
+    </section>
+
+    <div id="typeContent"></div>
+
+    <p class="footer">ВЧНГ · Doc 54 · Буровые растворы</p>
+  </main>
+
+  <script>
+    const wellTypes = [
+      {
+        id: "type1",
+        title: "Тип 1 · Горизонтальная скважина на Верхнечонский горизонт",
+        subtitle: "Базовый mud program без пилотного ствола: полимер-глинистый верх, БС №22 в эксплуатационной колонне, БС №27 в хвостовике и двухступенчатое заканчивание с KCl-рассолом.",
+        accent: "#6fd7b7",
+        maxDepth: 3500,
+        prepTotal: 645,
+        systems: ["Полимер-глинистый", "БС №22", "БС №27", "Рассол KCl"],
+        intervals: [
+          {
+            id: "t1-i1",
+            name: "Направление",
+            system: "Полимер-глинистый",
+            phase: "interval",
+            color: "#6fd7b7",
+            from: 0,
+            to: 60,
+            hole: "444,5 мм",
+            casing: "340 мм",
+            pumps: "50-60 л/с",
+            rop: "20-50 м/ч",
+            prepVolume: "85 м³",
+            surfaceVolume: "60 м³",
+            carryover: "0 м³",
+            cavern: "1,4",
+            next: "Да",
+            params: [
+              ["Плотность", "1,02-1,15 г/см³"],
+              ["Условная вязкость", "60-150 с/кварта"],
+              ["Диаметр обсадной колонны", "340 мм"],
+              ["Толщина стенки", "9,7 мм"]
+            ],
+            reagents: [
+              ["Бентонит", "структурообразователь"],
+              ["Кальцинированная сода", "понизитель жесткости"],
+              ["Каустическая сода", "регулятор pH"],
+              ["ПАЦ ВВ", "загуститель"],
+              ["Вода", "базовая фаза"],
+              ["Сервисный перевод", "перевод на следующий интервал"]
+            ]
+          },
+          {
+            id: "t1-i2",
+            name: "Кондуктор",
+            system: "Полимер-глинистый",
+            phase: "interval",
+            color: "#8db4ff",
+            from: 60,
+            to: 550,
+            hole: "311,2 мм",
+            casing: "245 мм",
+            pumps: "45-55 л/с",
+            rop: "20-50 м/ч",
+            prepVolume: "115 м³",
+            surfaceVolume: "60 м³",
+            carryover: "70 м³",
+            cavern: "1,4",
+            next: "Нет",
+            params: [
+              ["Плотность", "1,08-1,25 г/см³"],
+              ["Условная вязкость", "50-80 с/кварта"],
+              ["Пластическая вязкость", "10-35 сП"],
+              ["ДНС", "10-35 фунт/100 фут²"],
+              ["СНС 10 сек / 10 мин", "2-20 / 8-40"],
+              ["pH", "8,5-11"],
+              ["Фильтрация АНИ / корка", "≤ 8 мл / ≤ 1,5 мм"],
+              ["Содержание песка", "≤ 1 %"]
+            ],
+            reagents: [
+              ["Бентонит", "структурообразователь"],
+              ["Кальцинированная сода", "понизитель жесткости"],
+              ["Каустическая сода", "регулятор pH"],
+              ["ПАЦ ВВ", "загуститель"],
+              ["ПАЦ НВ", "понизитель фильтрации"],
+              ["Бикарбонат натрия", "обработка цементной агрессии"]
+            ]
+          },
+          {
+            id: "t1-i3",
+            name: "Эксплуатационная колонна",
+            system: "БС №22",
+            phase: "interval",
+            color: "#ffd089",
+            from: 550,
+            to: 2700,
+            hole: "219,1 мм",
+            casing: "178 мм",
+            pumps: "30-35 л/с",
+            rop: "15-45 м/ч",
+            prepVolume: "215 м³",
+            surfaceVolume: "60 м³",
+            carryover: "80 м³",
+            cavern: "1,1",
+            next: "Нет",
+            params: [
+              ["Плотность", "1,23-1,27 г/см³"],
+              ["Условная вязкость", "45-65 с/кварта"],
+              ["Пластическая вязкость", "15-25 сП"],
+              ["ДНС", "15-25 фунт/100 фут²"],
+              ["СНС 10 сек / 10 мин", "3-15 / 5-30"],
+              ["pH", "9,5-11,5"],
+              ["УВ/В", "30/70"],
+              ["Фильтрация АНИ / корка", "≤ 3 мл / ≤ 0,5 мм"],
+              ["Жесткость Ca2+", "≤ 2000 мг/л"],
+              ["Cl-", "≥ 170000 мг/л"],
+              ["Смазка / CaCO3", "≥ 2 % / ≥ 60 кг/м³"],
+              ["Коэф. трения / выбуренная порода", "≤ 0,05 / ≤ 12 %"]
+            ],
+            reagents: [
+              ["Углеводородная основа", "базовая углеводородная фаза"],
+              ["Эмульгатор прямых эмульсий", "эмульсионная система"],
+              ["Ксантановая смола", "структурообразователь"],
+              ["Крахмал модифицированный", "понизитель фильтрации"],
+              ["Смазочная добавка", "lubricity"],
+              ["Барит", "утяжелитель"],
+              ["Мраморная крошка", "кольматант/утяжелитель"],
+              ["Хлорид натрия", "минерализация водной фазы"],
+              ["Кальцинированная сода", "понизитель жесткости"],
+              ["Каустическая сода", "регулятор pH"],
+              ["ПАЦ ВВ / ПАЦ НВ", "структура и фильтрация"],
+              ["Производные триазина", "бактерицид"]
+            ]
+          },
+          {
+            id: "t1-i4",
+            name: "Хвостовик",
+            system: "БС №27",
+            phase: "interval",
+            color: "#c6a6ff",
+            from: 2700,
+            to: 3500,
+            hole: "152,4 мм",
+            casing: "114 мм",
+            pumps: "15-19 л/с",
+            rop: "15-40 м/ч",
+            prepVolume: "150 м³",
+            surfaceVolume: "60 м³",
+            carryover: "-",
+            cavern: "1,1",
+            next: "Нет",
+            params: [
+              ["Плотность", "1,07-1,10 г/см³"],
+              ["Условная вязкость", "40-65 с/кварта"],
+              ["Пластическая вязкость", "15-25 сП"],
+              ["ДНС", "15-25 фунт/100 фут²"],
+              ["СНС 10 сек / 10 мин", "3-15 / 5-30"],
+              ["pH", "9,5-11,5"],
+              ["Фильтрация АНИ / корка", "≤ 4 мл / ≤ 0,5 мм"],
+              ["Жесткость Ca2+", "≤ 2000 мг/л"],
+              ["K+", "≥ 25000 мг/л"],
+              ["Катионообменная емкость", "≤ 14,25 кг/м³"],
+              ["Смазка / CaCO3", "≥ 2 % / ≥ 80 кг/м³"],
+              ["Коэф. трения / выбуренная порода", "≤ 0,05 / ≤ 2 %"]
+            ],
+            reagents: [
+              ["Ксантановая смола", "структурообразователь"],
+              ["Крахмал модифицированный", "понизитель фильтрации"],
+              ["Кальцинированная сода", "понизитель жесткости"],
+              ["Каустическая сода", "регулятор pH"],
+              ["Мраморная крошка", "кольматант"],
+              ["Хлорид калия", "ингибитор глин"],
+              ["Органический ингибитор", "аминная композиция"],
+              ["Смазочная добавка", "lubricity"],
+              ["ВМ", "пеногаситель/сервисный реагент"],
+              ["Производные триазина", "бактерицид"]
+            ]
+          },
+          {
+            id: "t1-i5",
+            name: "Заканчивание",
+            system: "БС №27",
+            phase: "completion",
+            color: "#7ed9d1",
+            prepVolume: "20 м³",
+            params: [
+              ["Плотность", "1,07 г/см³"],
+              ["Условная вязкость", "40-65 с/кварта"],
+              ["pH", "9,5-11,5"],
+              ["Фильтрация АНИ / корка", "≤ 4 мл / ≤ 0,5 мм"]
+            ],
+            reagents: [
+              ["Компонентный состав БС №27", "концентрации должны соответствовать рабочему хвостовику"],
+              ["Хлорид калия", "ингибирование"],
+              ["Смазочная добавка", "снижение трения"]
+            ]
+          },
+          {
+            id: "t1-i6",
+            name: "Заканчивание",
+            system: "Рассол KCl",
+            phase: "completion",
+            color: "#f7a6d8",
+            prepVolume: "60 м³",
+            params: [
+              ["Плотность", "1,07 г/см³"],
+              ["Назначение", "финальное заканчивание"],
+              ["Базовый носитель", "рассол хлорида калия"]
+            ],
+            reagents: [
+              ["Хлорид калия", "основа рассола"],
+              ["Контроль чистоты", "массовая доля KCl не менее 95 %"]
+            ]
+          }
+        ],
+        special: [
+          ["LCM-пакет по БС №22", "Для эксплуатации требуется микрокольматационный пакет: асфальтен/сульфированный битум, ореховая скорлупа и дополнительный микрокольматант с запасом не менее 2500 кг по каждой позиции."],
+          ["Смазочная добавка", "Нужны подтверждающие документы и программа тестирования KCC. Поставщик должен показать, что добавка реально снижает коэффициент смазочной способности, а не просто заявлена в спецификации."],
+          ["Мраморная крошка и ореховая скорлупа", "Требуются подтвержденная кислоторастворимость, фракционный состав и аварийный запас кольматантов на каждую скважину."],
+          ["Очистка и сервис", "Для эффективной очистки нужно подтверждение по ситовым панелям, качественной очистке скважины от выбуренного шлама и запасам оперативного LCM-пакета."]
+        ]
+      },
+      {
+        id: "type2",
+        title: "Тип 2 · Горизонтальная скважина с пилотным стволом",
+        subtitle: "Сценарий с пилотным стволом добавляет отдельную стадию БС №22 и делает mud-program самым материалоемким: два рабочих блока БС №22, затем БС №27 и двойное заканчивание.",
+        accent: "#8db4ff",
+        maxDepth: 3500,
+        prepTotal: 805,
+        systems: ["Полимер-глинистый", "БС №22", "БС №27", "Рассол KCl"],
+        intervals: [
+          {
+            id: "t2-i1",
+            name: "Направление",
+            system: "Полимер-глинистый",
+            phase: "interval",
+            color: "#6fd7b7",
+            from: 0,
+            to: 60,
+            hole: "444,5 мм",
+            casing: "340 мм",
+            pumps: "50-60 л/с",
+            rop: "20-50 м/ч",
+            prepVolume: "85 м³",
+            surfaceVolume: "60 м³",
+            carryover: "0 м³",
+            cavern: "1,4",
+            next: "Да",
+            params: [
+              ["Плотность", "1,02-1,15 г/см³"],
+              ["Условная вязкость", "60-150 с/кварта"],
+              ["Диаметр обсадной колонны", "340 мм"],
+              ["Толщина стенки", "9,7 мм"]
+            ],
+            reagents: [
+              ["Бентонит", "структурообразователь"],
+              ["Кальцинированная сода", "понизитель жесткости"],
+              ["Каустическая сода", "регулятор pH"],
+              ["ПАЦ ВВ", "загуститель"]
+            ]
+          },
+          {
+            id: "t2-i2",
+            name: "Кондуктор",
+            system: "Полимер-глинистый",
+            phase: "interval",
+            color: "#8db4ff",
+            from: 60,
+            to: 550,
+            hole: "311,2 мм",
+            casing: "245 мм",
+            pumps: "45-55 л/с",
+            rop: "20-50 м/ч",
+            prepVolume: "115 м³",
+            surfaceVolume: "60 м³",
+            carryover: "70 м³",
+            cavern: "1,4",
+            next: "Нет",
+            params: [
+              ["Плотность", "1,08-1,25 г/см³"],
+              ["Условная вязкость", "50-80 с/кварта"],
+              ["Пластическая вязкость", "10-35 сП"],
+              ["ДНС", "10-35 фунт/100 фут²"],
+              ["СНС 10 сек / 10 мин", "2-20 / 8-40"],
+              ["pH", "8,5-11"],
+              ["Фильтрация АНИ / корка", "≤ 8 мл / ≤ 1,5 мм"]
+            ],
+            reagents: [
+              ["Бентонит", "структурообразователь"],
+              ["Кальцинированная сода", "понизитель жесткости"],
+              ["Каустическая сода", "регулятор pH"],
+              ["ПАЦ ВВ / ПАЦ НВ", "структура и фильтрация"],
+              ["Бикарбонат натрия", "цементная агрессия"]
+            ]
+          },
+          {
+            id: "t2-i3",
+            name: "Пилотный ствол",
+            system: "БС №22",
+            phase: "interval",
+            color: "#ff9d89",
+            from: 550,
+            to: 2550,
+            hole: "219,1 мм",
+            casing: "без колонны",
+            pumps: "30-35 л/с",
+            rop: "15-45 м/ч",
+            prepVolume: "185 м³",
+            surfaceVolume: "60 м³",
+            carryover: "-",
+            cavern: "1,1",
+            next: "Нет",
+            params: [
+              ["Плотность", "1,23-1,27 г/см³"],
+              ["Условная вязкость", "45-65 с/кварта"],
+              ["Пластическая вязкость", "15-25 сП"],
+              ["ДНС", "15-25 фунт/100 фут²"],
+              ["СНС 10 сек / 10 мин", "3-15 / 5-30"],
+              ["pH", "9,5-11,5"],
+              ["УВ/В", "30/70"],
+              ["Фильтрация АНИ / корка", "≤ 3 мл / ≤ 0,5 мм"],
+              ["Cl- / CaCO3", "≥ 170000 мг/л / ≥ 60 кг/м³"],
+              ["Коэф. трения / выбуренная порода", "≤ 0,05 / ≤ 12 %"]
+            ],
+            reagents: [
+              ["Углеводородная основа", "базовая фаза"],
+              ["Эмульгатор", "эмульсионная система"],
+              ["Ксантановая смола", "структура"],
+              ["Крахмал модифицированный", "фильтрация"],
+              ["Смазочная добавка", "lubricity"],
+              ["Барит / мраморная крошка", "утяжеление и кольматация"],
+              ["NaCl", "минерализация"],
+              ["ПАЦ ВВ / ПАЦ НВ", "фильтрация и структура"],
+              ["Производные триазина", "бактерицид"]
+            ]
+          },
+          {
+            id: "t2-i4",
+            name: "Эксплуатационная колонна",
+            system: "БС №22",
+            phase: "interval",
+            color: "#ffd089",
+            from: 600,
+            to: 2700,
+            hole: "219,1 мм",
+            casing: "178 мм",
+            pumps: "30-35 л/с",
+            rop: "20-50 м/ч",
+            prepVolume: "190 м³",
+            surfaceVolume: "60 м³",
+            carryover: "100 м³",
+            cavern: "1,1",
+            next: "Нет",
+            params: [
+              ["Плотность", "1,23-1,27 г/см³"],
+              ["Условная вязкость", "45-65 с/кварта"],
+              ["Пластическая вязкость", "15-25 сП"],
+              ["ДНС", "15-25 фунт/100 фут²"],
+              ["СНС 10 сек / 10 мин", "3-15 / 5-30"],
+              ["pH", "9,5-11,5"],
+              ["УВ/В", "30/70"],
+              ["Фильтрация АНИ / корка", "≤ 3 мл / ≤ 0,5 мм"],
+              ["Cl- / CaCO3", "≥ 170000 мг/л / ≥ 60 кг/м³"],
+              ["Коэф. трения / выбуренная порода", "≤ 0,05 / ≤ 12 %"]
+            ],
+            reagents: [
+              ["Углеводородная основа", "базовая фаза"],
+              ["Эмульгатор", "эмульсионная система"],
+              ["Ксантановая смола", "структура"],
+              ["Крахмал модифицированный", "фильтрация"],
+              ["Смазочная добавка", "lubricity"],
+              ["Барит / мраморная крошка", "утяжеление и кольматация"],
+              ["NaCl", "минерализация"],
+              ["ПАЦ ВВ / ПАЦ НВ", "фильтрация и структура"],
+              ["Производные триазина", "бактерицид"]
+            ]
+          },
+          {
+            id: "t2-i5",
+            name: "Хвостовик",
+            system: "БС №27",
+            phase: "interval",
+            color: "#c6a6ff",
+            from: 2700,
+            to: 3500,
+            hole: "152,4 мм",
+            casing: "114 мм",
+            pumps: "15-19 л/с",
+            rop: "15-40 м/ч",
+            prepVolume: "150 м³",
+            surfaceVolume: "60 м³",
+            carryover: "-",
+            cavern: "1,1",
+            next: "Нет",
+            params: [
+              ["Плотность", "1,07-1,10 г/см³"],
+              ["Условная вязкость", "40-65 с/кварта"],
+              ["Пластическая вязкость", "15-25 сП"],
+              ["ДНС", "15-25 фунт/100 фут²"],
+              ["СНС 10 сек / 10 мин", "3-15 / 5-30"],
+              ["pH", "9,5-11,5"],
+              ["Фильтрация АНИ / корка", "≤ 4 мл / ≤ 0,5 мм"],
+              ["K+ / CaCO3", "≥ 25000 мг/л / ≥ 80 кг/м³"],
+              ["Коэф. трения / выбуренная порода", "≤ 0,05 / ≤ 2 %"]
+            ],
+            reagents: [
+              ["Ксантановая смола", "структурообразователь"],
+              ["Крахмал модифицированный", "понизитель фильтрации"],
+              ["Кальцинированная сода / каустик", "жесткость и pH"],
+              ["Мраморная крошка", "кольматант"],
+              ["Хлорид калия", "ингибирование глин"],
+              ["Органический ингибитор", "аминная композиция"],
+              ["Смазочная добавка", "lubricity"],
+              ["ВМ", "сервисный реагент"],
+              ["Производные триазина", "бактерицид"]
+            ]
+          },
+          {
+            id: "t2-i6",
+            name: "Заканчивание",
+            system: "БС №27",
+            phase: "completion",
+            color: "#7ed9d1",
+            prepVolume: "20 м³",
+            params: [
+              ["Плотность", "1,07 г/см³"],
+              ["Рабочая логика", "концентрации должны соответствовать БС №27"],
+              ["Назначение", "подготовка перед финальным рассолом"]
+            ],
+            reagents: [
+              ["Компонентный состав БС №27", "повтор рабочего хвостовика"],
+              ["KCl и ингибитор", "поддержание химической среды"],
+              ["Смазочная добавка", "контроль трения"]
+            ]
+          },
+          {
+            id: "t2-i7",
+            name: "Заканчивание",
+            system: "Рассол KCl",
+            phase: "completion",
+            color: "#f7a6d8",
+            prepVolume: "60 м³",
+            params: [
+              ["Плотность", "1,07 г/см³"],
+              ["Основа", "рассол хлорида калия"],
+              ["Назначение", "финальная технологическая жидкость"]
+            ],
+            reagents: [
+              ["Хлорид калия", "основа рассола"],
+              ["Чистота KCl", "не менее 95 %"]
+            ]
+          }
+        ],
+        special: [
+          ["Материалоемкость сценария", "Тип 2 самый тяжелый по БР: две отдельные стадии на БС №22 и суммарный объем приготовления 805 м³. Это надо учитывать в логистике реагентов и в емкостном хозяйстве."],
+          ["Пилотный ствол", "Пилотный ствол бурится на той же системе БС №22, поэтому нужна полная поддержка эмульсионной химии уже до спуска основной эксплуатационной колонны."],
+          ["LCM и смазка", "Для БС №22 и хвостовика на БС №27 сохраняются требования по аварийному запасу кольматантов, тестированию смазочной добавки и контролю качества мраморной крошки."],
+          ["KCl-этапы", "И хвостовик, и обе стадии заканчивания критичны по контролю калиевой фазы. KCl должен соответствовать требованиям по чистоте и сопровождаться документами качества."]
+        ]
+      },
+      {
+        id: "type3",
+        title: "Тип 3 · Горизонтальная скважина на Преображенский / Осинский / Усть-Кутский горизонты",
+        subtitle: "Сценарий без пилота, но с более глубокой финальной частью: эксплуатационная колонна идет на БС №11, хвостовик на БС №27, а заканчивание выполняется KCl-рассолом. Главный рост материалоемкости здесь приходится на эксплуатационную колонну и более длинный хвостовик.",
+        accent: "#ffbf66",
+        maxDepth: 3700,
+        prepTotal: 671,
+        systems: ["Полимер-глинистый", "БС №11", "БС №27", "Рассол KCl"],
+        intervals: [
+          {
+            id: "t3-i1",
+            name: "Направление",
+            system: "Полимер-глинистый",
+            phase: "interval",
+            color: "#6fd7b7",
+            from: 0,
+            to: 60,
+            hole: "444,5 мм",
+            casing: "340 мм",
+            pumps: "50-60 л/с",
+            rop: "20-50 м/ч",
+            prepVolume: "85 м³",
+            surfaceVolume: "60 м³",
+            carryover: "0 м³",
+            cavern: "1,4",
+            next: "Да",
+            params: [
+              ["Плотность", "1,02-1,15 г/см³"],
+              ["Условная вязкость", "60-150 с/кварта"],
+              ["Диаметр обсадной колонны", "340 мм"],
+              ["Толщина стенки", "9,7 мм"]
+            ],
+            reagents: [
+              ["Бентонит", "структурообразователь"],
+              ["Кальцинированная сода", "понизитель жесткости"],
+              ["Каустическая сода", "регулятор pH"],
+              ["ПАЦ ВВ", "загуститель"]
+            ]
+          },
+          {
+            id: "t3-i2",
+            name: "Кондуктор",
+            system: "Полимер-глинистый",
+            phase: "interval",
+            color: "#8db4ff",
+            from: 60,
+            to: 550,
+            hole: "311,2 мм",
+            casing: "245 мм",
+            pumps: "45-55 л/с",
+            rop: "20-50 м/ч",
+            prepVolume: "115 м³",
+            surfaceVolume: "60 м³",
+            carryover: "70 м³",
+            cavern: "1,4",
+            next: "Нет",
+            params: [
+              ["Плотность", "1,08-1,25 г/см³"],
+              ["Условная вязкость", "50-80 с/кварта"],
+              ["Пластическая вязкость", "10-35 сП"],
+              ["ДНС", "10-35 фунт/100 фут²"],
+              ["СНС 10 сек / 10 мин", "2-20 / 8-40"],
+              ["pH", "8,5-11"],
+              ["Фильтрация АНИ / корка", "≤ 8 мл / ≤ 1,5 мм"]
+            ],
+            reagents: [
+              ["Бентонит", "структурообразователь"],
+              ["Кальцинированная сода", "понизитель жесткости"],
+              ["Каустическая сода", "регулятор pH"],
+              ["ПАЦ ВВ / ПАЦ НВ", "структура и фильтрация"],
+              ["Бикарбонат натрия", "цементная агрессия"]
+            ]
+          },
+          {
+            id: "t3-i3",
+            name: "Эксплуатационная колонна",
+            system: "БС №11",
+            phase: "interval",
+            color: "#ffd089",
+            from: 550,
+            to: 2700,
+            hole: "219,1 мм",
+            casing: "178 мм",
+            pumps: "30-35 л/с",
+            rop: "15-45 м/ч",
+            prepVolume: "230 м³",
+            surfaceVolume: "60 м³",
+            carryover: "80 м³",
+            cavern: "1,2",
+            next: "Нет",
+            params: [
+              ["Плотность", "1,23-1,27 г/см³"],
+              ["Условная вязкость", "45-65 с/кварта"],
+              ["Пластическая вязкость", "15-25 сП"],
+              ["ДНС", "15-25 фунт/100 фут²"],
+              ["СНС 10 сек / 10 мин", "3-15 / 5-30"],
+              ["pH", "9,5-11,5"],
+              ["Фильтрация АНИ / корка", "≤ 4 мл / ≤ 0,5 мм"],
+              ["Жесткость Ca2+ / Cl-", "≤ 2000 мг/л / ≥ 170000 мг/л"],
+              ["Смазка / CaCO3", "≥ 2 % / ≥ 60 кг/м³"],
+              ["Коэф. трения / выбуренная порода", "≤ 0,05 / ≤ 12 %"]
+            ],
+            reagents: [
+              ["Ксантановая смола", "структурообразователь"],
+              ["Крахмал модифицированный", "понизитель фильтрации"],
+              ["Смазочная добавка", "lubricity"],
+              ["Барит", "утяжелитель"],
+              ["Мраморная крошка", "кольматант/утяжелитель"],
+              ["Хлорид натрия", "минерализация водной фазы"],
+              ["Кальцинированная сода", "понизитель жесткости"],
+              ["Каустическая сода", "регулятор pH"],
+              ["ПАЦ ВВ / ПАЦ НВ", "структура и фильтрация"],
+              ["Производные триазина", "бактерицид"]
+            ]
+          },
+          {
+            id: "t3-i4",
+            name: "Хвостовик",
+            system: "БС №27",
+            phase: "interval",
+            color: "#c6a6ff",
+            from: 2700,
+            to: 3700,
+            hole: "152,4 мм",
+            casing: "114 мм",
+            pumps: "15-19 л/с",
+            rop: "15-40 м/ч",
+            prepVolume: "160 м³",
+            surfaceVolume: "60 м³",
+            carryover: "-",
+            cavern: "1,1",
+            next: "Нет",
+            params: [
+              ["Плотность", "1,07-1,10 г/см³"],
+              ["Условная вязкость", "40-65 с/кварта"],
+              ["Пластическая вязкость", "15-25 сП"],
+              ["ДНС", "15-25 фунт/100 фут²"],
+              ["СНС 10 сек / 10 мин", "3-15 / 5-30"],
+              ["pH", "9,5-11,5"],
+              ["Фильтрация АНИ / корка", "≤ 4 мл / ≤ 0,5 мм"],
+              ["K+ / CaCO3", "≥ 25000 мг/л / ≥ 80 кг/м³"],
+              ["Коэф. трения / выбуренная порода", "≤ 0,05 / ≤ 2 %"]
+            ],
+            reagents: [
+              ["Ксантановая смола", "структурообразователь"],
+              ["Крахмал модифицированный", "понизитель фильтрации"],
+              ["Кальцинированная сода / каустик", "жесткость и pH"],
+              ["Мраморная крошка", "кольматант"],
+              ["Хлорид калия", "ингибирование глин"],
+              ["Органический ингибитор", "аминная композиция"],
+              ["Смазочная добавка", "lubricity"],
+              ["ВМ", "сервисный реагент"],
+              ["Производные триазина", "бактерицид"]
+            ]
+          },
+          {
+            id: "t3-i5",
+            name: "Заканчивание",
+            system: "Рассол KCl",
+            phase: "completion",
+            color: "#f7a6d8",
+            prepVolume: "81 м³",
+            params: [
+              ["Плотность", "1,07 г/см³"],
+              ["Основа", "рассол хлорида калия"],
+              ["Назначение", "заканчивание после хвостовика 2700-3700 м"]
+            ],
+            reagents: [
+              ["Хлорид калия", "основа рассола"],
+              ["Контроль чистоты", "не менее 95 % KCl"]
+            ]
+          }
+        ],
+        special: [
+          ["БС №11", "Для третьего типа эксплуатационная колонна работает не на БС №22, а на БС №11. Это водная ингибированная система: без углеводородной основы, но с требованием по структуре, фильтрации, смазке, минерализации и бактерицидной защите."],
+          ["Рост объема в эксплуатационной колонне", "В этом типе именно эксплуатационная колонна становится самой тяжелой стадией по приготовлению: 230 м³ против 215 м³ в базовом типе."],
+          ["Хвостовик 2700-3700 м", "Удлинение хвостовика до 3700 м повышает требования к устойчивости БС №27 и к запасу KCl, ингибитора, кольматантов и смазочной добавки."],
+          ["Материалы и очистка", "Требования по качеству сит, мраморной крошки, ореховой скорлупы, смазки и качественной очистке скважины сохраняются как обязательные сервисные условия."]
+        ]
+      }
+    ];
+
+    function makeTypeTab(type, index) {
+      const tab = document.createElement("button");
+      tab.className = "type-tab" + (index === 0 ? " active" : "");
+      tab.style.background = index === 0 ? type.accent : "rgba(255,255,255,.04)";
+      tab.style.borderColor = index === 0 ? "transparent" : "rgba(226,237,255,.10)";
+      tab.textContent = type.title;
+      tab.dataset.typeId = type.id;
+      tab.addEventListener("click", () => activateType(type.id));
+      return tab;
+    }
+
+    function formatStageCount(type) {
+      return `${type.intervals.length}`;
+    }
+
+    const reagentConcentrationGuides = {
+      "Полимер-глинистый": {
+        "Бентонит": "25-35 кг/м³",
+        "Кальцинированная сода": "1-3 кг/м³",
+        "Каустическая сода": "0,5-1,5 кг/м³",
+        "ПАЦ ВВ": "2-4 кг/м³",
+        "ПАЦ НВ": "1-3 кг/м³",
+        "ПАЦ ВВ / ПАЦ НВ": "3-6 кг/м³ суммарно",
+        "Бикарбонат натрия": "1-3 кг/м³"
+      },
+      "БС №22": {
+        "Углеводородная основа": "550-650 кг/м³",
+        "Эмульгатор прямых эмульсий": "8-16 кг/м³",
+        "Эмульгатор": "8-16 кг/м³",
+        "Ксантановая смола": "2-4 кг/м³",
+        "Крахмал модифицированный": "6-10 кг/м³",
+        "Смазочная добавка": "10-20 кг/м³",
+        "Барит": "120-280 кг/м³",
+        "Мраморная крошка": "60-90 кг/м³",
+        "Хлорид натрия": "180-240 кг/м³",
+        "Кальцинированная сода": "1-3 кг/м³",
+        "Каустическая сода": "0,5-1,5 кг/м³",
+        "ПАЦ ВВ / ПАЦ НВ": "3-7 кг/м³ суммарно",
+        "Производные триазина": "0,5-1,5 кг/м³",
+        "Барит / мраморная крошка": "180-340 / 60-90 кг/м³"
+      },
+      "БС №11": {
+        "Ксантановая смола": "2-4 кг/м³",
+        "Крахмал модифицированный": "6-10 кг/м³",
+        "Смазочная добавка": "8-18 кг/м³",
+        "Барит": "140-320 кг/м³",
+        "Мраморная крошка": "40-80 кг/м³",
+        "Хлорид натрия": "160-220 кг/м³",
+        "Кальцинированная сода": "1-3 кг/м³",
+        "Каустическая сода": "0,5-1,5 кг/м³",
+        "ПАЦ ВВ / ПАЦ НВ": "3-7 кг/м³ суммарно",
+        "Производные триазина": "0,5-1,5 кг/м³"
+      },
+      "БС №27": {
+        "Ксантановая смола": "2-4 кг/м³",
+        "Крахмал модифицированный": "6-10 кг/м³",
+        "Кальцинированная сода": "1-3 кг/м³",
+        "Каустическая сода": "0,5-1,5 кг/м³",
+        "Мраморная крошка": "80-120 кг/м³",
+        "Хлорид калия": "50-90 кг/м³",
+        "Органический ингибитор": "5-12 кг/м³",
+        "Смазочная добавка": "8-18 кг/м³",
+        "ВМ": "0,5-1,5 кг/м³",
+        "Производные триазина": "0,5-1,5 кг/м³",
+        "Компонентный состав БС №27": "как в хвостовике БС №27",
+        "KCl и ингибитор": "50-90 / 5-12 кг/м³"
+      },
+      "Рассол KCl": {
+        "Хлорид калия": "80-100 кг/м³",
+        "Контроль чистоты": "контроль качества",
+        "Чистота KCl": "контроль качества"
+      }
+    };
+
+    function getReagentConcentration(interval, reagentName) {
+      const systemGuide = reagentConcentrationGuides[interval.system] || {};
+      return systemGuide[reagentName] || "уточняется лабораторно";
+    }
+
+    function renderWellProfile(type) {
+      const width = 760;
+      const height = 660;
+      const top = 56;
+      const bottom = 540;
+      const centerX = 170;
+      const columnWidth = 118;
+      const scale = (depth) => top + (depth / type.maxDepth) * (bottom - top);
+      const stages = type.intervals.filter((item) => item.phase === "interval");
+      const completions = type.intervals.filter((item) => item.phase === "completion");
+      const calloutX = 360;
+      const calloutWidth = 336;
+      const calloutHeight = 58;
+      const calloutGap = 18;
+      const calloutStartY = 102;
+      const depthMarks = [0, ...stages.map((stage) => stage.from), ...stages.map((stage) => stage.to), type.maxDepth]
+        .filter((value, index, array) => array.indexOf(value) === index)
+        .sort((left, right) => left - right);
+
+      let svg = `
+        <svg viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Цветной профиль интервалов буровых растворов">
+          <defs>
+            <linearGradient id="bg-${type.id}" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="rgba(255,255,255,.04)" />
+              <stop offset="100%" stop-color="rgba(255,255,255,.02)" />
+            </linearGradient>
+          </defs>
+            <rect x="12" y="12" width="736" height="636" rx="24" fill="url(#bg-${type.id})" stroke="rgba(255,255,255,.06)" />
+          <text x="26" y="34" fill="#edf5ff" font-size="24" font-family="Oswald, sans-serif">Интервальный разрез</text>
+          <text x="26" y="52" fill="#79cfff" font-size="11">глубина по стволу, м</text>
+      `;
+
+      depthMarks.forEach((depth) => {
+        const y = scale(depth);
+        svg += `
+          <line x1="58" y1="${y}" x2="${centerX - 72}" y2="${y}" stroke="rgba(255,255,255,.16)" stroke-dasharray="4 5" />
+          <text x="26" y="${y + 4}" fill="#bfd3e8" font-size="12" font-weight="700">${String(depth).replace('.', ',')}</text>
+        `;
+      });
+
+      svg += `
+        <rect x="${centerX - columnWidth / 2}" y="${top}" width="${columnWidth}" height="${bottom - top}" rx="26" fill="rgba(255,255,255,.03)" stroke="rgba(255,255,255,.06)" />
+      `;
+
+      stages.forEach((stage, index) => {
+        const y = scale(stage.from);
+        const h = Math.max(scale(stage.to) - y, 22);
+        const stageMidY = y + h / 2;
+        const calloutY = calloutStartY + index * (calloutHeight + calloutGap);
+        const showInsideLabel = h >= 44;
+        svg += `
+          <rect x="${centerX - columnWidth / 2 + 10}" y="${y}" width="${columnWidth - 20}" height="${h}" rx="18" fill="${stage.color}" opacity="0.95" />
+          ${showInsideLabel ? `<text x="${centerX}" y="${y + h / 2 + 4}" text-anchor="middle" fill="#071826" font-size="12" font-weight="800">${stage.name}</text>` : ""}
+          <line x1="${centerX + columnWidth / 2 + 8}" y1="${stageMidY}" x2="${calloutX - 14}" y2="${stageMidY}" stroke="${stage.color}" stroke-width="2" />
+          <line x1="${calloutX - 14}" y1="${stageMidY}" x2="${calloutX - 14}" y2="${calloutY + calloutHeight / 2}" stroke="${stage.color}" stroke-width="2" />
+          <circle cx="${calloutX - 14}" cy="${stageMidY}" r="4" fill="${stage.color}" />
+          <rect x="${calloutX}" y="${calloutY}" width="${calloutWidth}" height="${calloutHeight}" rx="16" fill="rgba(8,16,26,.92)" stroke="${stage.color}" stroke-width="1.5" />
+          <text x="${calloutX + 16}" y="${calloutY + 18}" fill="${stage.color}" font-size="13" font-weight="800">${stage.name}</text>
+          <text x="${calloutX + 16}" y="${calloutY + 35}" fill="#dce8f7" font-size="12">${stage.system} · ${stage.from}-${stage.to} м</text>
+          <text x="${calloutX + 16}" y="${calloutY + 50}" fill="#9eb4cc" font-size="11">${stage.hole} ствол · ${stage.casing}</text>
+        `;
+      });
+
+      completions.forEach((stage, index) => {
+        const x = 110 + index * 220;
+        svg += `
+          <rect x="${x}" y="586" width="200" height="18" rx="9" fill="${stage.color}" opacity="0.9" />
+          <text x="${x + 10}" y="599" fill="#071826" font-size="11" font-weight="800">${stage.name} · ${stage.system} · ${stage.prepVolume}</text>
+        `;
+      });
+
+      svg += `</svg>`;
+      return svg;
+    }
+
+    function parseRange(rangeText) {
+      const normalized = rangeText.replace(/,/g, ".");
+      const parts = normalized.match(/\d+(?:\.\d+)?/g) || [];
+      if (parts.length === 0) return null;
+      if (parts.length === 1) return { min: Number(parts[0]), max: Number(parts[0]) };
+      return { min: Number(parts[0]), max: Number(parts[1]) };
+    }
+
+    function renderDensityChart(type) {
+      const intervals = type.intervals.filter((item) => item.phase === "interval");
+      const width = 640;
+      const height = 320;
+      const startX = 150;
+      const chartWidth = 430;
+      const rowHeight = 52;
+      const minValue = 1.0;
+      const maxValue = 1.3;
+      const scaleX = (value) => startX + ((value - minValue) / (maxValue - minValue)) * chartWidth;
+      let svg = `<svg viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Профиль плотности по интервалам">`;
+
+      for (let marker = minValue; marker <= maxValue + 0.0001; marker += 0.05) {
+        const x = scaleX(marker);
+        svg += `<line x1="${x}" y1="26" x2="${x}" y2="290" stroke="rgba(255,255,255,.08)" stroke-dasharray="4 4" />`;
+        svg += `<text x="${x}" y="18" text-anchor="middle" fill="#bfd3e8" font-size="11">${marker.toFixed(2).replace('.', ',')}</text>`;
+      }
+
+      intervals.forEach((item, index) => {
+        const range = parseRange(item.params.find((pair) => pair[0] === "Плотность")[1]);
+        const y = 42 + index * rowHeight;
+        const x1 = scaleX(range.min);
+        const x2 = scaleX(range.max);
+        svg += `<text x="20" y="${y + 14}" fill="#edf5ff" font-size="12" font-weight="700">${item.name}</text>`;
+        svg += `<text x="20" y="${y + 30}" fill="#9eb4cc" font-size="11">${item.system}</text>`;
+        svg += `<rect x="${x1}" y="${y}" width="${Math.max(x2 - x1, 4)}" height="18" rx="9" fill="${item.color}" opacity="0.95" />`;
+        svg += `<text x="${x2 + 8}" y="${y + 13}" fill="#dce8f7" font-size="11">${item.params.find((pair) => pair[0] === "Плотность")[1]}</text>`;
+      });
+
+      svg += `</svg>`;
+      return svg;
+    }
+
+    function renderVolumeChart(type) {
+      const intervals = type.intervals;
+      const width = 640;
+      const height = 340;
+      const chartLeft = 150;
+      const chartBottom = 280;
+      const maxVolume = Math.max(...intervals.map((item) => Number((item.prepVolume || "0").replace(/[^0-9]/g, "") || 0)), 100);
+      const scaleY = (value) => chartBottom - (value / maxVolume) * 210;
+      const barGap = 18;
+      const barWidth = 46;
+      let svg = `<svg viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Объемы приготовления">`;
+
+      svg += `<line x1="${chartLeft}" y1="48" x2="${chartLeft}" y2="${chartBottom}" stroke="rgba(255,255,255,.18)" />`;
+      svg += `<line x1="${chartLeft}" y1="${chartBottom}" x2="600" y2="${chartBottom}" stroke="rgba(255,255,255,.18)" />`;
+
+      for (let value = 0; value <= maxVolume; value += 50) {
+        const y = scaleY(value);
+        svg += `<line x1="${chartLeft}" y1="${y}" x2="600" y2="${y}" stroke="rgba(255,255,255,.08)" stroke-dasharray="4 4" />`;
+        svg += `<text x="${chartLeft - 12}" y="${y + 4}" text-anchor="end" fill="#bfd3e8" font-size="11">${value}</text>`;
+      }
+
+      intervals.forEach((item, index) => {
+        const value = Number((item.prepVolume || "0").replace(/[^0-9]/g, "") || 0);
+        const x = chartLeft + 24 + index * (barWidth + barGap);
+        const y = scaleY(value);
+        svg += `<rect x="${x}" y="${y}" width="${barWidth}" height="${chartBottom - y}" rx="12" fill="${item.color}" opacity="0.92" />`;
+        svg += `<text x="${x + barWidth / 2}" y="${y - 8}" text-anchor="middle" fill="#edf5ff" font-size="11" font-weight="700">${value}</text>`;
+        svg += `<text x="${x + barWidth / 2}" y="${chartBottom + 16}" text-anchor="middle" fill="#bfd3e8" font-size="10">${index + 1}</text>`;
+      });
+
+      svg += `</svg>`;
+      return svg;
+    }
+
+    function collectReagents(type) {
+      const map = new Map();
+      type.intervals.forEach((interval) => {
+        interval.reagents.forEach((row) => {
+          const key = row[0];
+          if (!map.has(key)) {
+            map.set(key, { name: key, usage: {} });
+          }
+          map.get(key).usage[interval.id] = true;
+        });
+      });
+      return Array.from(map.values());
+    }
+
+    function makeIntervalCard(interval) {
+      const stripStyle = `background:${interval.color};`;
+      return `
+        <article class="interval-card">
+          <div class="interval-strip" style="${stripStyle}">
+            <h3>${interval.name}</h3>
+            <p>${interval.system}${interval.phase === "interval" ? ` · ${interval.from}-${interval.to} м` : ` · ${interval.prepVolume}`}</p>
+          </div>
+          <div class="interval-content">
+            <div class="mini-grid">
+              <div class="mini-card"><span class="k">Долото</span><span class="v">${interval.hole || "-"}</span></div>
+              <div class="mini-card"><span class="k">Колонна</span><span class="v">${interval.casing || "-"}</span></div>
+              <div class="mini-card"><span class="k">Приготовить</span><span class="v">${interval.prepVolume || "-"}</span></div>
+              <div class="mini-card"><span class="k">Насосы</span><span class="v">${interval.pumps || "-"}</span></div>
+              <div class="mini-card"><span class="k">МСП</span><span class="v">${interval.rop || "-"}</span></div>
+              <div class="mini-card"><span class="k">Кавернозность</span><span class="v">${interval.cavern || "-"}</span></div>
+            </div>
+            <div class="interval-split">
+              <section class="interval-section">
+                <div class="section-label">Параметры бурового раствора</div>
+                <div class="param-list">
+                  ${interval.params.map((pair) => `<div class="param-row"><span class="param-name">${pair[0]}</span><span class="param-val">${pair[1]}</span></div>`).join("")}
+                </div>
+              </section>
+              <section class="interval-section">
+                <div class="section-label">Химреагенты и материалы</div>
+                <div class="section-note">Ориентировочная стартовая концентрация для рецептуры, кг/м³.</div>
+                <div class="reagent-list">
+                  ${interval.reagents.map((row) => `<div class="reagent-row"><div class="reagent-main"><span class="reagent-name">${row[0]}</span><span class="reagent-role">${row[1]}</span></div><span class="reagent-dose">${getReagentConcentration(interval, row[0])}</span></div>`).join("")}
+                </div>
+              </section>
+            </div>
+          </div>
+        </article>
+      `;
+    }
+
+    function renderType(type) {
+      const intervals = type.intervals.filter((item) => item.phase === "interval");
+      const completions = type.intervals.filter((item) => item.phase === "completion");
+      const reagentMatrix = collectReagents(type);
+
+      return `
+        <section class="panel type-shell">
+          <div class="type-head">
+            <span class="tag">mud architecture</span>
+            <h2>${type.title}</h2>
+            <p>${type.subtitle}</p>
+          </div>
+          <div class="type-stats">
+            <div class="metric"><strong>${type.systems.length}</strong><span>рабочие системы</span><p>${type.systems.join(" · ")}</p></div>
+            <div class="metric"><strong>${formatStageCount(type)}</strong><span>стадий в типе</span><p>${intervals.length} буровых интервала и ${completions.length} стадии заканчиваний.</p></div>
+            <div class="metric"><strong>${type.prepTotal} м³</strong><span>общее приготовление</span><p>Суммарная потребность раствора и технологических жидкостей по типу.</p></div>
+            <div class="metric"><strong>${type.maxDepth} м</strong><span>максимальная глубина</span><p>Глубина окончания профиля по соответствующему типу скважины.</p></div>
+          </div>
+          <div class="type-body">
+            <div class="type-info">
+              <div class="chart-box">
+                <h3>Цветной разрез по интервалам</h3>
+                ${renderWellProfile(type)}
+                <div class="caption">Каждый цвет соответствует отдельной mud-системе или стадии. На диаграмме видно, где программа БР меняет химию, а где только переходит в технологическое заканчивание.</div>
+                <div class="completion-row">
+                  ${completions.map((item) => `<span class="stage-chip" style="border-color:${item.color};color:${item.color}">${item.name} · ${item.system} · ${item.prepVolume}</span>`).join("")}
+                </div>
+              </div>
+            </div>
+            <div class="type-info">
+              <div class="chart-box">
+                <h3>Профиль плотности</h3>
+                ${renderDensityChart(type)}
+                <div class="chart-caption">Шкала показывает рабочий диапазон плотности по каждому буровому интервалу. Для completion-стадий они вынесены отдельно в карточки ниже.</div>
+              </div>
+              <div class="chart-box">
+                <h3>Объемы приготовления</h3>
+                ${renderVolumeChart(type)}
+                <div class="chart-caption">Столбцы показывают объем приготовления по каждой стадии. Самая высокая барра сразу показывает, где сконцентрирована основная материальная нагрузка.</div>
+              </div>
+            </div>
+          </div>
+          <div class="interval-grid">
+            ${type.intervals.map((interval) => makeIntervalCard(interval)).join("")}
+          </div>
+          <div class="matrix-grid">
+            <div class="matrix-box">
+              <h3>Матрица химреагентов</h3>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Реагент / материал</th>
+                    ${type.intervals.map((interval, index) => `<th>${index + 1}</th>`).join("")}
+                  </tr>
+                </thead>
+                <tbody>
+                  ${reagentMatrix.map((row) => `
+                    <tr>
+                      <td>${row.name}</td>
+                      ${type.intervals.map((interval) => row.usage[interval.id] ? `<td class="cell-hit">●</td>` : `<td class="cell-miss">·</td>`).join("")}
+                    </tr>
+                  `).join("")}
+                </tbody>
+              </table>
+              <div class="note">Матрица отражает обязательное присутствие реагента или материала в интервале. Диапазоны кг/м³ в карточках выше даны как инженерный стартовый ориентир для подбора фактической рецептуры на лаборатории и сервисе.</div>
+            </div>
+            <div class="matrix-box">
+              <h3>Ключевые эксплуатационные выводы</h3>
+              <div class="list">
+                <div class="list-item">Верхний пакет на направлении и кондукторе для всех типов унифицирован и работает как типовой полимер-глинистый блок.</div>
+                <div class="list-item">Основное расхождение начинается в эксплуатационной части: у типов 1-2 это БС №22, у типа 3 это БС №11.</div>
+                <div class="list-item">Хвостовик на БС №27 одинаков по химической логике, но отличается длиной и суммарным приготовлением.</div>
+                <div class="list-item">Completion-стадии нельзя воспринимать как мелочь: именно они задают требования к KCl, ингибиторам, кольматантам и чистоте сервисной жидкости.</div>
+              </div>
+            </div>
+          </div>
+          <div class="special-grid">
+            ${type.special.map((item) => `
+              <article class="special-card">
+                <h3>${item[0]}</h3>
+                <p>${item[1]}</p>
+              </article>
+            `).join("")}
+          </div>
+        </section>
+      `;
+    }
+
+    function activateType(typeId) {
+      const type = wellTypes.find((item) => item.id === typeId) || wellTypes[0];
+      document.querySelectorAll(".type-tab").forEach((button) => {
+        const active = button.dataset.typeId === typeId;
+        button.classList.toggle("active", active);
+        button.style.background = active ? type.accent : "rgba(255,255,255,.04)";
+        button.style.borderColor = active ? "transparent" : "rgba(226,237,255,.10)";
+        button.style.color = active ? "#071826" : "#d8e8f8";
+      });
+      document.getElementById("typeContent").innerHTML = renderType(type);
+    }
+
+    const tabsRoot = document.getElementById("typeTabs");
+    wellTypes.forEach((type, index) => tabsRoot.appendChild(makeTypeTab(type, index)));
+    activateType(wellTypes[0].id);
+  </script>
+  <script src="assets/js/global-auth-widget.js"></script>
+</body>
+</html>

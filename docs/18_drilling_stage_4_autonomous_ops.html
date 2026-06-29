@@ -1,0 +1,721 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Бурение — Этап 4: Автономные операции | NEXUS OILFIELD AI</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap");
+
+    :root {
+      --bg-0: #050911;
+      --bg-1: #0d1625;
+      --bg-2: #15233b;
+      --text: #edf4ff;
+      --muted: #9caecc;
+      --cyan: #27e2c6;
+      --amber: #ffc663;
+      --blue: #84bcff;
+      --red: #ff8383;
+      --line: rgba(232,239,255,.14);
+      --line-soft: rgba(232,239,255,.08);
+      --panel: rgba(9,15,25,.8);
+      --shadow: 0 22px 52px rgba(0,0,0,.44);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      font-family: "Manrope", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(860px 420px at 0% -12%, rgba(39,226,198,.12), transparent),
+        radial-gradient(720px 360px at 100% 0%, rgba(132,188,255,.13), transparent),
+        linear-gradient(150deg, var(--bg-0), var(--bg-1) 45%, var(--bg-2));
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(to right, rgba(255,255,255,.024) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,.024) 1px, transparent 1px);
+      background-size: 42px 42px;
+      mask-image: radial-gradient(circle at 50% 18%, rgba(0,0,0,.92), transparent 72%);
+    }
+
+    .wrap { position: relative; z-index: 1; width: min(1220px, 92vw); margin: 0 auto; padding: 24px 0 60px; }
+    .topbar, .hero, .section { border: 1px solid var(--line-soft); box-shadow: var(--shadow); }
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+      position: static; padding: 12px 16px; border-radius: 14px;
+      background: rgba(7,12,20,.62); backdrop-filter: blur(10px);
+    }
+    .brand { display: flex; align-items: center; gap: 10px; font-family: "Oswald", sans-serif; font-size: 20px; text-transform: uppercase; letter-spacing: .05em; }
+    .brand-dot { width: 12px; height: 12px; border-radius: 999px; background: radial-gradient(circle at 30% 30%, #d6fff8, var(--cyan)); }
+    .actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    .btn, .btn-ghost { text-decoration: none; border-radius: 999px; padding: 7px 12px; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; }
+    .btn { color: #04211d; background: linear-gradient(135deg, #98fff0, var(--cyan)); border: 1px solid rgba(39,226,198,.82); }
+    .btn-ghost { color: var(--muted); border: 1px solid var(--line-soft); background: rgba(255,255,255,.03); }
+    .stage-rail {
+      margin-top: 14px; display: flex; gap: 8px; flex-wrap: wrap; padding: 12px 14px;
+      border: 1px solid var(--line-soft); border-radius: 14px; background: rgba(7,12,20,.62); box-shadow: var(--shadow);
+    }
+    .rail-chip {
+      text-decoration: none; padding: 7px 11px; border-radius: 999px; border: 1px solid var(--line-soft);
+      color: var(--muted); font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .07em; background: rgba(255,255,255,.03);
+    }
+    .rail-chip.active { color: #04211d; background: linear-gradient(135deg, #98fff0, var(--cyan)); border-color: rgba(39,226,198,.82); }
+
+    .hero {
+      margin-top: 18px; border-radius: 28px; padding: clamp(22px, 3vw, 38px);
+      background: linear-gradient(145deg, rgba(39,226,198,.1), rgba(7,12,21,.9) 40%, rgba(132,188,255,.11));
+      position: relative; overflow: hidden;
+    }
+    .hero::after {
+      content: ""; position: absolute; width: 420px; height: 420px; right: -150px; top: -120px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(132,188,255,.18), transparent 70%); filter: blur(18px);
+    }
+    .eyebrow { display: inline-flex; gap: 8px; align-items: center; border-radius: 999px; border: 1px solid var(--line-soft); background: rgba(255,255,255,.04); padding: 6px 11px; font-size: 11px; text-transform: uppercase; letter-spacing: .09em; color: #ceddef; }
+    .eyebrow::before { content: ""; width: 7px; height: 7px; border-radius: 999px; background: var(--cyan); }
+    h1 { margin: 14px 0 0; font-family: "Oswald", sans-serif; font-size: clamp(40px, 5.6vw, 72px); line-height: .98; text-transform: uppercase; }
+    h1 span { color: var(--cyan); }
+    .lead { margin-top: 14px; max-width: 800px; color: #a9bbd4; font-size: clamp(15px, 2vw, 19px); line-height: 1.5; }
+
+    .stats, .grid-2, .grid-3, .grid-4, .level-grid, .guard-grid, .nav-grid { display: grid; gap: 12px; }
+    .stats, .grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .grid-3, .level-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .grid-2, .guard-grid, .nav-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .stat, .card, .level, .guard, .nav-card { border: 1px solid var(--line-soft); border-radius: 16px; background: rgba(255,255,255,.03); padding: 14px; }
+    .stats { margin-top: 20px; }
+    .stat-k { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+    .stat-v { margin-top: 6px; font-size: 28px; font-weight: 900; }
+    .stat-p, .card p, .level p, .guard p, .nav-card p, .caption { margin: 8px 0 0; font-size: 13px; line-height: 1.45; color: #a8bbd3; }
+
+    .section { margin-top: 18px; border-radius: var(--radius); background: var(--panel); padding: 18px; }
+    .section-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+    .section h2 { margin: 0; font-family: "Oswald", sans-serif; font-size: 30px; text-transform: uppercase; letter-spacing: .04em; }
+    .tag { border-radius: 999px; border: 1px solid rgba(39,226,198,.3); background: rgba(39,226,198,.08); color: #93efe0; padding: 5px 10px; font-size: 11px; text-transform: uppercase; letter-spacing: .08em; font-weight: 800; }
+
+    .num { display: inline-flex; align-items: center; justify-content: center; min-width: 32px; height: 26px; border-radius: 8px; background: rgba(255,198,99,.14); border: 1px solid rgba(255,198,99,.42); color: var(--amber); font-size: 12px; font-weight: 800; margin-bottom: 10px; }
+    .card h3, .level h3, .guard h3, .nav-card h3 { margin: 0; font-size: 16px; }
+    .svg-shell { width: 100%; overflow: auto; border: 1px solid var(--line-soft); border-radius: 16px; background: rgba(7,12,20,.6); padding: 10px; }
+    .svg-shell svg { width: 100%; height: auto; display: block; }
+    .mini-list { margin: 10px 0 0; padding-left: 18px; display: grid; gap: 6px; font-size: 13px; line-height: 1.42; color: #bdd0e6; }
+
+    .level { background: linear-gradient(180deg, rgba(132,188,255,.08), rgba(255,255,255,.02)); }
+    .guard { border-color: rgba(255,131,131,.22); background: rgba(255,131,131,.05); }
+    .guard h3 { color: #ffb8b8; }
+    .guard[data-guard-state="not_started"], .card[data-maturity-state="not_started"] { border-color: rgba(255,255,255,.08); }
+    .guard[data-guard-state="in_progress"], .card[data-maturity-state="in_progress"] { border-color: rgba(255,198,99,.32); background: linear-gradient(180deg, rgba(255,198,99,.1), rgba(255,255,255,.02)); }
+    .guard[data-guard-state="review"], .card[data-maturity-state="review"] { border-color: rgba(132,188,255,.34); }
+    .guard[data-guard-state="done"], .card[data-maturity-state="done"] { border-color: rgba(39,226,198,.34); background: linear-gradient(180deg, rgba(39,226,198,.1), rgba(255,255,255,.02)); }
+    .workbench-top { display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
+    .workbench-status { display:inline-flex; align-items:center; gap:8px; border-radius:999px; padding:6px 10px; font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.08em; border:1px solid var(--line-soft); background:rgba(255,255,255,.05); color:#dfeaf8; }
+    .workbench-status.in_progress { border-color: rgba(255,198,99,.35); background: rgba(255,198,99,.12); color:#ffe0a0; }
+    .workbench-status.review { border-color: rgba(132,188,255,.35); background: rgba(132,188,255,.12); color:#b9d8ff; }
+    .workbench-status.done { border-color: rgba(39,226,198,.35); background: rgba(39,226,198,.12); color:#96ecdc; }
+    .workbench-fields { display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap:10px; margin-top:12px; }
+    .workbench-field { display:grid; gap:6px; }
+    .workbench-field--wide { grid-column: 1 / -1; }
+    .workbench-field label { font-size:11px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+    .workbench-field input, .workbench-field select, .workbench-field textarea { width:100%; border-radius:12px; border:1px solid var(--line-soft); background: rgba(7,12,21,.74); color: var(--text); padding: 10px 12px; font: inherit; outline: none; }
+    .workbench-field textarea { min-height:84px; resize: vertical; }
+    .workbench-summary { margin-top:12px; border:1px solid rgba(132,188,255,.24); border-radius:14px; background: linear-gradient(145deg, rgba(132,188,255,.08), rgba(255,255,255,.02)); padding:12px 14px; color:#d7e3f4; font-size:13px; line-height:1.5; }
+    .nav-card { text-decoration: none; color: inherit; transition: transform .18s ease, border-color .18s ease; }
+    .nav-card:hover { transform: translateY(-3px); border-color: rgba(39,226,198,.42); }
+    .autonomy-grid, .autonomy-row, .autonomy-metrics, .autonomy-lists { display: grid; gap: 12px; }
+    .autonomy-grid, .autonomy-lists { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .autonomy-row { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .autonomy-metrics { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .autonomy-panel, .autonomy-metric, .autonomy-box, .autonomy-decision { border: 1px solid var(--line-soft); border-radius: 16px; background: rgba(255,255,255,.03); padding: 14px; }
+    .autonomy-field { display: grid; gap: 7px; }
+    .autonomy-field label, .autonomy-checks legend { font-size: 12px; color: #ccdaec; text-transform: uppercase; letter-spacing: .07em; font-weight: 800; }
+    .autonomy-field select, .autonomy-field textarea, .autonomy-field input[type="range"] { width: 100%; border: 1px solid var(--line-soft); border-radius: 12px; background: rgba(7,12,21,.74); color: var(--text); padding: 11px 12px; font: inherit; outline: none; }
+    .autonomy-field input[type="range"] { padding: 0; accent-color: var(--cyan); }
+    .autonomy-field textarea { min-height: 92px; resize: vertical; }
+    .autonomy-range { display: flex; justify-content: space-between; gap: 10px; font-size: 12px; color: var(--muted); }
+    .autonomy-checks { margin: 0; padding: 0; border: 0; display: grid; gap: 8px; }
+    .autonomy-check { display: flex; align-items: flex-start; gap: 10px; border: 1px solid var(--line-soft); border-radius: 12px; background: rgba(255,255,255,.02); padding: 11px 12px; }
+    .autonomy-check input { margin-top: 3px; accent-color: var(--cyan); }
+    .autonomy-check strong { display: block; font-size: 13px; }
+    .autonomy-check span { display: block; margin-top: 3px; font-size: 12px; color: var(--muted); line-height: 1.35; }
+    .autonomy-pill { display: inline-flex; align-items: center; gap: 8px; border-radius: 999px; padding: 6px 10px; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; border: 1px solid var(--line-soft); background: rgba(255,255,255,.05); color: #dfeaf8; }
+    .autonomy-pill.ready { border-color: rgba(39,226,198,.35); background: rgba(39,226,198,.12); color: #96ecdc; }
+    .autonomy-pill.conditional { border-color: rgba(255,198,99,.35); background: rgba(255,198,99,.12); color: #ffe0a0; }
+    .autonomy-pill.blocked { border-color: rgba(255,131,131,.35); background: rgba(255,131,131,.12); color: #ffbcbc; }
+    .autonomy-metric span, .autonomy-decision span { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+    .autonomy-metric strong, .autonomy-decision strong { display: block; margin-top: 6px; font-size: 24px; }
+    .autonomy-decision p, .autonomy-box p { margin: 8px 0 0; font-size: 13px; line-height: 1.45; color: #b0c2d8; }
+    .autonomy-box ul { margin: 10px 0 0; padding-left: 18px; display: grid; gap: 7px; font-size: 13px; line-height: 1.42; color: #c9d8eb; }
+    .autonomy-links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+    .footer { margin-top: 18px; font-size: 12px; color: #8198b1; text-align: center; text-transform: uppercase; letter-spacing: .08em; }
+
+    @media (max-width: 1040px) { .stats, .grid-4, .grid-3, .level-grid, .autonomy-row, .autonomy-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 820px) { .topbar { position: static; } .stats, .grid-2, .grid-3, .grid-4, .level-grid, .guard-grid, .nav-grid, .autonomy-grid, .autonomy-row, .autonomy-metrics, .autonomy-lists, .workbench-fields { grid-template-columns: 1fr; } }
+  </style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+  <main class="wrap">
+    <header class="topbar">
+      <div class="brand"><span class="brand-dot" aria-hidden="true"></span>Nexus Oilfield AI</div>
+      <div class="actions">
+        <a class="btn-ghost" href="17_drilling_stage_3_scaling.html">Этап 3</a>
+        <a class="btn" href="37_drilling_modules.html">Модуль бурение</a>
+      </div>
+    </header>
+
+    <nav class="stage-rail">
+      <a class="rail-chip" href="19_drilling_stage_1_design.html">Stage 1</a>
+      <a class="rail-chip" href="15_drilling_design_block.html">Design Block</a>
+      <a class="rail-chip" href="20_drilling_stage_1_execution_playbook.html">Playbook</a>
+      <a class="rail-chip" href="16_drilling_stage_2_pilot.html">Stage 2</a>
+      <a class="rail-chip" href="17_drilling_stage_3_scaling.html">Stage 3</a>
+      <a class="rail-chip active" href="18_drilling_stage_4_autonomous_ops.html">Stage 4</a>
+      <a class="rail-chip" href="63_drilling_stage_roadmap.html">Roadmap</a>
+      <a class="rail-chip" href="64_drilling_board_overview.html">Board View</a>
+    </nav>
+
+    <section class="hero">
+      <div class="eyebrow">Stage 04 · Policy-Driven Operations</div>
+      <h1>Этап <span>04</span><br>Автономные операции</h1>
+      <p class="lead">Построить полуавтономный контур бурения, где система не просто советует, а ускоряет исполнение типовых решений через policy engine, уровни автономности и полную трассируемость цепочки “данные → модель → действие → эффект”.</p>
+      <div class="stats">
+        <div class="stat"><div class="stat-k">NPT effect</div><div class="stat-v">15-25%</div><div class="stat-p">целевой устойчивый эффект автономного контура</div></div>
+        <div class="stat"><div class="stat-k">ROP growth</div><div class="stat-v">8-15%</div><div class="stat-p">достигается за счет ускорения и стандартизации решений</div></div>
+        <div class="stat"><div class="stat-k">Critical response</div><div class="stat-v">≥ 40%</div><div class="stat-p">сокращение времени до решения в типовых критичных кейсах</div></div>
+        <div class="stat"><div class="stat-k">AI incidents</div><div class="stat-v">0</div><div class="stat-p">инцидентов из-за AI-рекомендаций при соблюдении guardrails</div></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>Autonomy Control Tool</h2><span class="autonomy-pill blocked" id="autonomyDecisionPill">Autonomy blocked</span></div>
+      <div class="autonomy-grid">
+        <div class="autonomy-panel">
+          <form id="autonomyControlForm">
+            <div class="autonomy-row">
+              <div class="autonomy-field">
+                <label for="autonomyLevel">Текущий уровень автономности</label>
+                <select id="autonomyLevel" name="autonomyLevel">
+                  <option value="l1">L1 Advisory</option>
+                  <option value="l2">L2 Confirmed assist</option>
+                  <option value="l3">L3 Bounded autonomy</option>
+                </select>
+              </div>
+              <div class="autonomy-field">
+                <label for="decisionTier">Класс решений сегодня</label>
+                <select id="decisionTier" name="decisionTier">
+                  <option value="tier_a">Tier A: типовые безопасные</option>
+                  <option value="tier_b">Tier B: только confirm</option>
+                  <option value="tier_c">Tier C: всегда ручные</option>
+                </select>
+              </div>
+              <div class="autonomy-field">
+                <label for="policyMode">Режим policy engine</label>
+                <select id="policyMode" name="policyMode">
+                  <option value="strict">Strict policy enforcement</option>
+                  <option value="review">Policy review mode</option>
+                  <option value="exception">Exception-heavy mode</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="autonomy-row">
+              <div class="autonomy-field">
+                <label for="policyCompliance">Policy compliance</label>
+                <input id="policyCompliance" name="policyCompliance" type="range" min="0" max="100" value="76" />
+                <div class="autonomy-range"><span>Target: 95%+</span><strong id="policyComplianceValue">76%</strong></div>
+              </div>
+              <div class="autonomy-field">
+                <label for="auditCoverage">Audit trail coverage</label>
+                <input id="auditCoverage" name="auditCoverage" type="range" min="0" max="100" value="68" />
+                <div class="autonomy-range"><span>Target: full traceability</span><strong id="auditCoverageValue">68%</strong></div>
+              </div>
+              <div class="autonomy-field">
+                <label for="rollbackReadiness">Rollback readiness</label>
+                <input id="rollbackReadiness" name="rollbackReadiness" type="range" min="0" max="100" value="72" />
+                <div class="autonomy-range"><span>Target: immediate fallback</span><strong id="rollbackReadinessValue">72%</strong></div>
+              </div>
+            </div>
+
+            <fieldset class="autonomy-checks">
+              <legend>Ежедневные autonomy gates</legend>
+              <label class="autonomy-check"><input type="checkbox" name="hseHardStops" /><span><strong>HSE hard stops активны</strong><span>Все выходы за техокно автоматически блокируются.</span></span></label>
+              <label class="autonomy-check"><input type="checkbox" name="policyVersioned" /><span><strong>Policy rules versioned</strong><span>У правил есть владелец, версия и reason for change.</span></span></label>
+              <label class="autonomy-check"><input type="checkbox" name="auditReady" /><span><strong>Audit trail доступен</strong><span>Есть трассировка data → model → rule → action → effect.</span></span></label>
+              <label class="autonomy-check"><input type="checkbox" name="rollbackReady" /><span><strong>Rollback в human-led mode готов</strong><span>Автономный контур можно быстро отключить без потери контроля.</span></span></label>
+            </fieldset>
+
+            <div class="autonomy-field" style="margin-top:12px;">
+              <label for="autonomyRiskNote">Главный autonomy-risk дня</label>
+              <textarea id="autonomyRiskNote" name="autonomyRiskNote" placeholder="Например: слишком много exception-case, не все policy rules versioned, audit trail по части решений неполный, tier-B решения ошибочно попадают в auto-path."></textarea>
+            </div>
+          </form>
+        </div>
+
+        <div class="autonomy-panel">
+          <div class="autonomy-metrics">
+            <div class="autonomy-metric"><span>Autonomy health</span><strong id="autonomyHealthScore">0%</strong></div>
+            <div class="autonomy-metric"><span>Gate status</span><strong id="autonomyGateScore">0 / 4</strong></div>
+            <div class="autonomy-metric"><span>Stage 3 carry-over</span><strong id="autonomyScaleCarry">0%</strong></div>
+            <div class="autonomy-metric"><span>Tier fit</span><strong id="autonomyTierFit">0%</strong></div>
+          </div>
+          <div class="autonomy-decision" style="margin-top:12px;">
+            <span>Решение на сегодня</span>
+            <strong id="autonomyDecisionTitle">Автономный режим сегодня ограничен</strong>
+            <p id="autonomyDecisionSummary">Эта страница должна каждый день отвечать на практический вопрос: какие решения сегодня можно пускать в auto-path, какие только через confirm, а какие нужно жестко держать на человеке.</p>
+          </div>
+          <div class="autonomy-lists" style="margin-top:12px;">
+            <div class="autonomy-box">
+              <p>Что блокирует автономность</p>
+              <ul id="autonomyBlockers">
+                <li>Статус autonomy еще не зафиксирован.</li>
+              </ul>
+            </div>
+            <div class="autonomy-box">
+              <p>Следующие действия дня</p>
+              <ul id="autonomyActions">
+                <li>Сначала заполнить autonomy control tool.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="autonomy-links">
+            <a class="btn" href="17_drilling_stage_3_scaling.html">Rollout tool</a>
+            <a class="btn-ghost" href="16_drilling_stage_2_pilot.html">Pilot tool</a>
+            <a class="btn-ghost" href="37_drilling_modules.html">Модуль бурение</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>Уровни автономности</h2><span class="tag">Human oversight by design</span></div>
+      <div class="level-grid">
+        <div class="level"><span class="num">L1</span><h3>Advisory</h3><p>Система только предлагает действие и объяснение. Решение и выполнение полностью на человеке.</p></div>
+        <div class="level"><span class="num">L2</span><h3>Confirmed assist</h3><p>Система готовит решение, человек подтверждает его быстрее за счет policy-валидации и готового контекста.</p></div>
+        <div class="level"><span class="num">L3</span><h3>Bounded autonomy</h3><p>Для ограниченного набора безопасных сценариев действие может инициироваться автоматически внутри жестко заданных границ.</p></div>
+      </div>
+      <p class="caption">Этап 4 не означает “убрать инженера”. Он означает убрать рутину, ускорить типовые решения и сохранить человека в контуре для случаев, где нужна инженерная ответственность.</p>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>Как работает policy engine</h2><span class="tag">Data → model → rule → action</span></div>
+      <div class="grid-2">
+        <div>
+          <div class="svg-shell">
+            <svg viewBox="0 0 620 300" xmlns="http://www.w3.org/2000/svg">
+              <rect x="0" y="0" width="620" height="300" rx="18" fill="rgba(8,14,22,.2)"/>
+              <text x="36" y="40" fill="#edf4ff" font-size="14" font-weight="700">Closed-loop autonomous flow</text>
+              <text x="36" y="58" fill="#9fb3cd" font-size="11">Ни одно действие не проходит без проверки правил, ограничений и traceability</text>
+              <g>
+                <rect x="44" y="98" width="96" height="70" rx="14" fill="rgba(39,226,198,.15)" stroke="rgba(39,226,198,.45)"/>
+                <rect x="160" y="98" width="96" height="70" rx="14" fill="rgba(132,188,255,.15)" stroke="rgba(132,188,255,.45)"/>
+                <rect x="276" y="98" width="96" height="70" rx="14" fill="rgba(255,198,99,.15)" stroke="rgba(255,198,99,.45)"/>
+                <rect x="392" y="98" width="96" height="70" rx="14" fill="rgba(39,226,198,.15)" stroke="rgba(39,226,198,.45)"/>
+                <rect x="508" y="98" width="72" height="70" rx="14" fill="rgba(132,188,255,.15)" stroke="rgba(132,188,255,.45)"/>
+                <text x="92" y="127" fill="#edf4ff" font-size="13" text-anchor="middle" font-weight="700">Data</text>
+                <text x="92" y="143" fill="#a8bdd7" font-size="10" text-anchor="middle">telemetry</text>
+                <text x="208" y="127" fill="#edf4ff" font-size="13" text-anchor="middle" font-weight="700">Model</text>
+                <text x="208" y="143" fill="#a8bdd7" font-size="10" text-anchor="middle">risk/opportunity</text>
+                <text x="324" y="127" fill="#edf4ff" font-size="13" text-anchor="middle" font-weight="700">Policy</text>
+                <text x="324" y="143" fill="#a8bdd7" font-size="10" text-anchor="middle">HSE + limits</text>
+                <text x="440" y="127" fill="#edf4ff" font-size="13" text-anchor="middle" font-weight="700">Action</text>
+                <text x="440" y="143" fill="#a8bdd7" font-size="10" text-anchor="middle">bounded execution</text>
+                <text x="544" y="127" fill="#edf4ff" font-size="13" text-anchor="middle" font-weight="700">Log</text>
+                <text x="544" y="143" fill="#a8bdd7" font-size="10" text-anchor="middle">audit trail</text>
+                <path d="M140 133 L160 133" stroke="#87a0ba" stroke-width="2"/>
+                <path d="M256 133 L276 133" stroke="#87a0ba" stroke-width="2"/>
+                <path d="M372 133 L392 133" stroke="#87a0ba" stroke-width="2"/>
+                <path d="M488 133 L508 133" stroke="#87a0ba" stroke-width="2"/>
+              </g>
+              <rect x="84" y="210" width="450" height="48" rx="14" fill="rgba(255,131,131,.08)" stroke="rgba(255,131,131,.32)"/>
+              <text x="309" y="230" fill="#ffbebf" font-size="13" text-anchor="middle" font-weight="700">Hard-stop layer</text>
+              <text x="309" y="247" fill="#aebfd5" font-size="11" text-anchor="middle">Любое действие за пределами технологического окна автоматически отклоняется и переводится человеку</text>
+            </svg>
+          </div>
+          <p class="caption">Autonomy допустима только там, где есть формализованные правила, понятные границы, контроль версии модели и полный audit trail.</p>
+        </div>
+        <div>
+          <div class="svg-shell">
+            <svg viewBox="0 0 620 300" xmlns="http://www.w3.org/2000/svg">
+              <rect x="0" y="0" width="620" height="300" rx="18" fill="rgba(8,14,22,.2)"/>
+              <text x="36" y="40" fill="#edf4ff" font-size="14" font-weight="700">Decision tiers</text>
+              <text x="36" y="58" fill="#9fb3cd" font-size="11">Каждый класс решений имеет свой режим допуска</text>
+              <rect x="62" y="88" width="500" height="44" rx="14" fill="rgba(39,226,198,.14)" stroke="rgba(39,226,198,.44)"/>
+              <rect x="62" y="142" width="500" height="44" rx="14" fill="rgba(255,198,99,.14)" stroke="rgba(255,198,99,.44)"/>
+              <rect x="62" y="196" width="500" height="44" rx="14" fill="rgba(255,131,131,.14)" stroke="rgba(255,131,131,.44)"/>
+              <text x="312" y="114" fill="#edf4ff" font-size="13" text-anchor="middle" font-weight="700">Tier A · автоматизируемые типовые корректировки в безопасном окне</text>
+              <text x="312" y="168" fill="#edf4ff" font-size="13" text-anchor="middle" font-weight="700">Tier B · только после быстрого подтверждения супервайзером</text>
+              <text x="312" y="222" fill="#edf4ff" font-size="13" text-anchor="middle" font-weight="700">Tier C · всегда ручное решение и эскалация на человека</text>
+            </svg>
+          </div>
+          <p class="caption">Не все решения должны быть автономными. Зрелая система отличается тем, что умеет точно разделять автоматизируемое, подтверждаемое и всегда ручное.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>Guardrails, без которых этап 4 запрещен</h2><span class="tag">Mandatory safety barriers</span></div>
+      <div class="workbench-summary" id="autonomyGuardrailsSummary">Здесь ведется реальный реестр обязательных барьеров Stage 4: статус, владелец, ближайшее действие и заметка по каждому guardrail.</div>
+      <div class="guard-grid" id="autonomyGuardrailsWorkbench"></div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>Критерии зрелости автономного контура</h2><span class="tag">Audit-ready maturity</span></div>
+      <div class="workbench-summary" id="autonomyMaturitySummary">Здесь ведется реестр зрелости автономного контура: что уже подтверждено, что на проверке и что еще нужно дожать до audit-ready режима.</div>
+      <div class="grid-4" id="autonomyMaturityWorkbench"></div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>Навигация</h2><span class="tag">Stage chain</span></div>
+      <div class="nav-grid">
+        <a class="nav-card" href="17_drilling_stage_3_scaling.html"><span class="num">03</span><h3>Этап 3: Масштабирование</h3><p>Отсюда приходит стандартизация, MLOps-фабрика и repeatable delivery model.</p></a>
+        <a class="nav-card" href="37_drilling_modules.html"><span class="num">37</span><h3>Модуль бурение</h3><p>Вернуться к общей карте drilling-инициатив, стадий и связанных operational сервисов.</p></a>
+      </div>
+    </section>
+
+    <p class="footer">Autonomous drilling operations · Stage 04 · Doc 18</p>
+  </main>
+  <script>
+    (function () {
+      var AUTONOMY_KEY = 'nexus_stage4_autonomy_tool_v1';
+      var ROLLOUT_KEY = 'nexus_stage3_rollout_tool_v1';
+      var GUARDRAILS_KEY = 'nexus_stage4_guardrails_workbench_v1';
+      var MATURITY_KEY = 'nexus_stage4_maturity_workbench_v1';
+      var GUARDRAILS = [
+        { id: 'g1', code: 'G1', title: 'HSE hard stops', description: 'Любое действие вне согласованного технологического окна блокируется автоматически и требует ручной эскалации.', owner: 'HSE lead', nextAction: 'Проверить hard-stop coverage по всем auto-path кейсам.' },
+        { id: 'g2', code: 'G2', title: 'Versioned policy rules', description: 'Каждое правило policy engine имеет владельца, версию, дату активации и трассируемую причину изменения.', owner: 'Policy owner', nextAction: 'Закрыть versioning и change-log на правилах.' },
+        { id: 'g3', code: 'G3', title: 'Auditability', description: 'Полная цепочка данных, модели, правила, решения и действия должна быть доступна для разбора и аудита.', owner: 'Audit / platform', nextAction: 'Дожать traceability по всем автономным решениям.' },
+        { id: 'g4', code: 'G4', title: 'Rollback capability', description: 'Любой автономный режим должен уметь быть мгновенно выключен с возвратом к human-led operation.', owner: 'Ops lead', nextAction: 'Провести rollback drill и подтвердить fallback path.' }
+      ];
+      var MATURITY = [
+        { id: 'm1', code: 'M1', title: 'Policy compliance', description: 'Все рекомендации и действия соответствуют формализованным правилам и согласованным классам допуска.', owner: 'Policy owner', nextAction: 'Подтянуть compliance до целевого уровня.' },
+        { id: 'm2', code: 'M2', title: 'Zero unsafe AI actions', description: 'Не зафиксировано ни одного случая, когда система инициировала недопустимое действие.', owner: 'HSE lead', nextAction: 'Подтвердить нулевой unsafe incident rate.' },
+        { id: 'm3', code: 'M3', title: 'Stable economic model', description: 'Эффект подтверждается регулярно и удерживается на масштабе без ручного hero mode команды.', owner: 'Finance / product', nextAction: 'Собрать устойчивый value pack по автономному контуру.' },
+        { id: 'm4', code: 'M4', title: 'Quarterly optimization loop', description: 'Автономный контур не статичен: он живет через ревизию правил, drift review и value monitoring.', owner: 'Platform lead', nextAction: 'Зафиксировать quarterly review cadence и owner.' }
+      ];
+      var form = document.getElementById('autonomyControlForm');
+      if (!form) {
+        return;
+      }
+
+      var decisionActions = {
+        tier_a: ['Оставить auto-path только для типовых кейсов внутри safe window.', 'Проверять daily exception rate.', 'Держать fast rollback always-on.'],
+        tier_b: ['Проводить confirm loop без пропуска reason codes.', 'Сужать список решений, где confirm обязателен.', 'Показывать explainability до подтверждения.'],
+        tier_c: ['Не допускать automation leakage в ручные решения.', 'Эскалировать все high-risk cases человеку.', 'Проверять policy violations вручную.']
+      };
+
+      function readJson(key) {
+        try {
+          return JSON.parse(localStorage.getItem(key) || 'null');
+        } catch (error) {
+          return null;
+        }
+      }
+
+      function writeJson(key, value) {
+        try {
+          localStorage.setItem(key, JSON.stringify(value));
+        } catch (error) {
+          // Ignore local storage failures.
+        }
+      }
+
+      function getState() {
+        var state = {};
+        Array.prototype.forEach.call(form.elements, function (element) {
+          if (!element.name) {
+            return;
+          }
+          state[element.name] = element.type === 'checkbox' ? element.checked : element.value;
+        });
+        return state;
+      }
+
+      function applyState(state) {
+        Object.keys(state || {}).forEach(function (name) {
+          var field = form.elements[name];
+          if (!field) {
+            return;
+          }
+          if (field.type === 'checkbox') {
+            field.checked = Boolean(state[name]);
+          } else {
+            field.value = state[name];
+          }
+        });
+      }
+
+      function setText(id, value) {
+        var node = document.getElementById(id);
+        if (node) {
+          node.textContent = value;
+        }
+      }
+
+      function renderList(id, items, fallback) {
+        var node = document.getElementById(id);
+        if (!node) {
+          return;
+        }
+        var list = items && items.length ? items : [fallback];
+        node.innerHTML = list.map(function (item) { return '<li>' + item + '</li>'; }).join('');
+      }
+
+      function setRangeValue(id, value) {
+        setText(id, value + '%');
+      }
+
+      function escapeHtml(value) {
+        return String(value || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+      }
+
+      function itemStatusMeta(status) {
+        var map = {
+          not_started: { label: 'Не начат', className: 'not_started' },
+          in_progress: { label: 'В работе', className: 'in_progress' },
+          review: { label: 'На проверке', className: 'review' },
+          done: { label: 'Готово', className: 'done' }
+        };
+        return map[status] || map.not_started;
+      }
+
+      function normalizeWorkbench(defs, raw) {
+        var normalized = {};
+        defs.forEach(function (item) {
+          var current = raw && raw[item.id] ? raw[item.id] : {};
+          normalized[item.id] = {
+            status: current.status || 'not_started',
+            owner: current.owner || item.owner,
+            nextAction: current.nextAction || item.nextAction,
+            note: current.note || ''
+          };
+        });
+        return normalized;
+      }
+
+      function renderWorkbench(options) {
+        var host = document.getElementById(options.hostId);
+        var summaryNode = document.getElementById(options.summaryId);
+        var defs = options.definitions;
+        var state = normalizeWorkbench(defs, readJson(options.storageKey));
+        var done = 0;
+        var review = 0;
+        var inProgress = 0;
+        if (!host) {
+          return;
+        }
+        host.innerHTML = defs.map(function (item) {
+          var current = state[item.id];
+          var meta = itemStatusMeta(current.status);
+          if (current.status === 'done') { done += 1; }
+          if (current.status === 'review') { review += 1; }
+          if (current.status === 'in_progress') { inProgress += 1; }
+          return [
+            '<div class="' + options.cardClass + '" data-' + options.dataAttr + '-state="' + meta.className + '">',
+            '<div class="workbench-top"><div><span class="num">' + item.code + '</span><h3>' + item.title + '</h3></div><div class="workbench-status ' + meta.className + '">' + meta.label + '</div></div>',
+            '<p>' + item.description + '</p>',
+            '<div class="workbench-fields">',
+            '<div class="workbench-field"><label>Статус</label><select data-workbench-key="' + options.storageKey + '" data-item-id="' + item.id + '" data-item-field="status">',
+            '<option value="not_started"' + (current.status === 'not_started' ? ' selected' : '') + '>Не начат</option>',
+            '<option value="in_progress"' + (current.status === 'in_progress' ? ' selected' : '') + '>В работе</option>',
+            '<option value="review"' + (current.status === 'review' ? ' selected' : '') + '>На проверке</option>',
+            '<option value="done"' + (current.status === 'done' ? ' selected' : '') + '>Готово</option>',
+            '</select></div>',
+            '<div class="workbench-field"><label>Владелец</label><input type="text" value="' + escapeHtml(current.owner) + '" data-workbench-key="' + options.storageKey + '" data-item-id="' + item.id + '" data-item-field="owner"></div>',
+            '<div class="workbench-field workbench-field--wide"><label>Ближайшее действие</label><input type="text" value="' + escapeHtml(current.nextAction) + '" data-workbench-key="' + options.storageKey + '" data-item-id="' + item.id + '" data-item-field="nextAction"></div>',
+            '<div class="workbench-field workbench-field--wide"><label>Заметка</label><textarea data-workbench-key="' + options.storageKey + '" data-item-id="' + item.id + '" data-item-field="note">' + escapeHtml(current.note) + '</textarea></div>',
+            '</div></div>'
+          ].join('');
+        }).join('');
+        if (summaryNode) {
+          summaryNode.textContent = 'Готово ' + done + ' из ' + defs.length + '. В работе ' + inProgress + ', на проверке ' + review + '.';
+        }
+      }
+
+      function saveWorkbenchField(target) {
+        var storageKey = target && target.getAttribute('data-workbench-key');
+        var itemId = target && target.getAttribute('data-item-id');
+        var field = target && target.getAttribute('data-item-field');
+        var defs = storageKey === GUARDRAILS_KEY ? GUARDRAILS : storageKey === MATURITY_KEY ? MATURITY : null;
+        if (!storageKey || !itemId || !field || !defs) {
+          return;
+        }
+        var state = normalizeWorkbench(defs, readJson(storageKey));
+        state[itemId][field] = target.value;
+        writeJson(storageKey, state);
+        renderWorkbench(storageKey === GUARDRAILS_KEY ? {
+          hostId: 'autonomyGuardrailsWorkbench',
+          summaryId: 'autonomyGuardrailsSummary',
+          storageKey: GUARDRAILS_KEY,
+          definitions: GUARDRAILS,
+          cardClass: 'guard',
+          dataAttr: 'guard'
+        } : {
+          hostId: 'autonomyMaturityWorkbench',
+          summaryId: 'autonomyMaturitySummary',
+          storageKey: MATURITY_KEY,
+          definitions: MATURITY,
+          cardClass: 'card',
+          dataAttr: 'maturity'
+        });
+      }
+
+      function update() {
+        var state = getState();
+        var rollout = readJson(ROLLOUT_KEY);
+        var rolloutCarry = rollout ? Number(rollout.health || 0) : 0;
+        var compliance = Number(state.policyCompliance || 0);
+        var audit = Number(state.auditCoverage || 0);
+        var rollback = Number(state.rollbackReadiness || 0);
+        var gates = ['hseHardStops', 'policyVersioned', 'auditReady', 'rollbackReady'];
+        var passed = gates.filter(function (key) { return state[key]; }).length;
+        var gateScore = Math.round((passed / gates.length) * 100);
+        var tierFit = { tier_a: 92, tier_b: 78, tier_c: 60 }[state.decisionTier || 'tier_a'];
+        var levelFit = { l1: 64, l2: 82, l3: 74 }[state.autonomyLevel || 'l1'];
+        var policyFit = { strict: 90, review: 74, exception: 48 }[state.policyMode || 'strict'];
+        var health = Math.round(compliance * 0.22 + audit * 0.22 + rollback * 0.18 + gateScore * 0.18 + rolloutCarry * 0.12 + tierFit * 0.04 + levelFit * 0.02 + policyFit * 0.02);
+        var blockers = [];
+        var actions = [];
+        var status = 'blocked';
+        var pill = 'Autonomy blocked';
+        var title = 'Автономный режим сегодня ограничен';
+        var summary = 'Этап 4 нельзя оценивать как красивую концепцию. Каждый день нужно решать, что допускается в auto-path, что остается в confirm-loop и что всегда удерживается на человеке.';
+
+        setRangeValue('policyComplianceValue', compliance);
+        setRangeValue('auditCoverageValue', audit);
+        setRangeValue('rollbackReadinessValue', rollback);
+
+        if (rolloutCarry < 80) {
+          blockers.push('Stage 3 carry-over недостаточен. Нельзя строить автономность на неустойчивом масштабе.');
+          actions.push('Сначала стабилизировать rollout quality и support model на Stage 3.');
+        }
+        if (!state.hseHardStops) {
+          blockers.push('HSE hard stops не активны как обязательный барьер.');
+          actions.push('Заблокировать auto-path до formal activation hard-stop rules.');
+        }
+        if (!state.policyVersioned) {
+          blockers.push('Policy rules не versioned. Нет надежной трассировки изменений правил.');
+          actions.push('Завести версионность, owner и change-log для policy engine.');
+        }
+        if (!state.auditReady || audit < 85) {
+          blockers.push('Audit trail неполный. Решения не готовы к разбору и защите.');
+          actions.push('Дожать coverage по traceability: data, model, rule, action, effect.');
+        }
+        if (!state.rollbackReady || rollback < 80) {
+          blockers.push('Rollback readiness недостаточен.');
+          actions.push('Проверить fail-safe возврат в human-led mode и daily rollback drill.');
+        }
+        if (compliance < 95) {
+          blockers.push('Policy compliance ниже требуемого уровня для устойчивой автономности.');
+          actions.push('Убрать сценарии с policy drift и держать только fully compliant cases.');
+        }
+        if (state.autonomyLevel === 'l3' && state.decisionTier !== 'tier_a') {
+          blockers.push('L3 bounded autonomy можно допускать только для Tier A safe cases.');
+          actions.push('Вернуть Tier B/Tier C решения в confirm/manual loop.');
+        }
+        if (state.policyMode === 'exception') {
+          blockers.push('Exception-heavy policy mode несовместим с устойчивой автономностью.');
+          actions.push('Вернуться к strict policy enforcement перед любым расширением автономного режима.');
+        }
+
+        if (!blockers.length && health >= 88 && passed === gates.length && compliance >= 95 && audit >= 90 && rollback >= 85) {
+          status = 'ready';
+          pill = 'Autonomy allowed in bounds';
+          title = 'Сегодня bounded autonomy допустим';
+          summary = 'Автономный контур выглядит управляемым: policy compliance высокий, hard stops активны, audit trail полный, rollback path готов и auto-path ограничен безопасными типовыми кейсами.';
+          actions = [
+            'Оставить auto-path только для Tier A cases и daily проверять exception rate.',
+            'Фиксировать все auto-actions в audit log и проводить пост-review.',
+            'Не расширять decision classes без отдельного policy and HSE review.'
+          ];
+        } else if (health >= 72 && passed >= 3) {
+          status = 'conditional';
+          pill = 'Confirm-loop only';
+          title = 'Сегодня автономность допустима только через confirm';
+          summary = 'Контур близок к рабочей автономности, но пока безопаснее держать подтверждение человеком для части решений и не открывать auto-path шире, чем нужно.';
+        }
+
+        if ((state.autonomyRiskNote || '').trim()) {
+          actions.push('Отдельно закрыть autonomy-risk дня: ' + state.autonomyRiskNote.trim());
+        }
+
+        setText('autonomyHealthScore', health + '%');
+        setText('autonomyGateScore', passed + ' / ' + gates.length);
+        setText('autonomyScaleCarry', rolloutCarry + '%');
+        setText('autonomyTierFit', tierFit + '%');
+        setText('autonomyDecisionTitle', title);
+        setText('autonomyDecisionSummary', summary);
+        renderList('autonomyBlockers', blockers, 'Критичных блокеров по автономности на сегодня не видно.');
+        renderList('autonomyActions', (actions.length ? actions : []).concat(decisionActions[state.decisionTier || 'tier_a'] || []).slice(0, 6), 'Держать autonomy discipline.');
+
+        var pillNode = document.getElementById('autonomyDecisionPill');
+        pillNode.textContent = pill;
+        pillNode.className = 'autonomy-pill ' + status;
+
+        writeJson(AUTONOMY_KEY, {
+          health: health,
+          gatePassed: passed,
+          gateTotal: gates.length,
+          status: status,
+          pill: pill,
+          title: title,
+          summary: summary,
+          blockers: blockers,
+          actions: actions.slice(0, 5),
+          autonomyLevel: state.autonomyLevel,
+          decisionTier: state.decisionTier,
+          rolloutCarry: rolloutCarry,
+          updatedAt: new Date().toISOString()
+        });
+      }
+
+      renderWorkbench({
+        hostId: 'autonomyGuardrailsWorkbench',
+        summaryId: 'autonomyGuardrailsSummary',
+        storageKey: GUARDRAILS_KEY,
+        definitions: GUARDRAILS,
+        cardClass: 'guard',
+        dataAttr: 'guard'
+      });
+      renderWorkbench({
+        hostId: 'autonomyMaturityWorkbench',
+        summaryId: 'autonomyMaturitySummary',
+        storageKey: MATURITY_KEY,
+        definitions: MATURITY,
+        cardClass: 'card',
+        dataAttr: 'maturity'
+      });
+
+      applyState(readJson(AUTONOMY_KEY));
+      form.addEventListener('input', update);
+      form.addEventListener('change', update);
+      document.addEventListener('change', function (event) {
+        saveWorkbenchField(event.target);
+      });
+      document.addEventListener('blur', function (event) {
+        saveWorkbenchField(event.target);
+      }, true);
+      window.addEventListener('storage', function (event) {
+        if (event.key === ROLLOUT_KEY) {
+          update();
+        }
+        if (event.key === GUARDRAILS_KEY) {
+          renderWorkbench({ hostId: 'autonomyGuardrailsWorkbench', summaryId: 'autonomyGuardrailsSummary', storageKey: GUARDRAILS_KEY, definitions: GUARDRAILS, cardClass: 'guard', dataAttr: 'guard' });
+        }
+        if (event.key === MATURITY_KEY) {
+          renderWorkbench({ hostId: 'autonomyMaturityWorkbench', summaryId: 'autonomyMaturitySummary', storageKey: MATURITY_KEY, definitions: MATURITY, cardClass: 'card', dataAttr: 'maturity' });
+        }
+      });
+      update();
+    })();
+  </script>
+  <script src="assets/js/stage234-live-status.js"></script>
+  <script src="assets/js/global-auth-widget.js"></script>
+</body>
+</html>

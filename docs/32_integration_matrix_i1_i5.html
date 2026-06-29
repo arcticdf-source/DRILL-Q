@@ -1,0 +1,215 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Integration Matrix I1-I5 | NEXUS OILFIELD AI</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap");
+
+    :root {
+      --bg-0: #061019;
+      --bg-1: #102030;
+      --bg-2: #1b3041;
+      --panel: rgba(11,20,31,.84);
+      --line: rgba(227,238,255,.14);
+      --line-soft: rgba(227,238,255,.08);
+      --text: #edf5ff;
+      --muted: #a8bdd2;
+      --cyan: #22d7b4;
+      --amber: #f8bd5f;
+      --blue: #8db4ff;
+      --violet: #c6a6ff;
+      --shadow: 0 20px 48px rgba(0,0,0,.42);
+    }
+
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      font-family: "Manrope", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(900px 460px at 0% -10%, rgba(34,215,180,.18), rgba(34,215,180,0)),
+        radial-gradient(760px 420px at 100% 0%, rgba(248,189,95,.16), rgba(248,189,95,0)),
+        linear-gradient(145deg, var(--bg-0), var(--bg-1) 46%, var(--bg-2));
+    }
+
+    .wrap { width: min(1380px, 94vw); margin: 0 auto; padding: 24px 0 64px; }
+    .rail, .hero, .section { border: 1px solid var(--line-soft); box-shadow: var(--shadow); }
+    .rail { display:flex; gap:8px; flex-wrap:wrap; padding:12px 14px; border-radius:14px; background:rgba(8,15,24,.66); }
+    .rail-chip { text-decoration:none; padding:7px 11px; border-radius:999px; border:1px solid var(--line-soft); color:var(--muted); font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.07em; background:rgba(255,255,255,.03); }
+    .rail-chip.active { color:#082922; background:linear-gradient(135deg,#a0f9eb,#22d7b4); border-color:rgba(34,215,180,.82); }
+    .hero { margin-top:18px; border-radius:28px; padding:clamp(22px,3vw,38px); background:linear-gradient(145deg, rgba(141,180,255,.1), rgba(7,12,20,.92) 42%, rgba(198,166,255,.08)); position:relative; overflow:hidden; }
+    .eyebrow { display:inline-flex; gap:8px; align-items:center; border-radius:999px; border:1px solid var(--line-soft); background:rgba(255,255,255,.04); padding:6px 11px; font-size:11px; letter-spacing:.09em; text-transform:uppercase; color:#cfddef; }
+    .eyebrow::before { content:""; width:7px; height:7px; border-radius:999px; background:var(--blue); }
+    h1 { margin:14px 0 0; font-family:"Oswald",sans-serif; font-size:clamp(42px,5.8vw,76px); line-height:.98; text-transform:uppercase; }
+    h1 span { color: var(--blue); }
+    .lead { margin-top:14px; max-width:900px; color:#acbfd7; font-size:clamp(15px,2vw,19px); line-height:1.5; }
+    .stats, .grid-2, .nav-grid { display:grid; gap:12px; }
+    .stats { margin-top:20px; grid-template-columns:repeat(4, minmax(0, 1fr)); }
+    .grid-2, .nav-grid { grid-template-columns:repeat(2, minmax(0, 1fr)); }
+    .stat, .card, .nav-card { border:1px solid var(--line-soft); border-radius:16px; background:rgba(255,255,255,.03); padding:14px; }
+    .stat-k { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.08em; }
+    .stat-v { margin-top:6px; font-size:24px; font-weight:900; }
+    .stat-p, .card p, .nav-card p { margin:8px 0 0; font-size:13px; line-height:1.45; color:#a8bbd3; }
+    .section { margin-top:18px; border-radius:18px; background:var(--panel); padding:18px; }
+    .section-head { display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:14px; }
+    .section h2 { margin:0; font-family:"Oswald",sans-serif; font-size:30px; text-transform:uppercase; letter-spacing:.04em; }
+    .tag { border-radius:999px; border:1px solid rgba(141,180,255,.3); background:rgba(141,180,255,.08); color:#cfe0ff; padding:5px 10px; font-size:11px; text-transform:uppercase; letter-spacing:.08em; font-weight:800; }
+    .table-wrap { overflow:auto; border:1px solid var(--line-soft); border-radius:16px; }
+    table { width:100%; border-collapse:collapse; min-width:860px; }
+    th, td { padding:12px 14px; border-bottom:1px solid var(--line-soft); border-right:1px solid var(--line-soft); vertical-align:top; font-size:13px; line-height:1.45; }
+    th:last-child, td:last-child { border-right:none; }
+    tr:last-child td { border-bottom:none; }
+    th { background:rgba(255,255,255,.05); color:#dce8f7; text-align:left; font-size:12px; text-transform:uppercase; letter-spacing:.08em; }
+    .num { display:inline-flex; align-items:center; justify-content:center; min-width:32px; height:26px; border-radius:8px; background:rgba(141,180,255,.14); border:1px solid rgba(141,180,255,.42); color:var(--blue); font-size:12px; font-weight:800; margin-bottom:10px; }
+    .mini-list { margin:10px 0 0; padding-left:18px; display:grid; gap:6px; font-size:13px; line-height:1.42; color:#bed0e6; }
+    .nav-card { text-decoration:none; color:inherit; transition:transform .18s ease, border-color .18s ease; }
+    .nav-card:hover { transform:translateY(-3px); border-color:rgba(34,215,180,.42); }
+    .footer { margin-top:18px; font-size:12px; color:#8197b0; text-align:center; text-transform:uppercase; letter-spacing:.08em; }
+    @media (max-width: 980px) { .stats, .grid-2, .nav-grid { grid-template-columns:1fr; } }
+  </style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+  <main class="wrap">
+    <nav class="rail">
+      <a class="rail-chip" href="34_digital_control_center.html">Control center</a>
+      <a class="rail-chip" href="31_executive_summary_presentation.html">Summary</a>
+      <a class="rail-chip active" href="32_integration_matrix_i1_i5.html">Matrix</a>
+      <a class="rail-chip" href="33_delivery_checklist.html">Checklist</a>
+      <a class="rail-chip" href="26_digitalization_master_roadmap.html">Roadmap</a>
+    </nav>
+
+    <section class="hero">
+      <div class="eyebrow">Doc 32 · Integration Design</div>
+      <h1>Integration <span>Matrix</span></h1>
+      <p class="lead">Связи между I1-I5, матрица событий, минимальные API-контракты и приоритет интеграций. Это рабочий документ, который показывает, как модули обмениваются данными и какой контур нужно запускать первым.</p>
+      <div class="stats">
+        <div class="stat"><div class="stat-k">Modules</div><div class="stat-v">5</div><div class="stat-p">единое продуктовое ядро I1-I5</div></div>
+        <div class="stat"><div class="stat-k">Event types</div><div class="stat-v">5</div><div class="stat-p">ключевых событий с заданным SLA</div></div>
+        <div class="stat"><div class="stat-k">API contracts</div><div class="stat-v">5</div><div class="stat-p">минимальный набор endpoint для запуска контура</div></div>
+        <div class="stat"><div class="stat-k">Priority chain</div><div class="stat-v">4</div><div class="stat-p">этапа интеграции от foundation до compliance</div></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>Data Flow Matrix</h2><span class="tag">Source / Target</span></div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Source / Target</th>
+              <th>I1 Depth-Day</th>
+              <th>I2 Hydraulics</th>
+              <th>I3 Losses</th>
+              <th>I4 Casing / Cementing</th>
+              <th>I5 Doc Pipeline</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>I1 Depth-Day</td>
+              <td>-</td>
+              <td>Передает phase timeline для ECD расчетов</td>
+              <td>Передает schedule-risk для приоритета алертов</td>
+              <td>Передает timing для цементажа и окон работ</td>
+              <td>Потребляет обновленные планы операций</td>
+            </tr>
+            <tr>
+              <td>I2 Hydraulics</td>
+              <td>Передает ECD constraints в оптимизацию критпути</td>
+              <td>-</td>
+              <td>Передает pressure anomalies как триггеры loss events</td>
+              <td>Передает pressure envelopes для проверок прочности</td>
+              <td>Потребляет новые гидравлические разделы из PDF</td>
+            </tr>
+            <tr>
+              <td>I3 Losses</td>
+              <td>Передает loss impact в ETA / NPT</td>
+              <td>Передает факты потерь для recalibration ECD</td>
+              <td>-</td>
+              <td>Передает risk flags для корректировок дизайна колонны</td>
+              <td>Потребляет обновленные playbooks из PDF</td>
+            </tr>
+            <tr>
+              <td>I4 Casing / Cementing</td>
+              <td>Передает ограничения этапов в расписание</td>
+              <td>Передает design limits для гидравлических окон</td>
+              <td>Передает failure modes для правил реагирования</td>
+              <td>-</td>
+              <td>Потребляет design tables и формулы из PDF</td>
+            </tr>
+            <tr>
+              <td>I5 Doc Pipeline</td>
+              <td>Поставляет operation_plan и версии</td>
+              <td>Поставляет гидравлические таблицы / параметры</td>
+              <td>Поставляет loss matrix и процедуры</td>
+              <td>Поставляет casing / cementing данные</td>
+              <td>-</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>Event Matrix</h2><span class="tag">Producer / Consumer / SLA</span></div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Event</th><th>Producer</th><th>Consumers</th><th>SLA</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>New drilling program PDF uploaded</td><td>I5</td><td>I1, I2, I3, I4</td><td>&lt;= 5 min</td></tr>
+            <tr><td>ECD threshold breach</td><td>I2</td><td>I1, I3</td><td>&lt;= 30 sec</td></tr>
+            <tr><td>Loss event classified medium / high</td><td>I3</td><td>I1, I2, I4</td><td>&lt;= 30 sec</td></tr>
+            <tr><td>Schedule drift &gt; 10%</td><td>I1</td><td>I2, I3, PMO</td><td>&lt;= 10 min</td></tr>
+            <tr><td>Casing stress non-compliance</td><td>I4</td><td>I1, QA / HSE</td><td>&lt;= 10 min</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>API Contract Outline</h2><span class="tag">Minimal payload</span></div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>API</th><th>Method</th><th>Minimal payload</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>/events/schedule-drift</td><td>POST</td><td>well_id, op_no, planned_h, actual_h, drift_pct</td></tr>
+            <tr><td>/events/ecd-alert</td><td>POST</td><td>well_id, depth_m, ecd, min_window, max_window, severity</td></tr>
+            <tr><td>/events/loss-event</td><td>POST</td><td>well_id, zone, loss_rate_m3h, severity, action_id</td></tr>
+            <tr><td>/events/design-alert</td><td>POST</td><td>well_id, string_id, check_type, measured, limit</td></tr>
+            <tr><td>/ingest/document-version</td><td>POST</td><td>well_id, doc_id, version, section, confidence</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>Integration Priorities</h2><span class="tag">Rollout order</span></div>
+      <div class="grid-2">
+        <div class="card"><span class="num">P1-P2</span><ul class="mini-list"><li>I5 -&gt; I1 как базовый контур по operation plan и версиям</li><li>I2 &lt;-&gt; I3 как safety-контур по давлению и поглощениям</li></ul></div>
+        <div class="card"><span class="num">P3-P4</span><ul class="mini-list"><li>I1 &lt;-&gt; I2 как производственный контур скорости и окон</li><li>I4 -&gt; I1/I2 как контур design constraints и compliance</li></ul></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>Навигация</h2><span class="tag">Linked docs</span></div>
+      <div class="nav-grid">
+        <a class="nav-card" href="31_executive_summary_presentation.html"><span class="num">31</span><h3>Executive Summary</h3><p>Краткий board-ready срез по эффекту, стратегии и управленческому решению.</p></a>
+        <a class="nav-card" href="33_delivery_checklist.html"><span class="num">33</span><h3>Delivery Checklist</h3><p>Последний контроль перед pilot или production rollout.</p></a>
+        <a class="nav-card" href="34_digital_control_center.html"><span class="num">34</span><h3>Control Center</h3><p>Точка входа в ROI, Gantt, summary, matrix и checklist.</p></a>
+        <a class="nav-card" href="26_digitalization_master_roadmap.html"><span class="num">26</span><h3>Master Roadmap</h3><p>Оркестрация фаз и зависимостей по всей программе I1-I5.</p></a>
+      </div>
+    </section>
+
+    <p class="footer">Integration matrix for I1-I5 · Doc 32</p>
+  </main>
+  <script src="assets/js/global-auth-widget.js"></script>
+</body>
+</html>

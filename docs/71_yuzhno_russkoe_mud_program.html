@@ -1,0 +1,717 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Раздел 5 · Буровые растворы · Южно-Русское</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700;900&family=Manrope:wght@400;500;600;700;800&display=swap");
+
+    :root {
+      --bg: #d8dde5;
+      --ink: #17304a;
+      --ink-soft: #4f6478;
+      --line: #ccd5df;
+      --line-strong: #9dafc1;
+      --paper: #ffffff;
+      --head: #eaf0f7;
+      --accent: #1c6aa4;
+      --accent-dark: #0f446c;
+      --ok: #0c8a68;
+      --warn: #a66c1c;
+      --shadow: 0 18px 40px rgba(16, 33, 51, 0.14);
+      --stage1: #dff6ef;
+      --stage2: #eef4ff;
+      --stage3: #fff2df;
+    }
+
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      background: radial-gradient(circle at top left, rgba(28, 106, 164, 0.08), transparent 28%), linear-gradient(180deg, #eef2f6, var(--bg));
+      color: var(--ink);
+      font-family: "Manrope", sans-serif;
+    }
+
+    .toolbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 22px;
+      border-bottom: 1px solid rgba(23, 48, 74, 0.08);
+      background: rgba(245, 248, 251, 0.92);
+      backdrop-filter: blur(12px);
+    }
+
+    .toolbar-group { display: flex; flex-wrap: wrap; gap: 10px; }
+    .toolbar a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 0 16px;
+      border-radius: 12px;
+      border: 1px solid rgba(28, 106, 164, 0.18);
+      background: #fff;
+      color: var(--accent-dark);
+      text-decoration: none;
+      font-weight: 800;
+    }
+    .toolbar .primary {
+      background: linear-gradient(135deg, #e2f2ff, #a9d8ff);
+      border-color: rgba(28, 106, 164, 0.28);
+    }
+
+    .doc-shell {
+      width: min(1240px, 96vw);
+      margin: 28px auto 56px;
+      display: grid;
+      gap: 22px;
+    }
+
+    .sheet {
+      width: 100%;
+      background: var(--paper);
+      border: 1px solid rgba(23, 48, 74, 0.08);
+      box-shadow: var(--shadow);
+      padding: 26px 30px 34px;
+    }
+
+    .doc-head {
+      display: grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 18px;
+      align-items: start;
+      border-bottom: 2px solid var(--accent-dark);
+      padding-bottom: 18px;
+    }
+
+    .brand { display: grid; gap: 8px; }
+    .brand-mark {
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+    .doc-title {
+      margin: 0;
+      font-family: "Merriweather", serif;
+      font-size: clamp(28px, 4vw, 42px);
+      line-height: 1.12;
+      text-transform: uppercase;
+    }
+    .doc-subtitle { margin: 0; color: var(--ink-soft); line-height: 1.65; font-size: 14px; }
+
+    .meta-card {
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, #f8fbfe, #eef4f9);
+      padding: 14px 16px;
+    }
+    .meta-card table, .doc-table { width: 100%; border-collapse: collapse; }
+    .meta-card td {
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(23, 48, 74, 0.08);
+      font-size: 13px;
+      vertical-align: top;
+    }
+    .meta-card tr:last-child td { border-bottom: none; }
+    .meta-card td:first-child { width: 42%; color: var(--ink-soft); }
+
+    .kpi-strip {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 18px;
+    }
+    .kpi {
+      border: 1px solid var(--line);
+      padding: 12px 14px;
+      background: linear-gradient(180deg, #fff, #f7fbff);
+    }
+    .kpi .k { color: var(--ink-soft); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; }
+    .kpi .v { margin-top: 5px; font-size: 20px; font-weight: 900; color: var(--accent-dark); }
+
+    .section { margin-top: 22px; display: grid; gap: 12px; }
+    .section-title {
+      margin: 0;
+      padding: 10px 12px;
+      background: var(--head);
+      border-left: 5px solid var(--accent);
+      font-family: "Merriweather", serif;
+      font-size: 20px;
+    }
+    .section-note, .recommendation-box {
+      border: 1px solid var(--line);
+      background: #f9fbfd;
+      padding: 12px 14px;
+      line-height: 1.65;
+      color: var(--ink-soft);
+      font-size: 13px;
+    }
+
+    .summary-grid, .interval-grid, .service-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .summary-card, .service-card {
+      border: 1px solid var(--line);
+      padding: 12px 14px;
+      background: #fff;
+    }
+    .summary-card strong, .service-card strong {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--accent-dark);
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .summary-card span, .service-card span { color: var(--ink-soft); font-size: 14px; line-height: 1.55; }
+
+    .interval-card {
+      border: 1px solid var(--line);
+      padding: 16px;
+      background: #fff;
+      display: grid;
+      gap: 12px;
+    }
+    .interval-card.stage-1 { background: linear-gradient(180deg, #fff, var(--stage1)); }
+    .interval-card.stage-2 { background: linear-gradient(180deg, #fff, var(--stage2)); }
+    .interval-card.stage-3 { background: linear-gradient(180deg, #fff, var(--stage3)); }
+    .interval-head { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
+    .interval-head h3 { margin: 0; font-size: 22px; font-family: "Merriweather", serif; }
+    .interval-head p { margin: 4px 0 0; color: var(--ink-soft); font-size: 14px; }
+    .pill-row { display: flex; flex-wrap: wrap; gap: 8px; }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 30px;
+      padding: 0 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(28, 106, 164, 0.18);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent-dark);
+      background: rgba(255,255,255,0.72);
+      font-weight: 800;
+    }
+    .mini-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .mini-metric {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px 12px;
+      background: rgba(255,255,255,0.72);
+    }
+    .mini-metric strong { display: block; font-size: 18px; color: var(--accent-dark); }
+    .mini-metric span { display: block; margin-top: 4px; font-size: 11px; color: var(--ink-soft); text-transform: uppercase; letter-spacing: 0.06em; }
+
+    .doc-table th, .doc-table td {
+      border: 1px solid var(--line);
+      padding: 8px 10px;
+      vertical-align: top;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+    .doc-table th {
+      background: var(--head);
+      text-align: left;
+      color: var(--accent-dark);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .muted { color: var(--ink-soft); }
+    .ok { color: var(--ok); font-weight: 700; }
+    .warn { color: var(--warn); font-weight: 700; }
+
+    .price-total {
+      margin-top: 12px;
+      display: flex;
+      justify-content: flex-end;
+      font-family: "Merriweather", serif;
+      font-size: 22px;
+      color: var(--accent-dark);
+    }
+
+    .footer { margin-top: 18px; color: var(--ink-soft); font-size: 12px; text-align: center; text-transform: uppercase; letter-spacing: 0.08em; }
+
+    @media (max-width: 1100px) {
+      .doc-head, .summary-grid, .interval-grid, .service-grid, .kpi-strip, .mini-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+  <div class="toolbar">
+    <div class="toolbar-group">
+      <a class="primary" id="backLink" href="#">К дашборду</a>
+      <a id="section4Link" href="#">Раздел 4</a>
+      <a id="section6Link" href="#">Раздел 6</a>
+    </div>
+    <div class="toolbar-group">
+      <a id="fieldLink" href="#">Южно-Русское</a>
+    </div>
+  </div>
+
+  <main class="doc-shell">
+    <section class="sheet">
+      <header class="doc-head">
+        <div class="brand">
+          <span class="brand-mark">Nexus Oilfield AI</span>
+          <h1 class="doc-title" id="docTitle">Программа по буровым растворам</h1>
+          <p class="doc-subtitle" id="docSubtitle">Интервальная программа, рецептуры, требования к сервису и ориентировочный прайс-лист по Южно-Русскому месторождению.</p>
+        </div>
+        <div class="meta-card">
+          <table>
+            <tbody>
+              <tr><td>Месторождение</td><td id="metaProject"></td></tr>
+              <tr><td>Скважина</td><td id="metaWell"></td></tr>
+              <tr><td>Раздел</td><td>5. Буровые растворы</td></tr>
+              <tr><td>Базовые системы</td><td>РВО / РУО</td></tr>
+              <tr><td>Торговые марки</td><td>В рецептурах заменены на функциональные названия</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </header>
+
+      <div class="kpi-strip">
+        <div class="kpi"><div class="k">Интервал РВО</div><div class="v">0-622 м</div></div>
+        <div class="kpi"><div class="k">Интервал РУО</div><div class="v">622-1900 м</div></div>
+        <div class="kpi"><div class="k">Объем приготовления</div><div class="v">505 м³</div></div>
+        <div class="kpi"><div class="k">Ключевой переход</div><div class="v">РВО → РУО</div></div>
+      </div>
+
+      <section class="section">
+        <h2 class="section-title">1. Логика программы</h2>
+        <div class="summary-grid">
+          <div class="summary-card"><strong>Верхний интервал</strong><span>Под направление и кондуктор применяется полимер-глинистая система на водной основе. Ключевая задача: устойчивость верхнего разреза, вынос шлама, подавление гидратации глин и профилактика прихватов.</span></div>
+          <div class="summary-card"><strong>Эксплуатационный интервал</strong><span>Под эксплуатационную колонну принята система РУО с разделением по плотности в пределах 1,12-1,41 г/см³. Ключевая задача: стабильность эмульсии, минимизация дифференциальных прихватов и качественная очистка ствола.</span></div>
+          <div class="summary-card"><strong>Нормативный принцип</strong><span>Рецептуры и параметры перенесены из предоставленных листов 5-10. Фирменные названия реагентов заменены на функциональные: структурообразователь, эмульгатор, регулятор реологии, гидрофобизатор и т.д.</span></div>
+          <div class="summary-card"><strong>Свод по объемам</strong><span>Направление: 136 м³. Кондуктор: 123 м³. Эксплуатационная колонна первой скважины: 246 м³. Для последующих скважин сохранен отдельный сценарий с потребностью 146 м³.</span></div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 class="section-title">2. Программа по интервалам</h2>
+        <div class="interval-grid" id="intervalGrid"></div>
+      </section>
+
+      <section class="section">
+        <h2 class="section-title">3. Параметры бурового раствора</h2>
+        <div class="section-note">Таблица ниже собрана по листу «Параметры бурового раствора». Для эксплуатационного интервала РУО выделены два окна: до вскрытия продуктивного пласта и в продуктивном интервале.</div>
+        <table class="doc-table">
+          <thead>
+            <tr>
+              <th>Тип раствора</th>
+              <th>Интервал, м</th>
+              <th>Плотность</th>
+              <th>Условная вязкость</th>
+              <th>Фильтрация ВМ-6</th>
+              <th>Корка</th>
+              <th>Ктр по ФСК</th>
+              <th>СНС 1 / 10 мин</th>
+              <th>pH</th>
+              <th>ПВ / ДНС</th>
+              <th>ТФ</th>
+              <th>Песок</th>
+            </tr>
+          </thead>
+          <tbody id="paramsTableBody"></tbody>
+        </table>
+      </section>
+
+      <section class="section">
+        <h2 class="section-title">4. Тип системы и потребность</h2>
+        <table class="doc-table">
+          <thead>
+            <tr>
+              <th>Конструкция</th>
+              <th>Интервал по стволу</th>
+              <th>Длина</th>
+              <th>Объем приготовления</th>
+              <th>Тип системы</th>
+              <th>Плотность</th>
+              <th>Кавернозность</th>
+              <th>Работа системы очистки</th>
+            </tr>
+          </thead>
+          <tbody id="needTableBody"></tbody>
+        </table>
+
+        <table class="doc-table">
+          <thead>
+            <tr>
+              <th>Баланс объемов</th>
+              <th>Направление</th>
+              <th>Кондуктор</th>
+              <th>ЭК первая скважина</th>
+              <th>ЭК последующие</th>
+            </tr>
+          </thead>
+          <tbody id="balanceTableBody"></tbody>
+        </table>
+      </section>
+
+      <section class="section">
+        <h2 class="section-title">5. Рецептуры по интервалам</h2>
+        <div class="section-note">Фирменные торговые марки заменены на функциональные названия. Небрендовые реагенты оставлены без переименования: барит, каустическая сода, ПАЦ, ФХЛС, бентонитовый глинопорошок, кальцинированная сода и т.д.</div>
+        <div id="recipeBlocks"></div>
+      </section>
+
+      <section class="section">
+        <h2 class="section-title">6. Требования к системам</h2>
+        <div class="service-grid">
+          <div class="service-card"><strong>Интервал направления / кондуктора</strong><span>Полимер-глинистая система на водной основе не должна допускать высоких температур закачиваемого раствора, должна обеспечивать высокую вязкость для выноса шлама и уменьшения размыва ММП, сохранять низкую степень гидратации и диспергирования глин, обеспечивать инкапсуляцию, отсутствие сальникообразования и стабильные легко регулируемые параметры. Обязательно поддерживать карбонат кальция не менее 90 кг/м³, использовать смазочные и гидрофобизирующие добавки, а при углах более 30° держать показатель K6 выше 10 и содержание лубриканта не ниже 2,5%.</span></div>
+          <div class="service-card"><strong>Интервал эксплуатационной колонны</strong><span>РУО должна обеспечивать минимальный дифференциал между статической и циркуляционной плотностью, низкий коэффициент трения, низкую фильтрацию при высокой температуре и давлении, устойчивость эмульсии при попадании воды, качественную очистку ствола, устойчивость к различным видам агрессии и максимальную защиту ПЗП. Дополнительно требуется высокая ДНС на низких скоростях сдвига при контролируемой пластической вязкости.</span></div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 class="section-title">7. Оборудование и очистка</h2>
+        <table class="doc-table">
+          <thead>
+            <tr>
+              <th>Оборудование</th>
+              <th>Типоразмер / шифр</th>
+              <th>Количество</th>
+              <th>Норматив</th>
+              <th>Интервал применения</th>
+            </tr>
+          </thead>
+          <tbody id="equipmentTableBody"></tbody>
+        </table>
+        <div class="recommendation-box">Для очистки РУО предусмотрено УМОШ вместо блока коагуляции и флокуляции. Допускается применение аналогичного импортного оборудования при соблюдении сеток вибросит и производительности по исходному листу.</div>
+      </section>
+
+      <section class="section">
+        <h2 class="section-title">8. Лаборатория и сервис</h2>
+        <div class="service-grid">
+          <div class="service-card"><strong>Требования к оборудованию</strong><span>Подрядчик предоставляет гамму ситовых панелей для вибросит и наличие УМОШ. Лаборатория должна быть отдельной, с приточно-вытяжной вентиляцией, аварийной промывкой глаз и комплектом приборов для измерения плотности, условной вязкости, реологии, фильтрации LPLT/HPHT, электростабильности, толщины корки, содержания песка, водной фазы, хлоридов, pH, жесткости и щелочности.</span></div>
+          <div class="service-card"><strong>Минимальные расходные материалы</strong><span>Фильтр-бумага, прокладки, CO₂-баллоны, pH-полоски, пробирки 50 и 25 мл, шприцы, станции промывки глаз, пипетки, термометр, стекловата, насосы, груши резиновые, мерная кружка, электрощиты для МВТ и ВМТ, ватные фильтровальные круги, кюветы и секундомер. Реактивы: стандартные растворы жесткости, буферные растворы, индикаторы, кислоты, нитрат серебра, бромкрезол и ксилен.</span></div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 class="section-title">9. Прайс-лист реагентов и материалов</h2>
+        <div class="section-note">Прайс-лист ниже ориентировочный. Он нужен как рабочая коммерческая база для расчета бюджета и сопоставления интервалов. Цены заданы как бенчмарк по типам материалов и не подменяют тендерное коммерческое предложение поставщика.</div>
+        <table class="doc-table">
+          <thead>
+            <tr>
+              <th>Интервал</th>
+              <th>Реагент / материал</th>
+              <th>Функция</th>
+              <th>Потребность, т</th>
+              <th>Цена, ₽/т</th>
+              <th>Сумма, ₽</th>
+            </tr>
+          </thead>
+          <tbody id="priceTableBody"></tbody>
+        </table>
+        <div class="price-total" id="priceTotal"></div>
+      </section>
+
+      <p class="footer">South-Russian field · Mud program · Manual structured input</p>
+    </section>
+  </main>
+
+  <script>
+    function getProjectNameFromUrl() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('name') || 'Южно-Русское месторождение';
+    }
+
+    function getWellFromUrl() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('well') || '5101';
+    }
+
+    function buildLink(page, name, well) {
+      const params = new URLSearchParams();
+      params.set('name', name);
+      if (well) {
+        params.set('well', well);
+      }
+      return `${page}?${params.toString()}`;
+    }
+
+    const projectName = getProjectNameFromUrl();
+    const wellName = getWellFromUrl();
+
+    document.title = `${projectName} · Скважина ${wellName} · Раздел 5`;
+    document.getElementById('docTitle').textContent = `${projectName} · Скважина ${wellName} · Программа по буровым растворам`;
+    document.getElementById('docSubtitle').textContent = `Интервальная программа по буровым растворам для проекта "${projectName}", скважина ${wellName}. Раздел собран по предоставленным листам 5-17 с ручной структуризацией рецептур, требований и объемов.`;
+    document.getElementById('metaProject').textContent = projectName;
+    document.getElementById('metaWell').textContent = wellName;
+    document.getElementById('backLink').href = buildLink('64_yuzhno_russkoe_project_dashboard.html', projectName, wellName);
+    document.getElementById('section4Link').href = buildLink('70_yuzhno_russkoe_well_profile.html', projectName, wellName);
+    document.getElementById('section6Link').href = buildLink('64_yuzhno_russkoe_project_dashboard.html', projectName, wellName);
+    document.getElementById('fieldLink').href = '56_fields_projects_dashboard.html';
+
+    const intervalCards = [
+      {
+        css: 'stage-1',
+        title: 'Направление · 0-150 м',
+        subtitle: 'Полимер-глинистый раствор на водной основе для ствола 324 мм',
+        pills: ['РВО', '324 мм', '136 м³'],
+        metrics: [
+          ['1100-1160 кг/м³', 'Плотность'],
+          ['80-120 с', 'Условная вязкость'],
+          ['5-7 см³/30 мин', 'Фильтрация'],
+          ['2,00', 'Кавернозность']
+        ],
+        note: 'Система рассчитана на верхний интервал с ММП и рыхлым разрезом. Требуется высокий вынос шлама и минимизация размыва стенок.'
+      },
+      {
+        css: 'stage-2',
+        title: 'Кондуктор · 150-600 (622) м',
+        subtitle: 'Полимер-глинистый раствор на водной основе для ствола 245 мм',
+        pills: ['РВО', '245 мм', '123 м³'],
+        metrics: [
+          ['1100-1200 кг/м³', 'Плотность'],
+          ['50-80 с', 'Условная вязкость'],
+          ['5-6 см³/30 мин', 'Фильтрация'],
+          ['1,30', 'Кавернозность']
+        ],
+        note: 'Усиливается ингибирующая, смазочная и кольматирующая обработка. На этом интервале важны работа против цементного стакана и контроль структурно-механических свойств.'
+      },
+      {
+        css: 'stage-3',
+        title: 'Эксплуатационная колонна · 622-1900 м',
+        subtitle: 'РУО для первой скважины с переходом к продуктивному интервалу 772-832-773 м',
+        pills: ['РУО', '168 мм', '246 м³'],
+        metrics: [
+          ['1,12-1,41 г/см³', 'Плотность'],
+          ['>300 с', 'Условная вязкость'],
+          ['2-5 см³/30 мин', 'Фильтрация'],
+          ['1,10', 'Кавернозность']
+        ],
+        note: 'На РУО критичны электростабильность, низкое трение и фильтрация, работа кольматационной фазы и качественная очистка ствола на всем интервале 622-1900 м.'
+      }
+    ];
+
+    const paramsRows = [
+      ['Полимер-глинистый', '0-150 (150)', '1100-1160 кг/м³', '80-120 с', '5-7', '<1,5', '<0,3', '60-90 / 80-120', '8-9', '15-20 / до 120', 'до 23', '2-3'],
+      ['Полимер-глинистый', '150-600 (622)', '1100-1200 кг/м³', '50-80 с', '5-6', '<1,5', '<0,2', '45-65 / 55-85', '8-9', '15-20 / до 100', 'до 25', 'до 2'],
+      ['РУО', '600-722 (622-810)', '1120 кг/м³', '>300 с', '2-5', 'до 0,5', '65-75 / 35-25', '30-40 / 45-75', '-', 'до 40 / 40-80', 'до 27', '<1'],
+      ['РУО', '722-832-773 (810-1900)', '1410 кг/м³', '>300 с', '2-5', 'до 0,5', '65-75 / 35-25', '30-40 / 45-75', '-', 'до 40 / 40-80', 'до 27', '<1']
+    ];
+
+    const needRows = [
+      ['Направление', '0-150 м', '150 м', '136 м³', 'РВО', '1,20-1,25', '2,00', '2,00'],
+      ['Кондуктор', '150-622 м', '472 м', '123 м³', 'РВО', '1,25-1,30', '1,30', '1,30'],
+      ['Эксплуатационная колонна, первая скважина', '622-1900 м', '1278 м', '246 м³', 'РУО', '1,12-1,41', '1,10', '1,10'],
+      ['Эксплуатационная колонна, последующие', '622-1900 м', '1278 м', '146 м³', 'РУО', '1,12-1,41', '1,10', '1,10']
+    ];
+
+    const balanceRows = [
+      ['Объем раствора в колонне, м³', '-', '11,0', '26,0', '26,0'],
+      ['Объем раствора в открытом стволе, м³', '37,0', '43,0', '54,0', '54,0'],
+      ['Объем раствора на поверхности, м³', '40,0', '60,0', '80,0', '80,0'],
+      ['Переведено с предыдущего интервала, м³', '-', '60,0', '-', '100,0'],
+      ['Вероятные потери раствора, м³', '59,0', '69,0', '86,0', '86,0'],
+      ['Всего приготовлено, м³', '136,0', '123,0', '246,0', '146,0']
+    ];
+
+    const recipeBlocks = [
+      {
+        title: 'Интервал 0-150 м · Направление',
+        subtitle: 'Первая скважина куста · полимер-глинистая система',
+        volume: 'V приготовления = 94 м³, V общий = 94 м³, V запас = 37 м³',
+        rows: [
+          ['Бентонитовый глинопорошок (глинопорошок ПБМБ)', 'ТУ 39-0147001-105-93', 'Приготовление глинистой суспензии', '8,0', '7,52', '2,96'],
+          ['Сода кальцинированная', 'ГОСТ 5100-85', 'Повышение выхода глинистого раствора', '0,1', '0,09', '0,03'],
+          ['Бикарбонат натрия', 'ГОСТ 2156-76', 'Нейтрализация Ca²+', '0,05', '0,05', '0,02'],
+          ['Сода каустическая', 'ГОСТ 2263-79', 'Регулятор pH', '0,3', '0,28', '0,11'],
+          ['ТПФН (триполифосфат натрия)', 'ГОСТ 13493-86 Е', 'Снижение вязкости забойной пачки', '0,01', '0,009', '0,004'],
+          ['ПАЦ-Н', 'ТУ 2231-015-32957739-2012', 'Регулирование реологических и фильтрационных свойств', '0,6', '0,56', '0,21'],
+          ['ПАЦ-В', 'ТУ 2231-015-32957739-2012', 'Регулирование реологических свойств и фильтрации', '0,3', '0,28', '0,10'],
+          ['Снижение липкости глинистой корки', 'ТУ 2458-007-58864391-2007', 'Профилактика сальникообразований', '1,5', '1,41', '0,56'],
+          ['Смазочная добавка', 'ТУ 5725-005-97457491-2007', 'Профилактика прихватов обсадной колонны', '0,5', '0,47', '0,19'],
+          ['Кольматирующая добавка', 'ТУ 5725-008-56864391-06', 'Кольматация', '0,1', '0,09', '0,04'],
+          ['Барит', 'ТУ2454-028-97457491-2010', 'Утяжеление раствора', '20,0', '18,80', '7,40'],
+          ['Техническая вода', '-', 'Базовая жидкость', '95,0', '89,30', '35,15']
+        ]
+      },
+      {
+        title: 'Интервал 150-600 (622) м · Кондуктор',
+        subtitle: 'Полимер-глинистая система с усиленной кольматацией и смазочной обработкой',
+        volume: 'V повторного = 44 м³, V приготовления = 116 м³, V общий = 160 м³, V запас = 53 м³',
+        rows: [
+          ['Бентонитовый глинопорошок (глинопорошок ПБМБ)', 'ТУ 39-0147001-105-93', 'Приготовление бурового раствора, восполнение потерь', '4,5', '5,22', '2,39'],
+          ['Сода кальцинированная', 'ГОСТ 5100-85', 'Нейтрализация ионов кальция при разбуривании цементного стакана', '0,05', '0,06', '0,03'],
+          ['Бикарбонат натрия', 'ГОСТ 2156-76', 'Нейтрализация Ca²+', '0,05', '0,06', '0,03'],
+          ['Сода каустическая', 'ГОСТ 2263-79', 'Регуляция pH', '0,3', '0,35', '0,16'],
+          ['ТПФН (триполифосфат натрия)', 'ГОСТ 13493-86 Е', 'Снижение вязкости забойной пачки', '0,01', '0,01', '0,01'],
+          ['ПАЦ-В', 'ТУ 2231-015-32957739-2012', 'Повышение вязкости и взвешивающей способности', '0,3', '0,35', '0,16'],
+          ['ПАЦ-Н', 'ТУ 2231-015-32957739-2012', 'Избирательное снижение показателя фильтрации', '0,6', '0,70', '0,32'],
+          ['ФХЛС', 'ТУ 2454-028-97457491-2010', 'Понизитель вязкости', '0,3', '0,35', '0,16'],
+          ['Снижение липкости глинистой корки', 'ТУ 5725-005-97457491-2007', 'Профилактика прихватов обсадной колонны', '1,5', '1,74', '0,80'],
+          ['Смазочная добавка', 'ТУ 5725-005-56864391-2005', 'Смазочная добавка', '0,5', '0,58', '0,27'],
+          ['Регулятор структурно-механических свойств', 'ТУ 2458-004-97457491-2007', 'Регулирование структурно-механических свойств', '0,5', '0,58', '0,27'],
+          ['Пеногаситель', 'ТУ 2637-023-97457491-2010', 'Пеногаситель', '0,1', '0,12', '0,05'],
+          ['Комплексный регулятор реологических свойств', '2458-021-97457491-2010', 'Комплексный регулятор реологических свойств', '1,5', '1,74', '0,80'],
+          ['Кольматирующая добавка', 'ТУ 5725-008-56864391-06', 'Кольматация', '1,7', '1,97', '0,90'],
+          ['Мрамор молотый 7-14 мкм', 'ТУ 5716-003-52817785-03', 'Карбонатный кольматант Микромрамор MP-4', '6,04', '7,01', '3,20'],
+          ['Мрамор молотый 40-60 мкм', 'ТУ 5716-003-52817785-03', 'Карбонатный кольматант Микромрамор MP-3', '5,03', '5,83', '2,67'],
+          ['Мрамор молотый 80-100 мкм', 'ТУ 5716-003-52817785-03', 'Карбонатный кольматант MP-1', '3,60', '4,18', '1,91'],
+          ['Техническая вода', '-', 'Базовая жидкость', '95,0', '110,20', '50,35']
+        ]
+      },
+      {
+        title: 'Интервал 600-832-773 (622-1511-1900) м · Эксплуатационная колонна',
+        subtitle: 'РУО для первой скважины куста',
+        volume: 'V повторного = 0 м³, V приготовления = 209 м³, V общий = 209 м³, V запас = 79 м³',
+        rows: [
+          ['Структурообразователь', 'ТУ 2458-070-97457491-2012', 'Структурообразователь', '1,7', '3,60', '1,34'],
+          ['Эмульгатор инвертных эмульсий', 'ТУ 2458-071-97457491-2012', 'Эмульгатор инвертных эмульсий', '2,1', '4,40', '1,66'],
+          ['Регулятор реологических свойств и фильтрации', 'ТУ 2458-074-97457491-2012', 'Регулятор реологических свойств и фильтрации', '1,2', '0,83', '0,95'],
+          ['Гидрофобизатор для инвертных эмульсий', 'ТУ 2458-073-97457491-2012', 'Гидрофобизатор для инвертных эмульсий', '1,2', '2,50', '0,95'],
+          ['Понизитель ВТВД-фильтрации', 'ТУ производителя', 'Понизитель ВТВД-фильтрации', '0,80', '1,67', '0,63'],
+          ['Минеральное масло', '2458-066-97457491-2012', 'Минеральное масло', '60,0', '125,4', '47,40'],
+          ['Кальций хлористый', 'ГОСТ 450-77', 'Регулятор ионной силы', '10,0', '20,9', '7,90'],
+          ['Известь Ca(OH)2', 'ГОСТ 9179-77', 'Поглотитель углекислоты', '0,5', '1,0', '0,40'],
+          ['Кольматирующая добавка', 'ТУ 5725-008-56864391-06', 'Кольматация', '1,0', '2,1', '0,79'],
+          ['Сидерит', 'ТУ 0711-09-56864391-2007', 'Утяжелитель сидеритовый', '46,0', '92,1', '36,34'],
+          ['Мрамор молотый 7-14 мкм', 'ТУ 5716-003-52817785-03', 'Карбонатный кольматант Микромрамор MP-4', '5,76', '8,30', '4,55'],
+          ['Мрамор молотый 40-60 мкм', 'ТУ 5716-003-52817785-03', 'Карбонатный кольматант Микромрамор MP-3', '4,96', '7,146', '3,92'],
+          ['Мрамор молотый 80-100 мкм', 'ТУ 5716-003-52817785-03', 'Карбонатный кольматант Микромрамор MP-1', '5,51', '7,94', '4,35'],
+          ['Техническая вода', '-', 'Техническая вода', '8,0', '16,7', '6,32']
+        ]
+      }
+    ];
+
+    const equipmentRows = [
+      ['Гидроворонка', 'ZHP150', '1', 'импорт', '0-1900'],
+      ['Вибросито', 'ZDS03.00', '2', 'импорт', '0-1900'],
+      ['Илоотделитель', 'D-RND-CM4-16 на базе Derrick FLC 2000 Flo-Line Cleaner', '1', 'Derrick', '0-1900'],
+      ['Пескоотделитель', 'DSI-10-3-3 на базе Derrick FLC 2000 Flo-Line Cleaner', '1', 'Derrick', '0-1900'],
+      ['Центрифуга с ременным приводом', 'LW450x1000-N1 GBD', '1', 'импорт', '622-1900'],
+      ['Дегазатор', 'Derrick VacuFlo 1200', '1', 'Derrick', '622-1900'],
+      ['УМОШ / блок очистки РУО', 'Swaco Enviro Unit', '1', 'импорт', '622-1900']
+    ];
+
+    const priceCatalog = {
+      'Бентонитовый глинопорошок (глинопорошок ПБМБ)': 28000,
+      'Сода кальцинированная': 24000,
+      'Бикарбонат натрия': 26000,
+      'Сода каустическая': 42000,
+      'ТПФН (триполифосфат натрия)': 180000,
+      'ПАЦ-Н': 210000,
+      'ПАЦ-В': 225000,
+      'Снижение липкости глинистой корки': 185000,
+      'Смазочная добавка': 190000,
+      'Кольматирующая добавка': 95000,
+      'Барит': 18000,
+      'Техническая вода': 700,
+      'ФХЛС': 165000,
+      'Регулятор структурно-механических свойств': 180000,
+      'Пеногаситель': 280000,
+      'Комплексный регулятор реологических свойств': 220000,
+      'Мрамор молотый 7-14 мкм': 16000,
+      'Мрамор молотый 40-60 мкм': 16000,
+      'Мрамор молотый 80-100 мкм': 16000,
+      'Структурообразователь': 320000,
+      'Эмульгатор инвертных эмульсий': 410000,
+      'Регулятор реологических свойств и фильтрации': 360000,
+      'Гидрофобизатор для инвертных эмульсий': 390000,
+      'Понизитель ВТВД-фильтрации': 370000,
+      'Минеральное масло': 95000,
+      'Кальций хлористый': 38000,
+      'Известь Ca(OH)2': 14000,
+      'Сидерит': 22000
+    };
+
+    function formatNumber(value, digits = 2) {
+      const numeric = Number(value);
+      if (!Number.isFinite(numeric)) {
+        return String(value);
+      }
+      const rounded = Math.abs(numeric - Math.round(numeric)) < 0.0001 ? String(Math.round(numeric)) : numeric.toFixed(digits);
+      return rounded.replace('.', ',');
+    }
+
+    document.getElementById('intervalGrid').innerHTML = intervalCards.map((card) => `
+      <article class="interval-card ${card.css}">
+        <div class="interval-head">
+          <div>
+            <h3>${card.title}</h3>
+            <p>${card.subtitle}</p>
+          </div>
+          <div class="pill-row">${card.pills.map((pill) => `<span class="pill">${pill}</span>`).join('')}</div>
+        </div>
+        <div class="mini-grid">
+          ${card.metrics.map((metric) => `<div class="mini-metric"><strong>${metric[0]}</strong><span>${metric[1]}</span></div>`).join('')}
+        </div>
+        <div class="recommendation-box">${card.note}</div>
+      </article>
+    `).join('');
+
+    document.getElementById('paramsTableBody').innerHTML = paramsRows.map((row) => `<tr>${row.map((cell) => `<td>${cell}</td>`).join('')}</tr>`).join('');
+    document.getElementById('needTableBody').innerHTML = needRows.map((row) => `<tr>${row.map((cell) => `<td>${cell}</td>`).join('')}</tr>`).join('');
+    document.getElementById('balanceTableBody').innerHTML = balanceRows.map((row, index) => `<tr>${row.map((cell, cellIndex) => `<td class="${index === balanceRows.length - 1 ? 'ok' : ''}">${cell}</td>`).join('')}</tr>`).join('');
+    document.getElementById('equipmentTableBody').innerHTML = equipmentRows.map((row) => `<tr>${row.map((cell) => `<td>${cell}</td>`).join('')}</tr>`).join('');
+
+    document.getElementById('recipeBlocks').innerHTML = recipeBlocks.map((block) => `
+      <section class="section">
+        <div class="recommendation-box"><strong>${block.title}</strong><br>${block.subtitle}<br><span class="muted">${block.volume}</span></div>
+        <table class="doc-table">
+          <thead>
+            <tr>
+              <th>Наименование реагента / материала</th>
+              <th>Нормативные документы</th>
+              <th>Цель применения</th>
+              <th>Норма, т / 100 м³</th>
+              <th>Потребность всего, т</th>
+              <th>Запас на скважину, т</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${block.rows.map((row) => `<tr>${row.map((cell) => `<td>${cell}</td>`).join('')}</tr>`).join('')}
+          </tbody>
+        </table>
+      </section>
+    `).join('');
+
+    const priceRows = [];
+    recipeBlocks.forEach((block) => {
+      block.rows.forEach((row) => {
+        const name = row[0];
+        const purpose = row[2];
+        const qty = Number(String(row[4]).replace(',', '.'));
+        const price = priceCatalog[name];
+        if (!Number.isFinite(qty) || !Number.isFinite(price)) {
+          return;
+        }
+        priceRows.push({ interval: block.title, name, purpose, qty, price, total: qty * price });
+      });
+    });
+
+    document.getElementById('priceTableBody').innerHTML = priceRows.map((row) => `
+      <tr>
+        <td>${row.interval}</td>
+        <td>${row.name}</td>
+        <td>${row.purpose}</td>
+        <td>${formatNumber(row.qty, 3)}</td>
+        <td>${formatNumber(row.price, 0)}</td>
+        <td>${formatNumber(row.total, 0)}</td>
+      </tr>
+    `).join('');
+
+    const grandTotal = priceRows.reduce((sum, row) => sum + row.total, 0);
+    document.getElementById('priceTotal').textContent = `Итого ориентировочно: ${formatNumber(grandTotal, 0)} ₽`;
+  </script>
+</body>
+</html>

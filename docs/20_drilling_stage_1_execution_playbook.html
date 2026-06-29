@@ -1,0 +1,726 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Бурение — Этап 1: Execution Playbook | NEXUS OILFIELD AI</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap");
+
+    :root {
+      --bg-0: #060913;
+      --bg-1: #0c1525;
+      --bg-2: #172541;
+      --text: #edf4ff;
+      --muted: #9db1ca;
+      --cyan: #22dec0;
+      --amber: #ffbf57;
+      --red: #ff8383;
+      --blue: #83baff;
+      --line: rgba(233,240,255,.14);
+      --line-soft: rgba(233,240,255,.08);
+      --panel: rgba(9,15,27,.8);
+      --shadow: 0 22px 52px rgba(0,0,0,.44);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      font-family: "Manrope", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(860px 420px at 0% -12%, rgba(34,222,192,.16), transparent),
+        radial-gradient(720px 360px at 100% 0%, rgba(255,191,87,.12), transparent),
+        linear-gradient(150deg, var(--bg-0), var(--bg-1) 44%, var(--bg-2));
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(to right, rgba(255,255,255,.024) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,.024) 1px, transparent 1px);
+      background-size: 40px 40px;
+      mask-image: radial-gradient(circle at 50% 18%, rgba(0,0,0,.9), transparent 72%);
+    }
+
+    .wrap { position: relative; z-index: 1; width: min(1220px, 92vw); margin: 0 auto; padding: 24px 0 60px; }
+    .topbar, .hero, .section { border: 1px solid var(--line-soft); box-shadow: var(--shadow); }
+    .topbar {
+      display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap;
+      position: static; padding: 12px 16px; border-radius: 14px;
+      background: rgba(7,12,20,.62); backdrop-filter: blur(10px);
+    }
+    .brand { display: flex; gap: 10px; align-items: center; font-family: "Oswald", sans-serif; font-size: 20px; letter-spacing: .05em; text-transform: uppercase; }
+    .brand-dot { width: 12px; height: 12px; border-radius: 999px; background: radial-gradient(circle at 30% 30%, #dcfff9, var(--cyan)); }
+    .actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    .btn, .btn-ghost { text-decoration: none; border-radius: 999px; padding: 7px 12px; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; }
+    .btn { color: #06241f; background: linear-gradient(135deg, #a0fff2, var(--cyan)); border: 1px solid rgba(34,222,192,.82); }
+    .btn-ghost { color: var(--muted); border: 1px solid var(--line-soft); background: rgba(255,255,255,.03); }
+    .stage-rail {
+      margin-top: 14px; display: flex; gap: 8px; flex-wrap: wrap; padding: 12px 14px;
+      border: 1px solid var(--line-soft); border-radius: 14px; background: rgba(7,12,20,.62); box-shadow: var(--shadow);
+    }
+    .rail-chip {
+      text-decoration: none; padding: 7px 11px; border-radius: 999px; border: 1px solid var(--line-soft);
+      color: var(--muted); font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .07em; background: rgba(255,255,255,.03);
+    }
+    .rail-chip.active { color: #06241f; background: linear-gradient(135deg, #a0fff2, var(--cyan)); border-color: rgba(34,222,192,.82); }
+
+    .hero {
+      margin-top: 18px; border-radius: 28px; padding: clamp(22px, 3vw, 38px);
+      background: linear-gradient(145deg, rgba(34,222,192,.1), rgba(7,12,20,.92) 42%, rgba(255,191,87,.08));
+      position: relative; overflow: hidden;
+    }
+    .hero::after {
+      content: ""; position: absolute; width: 420px; height: 420px; right: -140px; bottom: -160px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,191,87,.18), transparent 70%); filter: blur(18px);
+    }
+    .eyebrow { display: inline-flex; gap: 8px; align-items: center; border-radius: 999px; border: 1px solid var(--line-soft); background: rgba(255,255,255,.04); padding: 6px 11px; font-size: 11px; letter-spacing: .09em; text-transform: uppercase; color: #cfddef; }
+    .eyebrow::before { content: ""; width: 7px; height: 7px; border-radius: 999px; background: var(--amber); }
+    h1 { margin: 14px 0 0; font-family: "Oswald", sans-serif; font-size: clamp(40px,5.8vw,72px); line-height: .98; text-transform: uppercase; }
+    h1 span { color: var(--cyan); }
+    .lead { margin-top: 14px; max-width: 780px; color: #acbfd7; font-size: clamp(15px,2vw,19px); line-height: 1.5; }
+
+    .stats, .grid-2, .grid-3, .week-grid, .artifact-grid, .sprint-grid, .nav-grid { display: grid; gap: 12px; }
+    .stats, .sprint-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+    .grid-2, .nav-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid-3, .artifact-grid, .week-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .stat, .card, .artifact, .week, .day, .nav-card { border: 1px solid var(--line-soft); border-radius: 16px; background: rgba(255,255,255,.03); padding: 14px; }
+    .stats { margin-top: 20px; }
+    .stat-k { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+    .stat-v { margin-top: 6px; font-size: 24px; font-weight: 900; }
+    .stat-p, .card p, .artifact p, .week p, .day p, .nav-card p { margin: 8px 0 0; font-size: 13px; line-height: 1.45; color: #a8bbd3; }
+
+    .section { margin-top: 18px; border-radius: var(--radius); background: var(--panel); padding: 18px; }
+    .section-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+    .section h2 { margin: 0; font-family: "Oswald", sans-serif; font-size: 30px; text-transform: uppercase; letter-spacing: .04em; }
+    .tag { border-radius: 999px; border: 1px solid rgba(255,191,87,.3); background: rgba(255,191,87,.08); color: #ffd89e; padding: 5px 10px; font-size: 11px; text-transform: uppercase; letter-spacing: .08em; font-weight: 800; }
+    .num { display: inline-flex; align-items: center; justify-content: center; min-width: 32px; height: 26px; border-radius: 8px; background: rgba(255,191,87,.14); border: 1px solid rgba(255,191,87,.42); color: var(--amber); font-size: 12px; font-weight: 800; margin-bottom: 10px; }
+    .card h3, .artifact h3, .week h3, .day h3, .nav-card h3 { margin: 0; font-size: 16px; }
+    .mini-list { margin: 10px 0 0; padding-left: 18px; display: grid; gap: 6px; font-size: 13px; line-height: 1.42; color: #bed0e6; }
+    .artifact { background: linear-gradient(180deg, rgba(131,186,255,.08), rgba(255,255,255,.02)); min-height: 170px; }
+    .artifact[data-artifact-state="not_started"] { border-color: rgba(255,255,255,.08); }
+    .artifact[data-artifact-state="in_progress"] { border-color: rgba(255,191,87,.32); background: linear-gradient(180deg, rgba(255,191,87,.1), rgba(255,255,255,.02)); }
+    .artifact[data-artifact-state="review"] { border-color: rgba(131,186,255,.32); background: linear-gradient(180deg, rgba(131,186,255,.1), rgba(255,255,255,.02)); }
+    .artifact[data-artifact-state="approved"] { border-color: rgba(34,222,192,.34); background: linear-gradient(180deg, rgba(34,222,192,.1), rgba(255,255,255,.02)); }
+    .artifact-top { display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
+    .artifact-status { display:inline-flex; align-items:center; border-radius:999px; padding:5px 10px; border:1px solid var(--line-soft); background:rgba(255,255,255,.05); font-size:11px; font-weight:800; letter-spacing:.07em; text-transform:uppercase; color:#dce7f6; }
+    .artifact-status.not_started { color:#dce7f6; }
+    .artifact-status.in_progress { color:#ffd89e; border-color: rgba(255,191,87,.35); background: rgba(255,191,87,.12); }
+    .artifact-status.review { color:#b9d8ff; border-color: rgba(131,186,255,.35); background: rgba(131,186,255,.12); }
+    .artifact-status.approved { color:#98ecde; border-color: rgba(34,222,192,.35); background: rgba(34,222,192,.12); }
+    .artifact-copy { margin-top: 8px; font-size: 13px; line-height: 1.5; color: #a8bbd3; }
+    .artifact-field-grid { display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap:10px; margin-top:12px; }
+    .artifact-field { display:grid; gap:6px; }
+    .artifact-field--wide { grid-column: 1 / -1; }
+    .artifact-field label { font-size:11px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+    .artifact-field input, .artifact-field select, .artifact-field textarea { width:100%; border-radius:12px; border:1px solid var(--line-soft); background: rgba(7,12,20,.72); color: var(--text); padding: 10px 12px; font: inherit; }
+    .artifact-field textarea { min-height: 86px; resize: vertical; }
+    .artifact-meta { margin-top: 12px; display:grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap:10px; }
+    .artifact-meta-card { border:1px solid var(--line-soft); border-radius:12px; background: rgba(255,255,255,.025); padding:10px 12px; }
+    .artifact-meta-card span { display:block; font-size:10px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+    .artifact-meta-card strong { display:block; margin-top:6px; font-size:13px; color: var(--text); }
+    .artifact-links { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+    .artifact-link { display:inline-flex; align-items:center; text-decoration:none; border-radius:999px; padding:8px 12px; font-size:12px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; }
+    .artifact-link.primary { color:#06241f; background: linear-gradient(135deg, #a0fff2, var(--cyan)); border:1px solid rgba(34,222,192,.82); }
+    .artifact-link.secondary { color: var(--muted); border:1px solid var(--line-soft); background: rgba(255,255,255,.03); }
+    .artifact-summary { margin-top: 12px; border:1px solid rgba(131,186,255,.24); border-radius:14px; background: linear-gradient(145deg, rgba(131,186,255,.08), rgba(255,255,255,.02)); padding: 12px 14px; color:#c9daee; font-size:13px; line-height:1.5; }
+    .week { background: rgba(8,14,24,.7); }
+    .gate { margin-top: 10px; border: 1px solid rgba(34,222,192,.28); border-radius: 12px; background: rgba(34,222,192,.07); padding: 10px 12px; color: #93e8da; font-size: 13px; line-height: 1.4; }
+    .week.is-active { border-color: rgba(34,222,192,.38); background: linear-gradient(180deg, rgba(34,222,192,.08), rgba(8,14,24,.82)); }
+    .week-status { display: inline-flex; align-items: center; gap: 7px; margin-top: 10px; border-radius: 999px; padding: 5px 10px; font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; border: 1px solid var(--line-soft); background: rgba(255,255,255,.04); color: #d9e5f6; }
+    .week-status.ready { border-color: rgba(34,222,192,.35); background: rgba(34,222,192,.12); color: #98ecde; }
+    .week-status.conditional { border-color: rgba(255,191,87,.35); background: rgba(255,191,87,.12); color: #ffd89e; }
+    .week-status.blocked { border-color: rgba(255,131,131,.35); background: rgba(255,131,131,.12); color: #ffbaba; }
+    .day { background: linear-gradient(180deg, rgba(255,191,87,.08), rgba(255,255,255,.02)); }
+    .day-num { font-family: "Oswald", sans-serif; font-size: 24px; color: var(--cyan); line-height: 1; }
+    .day-label { margin-top: 4px; font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+    .risk { border-color: rgba(255,131,131,.22); background: rgba(255,131,131,.05); }
+    .risk h3 { color: #ffb8b8; }
+    .nav-card { text-decoration: none; color: inherit; transition: transform .18s ease, border-color .18s ease; }
+    .nav-card:hover { transform: translateY(-3px); border-color: rgba(34,222,192,.42); }
+    .command-grid, .sync-grid, .sync-list { display: grid; gap: 12px; }
+    .command-grid, .sync-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .sync-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .sync-card, .sync-box, .command-card { border: 1px solid var(--line-soft); border-radius: 16px; background: rgba(255,255,255,.03); padding: 14px; }
+    .sync-card span, .command-card span { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+    .sync-card strong, .command-card strong { display: block; margin-top: 6px; font-size: 24px; }
+    .command-card p, .sync-box p { margin-top: 8px; font-size: 13px; line-height: 1.45; color: #adbfd7; }
+    .sync-pill { display: inline-flex; align-items: center; gap: 8px; border-radius: 999px; padding: 6px 10px; border: 1px solid var(--line-soft); background: rgba(255,255,255,.05); font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: #dce7f6; }
+    .sync-pill.ready { border-color: rgba(34,222,192,.35); background: rgba(34,222,192,.12); color: #98ecde; }
+    .sync-pill.conditional { border-color: rgba(255,191,87,.35); background: rgba(255,191,87,.12); color: #ffd89e; }
+    .sync-pill.blocked { border-color: rgba(255,131,131,.35); background: rgba(255,131,131,.12); color: #ffbaba; }
+    .command-list, .sync-box ul { margin: 10px 0 0; padding-left: 18px; display: grid; gap: 7px; font-size: 13px; line-height: 1.42; color: #c8d8eb; }
+    .command-links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+    .command-link { display: inline-flex; align-items: center; text-decoration: none; border-radius: 999px; padding: 8px 12px; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; }
+    .command-link.primary { color: #06241f; background: linear-gradient(135deg, #a0fff2, var(--cyan)); border: 1px solid rgba(34,222,192,.82); }
+    .command-link.secondary { color: var(--muted); border: 1px solid var(--line-soft); background: rgba(255,255,255,.03); }
+    .footer { margin-top: 18px; font-size: 12px; color: #8197b0; text-align: center; text-transform: uppercase; letter-spacing: .08em; }
+
+    @media (max-width: 1100px) { .stats, .sprint-grid, .sync-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } .grid-3, .artifact-grid, .week-grid, .artifact-meta { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 820px) { .topbar { position: static; } .stats, .grid-2, .grid-3, .week-grid, .artifact-grid, .artifact-field-grid, .artifact-meta, .sprint-grid, .nav-grid, .command-grid, .sync-grid, .sync-list { grid-template-columns: 1fr; } }
+  </style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+  <main class="wrap">
+    <header class="topbar">
+      <div class="brand"><span class="brand-dot" aria-hidden="true"></span>Nexus Oilfield AI</div>
+      <div class="actions">
+        <a class="btn-ghost" href="15_drilling_design_block.html">Design block</a>
+        <a class="btn" href="16_drilling_stage_2_pilot.html">Этап 2</a>
+      </div>
+    </header>
+
+    <nav class="stage-rail">
+      <a class="rail-chip" href="19_drilling_stage_1_design.html">Stage 1</a>
+      <a class="rail-chip" href="15_drilling_design_block.html">Design Block</a>
+      <a class="rail-chip active" href="20_drilling_stage_1_execution_playbook.html">Playbook</a>
+      <a class="rail-chip" href="16_drilling_stage_2_pilot.html">Stage 2</a>
+      <a class="rail-chip" href="17_drilling_stage_3_scaling.html">Stage 3</a>
+      <a class="rail-chip" href="18_drilling_stage_4_autonomous_ops.html">Stage 4</a>
+      <a class="rail-chip" href="63_drilling_stage_roadmap.html">Roadmap</a>
+      <a class="rail-chip" href="64_drilling_board_overview.html">Board View</a>
+    </nav>
+
+    <section class="hero">
+      <div class="eyebrow">Stage 01 · Execution Playbook</div>
+      <h1>Рабочий <span>PLAYBOOK</span><br>Проектирования</h1>
+      <p class="lead">Операционный план первого этапа для любого проекта бурения: что делает команда по неделям, какие артефакты должны быть выпущены, какие gate-критерии обязательны и что нужно закрыть уже в первые 5 рабочих дней, чтобы проект не стартовал в режиме хаоса. Этот playbook задает универсальный рабочий контур, а не сценарий под один актив.</p>
+      <div class="stats">
+        <div class="stat"><div class="stat-k">Artifacts</div><div class="stat-v">6</div><div class="stat-p">обязательных результата на выходе из stage 1</div></div>
+        <div class="stat"><div class="stat-k">Weekly plan</div><div class="stat-v">6</div><div class="stat-p">рабочих недель с gate-критериями по каждой</div></div>
+        <div class="stat"><div class="stat-k">Hard gates</div><div class="stat-v">5</div><div class="stat-p">обязательных условий перехода к пилоту</div></div>
+        <div class="stat"><div class="stat-k">Quick start</div><div class="stat-v">5</div><div class="stat-p">первых рабочих дней для запуска контуров</div></div>
+        <div class="stat"><div class="stat-k">Mode</div><div class="stat-v">Shadow</div><div class="stat-p">финальный режим stage 1 перед go/no-go на pilot</div></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>Playbook Command Center</h2><span class="sync-pill blocked" id="playbookDecisionPill">No-Go</span></div>
+      <div class="command-grid">
+        <div class="command-card">
+          <span>Текущий управленческий статус</span>
+          <strong id="playbookDecisionTitle">Stage 1 еще не собран</strong>
+          <p id="playbookDecisionSummary">Этот блок синхронизируется со Stage 1 cockpit и tracker, чтобы playbook сразу показывал, что делать именно сейчас, а не только описывал недельный план.</p>
+          <div class="command-links">
+            <a class="command-link primary" href="19_drilling_stage_1_design.html">Открыть Stage 1 cockpit</a>
+            <a class="command-link secondary" href="artifacts/stage1_tracker.html">Открыть tracker</a>
+            <a class="command-link secondary" href="artifacts/stage1_action_desk.html">Открыть action desk</a>
+            <a class="command-link secondary" href="artifacts/pilot_launch_readiness_sheet.html">Открыть readiness sheet</a>
+          </div>
+        </div>
+        <div class="command-card">
+          <span>Что менеджеру делать на этой неделе</span>
+          <strong id="playbookCurrentWeek">Неделя 1</strong>
+          <p id="playbookWeekSummary">Пока нет синхронизированного статуса. После заполнения cockpit здесь появится конкретный weekly focus.</p>
+          <ul class="command-list" id="playbookWeekActions">
+            <li>Открой Stage 1 cockpit и зафиксируй readiness status.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="sync-grid" style="margin-top:12px;">
+        <div class="sync-card"><span>Readiness</span><strong id="playbookReadiness">0%</strong></div>
+        <div class="sync-card"><span>Gate status</span><strong id="playbookGates">0 / 4</strong></div>
+        <div class="sync-card"><span>Артефакты</span><strong id="playbookArtifacts">0 / 6</strong></div>
+        <div class="sync-card"><span>Tracker progress</span><strong id="playbookTracker">0%</strong></div>
+      </div>
+      <div class="sync-list" style="margin-top:12px;">
+        <div class="sync-box">
+          <p>Критичные блокеры</p>
+          <ul id="playbookBlockers">
+            <li>Нет данных из Stage 1 cockpit.</li>
+          </ul>
+        </div>
+        <div class="sync-box">
+          <p>Текущие задачи недели</p>
+          <ul id="playbookTrackerTasks">
+            <li>Синхронизируй playbook с tracker, чтобы увидеть week-specific backlog.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>Stage 1 Action Desk</h2><span class="tag">Owner / due / ack</span></div>
+      <div class="command-grid">
+        <div class="command-card">
+          <span>Рабочая очередь менеджера</span>
+          <strong id="playbookDeskTitle">Action desk пока пуст</strong>
+          <p id="playbookDeskSummary">После заполнения Stage 1 cockpit, tracker и artifact workbench здесь появится живая очередь действий.</p>
+          <div class="command-links">
+            <a class="command-link primary" href="artifacts/stage1_action_desk.html">Открыть Action Desk</a>
+            <a class="command-link secondary" href="79_drilling_manager_brief.html">Открыть Manager Brief</a>
+          </div>
+        </div>
+        <div class="command-card">
+          <span>Что требует внимания</span>
+          <strong id="playbookDeskHot">Нет срочных действий</strong>
+          <p id="playbookDeskHotSummary">Action desk покажет today items, unassigned owners и неподтвержденные действия.</p>
+          <ul class="command-list" id="playbookDeskList">
+            <li>Открой Stage 1 Action Desk, чтобы назначить owner и отметить acknowledge.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="sync-grid" style="margin-top:12px;">
+        <div class="sync-card"><span>Total actions</span><strong id="playbookDeskTotal">0</strong></div>
+        <div class="sync-card"><span>Need owner</span><strong id="playbookDeskOwners">0</strong></div>
+        <div class="sync-card"><span>Need ack</span><strong id="playbookDeskAck">0</strong></div>
+        <div class="sync-card"><span>Due today</span><strong id="playbookDeskDue">0</strong></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>Границы этапа</h2><span class="tag">In / Out</span></div>
+      <div class="grid-2">
+        <div class="card"><span class="num">IN</span><h3>Что входит</h3><ul class="mini-list"><li>Проектирование процессов, ролей и эскалаций</li><li>Подключение и валидация данных</li><li>Разработка baseline-логики и алертинга</li><li>Тестирование в теневом режиме</li></ul></div>
+        <div class="card risk"><span class="num">OUT</span><h3>Что не входит</h3><ul class="mini-list"><li>Полномасштабный rollout на все бригады</li><li>Полная автономизация действий без подтверждения инженером</li><li>Расширение периметра до завершения quality gates</li></ul></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>Артефакты на выходе</h2><span class="tag">Рабочий пакет</span></div>
+      <div class="artifact-summary" id="artifactWorkbenchSummary">Здесь ведется реальный пакет артефактов Stage 1: статус, владелец, ближайшее действие и заметка по каждому обязательному результату.</div>
+      <div class="artifact-grid" id="artifactWorkbench"></div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>Недельный план на 6 недель</h2><span class="tag">Weekly execution</span></div>
+      <div class="week-grid">
+        <div class="week" data-week="1"><span class="num">W1</span><h3>Kickoff и рамки</h3><p>Подтвердить периметр, KPI, baseline и владельцев потоков данных и решений.</p><div class="gate">Критерий: подписан kickoff-протокол и KPI charter.</div><div class="week-status blocked" data-week-status="1">Ожидает синхронизации</div></div>
+        <div class="week" data-week="2"><span class="num">W2</span><h3>Данные и качество</h3><p>Подключить WITS/WITSML, отчеты, журналы событий, согласовать словарь полей и единицы измерения.</p><div class="gate">Критерий: не менее 80% критичных полей доступны и валидны.</div><div class="week-status blocked" data-week-status="2">Ожидает синхронизации</div></div>
+        <div class="week" data-week="3"><span class="num">W3</span><h3>NPT risk baseline</h3><p>Построить baseline-логику NPT Predictor и настроить explainability для алертов.</p><div class="gate">Критерий: алерты имеют трассируемые причины и уровни приоритета.</div><div class="week-status blocked" data-week-status="3">Ожидает синхронизации</div></div>
+        <div class="week" data-week="4"><span class="num">W4</span><h3>ROP и сценарии действий</h3><p>Спроектировать рекомендации по ROP, response playbook супервайзера и SLA реакции.</p><div class="gate">Критерий: для каждого критичного алерта задано стандартное действие и владелец.</div><div class="week-status blocked" data-week-status="4">Ожидает синхронизации</div></div>
+        <div class="week" data-week="5"><span class="num">W5</span><h3>Теневой режим</h3><p>Запустить поток алертов без вмешательства в операцию и сравнить его с фактическими событиями.</p><div class="gate">Критерий: достигнут целевой диапазон Precision / Recall.</div><div class="week-status blocked" data-week-status="5">Ожидает синхронизации</div></div>
+        <div class="week" data-week="6"><span class="num">W6</span><h3>Readiness review</h3><p>Провести итоговый аудит, выпустить readiness sheet и принять go/no-go решение на pilot.</p><div class="gate">Критерий: подписан акт готовности к пилоту.</div><div class="week-status blocked" data-week-status="6">Ожидает синхронизации</div></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>Быстрый старт на 5 рабочих дней</h2><span class="tag">Day 1 to Day 5</span></div>
+      <div class="sprint-grid">
+        <div class="day"><div class="day-num">1</div><div class="day-label">День 1</div><h3>Состав команды</h3><p>Утвердить рабочую группу и владельцев потоков данных.</p></div>
+        <div class="day"><div class="day-num">2</div><div class="day-label">День 2</div><h3>Источники</h3><p>Собрать перечень источников и структуру критичных полей.</p></div>
+        <div class="day"><div class="day-num">3</div><div class="day-label">День 3</div><h3>KPI charter</h3><p>Зафиксировать baseline окно и формулу оценки эффекта.</p></div>
+        <div class="day"><div class="day-num">4</div><div class="day-label">День 4</div><h3>Алерты</h3><p>Согласовать матрицу алертов и каналы эскалации.</p></div>
+        <div class="day"><div class="day-num">5</div><div class="day-label">День 5</div><h3>Readiness-сессия</h3><p>Закрепить backlog второй недели и подтвердить точки контроля.</p></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>Gate-критерии перехода к пилоту</h2><span class="tag">All are mandatory</span></div>
+      <div class="grid-2">
+        <div class="card"><span class="num">G1-G3</span><ul class="mini-list"><li>KPI и baseline официально утверждены</li><li>Data Quality Score >= 0.80 по критичным полям</li><li>Теневой режим достиг целевых порогов точности</li></ul></div>
+        <div class="card"><span class="num">G4-G5</span><ul class="mini-list"><li>HSE-ограничения встроены в workflow и процедуры</li><li>On-call команда и SLA готовы к поддержке пилота</li></ul></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>Навигация</h2><span class="tag">Stage chain</span></div>
+      <div class="nav-grid">
+        <a class="nav-card" href="19_drilling_stage_1_design.html"><span class="num">19</span><h3>Stage 1 overview</h3><p>Краткий executive-обзор этапа проектирования.</p></a>
+        <a class="nav-card" href="16_drilling_stage_2_pilot.html"><span class="num">16</span><h3>Stage 2 pilot</h3><p>Следующий шаг после закрытия readiness-gates и выпуска pilot launch sheet.</p></a>
+      </div>
+    </section>
+
+    <p class="footer">Execution playbook for stage 1 · Doc 20</p>
+  </main>
+  <script>
+    (function () {
+      var SUMMARY_KEY = 'nexus_stage1_manager_summary_v1';
+      var TRACKER_KEY = 'tracker_tasks';
+      var ARTIFACTS_KEY = 'nexus_stage1_artifact_workbench_v1';
+      var DESK_KEY = 'nexus_drilling_escalation_desk_v1';
+      var ARTIFACT_DEFINITIONS = [
+        {
+          id: 'a1',
+          code: 'A1',
+          title: 'Бриф по проектированию бурения',
+          description: 'Зафиксированный периметр, ключевые риски, KPI, роли и ожидания заказчика.',
+          owner: 'Руководитель проекта',
+          nextAction: 'Подтвердить периметр, KPI и ключевые ограничения.',
+          linkLabel: 'Открыть бриф проектирования',
+          linkHref: '15_drilling_design_block.html'
+        },
+        {
+          id: 'a2',
+          code: 'A2',
+          title: 'Пакет договоренностей по данным',
+          description: 'Источники, поля, частоты, владельцы, SLA и формальные договоренности по данным.',
+          owner: 'Дата-лид',
+          nextAction: 'Согласовать владельцев, частоты и SLA по критичным каналам.',
+          linkLabel: 'Открыть пакет по данным',
+          linkHref: 'artifacts/data_contract.html'
+        },
+        {
+          id: 'a3',
+          code: 'A3',
+          title: 'Отчет по качеству данных',
+          description: 'Профилирование пропусков, задержек, выбросов и итоговый quality score по критичным каналам.',
+          owner: 'Инженер по данным',
+          nextAction: 'Дожать качество критичных полей до целевого порога.',
+          linkLabel: 'Открыть отчет по качеству',
+          linkHref: 'artifacts/data_quality_report.html'
+        },
+        {
+          id: 'a4',
+          code: 'A4',
+          title: 'Каталог алертов v1',
+          description: 'Типы алертов, пороги, severity, каналы, приоритеты и правила эскалации.',
+          owner: 'Продуктовый владелец',
+          nextAction: 'Подтвердить пороги и матрицу эскалации.',
+          linkLabel: 'Открыть каталог алертов',
+          linkHref: 'artifacts/alert_catalog.html'
+        },
+        {
+          id: 'a5',
+          code: 'A5',
+          title: 'Карта принятия решений',
+          description: 'Кто подтверждает, кто исполняет, кто закрывает, где фиксируется обратная связь и эффект.',
+          owner: 'Drilling manager',
+          nextAction: 'Подписать контур подтверждения и исполнения решений.',
+          linkLabel: 'Открыть карту решений',
+          linkHref: 'artifacts/decision_map.html'
+        },
+        {
+          id: 'a6',
+          code: 'A6',
+          title: 'Лист готовности к пилоту',
+          description: 'Официальный go/no-go документ перед переходом к этапу 2.',
+          owner: 'Руководитель внедрения',
+          nextAction: 'Собрать финальный readiness review и вынести go/no-go.',
+          linkLabel: 'Открыть лист готовности',
+          linkHref: 'artifacts/pilot_launch_readiness_sheet.html'
+        }
+      ];
+      var weeklyFocus = {
+        '1': {
+          summary: 'Собери kickoff-контур: freeze perimeter, подпиши KPI charter и назначь owners по данным и решениям.',
+          actions: ['Подтвердить perimeter и baseline window.', 'Подписать kickoff-protocol и KPI charter.', 'Зафиксировать RACI для drilling manager, supervisor и remote ops.']
+        },
+        '2': {
+          summary: 'Главная задача недели 2 - сделать данные операционно надежными, а не просто подключенными.',
+          actions: ['Закрыть data mapping и единицы измерения.', 'Дожать quality score до целевого порога.', 'Собрать data contract и owner SLA.']
+        },
+        '3': {
+          summary: 'Неделя 3 должна превратить разрозненные сигналы в рабочую NPT-логику с explainability.',
+          actions: ['Собрать baseline NPT logic.', 'Определить severity thresholds.', 'Зафиксировать explainability по алертам.']
+        },
+        '4': {
+          summary: 'Неделя 4 переводит аналитику в действия: supervisor playbook, ROP responses и SLA reaction time.',
+          actions: ['Согласовать response playbook.', 'Привязать алерты к owner actions.', 'Закрыть on-call и escalation chain.']
+        },
+        '5': {
+          summary: 'На неделе 5 ключевое - доказать пригодность теневого режима и снизить ложные срабатывания.',
+          actions: ['Сравнить алерты с фактическими событиями.', 'Снизить false positives.', 'Оценить adoption будущих рекомендаций.']
+        },
+        '6': {
+          summary: 'Неделя 6 закрывает формальный readiness review и выносит go/no-go решение на pilot.',
+          actions: ['Собрать readiness sheet.', 'Провести management review.', 'Подтвердить Stage 2 launch plan.']
+        }
+      };
+
+      function readJson(key) {
+        try {
+          return JSON.parse(localStorage.getItem(key) || 'null');
+        } catch (error) {
+          return null;
+        }
+      }
+
+      function setText(id, value) {
+        var node = document.getElementById(id);
+        if (node) {
+          node.textContent = value;
+        }
+      }
+
+      function saveJson(key, value) {
+        try {
+          localStorage.setItem(key, JSON.stringify(value));
+        } catch (error) {
+          // Ignore storage errors.
+        }
+      }
+
+      function renderList(id, items, fallback) {
+        var node = document.getElementById(id);
+        if (!node) {
+          return;
+        }
+        var list = items && items.length ? items : [fallback];
+        node.innerHTML = list.map(function (item) { return '<li>' + item + '</li>'; }).join('');
+      }
+
+      function escapeHtml(value) {
+        return String(value || '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
+      function artifactStatusMeta(status) {
+        var map = {
+          not_started: { label: 'Не начат', className: 'not_started' },
+          in_progress: { label: 'В работе', className: 'in_progress' },
+          review: { label: 'На проверке', className: 'review' },
+          approved: { label: 'Утвержден', className: 'approved' }
+        };
+        return map[status] || map.not_started;
+      }
+
+      function normalizeArtifactState(raw) {
+        var normalized = {};
+        ARTIFACT_DEFINITIONS.forEach(function (artifact) {
+          var current = raw && raw[artifact.id] ? raw[artifact.id] : {};
+          normalized[artifact.id] = {
+            status: current.status || 'not_started',
+            owner: current.owner || artifact.owner,
+            nextAction: current.nextAction || artifact.nextAction,
+            note: current.note || ''
+          };
+        });
+        return normalized;
+      }
+
+      function artifactMetrics(state) {
+        var values = ARTIFACT_DEFINITIONS.map(function (artifact) { return state[artifact.id]; });
+        return {
+          total: values.length,
+          approved: values.filter(function (item) { return item.status === 'approved'; }).length,
+          inProgress: values.filter(function (item) { return item.status === 'in_progress'; }).length,
+          review: values.filter(function (item) { return item.status === 'review'; }).length,
+          ownersMissing: values.filter(function (item) { return !String(item.owner || '').trim(); }).length
+        };
+      }
+
+      function actionDeskValues() {
+        var raw = readJson(DESK_KEY) || {};
+        var priorityWeight = { today: 0, this_week: 1, watch: 2 };
+        return Object.keys(raw).map(function (key) {
+          return raw[key];
+        }).filter(function (item) {
+          return item && item.source !== 'initiative';
+        }).sort(function (left, right) {
+          return (priorityWeight[left.priority] || 9) - (priorityWeight[right.priority] || 9);
+        });
+      }
+
+      function renderDeskBrief() {
+        var values = actionDeskValues();
+        var needOwner = values.filter(function (item) { return !String(item.owner || '').trim(); });
+        var needAck = values.filter(function (item) { return !item.acknowledged; });
+        var dueToday = values.filter(function (item) { return item.dueToday; });
+        var urgent = values.filter(function (item) {
+          return item.priority === 'today' || item.dueToday || !item.acknowledged || !String(item.owner || '').trim();
+        }).slice(0, 4).map(function (item) {
+          var flags = [];
+          if (!String(item.owner || '').trim()) {
+            flags.push('owner missing');
+          }
+          if (!item.acknowledged) {
+            flags.push('not acknowledged');
+          }
+          if (item.dueToday) {
+            flags.push('due today');
+          }
+          return item.text + (flags.length ? ' · ' + flags.join(', ') : '');
+        });
+
+        setText('playbookDeskTitle', values.length ? 'Stage 1 queue собрана' : 'Action desk пока пуст');
+        setText('playbookDeskSummary', values.length
+          ? 'В очереди ' + values.length + ' действий. Назначь owner, проставь due today и подтверди acknowledge там, где работа уже взята.'
+          : 'После заполнения Stage 1 cockpit, tracker и artifact workbench здесь появится живая очередь действий.');
+        setText('playbookDeskHot', urgent.length ? 'Есть горячие действия' : 'Нет срочных действий');
+        setText('playbookDeskHotSummary', urgent.length
+          ? 'Сначала закрой today items, unassigned owners и неподтвержденные действия.'
+          : 'Сейчас в очереди нет действий, которые требуют немедленного управленческого внимания.');
+        renderList('playbookDeskList', urgent, 'Открой Stage 1 Action Desk, чтобы назначить owner и отметить acknowledge.');
+        setText('playbookDeskTotal', String(values.length));
+        setText('playbookDeskOwners', String(needOwner.length));
+        setText('playbookDeskAck', String(needAck.length));
+        setText('playbookDeskDue', String(dueToday.length));
+      }
+
+      function renderArtifactWorkbench() {
+        var host = document.getElementById('artifactWorkbench');
+        var summaryNode = document.getElementById('artifactWorkbenchSummary');
+        var state = normalizeArtifactState(readJson(ARTIFACTS_KEY));
+        var metrics = artifactMetrics(state);
+
+        if (host) {
+          host.innerHTML = ARTIFACT_DEFINITIONS.map(function (artifact) {
+            var current = state[artifact.id];
+            var meta = artifactStatusMeta(current.status);
+            return [
+              '<div class="artifact" data-artifact-state="' + meta.className + '">',
+              '<div class="artifact-top">',
+              '<div>',
+              '<span class="num">' + artifact.code + '</span>',
+              '<h3>' + artifact.title + '</h3>',
+              '</div>',
+              '<div class="artifact-status ' + meta.className + '">' + meta.label + '</div>',
+              '</div>',
+              '<p class="artifact-copy">' + artifact.description + '</p>',
+              '<div class="artifact-field-grid">',
+              '<div class="artifact-field"><label>Статус</label><select data-artifact-id="' + artifact.id + '" data-artifact-field="status">',
+              '<option value="not_started"' + (current.status === 'not_started' ? ' selected' : '') + '>Не начат</option>',
+              '<option value="in_progress"' + (current.status === 'in_progress' ? ' selected' : '') + '>В работе</option>',
+              '<option value="review"' + (current.status === 'review' ? ' selected' : '') + '>На проверке</option>',
+              '<option value="approved"' + (current.status === 'approved' ? ' selected' : '') + '>Утвержден</option>',
+              '</select></div>',
+              '<div class="artifact-field"><label>Владелец</label><input type="text" value="' + escapeHtml(current.owner) + '" data-artifact-id="' + artifact.id + '" data-artifact-field="owner"></div>',
+              '<div class="artifact-field artifact-field--wide"><label>Ближайшее действие</label><input type="text" value="' + escapeHtml(current.nextAction) + '" data-artifact-id="' + artifact.id + '" data-artifact-field="nextAction"></div>',
+              '<div class="artifact-field artifact-field--wide"><label>Рабочая заметка</label><textarea data-artifact-id="' + artifact.id + '" data-artifact-field="note">' + escapeHtml(current.note) + '</textarea></div>',
+              '</div>',
+              '<div class="artifact-meta">',
+              '<div class="artifact-meta-card"><span>Статус</span><strong>' + meta.label + '</strong></div>',
+              '<div class="artifact-meta-card"><span>Владелец</span><strong>' + escapeHtml(current.owner || 'Не назначен') + '</strong></div>',
+              '<div class="artifact-meta-card"><span>Следом</span><strong>' + escapeHtml(current.nextAction || 'Не задано') + '</strong></div>',
+              '</div>',
+              artifact.linkHref ? '<div class="artifact-links"><a class="artifact-link primary" href="' + artifact.linkHref + '">' + artifact.linkLabel + '</a></div>' : '',
+              '</div>'
+            ].join('');
+          }).join('');
+        }
+
+        if (summaryNode) {
+          summaryNode.textContent = 'Готово ' + metrics.approved + ' из ' + metrics.total + ' артефактов. В работе ' + metrics.inProgress + ', на проверке ' + metrics.review + '. ' + (metrics.ownersMissing ? 'Для ' + metrics.ownersMissing + ' артефактов еще не назначен владелец.' : 'У всех артефактов назначены владельцы.');
+        }
+
+        return metrics;
+      }
+
+      function handleArtifactChange(event) {
+        var target = event.target;
+        if (!target || !target.getAttribute('data-artifact-id')) {
+          return false;
+        }
+        var state = normalizeArtifactState(readJson(ARTIFACTS_KEY));
+        var artifactId = target.getAttribute('data-artifact-id');
+        var field = target.getAttribute('data-artifact-field');
+        state[artifactId][field] = target.value;
+        saveJson(ARTIFACTS_KEY, state);
+        render();
+        return true;
+      }
+
+      function updateWeekCards(summary, trackerTasks) {
+        document.querySelectorAll('[data-week]').forEach(function (card) {
+          var week = card.getAttribute('data-week');
+          var statusNode = card.querySelector('[data-week-status="' + week + '"]');
+          var weekTasks = (trackerTasks || []).filter(function (task) { return task.week === 'w' + week; });
+          var doneTasks = weekTasks.filter(function (task) { return task.status === 'done'; }).length;
+          var progress = weekTasks.length ? Math.round((doneTasks / weekTasks.length) * 100) : 0;
+          var state = 'blocked';
+          var label = 'Ожидает запуска';
+
+          card.classList.remove('is-active');
+          if (summary && String(summary.currentWeek) === String(week)) {
+            card.classList.add('is-active');
+            if (summary.status === 'ready') {
+              state = 'ready';
+              label = 'Текущая неделя закрыта';
+            } else if (summary.status === 'conditional') {
+              state = 'conditional';
+              label = 'Текущая неделя требует дожима';
+            } else {
+              state = progress >= 50 ? 'conditional' : 'blocked';
+              label = progress >= 50 ? 'Идет работа по закрытию' : 'Текущая неделя в риске';
+            }
+          } else if (progress === 100 && weekTasks.length) {
+            state = 'ready';
+            label = 'Задачи недели закрыты';
+          } else if (progress > 0) {
+            state = 'conditional';
+            label = 'Неделя в работе';
+          }
+
+          if (statusNode) {
+            statusNode.className = 'week-status ' + state;
+            statusNode.textContent = label;
+          }
+        });
+      }
+
+      function render() {
+        var summary = readJson(SUMMARY_KEY);
+        var trackerTasks = readJson(TRACKER_KEY) || [];
+        var artifactState = normalizeArtifactState(readJson(ARTIFACTS_KEY));
+        var artifacts = artifactMetrics(artifactState);
+        var doneTasks = trackerTasks.filter(function (task) { return task.status === 'done'; }).length;
+        var trackerProgress = trackerTasks.length ? Math.round((doneTasks / trackerTasks.length) * 100) : 0;
+        var week = summary ? String(summary.currentWeek || '1') : '1';
+        var focus = weeklyFocus[week] || weeklyFocus['1'];
+        var decisionPill = document.getElementById('playbookDecisionPill');
+        var weekTasks = trackerTasks.filter(function (task) { return task.week === 'w' + week; }).map(function (task) {
+          var prefix = task.status === 'done' ? 'Готово:' : task.status === 'wip' ? 'В работе:' : 'Следом:';
+          return prefix + ' ' + task.title;
+        });
+
+        if (!summary) {
+          setText('playbookDecisionTitle', 'Stage 1 еще не собран');
+          setText('playbookDecisionSummary', 'Заполни Stage 1 cockpit, чтобы playbook начал показывать реальный readiness и недельный operational фокус.');
+          setText('playbookCurrentWeek', 'Неделя 1');
+          setText('playbookWeekSummary', weeklyFocus['1'].summary);
+          setText('playbookReadiness', '0%');
+          setText('playbookGates', '0 / 4');
+          setText('playbookArtifacts', artifacts.approved + ' / ' + artifacts.total);
+          setText('playbookTracker', trackerProgress + '%');
+          renderList('playbookWeekActions', weeklyFocus['1'].actions, 'Открой Stage 1 cockpit.');
+          renderList('playbookBlockers', ['Нет синхронизированного readiness summary из Stage 1 cockpit.'], 'Нет блокеров.');
+          renderList('playbookTrackerTasks', weekTasks, 'Синхронизируй tracker, чтобы увидеть weekly backlog.');
+          decisionPill.className = 'sync-pill blocked';
+          decisionPill.textContent = 'No-Go';
+          updateWeekCards(null, trackerTasks);
+          renderArtifactWorkbench();
+          renderDeskBrief();
+          return;
+        }
+
+        setText('playbookDecisionTitle', summary.title || 'Stage 1 status');
+        setText('playbookDecisionSummary', summary.summary || 'Summary unavailable.');
+        setText('playbookCurrentWeek', 'Неделя ' + week);
+        setText('playbookWeekSummary', focus.summary);
+        setText('playbookReadiness', summary.readinessScore + '%');
+        setText('playbookGates', summary.gateStatus + ' / ' + summary.gateTotal);
+        setText('playbookArtifacts', artifacts.approved + ' / ' + artifacts.total);
+        setText('playbookTracker', trackerProgress + '%');
+        renderList('playbookWeekActions', (summary.actions || []).slice(0, 3).concat(focus.actions).slice(0, 5), 'Нет действий.');
+        renderList('playbookBlockers', summary.blockers, 'Критичных блокеров не видно.');
+        renderList('playbookTrackerTasks', weekTasks, 'По этой неделе задачи в tracker пока не заведены.');
+        decisionPill.className = 'sync-pill ' + (summary.status || 'blocked');
+        decisionPill.textContent = summary.pill || 'No-Go';
+        updateWeekCards(summary, trackerTasks);
+        renderArtifactWorkbench();
+        renderDeskBrief();
+      }
+
+      document.addEventListener('change', function (event) {
+        handleArtifactChange(event);
+      });
+
+      document.addEventListener('blur', function (event) {
+        handleArtifactChange(event);
+      }, true);
+
+      window.addEventListener('storage', function (event) {
+        if (event.key === SUMMARY_KEY || event.key === TRACKER_KEY || event.key === ARTIFACTS_KEY || event.key === DESK_KEY) {
+          render();
+        }
+      });
+
+      render();
+    })();
+  </script>
+  <script src="assets/js/stage1-live-status.js"></script>
+  <script src="assets/js/global-auth-widget.js"></script>
+</body>
+</html>

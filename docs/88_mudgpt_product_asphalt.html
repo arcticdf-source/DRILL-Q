@@ -1,0 +1,1512 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>88 · MudGPT Product · Asphalt</title>
+  <style>
+    :root {
+      --bg: #0d0d0b;
+      --panel: rgba(22, 24, 20, 0.86);
+      --panel-2: rgba(29, 31, 26, 0.92);
+      --panel-3: rgba(37, 28, 20, 0.9);
+      --line: rgba(245, 202, 124, 0.16);
+      --line-strong: rgba(245, 202, 124, 0.34);
+      --text: #f8f0de;
+      --muted: #cdbda1;
+      --gold: #f5c87c;
+      --amber: #ff9f3d;
+      --sand: #efe2bf;
+      --mint: #b8e1c1;
+      --rust: #c96836;
+      --shadow: 0 34px 90px rgba(0, 0, 0, 0.38);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      font-family: "Aptos", "Segoe UI Variable", "Trebuchet MS", sans-serif;
+      background:
+        radial-gradient(circle at 14% 10%, rgba(255, 159, 61, 0.2), transparent 24%),
+        radial-gradient(circle at 83% 12%, rgba(245, 200, 124, 0.14), transparent 22%),
+        radial-gradient(circle at 70% 74%, rgba(184, 225, 193, 0.07), transparent 18%),
+        linear-gradient(160deg, #0d0d0b 0%, #151512 40%, #090909 100%);
+    }
+    a { color: inherit; }
+    .page {
+      width: min(1480px, calc(100vw - 30px));
+      margin: 18px auto 42px;
+    }
+    .topbar,
+    .hero,
+    .module-index,
+    .section,
+    .footer-banner,
+    .side-panel {
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+    }
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      margin-bottom: 16px;
+      border-radius: 22px;
+      background: rgba(21, 22, 18, 0.9);
+      flex-wrap: wrap;
+    }
+    .topbar-actions,
+    .topbar-status {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .chip,
+    .topbar a,
+    .toc a {
+      text-decoration: none;
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text);
+      font-size: 13px;
+      letter-spacing: 0.02em;
+    }
+    .topbar a:hover,
+    .toc a:hover {
+      border-color: var(--line-strong);
+      background: rgba(245, 200, 124, 0.08);
+    }
+    .admin-edit-button {
+      color: #1f150d;
+      background: linear-gradient(135deg, var(--sand), var(--gold));
+      border-color: rgba(245, 200, 124, 0.42);
+      font-weight: 800;
+    }
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 30px;
+      border-radius: 32px;
+      background:
+        radial-gradient(circle at 86% 22%, rgba(255, 159, 61, 0.18), transparent 18%),
+        radial-gradient(circle at 16% 80%, rgba(245, 200, 124, 0.1), transparent 18%),
+        linear-gradient(132deg, rgba(23, 23, 20, 0.96), rgba(16, 15, 13, 0.96));
+    }
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: auto auto -150px -80px;
+      width: 420px;
+      height: 420px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 159, 61, 0.16), rgba(255, 159, 61, 0) 74%);
+      pointer-events: none;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(360px, 0.9fr);
+      gap: 22px;
+      position: relative;
+      z-index: 1;
+    }
+    .eyebrow {
+      margin-bottom: 12px;
+      color: var(--gold);
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    h1 {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(44px, 6vw, 94px);
+      line-height: 0.92;
+      letter-spacing: -0.05em;
+      max-width: 860px;
+    }
+    .hero-subtitle {
+      margin: 16px 0 0;
+      max-width: 860px;
+      font-size: 19px;
+      line-height: 1.7;
+      color: var(--muted);
+    }
+    .hero-tools {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px;
+      margin-top: 22px;
+      align-items: center;
+    }
+    .search-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.04);
+    }
+    .search-box input {
+      width: 100%;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: var(--text);
+      font: inherit;
+    }
+    .search-box input::placeholder { color: var(--muted); }
+    .cta-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .cta,
+    .ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 13px 18px;
+      border-radius: 16px;
+      text-decoration: none;
+      border: 1px solid transparent;
+      font-weight: 700;
+    }
+    .cta {
+      color: #1e160f;
+      background: linear-gradient(135deg, var(--sand), var(--amber));
+    }
+    .ghost {
+      color: var(--text);
+      border-color: var(--line);
+      background: rgba(255, 255, 255, 0.04);
+    }
+    .hero-metrics {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 18px;
+    }
+    .metric {
+      padding: 16px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.04);
+    }
+    .metric .label {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+    .metric strong {
+      display: block;
+      margin-top: 8px;
+      color: var(--sand);
+      font-size: 23px;
+    }
+    .hero-side {
+      display: grid;
+      gap: 14px;
+      align-content: start;
+    }
+    .hero-card,
+    .hero-evidence,
+    .nav-card,
+    .info-card,
+    .drilldown,
+    .toc,
+    .fact-row,
+    .matrix-card,
+    .case-card,
+    .faq-card {
+      border-radius: 22px;
+      border: 1px solid var(--line);
+      background: var(--panel-2);
+    }
+    .hero-card {
+      min-height: 240px;
+      padding: 24px;
+      background:
+        radial-gradient(circle at 70% 22%, rgba(255, 159, 61, 0.24), transparent 22%),
+        linear-gradient(150deg, rgba(52, 39, 24, 0.95), rgba(18, 18, 15, 0.98));
+      display: grid;
+      align-content: space-between;
+      gap: 18px;
+    }
+    .hero-card .small {
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+    }
+    .hero-card strong {
+      display: block;
+      max-width: 260px;
+      color: var(--sand);
+      font-size: 26px;
+      line-height: 1.18;
+    }
+    .hero-evidence {
+      padding: 18px;
+      display: grid;
+      gap: 12px;
+    }
+    .hero-dashboard,
+    .section-infographic,
+    .signal-grid,
+    .stack-bars,
+    .heat-ladder,
+    .compare-list,
+    .timeline-strip {
+      display: grid;
+      gap: 14px;
+    }
+    .hero-dashboard {
+      margin-top: 18px;
+      grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+    }
+    .infocard,
+    .signal-tile,
+    .flow-step,
+    .compare-card,
+    .timeline-node {
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: var(--panel-2);
+    }
+    .infocard {
+      padding: 18px;
+      background: linear-gradient(150deg, rgba(30, 30, 26, 0.95), rgba(18, 18, 15, 0.98));
+    }
+    .infocard h3 {
+      margin: 0 0 14px;
+      color: var(--sand);
+      font-size: 18px;
+      letter-spacing: 0.02em;
+    }
+    .signal-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .signal-tile {
+      padding: 14px;
+      background: rgba(255, 255, 255, 0.03);
+    }
+    .signal-tile span,
+    .stack-bar label,
+    .flow-step span,
+    .compare-card em {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-style: normal;
+    }
+    .signal-tile strong {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--gold);
+      font-size: 24px;
+    }
+    .signal-tile p,
+    .flow-step p,
+    .timeline-node p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.55;
+      font-size: 13px;
+    }
+    .stack-bar {
+      display: grid;
+      grid-template-columns: 130px 1fr 82px;
+      gap: 12px;
+      align-items: center;
+    }
+    .stack-bar b {
+      text-align: right;
+      color: var(--sand);
+      font-size: 13px;
+    }
+    .bar-track {
+      height: 12px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+    }
+    .bar-fill {
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--gold), var(--amber));
+    }
+    .bar-fill.secondary {
+      background: linear-gradient(90deg, var(--mint), #69b8ff);
+    }
+    .bar-fill.alert {
+      background: linear-gradient(90deg, var(--amber), var(--rust));
+    }
+    .process-flow,
+    .compare-grid {
+      display: grid;
+      gap: 12px;
+    }
+    .process-flow { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .flow-step,
+    .compare-card,
+    .timeline-node {
+      padding: 16px;
+      background: rgba(255, 255, 255, 0.03);
+      position: relative;
+    }
+    .flow-step:not(:last-child)::after {
+      content: "";
+      position: absolute;
+      right: -8px;
+      top: 50%;
+      width: 16px;
+      height: 2px;
+      background: linear-gradient(90deg, var(--gold), transparent);
+    }
+    .flow-step strong,
+    .timeline-node strong {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--sand);
+      font-size: 16px;
+    }
+    .heat-row {
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      gap: 12px;
+      align-items: center;
+    }
+    .heat-row label {
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .heat-scale {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 6px;
+    }
+    .heat-scale span {
+      height: 18px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+    }
+    .heat-scale .on-1,
+    .heat-scale .on-2,
+    .heat-scale .on-3,
+    .heat-scale .on-4,
+    .heat-scale .on-5 {
+      background: linear-gradient(90deg, var(--mint), var(--gold));
+    }
+    .heat-scale .on-4,
+    .heat-scale .on-5 {
+      background: linear-gradient(90deg, var(--gold), var(--amber));
+    }
+    .heat-scale .on-5 {
+      background: linear-gradient(90deg, var(--amber), var(--rust));
+    }
+    .compare-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .compare-list div {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .compare-pill {
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(245, 200, 124, 0.12);
+      color: var(--gold);
+      white-space: nowrap;
+    }
+    .timeline-strip { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .timeline-node::before {
+      content: "";
+      display: block;
+      width: 10px;
+      height: 10px;
+      margin-bottom: 12px;
+      border-radius: 50%;
+      background: var(--gold);
+      box-shadow: 0 0 0 6px rgba(245, 200, 124, 0.1);
+    }
+    .hero-evidence h3,
+    .section h2,
+    .side-panel h3,
+    .footer-banner h2 {
+      margin: 0;
+      letter-spacing: -0.03em;
+    }
+    .hero-evidence h3 { font-size: 19px; }
+    .hero-evidence ul,
+    .section ul {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+    .module-index {
+      margin-top: 18px;
+      padding: 22px;
+      border-radius: 28px;
+      background: rgba(18, 19, 16, 0.9);
+    }
+    .module-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: end;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .module-head h2 {
+      margin: 0;
+      font-size: 30px;
+      letter-spacing: -0.03em;
+    }
+    .module-head p,
+    .section p,
+    .info-card p,
+    .drilldown p,
+    .footer-banner p,
+    .faq-card p,
+    .side-panel p {
+      color: var(--muted);
+      line-height: 1.7;
+    }
+    .module-grid,
+    .fact-grid,
+    .matrix-grid,
+    .card-grid-2,
+    .card-grid-3,
+    .faq-grid {
+      display: grid;
+      gap: 14px;
+    }
+    .module-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .fact-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .matrix-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .card-grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .card-grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .faq-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .nav-card {
+      display: grid;
+      gap: 10px;
+      padding: 18px;
+      text-decoration: none;
+      transition: transform 0.16s ease, border-color 0.16s ease, background 0.16s ease;
+    }
+    .nav-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--line-strong);
+      background: rgba(255, 255, 255, 0.06);
+    }
+    .nav-kicker {
+      color: var(--gold);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-weight: 700;
+    }
+    .nav-card strong,
+    .info-card strong,
+    .matrix-card strong,
+    .case-card strong,
+    .faq-card strong,
+    .fact-row strong {
+      color: var(--sand);
+      font-size: 18px;
+      display: block;
+    }
+    .nav-card span,
+    .fact-row span,
+    .meta-value,
+    .toc small {
+      color: var(--muted);
+      line-height: 1.55;
+      font-size: 14px;
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 360px;
+      gap: 18px;
+      margin-top: 18px;
+      align-items: start;
+    }
+    .content {
+      display: grid;
+      gap: 18px;
+    }
+    .section {
+      padding: 24px;
+      border-radius: 28px;
+      background: var(--panel);
+    }
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 12px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+    .section h2 { font-size: 30px; }
+    .section-tag {
+      color: var(--gold);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-weight: 700;
+    }
+    .info-card,
+    .matrix-card,
+    .case-card,
+    .faq-card,
+    .fact-row {
+      padding: 18px;
+    }
+    .fact-row {
+      background: linear-gradient(140deg, rgba(53, 40, 25, 0.9), rgba(23, 23, 20, 0.96));
+    }
+    .fact-value {
+      display: block;
+      margin-top: 8px;
+      color: var(--text);
+      font-size: 30px;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+    }
+    .table-like {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .row {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 14px;
+      align-items: start;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(245, 202, 124, 0.08);
+    }
+    .row:last-child { border-bottom: 0; }
+    .row b {
+      color: var(--sand);
+      font-size: 14px;
+    }
+    .drilldown {
+      margin-top: 14px;
+      overflow: hidden;
+    }
+    .drilldown summary {
+      cursor: pointer;
+      list-style: none;
+      padding: 16px 18px;
+      font-weight: 700;
+      color: var(--sand);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+    .drilldown summary::-webkit-details-marker { display: none; }
+    .drilldown summary::after {
+      content: "+";
+      color: var(--gold);
+      font-size: 24px;
+      line-height: 1;
+    }
+    .drilldown[open] summary::after { content: "−"; }
+    .drilldown-body {
+      padding: 0 18px 18px;
+      display: grid;
+      gap: 12px;
+    }
+    .bullet-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .bullet-item {
+      display: grid;
+      grid-template-columns: 10px 1fr;
+      gap: 10px;
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 15px;
+    }
+    .bullet-item::before {
+      content: "";
+      width: 10px;
+      height: 10px;
+      margin-top: 7px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold), var(--amber));
+    }
+    .evidence-strip {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+    .evidence-chip {
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255, 159, 61, 0.1);
+      border: 1px solid rgba(255, 159, 61, 0.18);
+      color: var(--sand);
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .side-stack {
+      position: sticky;
+      top: 16px;
+      display: grid;
+      gap: 16px;
+    }
+    .side-panel {
+      padding: 18px;
+      border-radius: 24px;
+      background: rgba(19, 20, 17, 0.92);
+    }
+    .state-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      border: 1px solid rgba(184, 225, 193, 0.18);
+      background: rgba(184, 225, 193, 0.08);
+      color: var(--mint);
+    }
+    .state-chip::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+    .toc {
+      display: grid;
+      gap: 10px;
+      padding: 14px;
+      margin-top: 14px;
+    }
+    .toc a {
+      display: block;
+      border-radius: 16px;
+      padding: 12px 14px;
+    }
+    .meta-stack {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .meta-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(245, 202, 124, 0.08);
+    }
+    .meta-item:last-child {
+      padding-bottom: 0;
+      border-bottom: 0;
+    }
+    .meta-label {
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .meta-value {
+      color: var(--text);
+      text-align: right;
+    }
+    .footer-banner {
+      margin-top: 18px;
+      padding: 22px 24px;
+      border-radius: 28px;
+      background: linear-gradient(120deg, rgba(37, 29, 20, 0.96), rgba(15, 17, 13, 0.96));
+    }
+    .footer-banner p { max-width: 1020px; }
+    .is-hidden { display: none !important; }
+    @media (max-width: 1220px) {
+      .hero-grid,
+      .layout { grid-template-columns: 1fr; }
+      .side-stack { position: static; }
+      .module-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .fact-grid,
+      .card-grid-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .hero-dashboard,
+      .process-flow,
+      .compare-grid,
+      .timeline-strip { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 820px) {
+      .page { width: min(1480px, calc(100vw - 16px)); margin-top: 8px; }
+      .hero,
+      .module-index,
+      .section,
+      .footer-banner,
+      .side-panel { padding: 18px; border-radius: 22px; }
+      .hero-tools,
+      .module-grid,
+      .fact-grid,
+      .matrix-grid,
+      .card-grid-2,
+      .card-grid-3,
+      .faq-grid,
+      .hero-metrics,
+      .signal-grid { grid-template-columns: 1fr; }
+      .row,
+      .stack-bar,
+      .heat-row { grid-template-columns: 1fr; }
+      .stack-bar b { text-align: left; }
+      h1 { font-size: clamp(40px, 14vw, 66px); }
+    }
+  </style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+  <main class="page">
+    <div class="topbar">
+      <div class="topbar-actions">
+        <a href="94_mudgpt_products_catalog.html">Назад к products catalog</a>
+        <a href="87_mudgpt_chemicals_materials.html">Пользовательский каталог</a>
+        <a href="91_mudgpt_materials_admin.html">Admin materials</a>
+      </div>
+      <div class="topbar-status">
+        <span class="chip">Modular knowledge card</span>
+        <a class="admin-edit-button" id="editProductButton" href="#">Изменить продукт</a>
+      </div>
+    </div>
+
+    <section class="hero">
+      <div class="hero-grid">
+        <div>
+          <div class="eyebrow">MudGPT drilling materials</div>
+          <h1>MudGPT-асфальт</h1>
+          <p class="hero-subtitle">Не лендинг и не рекламный лист. Это рабочая карточка продукта, собранная как knowledge cockpit: где применять, что именно он решает, какие режимы подтверждены архивом, как его отличать по химической логике, что контролировать после ввода и в какие модули проваливаться за деталями.</p>
+          <div class="hero-tools">
+            <label class="search-box" for="moduleSearch">
+              <span>Поиск</span>
+              <input id="moduleSearch" type="search" placeholder="например: HTHP, OBM, 260C, dosage, shale, reservoir" />
+            </label>
+            <div class="cta-row">
+              <a class="cta" href="#module-index">Открыть карту модулей</a>
+              <a class="ghost" href="#evidence-core">Сначала факты</a>
+            </div>
+          </div>
+          <div class="hero-metrics">
+            <div class="metric"><span class="label">Core role</span><strong>Filtration shield</strong></div>
+            <div class="metric"><span class="label">Systems</span><strong>WBM / OBM</strong></div>
+            <div class="metric"><span class="label">Archive signal</span><strong>HTHP strong</strong></div>
+            <div class="metric"><span class="label">Extra value</span><strong>Lubricity</strong></div>
+          </div>
+        </div>
+        <div class="hero-side">
+          <div class="hero-card" aria-hidden="true">
+            <div>
+              <span class="small">Core logic</span>
+              <strong>Тонкая прочная корка, меньше потерь, спокойнее стенка, ниже трение, устойчивее система на температуре.</strong>
+            </div>
+            <div class="evidence-strip">
+              <span class="evidence-chip">70-80% water soluble</span>
+              <span class="evidence-chip">15-20 kg/m3 case</span>
+              <span class="evidence-chip">4-7.5 lb/bbl field</span>
+              <span class="evidence-chip">260C OBM proof</span>
+            </div>
+          </div>
+          <div class="hero-evidence">
+            <h3>Что реально удалось вытащить из архива</h3>
+            <ul>
+              <li>Подтверждены отдельные ветки по WBM, OBM, lubricity, shale stability, HTHP, extreme high temperature, safety, quality и вариантам химической формы.</li>
+              <li>Есть полевые и лабораторные ориентиры: 6 ppb в lubricity-тестах, 4 ppb в одном HTHP-кейсе, 15-20 kg/m3 в shale-кейсе, 4.0-7.5 lb/bbl в wellbore control кейсах.</li>
+              <li>Есть логистика и quality evidence: 22.68 кг bag, batch-oriented COA, palletized supply, sodium и potassium варианты.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="hero-dashboard">
+        <section class="infocard">
+          <h3>Operational Signal Board</h3>
+          <div class="signal-grid">
+            <div class="signal-tile">
+              <span>System reach</span>
+              <strong>WBM / OBM</strong>
+              <p>архив подтверждает работу в обеих системах, а не только в водной ветке</p>
+            </div>
+            <div class="signal-tile">
+              <span>Thermal ceiling</span>
+              <strong>&gt;500°F</strong>
+              <p>есть extreme HT evidence с испытанием на 260°C</p>
+            </div>
+            <div class="signal-tile">
+              <span>Primary missions</span>
+              <strong>4 задачи</strong>
+              <p>fluid loss, shale stability, lubricity и quality of cake</p>
+            </div>
+            <div class="signal-tile">
+              <span>Pack form</span>
+              <strong>22.68 kg</strong>
+              <p>типовой bag-size для приемки, складирования и COA tracking</p>
+            </div>
+          </div>
+        </section>
+        <section class="infocard">
+          <h3>Treatment Windows</h3>
+          <div class="stack-bars">
+            <div class="stack-bar">
+              <label>Lubricity lab</label>
+              <div class="bar-track"><div class="bar-fill secondary" style="width: 38%"></div></div>
+              <b>5-6 ppb</b>
+            </div>
+            <div class="stack-bar">
+              <label>Field recovery</label>
+              <div class="bar-track"><div class="bar-fill" style="width: 52%"></div></div>
+              <b>4-7.5 lb/bbl</b>
+            </div>
+            <div class="stack-bar">
+              <label>Shale control</label>
+              <div class="bar-track"><div class="bar-fill alert" style="width: 74%"></div></div>
+              <b>15-20 kg/m3</b>
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section class="module-index" id="module-index">
+      <div class="module-head">
+        <div>
+          <h2>Карта Модулей</h2>
+          <p>Ниже не один сплошной текст, а набор зон, по которым можно быстро прыгать и проваливаться глубже через раскрывающиеся блоки.</p>
+        </div>
+        <span class="chip" id="moduleCount">10 modules</span>
+      </div>
+      <div class="module-grid">
+        <a class="nav-card" href="#overview" data-search="overview role what is product function shield filtration lubricity stability">
+          <span class="nav-kicker">01</span>
+          <strong>Что Это За Продукт</strong>
+          <span>Короткая инженерная сущность, без маркетинговой воды.</span>
+        </a>
+        <a class="nav-card" href="#evidence-core" data-search="evidence facts archive 260c 70-80 water soluble kg/m3 lb/bbl bag">
+          <span class="nav-kicker">02</span>
+          <strong>Подтвержденные Факты</strong>
+          <span>Самые жесткие цифры и сигналы, вытащенные из архива.</span>
+        </a>
+        <a class="nav-card" href="#system-fit" data-search="wbm obm invert system fit compatible matrix">
+          <span class="nav-kicker">03</span>
+          <strong>Где Он Уместен</strong>
+          <span>Матрица по системам, задачам и режимам работы.</span>
+        </a>
+        <a class="nav-card" href="#application-window" data-search="dosage treat mixing pre-mix 6 ppb 15-20 kg/m3 4 lb/bbl 7.5 lb/bbl">
+          <span class="nav-kicker">04</span>
+          <strong>Окно Применения</strong>
+          <span>Как мыслить дозировку, ввод и post-addition control.</span>
+        </a>
+        <a class="nav-card" href="#problem-library" data-search="problems shale sloughing stuck pipe fluid loss cake torque drag instability">
+          <span class="nav-kicker">05</span>
+          <strong>Библиотека Задач</strong>
+          <span>Какие конкретно проблемы он должен закрывать.</span>
+        </a>
+        <a class="nav-card" href="#case-library" data-search="case field hthp gulf 260c china shale well gauge cavings">
+          <span class="nav-kicker">06</span>
+          <strong>Кейс-Банк</strong>
+          <span>Отдельные documented scenarios из архивных материалов.</span>
+        </a>
+        <a class="nav-card" href="#chemistry" data-search="chemistry sodium potassium soluble sulfonated oxidized asphalt melt pH look-alike">
+          <span class="nav-kicker">07</span>
+          <strong>Химия И Отличия</strong>
+          <span>Почему это не просто черный порошок из того же класса.</span>
+        </a>
+        <a class="nav-card" href="#reservoir" data-search="reservoir formation damage thin tough cake fines migration">
+          <span class="nav-kicker">08</span>
+          <strong>Reservoir Logic</strong>
+          <span>Что архив говорит про formation damage и тонкую tough cake.</span>
+        </a>
+        <a class="nav-card" href="#quality" data-search="quality coa batch packaging bag pallet sodium potassium logistics">
+          <span class="nav-kicker">09</span>
+          <strong>QC И Логистика</strong>
+          <span>Форма поставки, quality gate и what-to-check on receipt.</span>
+        </a>
+        <a class="nav-card" href="#safety" data-search="safety msds storage handling cas ppe hse faq">
+          <span class="nav-kicker">10</span>
+          <strong>HSE И FAQ</strong>
+          <span>Базовая operational safety и ответы на частые вопросы.</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="layout">
+      <div class="content">
+        <section class="section" id="overview" data-search="overview role product shield filtration lubricity stability hthp wall building" data-searchable>
+          <div class="section-head">
+            <div>
+              <div class="section-tag">Module 01</div>
+              <h2>Что Это За Продукт</h2>
+            </div>
+          </div>
+          <p>MudGPT-асфальт нужен там, где система уже упирается не в один показатель, а в связку из фильтрации, корки, устойчивости стенки, torque and drag и температурной дисциплины. Это не узкий порошок под один тест. Это функциональный shield-additive, который помогает раствору работать собраннее на проблемном интервале.</p>
+          <div class="bullet-list">
+            <div class="bullet-item">Архив подтверждает, что продукт рассматривается не только для WBM, но и для OBM, включая extreme HT сценарии.</div>
+            <div class="bullet-item">Файлы по lubricity и field cases показывают, что логика продукта шире простой fluid loss correction.</div>
+            <div class="bullet-item">Сильная сторона карточки в том, что она опирается на extracted evidence, а не на одну красивую фразу.</div>
+          </div>
+        </section>
+
+        <section class="section" id="evidence-core" data-search="evidence facts 70-80 water soluble 15-20 kg/m3 4-7.5 lb/bbl 260c 22.68 kg bag sodium potassium" data-searchable>
+          <div class="section-head">
+            <div>
+              <div class="section-tag">Module 02</div>
+              <h2>Подтвержденные Факты Из Архива</h2>
+            </div>
+          </div>
+          <div class="fact-grid">
+            <div class="fact-row">
+              <strong>Растворимость</strong>
+              <span class="fact-value">70-80%</span>
+              <span>В технических материалах продукт описан как высокоантионный и обычно более чем на 70-80% water soluble после sulfonation.</span>
+            </div>
+            <div class="fact-row">
+              <strong>Shale Case</strong>
+              <span class="fact-value">15-20 kg/m3</span>
+              <span>В одном девиированном shale-кейсе именно этот диапазон использовался для снижения sloughing; доля кавинга не превышала 5%.</span>
+            </div>
+            <div class="fact-row">
+              <strong>Extreme HT</strong>
+              <span class="fact-value">&gt;500°F / 260°C</span>
+              <span>Есть documented OBM-case с downhole temperature выше 500°F и HTHP-тестами при 260°C × 3.5 MPa.</span>
+            </div>
+            <div class="fact-row">
+              <strong>Lubricity Lab</strong>
+              <span class="fact-value">5-6 ppb</span>
+              <span>Отдельные WBM lubricity материалы дают ориентиры 5 ppb и 6 ppb в лабораторных режимах hot roll / Falex / Baroid style testing.</span>
+            </div>
+            <div class="fact-row">
+              <strong>Field Gauge Control</strong>
+              <span class="fact-value">4.0-7.5 lb/bbl</span>
+              <span>В кейсах по shale inhibition именно эти уровни использовались для удержания gauge hole и реабилитации уже разваливающегося интервала.</span>
+            </div>
+            <div class="fact-row">
+              <strong>Логистика</strong>
+              <span class="fact-value">22.68 kg bag</span>
+              <span>В quality / shipping документах встречается bag form 22.68 кг, 50 lb, palletized supply и batch-oriented COA requirement.</span>
+            </div>
+          </div>
+          <div class="section-infographic">
+            <section class="infocard">
+              <h3>Archive Evidence Dashboard</h3>
+              <div class="process-flow">
+                <div class="flow-step">
+                  <span>Evidence 01</span>
+                  <strong>Feasibility Docs</strong>
+                  <p>химия, растворимость, sodium form и thermal behavior</p>
+                </div>
+                <div class="flow-step">
+                  <span>Evidence 02</span>
+                  <strong>Field Cases</strong>
+                  <p>shale recovery, gauge retention и treat escalation windows</p>
+                </div>
+                <div class="flow-step">
+                  <span>Evidence 03</span>
+                  <strong>Lab Testing</strong>
+                  <p>lubricity checkpoints, HTHP response и hot-roll context</p>
+                </div>
+                <div class="flow-step">
+                  <span>Evidence 04</span>
+                  <strong>Supply Trail</strong>
+                  <p>COA, bag size, pallet loads, variant tracking и SDS linkage</p>
+                </div>
+              </div>
+            </section>
+          </div>
+          <details class="drilldown">
+            <summary>Провалиться в происхождение фактов</summary>
+            <div class="drilldown-body">
+              <div class="row"><b>Растворимость и химия</b><span>Технические feasibility и product-description материалы описывают продукт как sodium asphalt sulfonate, made water soluble by unique sulfonation process, highly anionic and typically over 70-80% water soluble.</span></div>
+              <div class="row"><b>Shale dosage</b><span>В одном performance report для проблемной девиированной секции использовался режим 15-20 kg/m3 для контроля sloughing shale.</span></div>
+              <div class="row"><b>Field lb/bbl window</b><span>Case-history архив показывает working bands 4.0 lb/bbl, declining to lower residual concentration, и recovery режим до 7.5 lb/bbl в уже разрушающемся стволе.</span></div>
+              <div class="row"><b>Extreme HT proof</b><span>Отдельный OBM-case указывает section to 6300.84 m, temperature above 500°F / 260°C и HTHP testing at 260°C.</span></div>
+            </div>
+          </details>
+        </section>
+
+        <section class="section" id="system-fit" data-search="wbm obm invert systems fit matrix hot section deviated well shale interval hthp" data-searchable>
+          <div class="section-head">
+            <div>
+              <div class="section-tag">Module 03</div>
+              <h2>Где Он Уместен</h2>
+            </div>
+          </div>
+          <div class="matrix-grid">
+            <div class="matrix-card">
+              <strong>Ингибированные WBM</strong>
+              <p>Здесь MudGPT-асфальт полезен как усилитель shale stability, fluid loss discipline и lubricity. Особенно уместен, когда обычный пакет уже не держит ствол спокойно на температуре или при длинных рейсах.</p>
+            </div>
+            <div class="matrix-card">
+              <strong>OBM / Invert</strong>
+              <p>Архив подтверждает применение в OBM вплоть до extreme HT. Здесь его роль смещается в сторону HTHP filtration reducer, lubricant и shale inhibitor внутри более жесткого температурного окна.</p>
+            </div>
+            <div class="matrix-card">
+              <strong>Девиированные и длинные интервалы</strong>
+              <p>Когда цена torque, drag, reaming и stuck-pipe риска уже выше, чем цена дополнительного дисциплинирующего реагента в системе.</p>
+            </div>
+            <div class="matrix-card">
+              <strong>Проблемные shale секции</strong>
+              <p>Там, где ключевая задача не просто пройти интервал, а сохранить gauge hole, снизить sloughing и не разогнать dilution из-за растущих solids.</p>
+            </div>
+          </div>
+          <div class="section-infographic">
+            <section class="infocard">
+              <h3>System Fitness Map</h3>
+              <div class="heat-ladder">
+                <div class="heat-row">
+                  <label>Shale control in WBM</label>
+                  <div class="heat-scale">
+                    <span class="on-1"></span><span class="on-2"></span><span class="on-3"></span><span class="on-4"></span><span></span>
+                  </div>
+                </div>
+                <div class="heat-row">
+                  <label>HTHP support</label>
+                  <div class="heat-scale">
+                    <span class="on-1"></span><span class="on-2"></span><span class="on-3"></span><span class="on-4"></span><span class="on-5"></span>
+                  </div>
+                </div>
+                <div class="heat-row">
+                  <label>Lubricity uplift</label>
+                  <div class="heat-scale">
+                    <span class="on-1"></span><span class="on-2"></span><span class="on-3"></span><span></span><span></span>
+                  </div>
+                </div>
+                <div class="heat-row">
+                  <label>Reservoir-sensitive use</label>
+                  <div class="heat-scale">
+                    <span class="on-1"></span><span class="on-2"></span><span class="on-3"></span><span></span><span></span>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+          <details class="drilldown">
+            <summary>Провалиться в system-by-system logic</summary>
+            <div class="drilldown-body">
+              <div class="row"><b>WBM</b><span>Главные цели: tighter cake, меньше water invasion, лучше cuttings behavior, ниже friction response. В lubricity материалах есть отдельная доказательная ветка именно для water-based systems.</span></div>
+              <div class="row"><b>OBM</b><span>Главные цели: HTHP control, lubrication, stability under temperature. Archive case at extreme HT показывает, что продукт не ограничен только водной средой.</span></div>
+              <div class="row"><b>Reservoir / screens</b><span>Есть упоминания horizontal gas reservoir completion, где formation damage был критическим ограничением. Это делает модуль reservoir compatibility обязательным, а не декоративным.</span></div>
+            </div>
+          </details>
+        </section>
+
+        <section class="section" id="application-window" data-search="dosage mixing pre-mix treat concentration 5 ppb 6 ppb 15-20 kg/m3 4 lb/bbl 7.5 lb/bbl monitor" data-searchable>
+          <div class="section-head">
+            <div>
+              <div class="section-tag">Module 04</div>
+              <h2>Окно Применения</h2>
+            </div>
+          </div>
+          <p>Карточка не подменяет лабораторию. Но она должна дать operator-ready логику, как думать о вводе. По архиву видно, что у продукта нет одной магической цифры. Вместо этого есть несколько устойчивых application windows, завязанных на задачу, систему и severity интервала.</p>
+          <div class="card-grid-3">
+            <div class="info-card">
+              <strong>Lab Window</strong>
+              <p>Стартовать с цели, а не с числа: lubrication, shale stabilization, HTHP reduction или rescue of unstable interval.</p>
+            </div>
+            <div class="info-card">
+              <strong>Field Window</strong>
+              <p>По архиву встречаются как low-single-digit ppb/lb-bbl режимы, так и более тяжелые kg/m3 concentrations для сложных shale sections.</p>
+            </div>
+            <div class="info-card">
+              <strong>Post-Addition Control</strong>
+              <p>Смотреть на HTHP/API, корку, torque-drag, cuttings integrity, cavings, rheology drift и solids trend одновременно.</p>
+            </div>
+          </div>
+          <div class="table-like">
+            <div class="row"><b>Lubricity oriented</b><span>Archive gives 5-6 ppb as lab-oriented lubricity checkpoints in WBM tests after hot rolling at 80°C.</span></div>
+            <div class="row"><b>HTHP support</b><span>One offshore HTHP case references 4 ppb product addition as part of a broader fluid-loss control strategy, with further treatment when the system was stressed by cement contamination and temperature.</span></div>
+            <div class="row"><b>Shale stabilization</b><span>For difficult unstable claystone / shale intervals the archive includes 12-15 kg/m3 and 15-20 kg/m3 logic in deeper stabilization scenarios.</span></div>
+            <div class="row"><b>Well recovery mode</b><span>One field history shows 4.0 lb/bbl initial treatment with escalation up to 7.5 lb/bbl to reclaim an already failing interval.</span></div>
+          </div>
+          <div class="section-infographic">
+            <section class="infocard">
+              <h3>Decision Flow</h3>
+              <div class="process-flow">
+                <div class="flow-step">
+                  <span>Step 01</span>
+                  <strong>Detect Failure Mode</strong>
+                  <p>разделить HTHP rise, cavings, torque/drag и gauge loss перед лечением</p>
+                </div>
+                <div class="flow-step">
+                  <span>Step 02</span>
+                  <strong>Pick Window</strong>
+                  <p>выбрать lubricity, shale или recovery window вместо одной цифры на все случаи</p>
+                </div>
+                <div class="flow-step">
+                  <span>Step 03</span>
+                  <strong>Watch Response</strong>
+                  <p>смотреть trend по cake, cavings, torque и fluid loss после ввода</p>
+                </div>
+                <div class="flow-step">
+                  <span>Step 04</span>
+                  <strong>Escalate Carefully</strong>
+                  <p>если корень в solids overload или contamination, дозой одной химии не спасти систему</p>
+                </div>
+              </div>
+            </section>
+          </div>
+          <details class="drilldown">
+            <summary>Провалиться в how-to-mix и operational discipline</summary>
+            <div class="drilldown-body">
+              <div class="row"><b>Freshwater pre-mix logic</b><span>Feasibility materials mention pre-mixing around 40-50 ppb in freshwater slug pit as a simple preparation route before controlled addition to the system.</span></div>
+              <div class="row"><b>High salinity caution</b><span>Для высокосоленых систем логика ввода становится важнее самой цифры. Архив прямо подталкивает к pre-wetting / controlled barrel feed вместо слепого засыпания.</span></div>
+              <div class="row"><b>Do not judge by one number</b><span>Если после ввода снизился только filtrate, но поползла rheology или выросли solids, это не победа. Продукт надо оценивать как system conditioner.</span></div>
+            </div>
+          </details>
+        </section>
+
+        <section class="section" id="problem-library" data-search="problems shale sloughing swelling hthp fluid loss cake torque drag stuck pipe hole enlargement washout" data-searchable>
+          <div class="section-head">
+            <div>
+              <div class="section-tag">Module 05</div>
+              <h2>Библиотека Задач</h2>
+            </div>
+          </div>
+          <div class="card-grid-2">
+            <div class="info-card">
+              <strong>HTHP filtrate начинает уходить</strong>
+              <p>Задача продукта: подхватить fluid-loss control там, где часть стандартного пакета уже теряет форму из-за температуры, кальция, цемента или aging.</p>
+            </div>
+            <div class="info-card">
+              <strong>Ствол теряет gauge</strong>
+              <p>Архивные кейсы прямо связывают применение продукта с уменьшением washout, reclaim of collapsing hole и удержанием более ровного ствола.</p>
+            </div>
+            <div class="info-card">
+              <strong>Torque and drag съедают окно</strong>
+              <p>Отдельная ветка WBM lubricity testing показывает, что продукт позиционировали как measurable friction-reduction tool, а не только как fluid-loss additive.</p>
+            </div>
+            <div class="info-card">
+              <strong>Cuttings и shale разваливаются</strong>
+              <p>Ключевая операционная ценность: меньше decomposition, меньше secondary solids buildup, меньше dilution pressure на всю систему.</p>
+            </div>
+          </div>
+          <details class="drilldown">
+            <summary>Провалиться в symptom-to-action mapping</summary>
+            <div class="drilldown-body">
+              <div class="row"><b>Если растет HTHP</b><span>Смотреть не только на дозу продукта, но и на contamination load, calcium, cement drilled solids, polymer fatigue и temperature history системы.</span></div>
+              <div class="row"><b>Если hole enlargement уже начался</b><span>Архив показывает, что продукт может работать не только профилактически, но и как reclaim tool. Но в recovery-mode почти всегда требуется более агрессивный treat schedule.</span></div>
+              <div class="row"><b>Если задача reservoir-sensitive</b><span>Нельзя бездумно тянуть concentration вверх. Здесь важнее тонкая tough cake и минимизация fines invasion, а не brute-force treatment.</span></div>
+            </div>
+          </details>
+        </section>
+
+        <section class="section" id="case-library" data-search="case library shale 5 percent cavings 260c offshore gulf 17500 gauge hole 4 lb/bbl 7.5 lb/bbl" data-searchable>
+          <div class="section-head">
+            <div>
+              <div class="section-tag">Module 06</div>
+              <h2>Кейс-Банк</h2>
+            </div>
+          </div>
+          <div class="card-grid-2">
+            <div class="case-card">
+              <strong>Кейс 1. Девиированная shale секция</strong>
+              <p>В одном отчете проблемная девиированная секция потребовала treat level 15-20 kg/m3. Результат: improved hole stability и cavings not more than 5%.</p>
+            </div>
+            <div class="case-card">
+              <strong>Кейс 2. Recovery of failing hole</strong>
+              <p>Field history показывает, что 4.0 lb/bbl initial treatment и последующий рост до 7.5 lb/bbl позволили не просто остановить deterioration, а фактически вернуть более управляемый wellbore profile.</p>
+            </div>
+            <div class="case-card">
+              <strong>Кейс 3. Offshore HTHP control</strong>
+              <p>В deep well low-lime mud system продукт входил в пакет борьбы с rising HTHP filtrate при температурах порядка 325-350°F и contamination-heavy conditions.</p>
+            </div>
+            <div class="case-card">
+              <strong>Кейс 4. Extreme HT OBM</strong>
+              <p>Archive includes an OBM case down to 6300.84 m, with temperatures above 500°F / 260°C and explicit HTHP testing at 260°C × 3.5 MPa.</p>
+            </div>
+          </div>
+          <div class="section-infographic">
+            <section class="infocard">
+              <h3>Case Progression Strip</h3>
+              <div class="timeline-strip">
+                <div class="timeline-node">
+                  <strong>Shale deviation</strong>
+                  <p>агрессивное treat-level окно ради снижения cavings и стабилизации стенки</p>
+                </div>
+                <div class="timeline-node">
+                  <strong>Hole recovery</strong>
+                  <p>стартовый 4.0 lb/bbl и рост к 7.5 lb/bbl для возврата gauge</p>
+                </div>
+                <div class="timeline-node">
+                  <strong>Offshore HTHP</strong>
+                  <p>работа внутри contamination-loaded low-lime mud package</p>
+                </div>
+                <div class="timeline-node">
+                  <strong>Extreme HT OBM</strong>
+                  <p>доказательство применимости в глубокой high-temperature среде</p>
+                </div>
+              </div>
+            </section>
+          </div>
+          <details class="drilldown">
+            <summary>Провалиться в lesson learned по кейсам</summary>
+            <div class="drilldown-body">
+              <div class="row"><b>Главный вывод по shale</b><span>Продукт особенно силен там, где нужно не просто снизить один тест, а уменьшить sloughing, repeated reaming и secondary solids load.</span></div>
+              <div class="row"><b>Главный вывод по HTHP</b><span>Он полезен в температурно-нагруженном пакете, особенно когда часть органического fluid-loss control начинает деградировать или вести себя нестабильно из-за contamination.</span></div>
+              <div class="row"><b>Главный вывод по OBM</b><span>Карточка должна прямо показывать, что продукт не заперт в water-based niche. Archive это подтверждает.</span></div>
+            </div>
+          </details>
+        </section>
+
+        <section class="section" id="chemistry" data-search="chemistry sodium potassium sulfonated oxidized asphalt soluble water soluble pH melt softening point anionic" data-searchable>
+          <div class="section-head">
+            <div>
+              <div class="section-tag">Module 07</div>
+              <h2>Химия И Отличия</h2>
+            </div>
+          </div>
+          <p>Архив делает очень важный акцент: реальная ценность продукта не в цвете и не в слове asphalt, а в том, что после sulfonation это уже не сырой асфальт в примитивном смысле. Это химически измененный, высокоантионный, partly water-soluble functional material с другой operational behavior.</p>
+          <div class="card-grid-3">
+            <div class="info-card">
+              <strong>Sodium Form</strong>
+              <p>В extracted documents базовая форма описана как sodium asphalt sulfonate, в одной ветке even as 99% pure sodium asphalt sulfonate.</p>
+            </div>
+            <div class="info-card">
+              <strong>Potassium Form</strong>
+              <p>Есть отдельная potassium-enhanced / potassium salt branch. Это означает, что archive differentiates chemistry by application logic, not only by label.</p>
+            </div>
+            <div class="info-card">
+              <strong>Not a look-alike</strong>
+              <p>Comparison files отдельно противопоставляют true sulfonated soluble product обычным water-dispersible or filler-heavy substitutes.</p>
+            </div>
+          </div>
+          <div class="section-infographic">
+            <section class="infocard">
+              <h3>Chemistry Comparator</h3>
+              <div class="compare-grid">
+                <div class="compare-card">
+                  <em>Functional branch</em>
+                  <div class="compare-list">
+                    <div><span>Sodium route</span><span class="compare-pill">base evidence</span></div>
+                    <div><span>Water solubility</span><span class="compare-pill">70-80%</span></div>
+                    <div><span>Anionic behavior</span><span class="compare-pill">high</span></div>
+                  </div>
+                </div>
+                <div class="compare-card">
+                  <em>Variant branch</em>
+                  <div class="compare-list">
+                    <div><span>Potassium route</span><span class="compare-pill">separate line</span></div>
+                    <div><span>Use logic</span><span class="compare-pill">system-specific</span></div>
+                    <div><span>SKU need</span><span class="compare-pill">track отдельно</span></div>
+                  </div>
+                </div>
+                <div class="compare-card">
+                  <em>Do not confuse with</em>
+                  <div class="compare-list">
+                    <div><span>Raw asphalt look-alikes</span><span class="compare-pill">не равно</span></div>
+                    <div><span>Filler-heavy powders</span><span class="compare-pill">false match</span></div>
+                    <div><span>Softening point issue</span><span class="compare-pill">reduced</span></div>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+          <details class="drilldown">
+            <summary>Провалиться в quick differentiation logic</summary>
+            <div class="drilldown-body">
+              <div class="row"><b>Solubility test logic</b><span>Архив сравнения советует смотреть на реальную растворимость, поведение в воде и pH / melting behavior, а не на внешний вид черного порошка.</span></div>
+              <div class="row"><b>Softening point logic</b><span>В feasibility материалах продукт описан как extremely temperature stable и without the softening point typically associated with unreacted asphaltic additives.</span></div>
+              <div class="row"><b>Anionic behavior</b><span>Отдельная презентационная ветка подчеркивает highly anionic nature и attraction to broken charged clay edges как operational explanation для stability effect.</span></div>
+            </div>
+          </details>
+        </section>
+
+        <section class="section" id="reservoir" data-search="reservoir damage thin tough cake fines migration formation screens horizontal gas reservoir" data-searchable>
+          <div class="section-head">
+            <div>
+              <div class="section-tag">Module 08</div>
+              <h2>Reservoir Logic</h2>
+            </div>
+          </div>
+          <p>Это один из самых ценных модулей, потому что archive не ограничивается буровой механикой. В reservoir-oriented material есть важная мысль: при правильной химии продукт не должен вести себя как inert damaging filler. Наоборот, ставка делается на thin and tough cake и минимизацию fines migration into the formation.</p>
+          <div class="table-like">
+            <div class="row"><b>Archive claim</b><span>В extracted reservoir letter говорится, что случаев reservoir damage, attributed to the product, не было reported в доступной истории применения.</span></div>
+            <div class="row"><b>Why</b><span>Логика объяснения такая: тонкая tough cake уменьшает fines migration, а soluble chemical nature снижает риск, что сам продукт станет damaging particulate load.</span></div>
+            <div class="row"><b>Where it matters</b><span>Horizontal reservoir sections, openhole completion designs, screen runs и другие задачи, где formation damage действительно стоит денег.</span></div>
+          </div>
+          <details class="drilldown">
+            <summary>Провалиться в reservoir caution</summary>
+            <div class="drilldown-body">
+              <div class="row"><b>Не превращать в blanket claim</b><span>Это не лицензия сыпать без ограничений. Reservoir-friendly logic работает только если весь fluid package и solids discipline удерживаются под контролем.</span></div>
+              <div class="row"><b>Что проверять</b><span>Filter cake thickness and quality, clean-up assumptions, compatibility with completion strategy и whether the treatment is solving invasion rather than creating extra solids burden.</span></div>
+            </div>
+          </details>
+        </section>
+
+        <section class="section" id="quality" data-search="quality coa packaging batch 22.68 kg bag 50 lb pallet sodium potassium logistics" data-searchable>
+          <div class="section-head">
+            <div>
+              <div class="section-tag">Module 09</div>
+              <h2>QC И Логистика</h2>
+            </div>
+          </div>
+          <div class="card-grid-3">
+            <div class="info-card">
+              <strong>Batch Orientation</strong>
+              <p>Архив shipment / order materials подчеркивают batch number visibility и COA requirement before shipment.</p>
+            </div>
+            <div class="info-card">
+              <strong>Typical Pack Form</strong>
+              <p>В доступных docs есть bag reference 22.68 кг / 50 lb, palletized shipping и крупные bag counts for full loads.</p>
+            </div>
+            <div class="info-card">
+              <strong>Chemical Variant Tracking</strong>
+              <p>Если в каталоге будут sodium и potassium варианты, это надо хранить как separate SKUs, а не как одно поле notes.</p>
+            </div>
+          </div>
+          <details class="drilldown">
+            <summary>Провалиться в receipt checklist</summary>
+            <div class="drilldown-body">
+              <div class="row"><b>На приемке</b><span>Проверить batch, bag integrity, declared net weight, variant, наличие COA и фактическое соответствие planned chemistry branch.</span></div>
+              <div class="row"><b>Для каталога</b><span>Отдельно хранить: product form, chemistry branch, bag weight, pallet count, storage notes, linked COA and SDS revision.</span></div>
+            </div>
+          </details>
+        </section>
+
+        <section class="section" id="safety" data-search="safety hse msds storage handling cas ppe faq" data-searchable>
+          <div class="section-head">
+            <div>
+              <div class="section-tag">Module 10</div>
+              <h2>HSE И FAQ</h2>
+            </div>
+          </div>
+          <div class="faq-grid">
+            <div class="faq-card">
+              <strong>HSE minimum</strong>
+              <p>Архив содержит SDS по sodium и potassium forms. Значит для живой product card должны существовать linked storage, handling, PPE и emergency references.</p>
+            </div>
+            <div class="faq-card">
+              <strong>Chemical identity</strong>
+              <p>В SDS ветке фигурирует sulfonated asphalt sodium salt. Для операционной карточки это достаточно, чтобы не строить фантазии о природе продукта.</p>
+            </div>
+            <div class="faq-card">
+              <strong>Он только для WBM?</strong>
+              <p>Нет. Архив содержит и WBM, и OBM, и extreme HT OBM evidence. Ограничение не в брендинге, а в совместимости конкретной системы.</p>
+            </div>
+            <div class="faq-card">
+              <strong>Можно ли дать одну universal dosage?</strong>
+              <p>Нет. Архив сам показывает разные windows: lab lubricity, field HTHP, shale recovery, deep stabilization. Карточка должна хранить ranges by task.</p>
+            </div>
+          </div>
+          <details class="drilldown">
+            <summary>Провалиться в operational FAQ</summary>
+            <div class="drilldown-body">
+              <div class="row"><b>Когда его не стоит брать первым средством</b><span>Когда проблема очевидно в solids control collapse, contamination mismanagement или completely wrong base system design.</span></div>
+              <div class="row"><b>Что должно быть рядом в интерфейсе</b><span>Readiness sheet, dosage notes by system, linked SDS / COA, case library, monitoring checklist after addition.</span></div>
+            </div>
+          </details>
+        </section>
+      </div>
+
+      <aside class="side-stack">
+        <section class="side-panel">
+          <h3>Статус Карточки</h3>
+          <div class="meta-stack">
+            <span class="state-chip">Knowledge-ready</span>
+            <div class="meta-item"><span class="meta-label">Название</span><span class="meta-value">MudGPT-асфальт</span></div>
+            <div class="meta-item"><span class="meta-label">Архивный фокус</span><span class="meta-value">HTHP, shale, lubricity, QC</span></div>
+            <div class="meta-item"><span class="meta-label">Системы</span><span class="meta-value">WBM / OBM</span></div>
+            <div class="meta-item"><span class="meta-label">Chemistry branch</span><span class="meta-value">Sodium / potassium evidence</span></div>
+          </div>
+        </section>
+
+        <section class="side-panel">
+          <h3>Быстрый TOC</h3>
+          <div class="toc">
+            <a href="#overview">Что это за продукт</a>
+            <a href="#evidence-core">Подтвержденные факты</a>
+            <a href="#system-fit">Где он уместен</a>
+            <a href="#application-window">Окно применения</a>
+            <a href="#problem-library">Библиотека задач</a>
+            <a href="#case-library">Кейс-банк</a>
+            <a href="#chemistry">Химия и отличия</a>
+            <a href="#reservoir">Reservoir logic</a>
+            <a href="#quality">QC и логистика</a>
+            <a href="#safety">HSE и FAQ</a>
+          </div>
+        </section>
+
+        <section class="side-panel">
+          <h3>Что Смотреть После Ввода</h3>
+          <div class="meta-stack">
+            <div class="meta-item"><span class="meta-label">Fluid loss</span><span class="meta-value">Trend, not snapshot</span></div>
+            <div class="meta-item"><span class="meta-label">Cake</span><span class="meta-value">Thin and competent</span></div>
+            <div class="meta-item"><span class="meta-label">Torque / drag</span><span class="meta-value">Operational response</span></div>
+            <div class="meta-item"><span class="meta-label">Cavings</span><span class="meta-value">Volume and integrity</span></div>
+            <div class="meta-item"><span class="meta-label">Rheology</span><span class="meta-value">Drift after treat</span></div>
+          </div>
+        </section>
+
+        <section class="side-panel">
+          <h3>Archive Signals</h3>
+          <p>В архиве одновременно присутствуют technical feasibility, case histories, shipping / COA docs, SDS, variant chemistry и WBM/OBM performance materials. Это значит, что карточка должна жить как рабочий knowledge object, а не как один static description block.</p>
+        </section>
+      </aside>
+    </section>
+
+    <section class="footer-banner">
+      <h2>Итоговая Позиция Для Каталога</h2>
+      <p>MudGPT-асфальт теперь разложен как modular product knowledge page: можно искать по архивной фактуре, прыгать между задачами, режимами, chemistry logic, case evidence, QC и HSE. Это ближе к реальному инструменту для инженера и закупки, чем к обычной карточке товара.</p>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      const searchInput = document.getElementById('moduleSearch');
+      const navCards = Array.from(document.querySelectorAll('.nav-card'));
+      const sections = Array.from(document.querySelectorAll('[data-searchable]'));
+      const moduleCount = document.getElementById('moduleCount');
+
+      function normalize(value) {
+        return String(value || '').toLowerCase().replace(/\s+/g, ' ').trim();
+      }
+
+      function updateFilter() {
+        const query = normalize(searchInput.value);
+        let visibleModules = 0;
+
+        navCards.forEach((card) => {
+          const match = !query || normalize(card.dataset.search).includes(query) || normalize(card.textContent).includes(query);
+          card.classList.toggle('is-hidden', !match);
+          if (match) {
+            visibleModules += 1;
+          }
+        });
+
+        sections.forEach((section) => {
+          const match = !query || normalize(section.dataset.search).includes(query) || normalize(section.textContent).includes(query);
+          section.classList.toggle('is-hidden', !match);
+        });
+
+        moduleCount.textContent = query ? visibleModules + ' matches' : navCards.length + ' modules';
+      }
+
+      searchInput.addEventListener('input', updateFilter);
+      updateFilter();
+    }());
+  </script>
+</body>
+</html>

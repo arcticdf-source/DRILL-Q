@@ -1,0 +1,642 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Вход · Мои скважины</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap");
+
+    :root {
+      --bg-0: #071018;
+      --bg-1: #0f1f31;
+      --bg-2: #1b3041;
+      --panel: rgba(10, 18, 29, 0.84);
+      --line: rgba(227, 238, 255, 0.14);
+      --line-soft: rgba(227, 238, 255, 0.08);
+      --text: #edf5ff;
+      --muted: #a8bdd2;
+      --cyan: #22d7b4;
+      --amber: #f8bd5f;
+      --shadow: 0 20px 48px rgba(0, 0, 0, 0.42);
+    }
+
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      font-family: "Manrope", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(900px 460px at 0% -10%, rgba(34, 215, 180, 0.18), rgba(34, 215, 180, 0)),
+        radial-gradient(760px 420px at 100% 0%, rgba(248, 189, 95, 0.16), rgba(248, 189, 95, 0)),
+        linear-gradient(145deg, var(--bg-0), var(--bg-1) 46%, var(--bg-2));
+    }
+
+    .wrap { width: min(1240px, 92vw); margin: 0 auto; padding: 24px 0 64px; }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid var(--line-soft);
+      border-radius: 14px;
+      padding: 12px 14px;
+      background: rgba(8, 15, 24, 0.66);
+      flex-wrap: wrap;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: "Oswald", sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-size: 20px;
+      color: var(--text);
+      text-decoration: none;
+    }
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 35% 35%, #d6fff7, var(--cyan));
+    }
+    .back-link {
+      text-decoration: none;
+      color: #082922;
+      background: linear-gradient(130deg, #a0f9eb, #22d7b4);
+      border: 1px solid rgba(34, 215, 180, 0.75);
+      border-radius: 10px;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-weight: 800;
+      padding: 8px 12px;
+    }
+    .hero, .panel {
+      margin-top: 18px;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      padding: 24px;
+    }
+    .hero h1 {
+      margin: 0;
+      font-family: "Oswald", sans-serif;
+      font-size: clamp(32px, 5vw, 56px);
+      letter-spacing: -0.01em;
+      text-transform: uppercase;
+    }
+    .hero p {
+      margin: 12px 0 0;
+      max-width: 80ch;
+      line-height: 1.6;
+      color: #c7d7ec;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 18px;
+      margin-top: 18px;
+    }
+    .panel-title {
+      margin: 0 0 16px;
+      font-size: 22px;
+      letter-spacing: -0.01em;
+    }
+    .field-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .field {
+      display: grid;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .field.full { grid-column: 1 / -1; }
+    .field label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+    }
+    .field input {
+      width: 100%;
+      min-height: 54px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text);
+      padding: 0 16px;
+      font-size: 15px;
+      outline: none;
+    }
+    .field input:focus {
+      border-color: rgba(34, 215, 180, 0.78);
+      box-shadow: 0 0 0 4px rgba(34, 215, 180, 0.14);
+    }
+    .actions {
+      display: grid;
+      gap: 12px;
+      margin-top: 8px;
+    }
+    .btn {
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 56px;
+      border-radius: 14px;
+      border: 1px solid transparent;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+    }
+    .btn:hover { transform: translateY(-2px); }
+    .btn-primary {
+      color: #082922;
+      background: linear-gradient(130deg, #a0f9eb, #22d7b4);
+      border-color: rgba(34, 215, 180, 0.75);
+      box-shadow: 0 12px 26px rgba(34, 215, 180, 0.2);
+    }
+    .btn-secondary {
+      color: #1a2435;
+      background: linear-gradient(130deg, #ffe6aa, #f8bd5f);
+      border-color: rgba(248, 189, 95, 0.72);
+      box-shadow: 0 12px 26px rgba(248, 189, 95, 0.18);
+    }
+    .hidden { display: none !important; }
+    .note {
+      margin-top: 14px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      border: 1px solid rgba(248, 189, 95, 0.26);
+      background: rgba(248, 189, 95, 0.08);
+      color: #fff2cd;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+    .note.admin {
+      border-color: rgba(34, 215, 180, 0.26);
+      background: rgba(34, 215, 180, 0.08);
+      color: #d8fff6;
+    }
+    .status {
+      margin-top: 16px;
+      min-height: 24px;
+      color: #ffcf86;
+      font-size: 15px;
+    }
+    .status.ok { color: #9ff5d8; }
+    .hint-list {
+      display: grid;
+      gap: 12px;
+    }
+    .hint-card {
+      border: 1px solid var(--line-soft);
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.03);
+      padding: 16px;
+    }
+    .hint-card strong {
+      display: block;
+      font-size: 15px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #f3f7ff;
+    }
+    .hint-card span {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      line-height: 1.5;
+      font-size: 14px;
+    }
+    .footer {
+      margin-top: 14px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 12px;
+      text-align: center;
+    }
+    @media (max-width: 980px) {
+      .grid { grid-template-columns: 1fr; }
+      .field-grid { grid-template-columns: 1fr; }
+    }
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 18px 0 14px;
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+    .divider::before,
+    .divider::after {
+      content: "";
+      height: 1px;
+      flex: 1 1 auto;
+      background: var(--line-soft);
+    }
+    .admin-panel {
+      margin-top: 8px;
+      padding: 18px;
+      border-radius: 18px;
+      border: 1px solid rgba(34, 215, 180, 0.18);
+      background: rgba(34, 215, 180, 0.05);
+    }
+    .admin-panel h3 {
+      margin: 0 0 8px;
+      font-size: 16px;
+      letter-spacing: -0.01em;
+    }
+    .admin-panel p {
+      margin: 0 0 14px;
+      color: #c9e5de;
+      line-height: 1.55;
+      font-size: 14px;
+    }
+    .session-box {
+      display: grid;
+      gap: 14px;
+    }
+    .session-meta {
+      display: grid;
+      gap: 10px;
+      padding: 18px;
+      border-radius: 18px;
+      border: 1px solid var(--line-soft);
+      background: rgba(255, 255, 255, 0.03);
+    }
+    .session-meta strong {
+      font-size: 18px;
+    }
+    .session-meta span {
+      color: var(--muted);
+      line-height: 1.5;
+      font-size: 14px;
+    }
+    .role-chip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 30px;
+      width: fit-content;
+      padding: 0 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border: 1px solid rgba(34, 215, 180, 0.28);
+      background: rgba(34, 215, 180, 0.12);
+      color: #baffef;
+    }
+  </style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+  <main class="wrap">
+    <header class="top">
+      <a class="brand" href="37_drilling_modules.html"><span class="dot" aria-hidden="true"></span><span>Nexus Oilfield AI</span></a>
+      <a class="back-link" id="backLink" href="project_well_dashboard.html">Назад к скважине</a>
+    </header>
+
+    <section class="hero">
+      <h1>Мои скважины</h1>
+      <p id="heroDesc">Войдите по логину и паролю или откройте регистрацию, чтобы добавлять свои конкретные скважины только в личном пользовательском контуре.</p>
+    </section>
+
+    <section class="grid">
+      <div class="panel">
+        <div id="sessionView" class="hidden">
+          <h2 class="panel-title">Аккаунт</h2>
+          <div class="session-box">
+            <div class="session-meta">
+              <strong id="sessionName">Активная сессия</strong>
+              <span id="sessionDetails">Логин и роль подгружаются из локальной сессии.</span>
+              <span class="role-chip" id="sessionRoleChip">User</span>
+            </div>
+            <div class="actions">
+              <a class="btn btn-primary" id="continueBtn" href="project_well_dashboard.html">Продолжить работу</a>
+              <button class="btn btn-secondary" id="logoutBtn" type="button">Выйти</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="loginView">
+          <h2 class="panel-title">Вход</h2>
+          <div class="field">
+            <label for="loginInput">Логин</label>
+            <input id="loginInput" type="text" placeholder="Введите логин" autocomplete="username" />
+          </div>
+          <div class="field">
+            <label for="passwordInput">Пароль</label>
+            <input id="passwordInput" type="password" placeholder="Введите пароль" autocomplete="current-password" />
+          </div>
+          <div class="actions">
+            <button class="btn btn-primary" id="loginBtn" type="button">Войти</button>
+            <button class="btn btn-secondary" id="showRegisterBtn" type="button">Зарегистрироваться в два клика</button>
+          </div>
+
+          <div class="divider">Спецдоступ</div>
+          <div class="admin-panel">
+            <h3>Вход администратора</h3>
+            <p>Это отдельный защищенный аккаунт владельца. Он не связан с обычной регистрацией пользователей и используется только для полного админ-доступа к каталогу и выдачи прав партнерам.</p>
+            <div class="field">
+              <label for="adminLoginInput">Admin login</label>
+              <input id="adminLoginInput" type="text" placeholder="Введите admin login" autocomplete="username" />
+            </div>
+            <div class="field">
+              <label for="adminPasswordInput">Admin password</label>
+              <input id="adminPasswordInput" type="password" placeholder="Введите admin password" autocomplete="current-password" />
+            </div>
+            <div class="actions">
+              <button class="btn btn-secondary" id="adminLoginBtn" type="button">Войти под админом</button>
+            </div>
+            <div class="note admin" id="adminHintBox">Админ-доступ разрешен только для отдельного admin-аккаунта.</div>
+          </div>
+        </div>
+
+        <div id="registerView" class="hidden">
+          <h2 class="panel-title">Регистрация</h2>
+          <div class="field-grid">
+            <div class="field">
+              <label for="nameInput">Имя</label>
+              <input id="nameInput" type="text" placeholder="Введите имя" />
+            </div>
+            <div class="field">
+              <label for="companyInput">Компания</label>
+              <input id="companyInput" type="text" placeholder="Введите компанию" />
+            </div>
+            <div class="field full">
+              <label for="emailInput">Email</label>
+              <input id="emailInput" type="email" placeholder="Введите email" autocomplete="email" />
+            </div>
+            <div class="field">
+              <label for="registerLoginInput">Логин (придумать)</label>
+              <input id="registerLoginInput" type="text" placeholder="Придумайте логин" autocomplete="username" />
+            </div>
+            <div class="field">
+              <label for="registerPasswordInput">Пароль (придумать)</label>
+              <input id="registerPasswordInput" type="password" placeholder="Придумайте пароль" autocomplete="new-password" />
+            </div>
+          </div>
+          <div class="note">Делитесь логином и паролем с командой, чтобы иметь общий доступ.</div>
+          <div class="actions">
+            <button class="btn btn-secondary" id="registerSubmitBtn" type="button">Зарегистрироваться</button>
+            <button class="btn btn-primary hidden" id="showLoginBtn" type="button">Войти</button>
+          </div>
+        </div>
+
+        <div class="status" id="statusBox"></div>
+      </div>
+
+      <div class="panel">
+        <h2 class="panel-title">Как это работает</h2>
+        <div class="hint-list">
+          <div class="hint-card">
+            <strong>Регистрация команды</strong>
+            <span>Создайте общий логин и пароль для команды, чтобы работать в едином контуре скважин по месторождению.</span>
+          </div>
+          <div class="hint-card">
+            <strong>Защищённый доступ</strong>
+            <span>Только после входа можно открывать страницу «Мои скважины» и добавлять свои карточки скважин.</span>
+          </div>
+          <div class="hint-card">
+            <strong>Свой дашборд</strong>
+            <span>Каждая созданная скважина открывается в отдельном дашборде со структурой модулей. Пока блоки на этой странице только обзорные и не кликаются.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <p class="footer">Protected wells access · Doc 65</p>
+  </main>
+
+  <script>
+    function getProjectName() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('name') || 'Уренгойское месторождение';
+    }
+
+    function buildProjectLink(page, name) {
+      const params = new URLSearchParams();
+      params.set('name', name);
+      return `${page}?${params.toString()}`;
+    }
+
+    function buildWellDashboardLink(name, well) {
+      const params = new URLSearchParams();
+      params.set('name', name);
+      params.set('well', well);
+      return `project_well_dashboard.html?${params.toString()}`;
+    }
+
+    function showStatus(message, isOk) {
+      const statusBox = document.getElementById('statusBox');
+      statusBox.textContent = message;
+      statusBox.className = isOk ? 'status ok' : 'status';
+    }
+
+    function validateRegistrationForm(name, company, email, login, password) {
+      if (!name || !company || !email || !login || !password) {
+        return 'Заполните все поля регистрации.';
+      }
+      if (!email.includes('@')) {
+        return 'Укажите корректный email.';
+      }
+      if (login.length < 3) {
+        return 'Логин должен быть не короче 3 символов.';
+      }
+      if (password.length < 4) {
+        return 'Пароль должен быть не короче 4 символов.';
+      }
+      return '';
+    }
+
+    function validateLoginForm(login, password) {
+      if (!login || !password) {
+        return 'Введите логин и пароль.';
+      }
+      return '';
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const auth = window.NexusAuth;
+      const projectName = getProjectName();
+      const session = auth.getSession();
+      const sessionView = document.getElementById('sessionView');
+      const loginView = document.getElementById('loginView');
+      const registerView = document.getElementById('registerView');
+      const showRegisterBtn = document.getElementById('showRegisterBtn');
+      const showLoginBtn = document.getElementById('showLoginBtn');
+      const loginBtn = document.getElementById('loginBtn');
+      const adminLoginBtn = document.getElementById('adminLoginBtn');
+      const registerSubmitBtn = document.getElementById('registerSubmitBtn');
+      const loginInput = document.getElementById('loginInput');
+      const passwordInput = document.getElementById('passwordInput');
+      const adminLoginInput = document.getElementById('adminLoginInput');
+      const adminPasswordInput = document.getElementById('adminPasswordInput');
+      const nameInput = document.getElementById('nameInput');
+      const companyInput = document.getElementById('companyInput');
+      const emailInput = document.getElementById('emailInput');
+      const registerLoginInput = document.getElementById('registerLoginInput');
+      const registerPasswordInput = document.getElementById('registerPasswordInput');
+      const backLink = document.getElementById('backLink');
+      const continueBtn = document.getElementById('continueBtn');
+      const logoutBtn = document.getElementById('logoutBtn');
+      const sessionName = document.getElementById('sessionName');
+      const sessionDetails = document.getElementById('sessionDetails');
+      const sessionRoleChip = document.getElementById('sessionRoleChip');
+      const adminHintBox = document.getElementById('adminHintBox');
+      const heroDesc = document.getElementById('heroDesc');
+      const mode = new URLSearchParams(window.location.search).get('mode');
+      const dashboardHref = buildWellDashboardLink(projectName, '9301');
+
+      backLink.href = dashboardHref;
+      continueBtn.href = dashboardHref;
+      heroDesc.textContent = `Войдите по логину и паролю или откройте регистрацию, чтобы добавлять свои конкретные скважины по объекту «${projectName}».`;
+
+      function getMaterialsLanding(currentSession) {
+        const materialsRole = auth.getMaterialsRole(currentSession);
+        return materialsRole === 'admin'
+          ? '92_mudgpt_admin_dashboard.html'
+          : '87_mudgpt_chemicals_materials.html';
+      }
+
+      function openSession(currentSession) {
+        const materialsRole = auth.getMaterialsRole(currentSession);
+        sessionView.classList.remove('hidden');
+        loginView.classList.add('hidden');
+        registerView.classList.add('hidden');
+        showStatus('', false);
+        sessionName.textContent = currentSession.name || currentSession.login;
+        sessionDetails.textContent = `Логин: ${currentSession.login} · Компания: ${currentSession.company || 'не указана'} · Materials: ${materialsRole === 'admin' ? 'полный доступ' : materialsRole === 'editor' ? 'партнер-редактор' : 'только просмотр'}`;
+        sessionRoleChip.textContent = materialsRole === 'admin' ? 'Admin' : materialsRole === 'editor' ? 'Editor' : 'Viewer';
+        continueBtn.href = getMaterialsLanding(currentSession);
+      }
+
+      if (session) {
+        openSession(session);
+      } else {
+        adminHintBox.textContent = `Для входа владельца используй отдельный admin login: «${auth.getDedicatedAdminLogin()}».`;
+      }
+
+      function openRegister() {
+        sessionView.classList.add('hidden');
+        loginView.classList.add('hidden');
+        registerView.classList.remove('hidden');
+        showLoginBtn.classList.add('hidden');
+        showStatus('', false);
+      }
+
+      function openLogin() {
+        sessionView.classList.add('hidden');
+        registerView.classList.add('hidden');
+        loginView.classList.remove('hidden');
+        showStatus('', false);
+      }
+
+      showRegisterBtn.addEventListener('click', openRegister);
+      showLoginBtn.addEventListener('click', openLogin);
+
+      if (mode === 'register') {
+        openRegister();
+      }
+
+      registerSubmitBtn.addEventListener('click', () => {
+        const name = nameInput.value.trim();
+        const company = companyInput.value.trim();
+        const email = emailInput.value.trim().toLowerCase();
+        const login = registerLoginInput.value.trim().toLowerCase();
+        const password = registerPasswordInput.value;
+        const validationMessage = validateRegistrationForm(name, company, email, login, password);
+
+        if (validationMessage) {
+          showStatus(validationMessage, false);
+          return;
+        }
+
+        const users = auth.loadUsers();
+        if (auth.isReservedLogin(login)) {
+          showStatus('Этот логин зарезервирован под admin-аккаунт. Выберите другой.', false);
+          return;
+        }
+
+        const loginExists = users.some((user) => user.login === login);
+        if (loginExists) {
+          showStatus('Такой логин уже занят. Придумайте другой.', false);
+          return;
+        }
+
+        users.push({ name, company, email, login, password });
+        auth.saveUsers(users);
+        showStatus('Вы успешно зарегистрированы.', true);
+        showLoginBtn.classList.remove('hidden');
+        loginInput.value = login;
+        passwordInput.value = '';
+      });
+
+      loginBtn.addEventListener('click', () => {
+        const login = loginInput.value.trim().toLowerCase();
+        const password = passwordInput.value;
+        const validationMessage = validateLoginForm(login, password);
+
+        if (validationMessage) {
+          showStatus(validationMessage, false);
+          return;
+        }
+
+        const user = auth.authenticate(login, password);
+        if (!user) {
+          showStatus('Логин или пароль введены неверно.', false);
+          return;
+        }
+
+        auth.saveSession(user, { isAdmin: false });
+        showStatus('Вход выполнен. Открываю пользовательскую витрину материалов...', true);
+        window.location.href = '87_mudgpt_chemicals_materials.html';
+      });
+
+      adminLoginBtn.addEventListener('click', () => {
+        const login = adminLoginInput.value.trim().toLowerCase();
+        const password = adminPasswordInput.value;
+        const validationMessage = validateLoginForm(login, password);
+
+        if (validationMessage) {
+          showStatus(validationMessage, false);
+          return;
+        }
+
+        const result = auth.authenticateDedicatedAdmin(login, password);
+        if (!result.ok) {
+          showStatus('Admin login или admin password введены неверно.', false);
+          return;
+        }
+
+        auth.saveSession(result.user, { isAdmin: true });
+        showStatus('Админ-вход выполнен. Открываю admin dashboard...', true);
+        window.location.href = '92_mudgpt_admin_dashboard.html';
+      });
+
+      logoutBtn.addEventListener('click', () => {
+        auth.clearSession();
+        openLogin();
+        showStatus('Вы вышли из аккаунта.', true);
+      });
+    });
+  </script>
+  <script src="assets/js/nexus-auth.js"></script>
+  <script src="assets/js/global-auth-widget.js"></script>
+</body>
+</html>

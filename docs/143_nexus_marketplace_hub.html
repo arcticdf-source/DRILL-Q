@@ -1,0 +1,1177 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>143 · Nexus Marketplace Hub</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Condensed:wght@500;600;700&display=swap");
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>143 · Nexus Marketplace Hub</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Condensed:wght@500;600;700&display=swap");
+
+    :root {
+      --bg: #eef2f5;
+      --panel: rgba(255, 255, 255, 0.96);
+      --surface: #f8fbfd;
+      --line: rgba(16, 43, 66, 0.12);
+      --text: #132b41;
+      --muted: #66788a;
+      --gold: #b9781e;
+      --mint: #0c7a79;
+      --cyan: #2a6ea7;
+      --shadow: 0 24px 56px rgba(20, 42, 68, 0.1);
+    }
+
+    * { box-sizing: border-box; }
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+      font-family: "IBM Plex Sans", sans-serif;
+      background:
+        radial-gradient(820px 420px at 0% 0%, rgba(12, 122, 121, 0.08), transparent 70%),
+        radial-gradient(720px 420px at 100% 0%, rgba(185, 120, 30, 0.1), transparent 72%),
+        linear-gradient(180deg, #f7fafc 0%, #eef2f5 52%, #e8edf2 100%);
+      color: var(--text);
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        linear-gradient(to right, rgba(19, 43, 65, 0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(19, 43, 65, 0.04) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none;
+      opacity: 0.45;
+    }
+
+    a { color: inherit; }
+
+    .page {
+      position: relative;
+      z-index: 1;
+      width: min(1460px, calc(100% - 34px));
+      margin: 0 auto;
+      padding: 20px 0 42px;
+    }
+
+    .topbar,
+    .hero,
+    .panel,
+    .sidebar,
+    .workspace,
+    .supplier-card,
+    .rfq-card,
+    .route-card,
+    .product-row {
+      border: 1px solid var(--line);
+      border-radius: 26px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      padding: 14px 18px;
+      margin-bottom: 16px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .brand-mark {
+      width: 14px;
+      height: 14px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #ebaf54 0%, #d1811d 100%);
+      box-shadow: 0 0 0 6px rgba(209, 129, 29, 0.12);
+    }
+
+    .top-actions,
+    .toggle-row,
+    .hero-actions,
+    .search-actions,
+    .category-rail,
+    .rail-line,
+    .row-actions,
+    .panel-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .button,
+    .button-secondary,
+    .toggle,
+    .chip,
+    .row-button,
+    .tiny-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      padding: 0 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(19, 43, 65, 0.12);
+      background: rgba(255, 255, 255, 0.92);
+      color: var(--text);
+      font: inherit;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .button,
+    .row-button.primary {
+      color: #ffffff;
+      background: linear-gradient(135deg, #d28a28 0%, #b76d14 100%);
+      border-color: rgba(183, 109, 20, 0.46);
+    }
+
+    .toggle.active,
+    .chip.active {
+      background: rgba(12, 122, 121, 0.1);
+      border-color: rgba(12, 122, 121, 0.3);
+      color: var(--mint);
+    }
+
+    .tiny-button {
+      min-height: 34px;
+      padding: 0 12px;
+      font-size: 11px;
+    }
+
+    .hero {
+      padding: 26px;
+      margin-bottom: 16px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(300px, 0.6fr);
+      gap: 18px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      right: -80px;
+      top: -40px;
+      width: 320px;
+      height: 320px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(42, 110, 167, 0.12), transparent 72%);
+      pointer-events: none;
+    }
+
+    .eyebrow,
+    .tag,
+    .badge,
+    .row-tag,
+    .filter-label,
+    .supplier-badge,
+    .rfq-badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      padding: 0 12px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow,
+    .tag,
+    .row-tag,
+    .filter-label {
+      background: rgba(12, 122, 121, 0.1);
+      color: var(--mint);
+    }
+
+    .badge,
+    .supplier-badge {
+      background: rgba(42, 110, 167, 0.1);
+      color: var(--cyan);
+    }
+
+    .rfq-badge.hot {
+      background: rgba(185, 120, 30, 0.14);
+      color: var(--gold);
+    }
+
+    h1,
+    h2,
+    h3,
+    h4 {
+      margin: 0;
+      font-family: "IBM Plex Sans Condensed", sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    h1 {
+      margin-top: 14px;
+      font-size: clamp(38px, 4.6vw, 68px);
+      line-height: 0.94;
+      max-width: 840px;
+    }
+
+    .hero-copy,
+    .panel-copy,
+    .filter-copy,
+    .supplier-copy,
+    .rfq-copy,
+    .row-subcopy,
+    .status-copy,
+    .cart-copy,
+    .route-copy,
+    .metric-copy {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .hero-copy {
+      margin-top: 16px;
+      max-width: 760px;
+    }
+
+    .hero-grid,
+    .hero-metrics,
+    .filter-stack,
+    .filter-list,
+    .product-list,
+    .supplier-grid,
+    .rfq-grid,
+    .route-grid,
+    .cart-list,
+    .status-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .hero-metrics {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      margin-top: 22px;
+    }
+
+    .metric-tile {
+      padding: 16px;
+      border-radius: 22px;
+      background: var(--surface);
+      border: 1px solid rgba(19, 43, 65, 0.08);
+    }
+
+    .metric-value {
+      margin-top: 8px;
+      font-family: "IBM Plex Sans Condensed", sans-serif;
+      font-size: 32px;
+      line-height: 1;
+    }
+
+    .workspace {
+      padding: 18px;
+      margin-bottom: 16px;
+      display: grid;
+      grid-template-columns: 280px minmax(0, 1fr) 320px;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .sidebar,
+    .panel {
+      padding: 18px;
+      background: var(--surface);
+    }
+
+    .panel {
+      margin-bottom: 16px;
+    }
+
+    .panel:last-child {
+      margin-bottom: 0;
+    }
+
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    .search-box {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px;
+      padding: 14px;
+      border-radius: 24px;
+      background: linear-gradient(135deg, #f9fbfd 0%, #eef5fb 100%);
+      border: 1px solid rgba(19, 43, 65, 0.1);
+    }
+
+    .search-main {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-height: 58px;
+      padding: 0 16px;
+      border-radius: 18px;
+      border: 1px solid rgba(19, 43, 65, 0.08);
+      background: #ffffff;
+    }
+
+    .search-icon {
+      color: var(--mint);
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .search-placeholder {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    .category-rail {
+      margin-top: 14px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+      flex-wrap: nowrap;
+    }
+
+    .chip {
+      min-height: 36px;
+      white-space: nowrap;
+      padding: 0 14px;
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    .filter-group {
+      padding: 14px;
+      border-radius: 20px;
+      background: #ffffff;
+      border: 1px solid rgba(19, 43, 65, 0.08);
+    }
+
+    .filter-copy { margin-top: 8px; }
+
+    .filter-list {
+      margin-top: 10px;
+    }
+
+    .filter-item,
+    .cart-item,
+    .status-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: baseline;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .filter-item strong,
+    .cart-item strong,
+    .status-item strong {
+      color: var(--text);
+    }
+
+    .product-row {
+      padding: 16px 18px;
+      background: #ffffff;
+    }
+
+    .row-top,
+    .row-grid,
+    .cart-head,
+    .route-head,
+    .supplier-top,
+    .rfq-top {
+      display: grid;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .row-top {
+      grid-template-columns: minmax(0, 1.4fr) 140px 130px 140px 130px 120px;
+      margin-bottom: 12px;
+    }
+
+    .row-grid {
+      grid-template-columns: minmax(0, 1.4fr) 140px 130px 140px 130px 120px;
+    }
+
+    .row-header {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .row-title {
+      font-family: "IBM Plex Sans Condensed", sans-serif;
+      font-size: 28px;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    .row-subcopy {
+      margin-top: 8px;
+      max-width: 560px;
+    }
+
+    .row-meta {
+      display: grid;
+      gap: 4px;
+    }
+
+    .row-meta strong {
+      color: var(--text);
+      font-size: 14px;
+    }
+
+    .row-meta span {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .row-actions {
+      margin-top: 14px;
+    }
+
+    .cart-head {
+      grid-template-columns: minmax(0, 1fr) auto;
+      margin-bottom: 12px;
+    }
+
+    .cart-total {
+      font-family: "IBM Plex Sans Condensed", sans-serif;
+      font-size: 36px;
+      line-height: 1;
+      color: var(--gold);
+    }
+
+    .status-list,
+    .cart-list {
+      margin-top: 12px;
+    }
+
+    .status-item,
+    .cart-item {
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(19, 43, 65, 0.08);
+    }
+
+    .status-item:last-child,
+    .cart-item:last-child {
+      border-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .supplier-grid,
+    .rfq-grid,
+    .route-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .supplier-card,
+    .rfq-card,
+    .route-card {
+      padding: 18px;
+      background: var(--surface);
+    }
+
+    .supplier-name,
+    .rfq-title,
+    .route-title {
+      margin-top: 10px;
+      font-family: "IBM Plex Sans Condensed", sans-serif;
+      font-size: 24px;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    .supplier-value,
+    .rfq-value {
+      font-family: "IBM Plex Sans Condensed", sans-serif;
+      font-size: 30px;
+      line-height: 1;
+      color: var(--gold);
+    }
+
+    .rail-line {
+      margin-top: 12px;
+    }
+
+    .rail-chip {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      padding: 0 10px;
+      border-radius: 999px;
+      background: rgba(19, 43, 65, 0.06);
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .route-card {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .route-card.current {
+      border-color: rgba(12, 122, 121, 0.32);
+      background: linear-gradient(135deg, rgba(12, 122, 121, 0.08), rgba(255, 255, 255, 0.96));
+    }
+
+    @media (max-width: 1240px) {
+      .workspace {
+        grid-template-columns: 1fr;
+      }
+
+      .supplier-grid,
+      .rfq-grid,
+      .route-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 1040px) {
+      .hero {
+        grid-template-columns: 1fr;
+      }
+
+      .row-top,
+      .row-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .page {
+        width: min(100% - 20px, 1460px);
+      }
+
+      .supplier-grid,
+      .rfq-grid,
+      .route-grid,
+      .hero-metrics,
+      .row-top,
+      .row-grid,
+      .search-box {
+        grid-template-columns: 1fr;
+      }
+
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+  </style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+  <main class="page">
+    <section class="topbar" aria-label="Верхняя навигация Nexus Marketplace">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span id="brandLabel">Nexus Oilfield Market</span>
+      </div>
+      <div class="top-actions">
+        <a class="button-secondary" href="../index.html" id="nexusCta">Nexus</a>
+        <a class="button-secondary" href="142_nexus_marketplace_build_tracker.html" id="towerCta">Control Tower</a>
+      </div>
+    </section>
+
+    <section class="hero">
+      <article>
+        <span class="eyebrow" id="heroEyebrow"></span>
+        <h1 id="heroTitle"></h1>
+        <p class="hero-copy" id="heroCopy"></p>
+        <div class="hero-actions" style="margin-top: 22px;">
+          <a class="button" href="144_nexus_catalog_workbench.html" id="catalogCta"></a>
+          <a class="button-secondary" href="146_nexus_rfq_command.html" id="rfqCta"></a>
+        </div>
+        <div class="hero-metrics" id="heroMetrics"></div>
+      </article>
+
+      <aside class="hero-grid">
+        <div class="panel">
+          <div class="panel-head">
+            <div>
+              <div class="tag" id="controlTag"></div>
+              <h2 id="controlTitle"></h2>
+              <p class="panel-copy" id="controlCopy"></p>
+            </div>
+          </div>
+          <div class="toggle-row" id="langToggleRow">
+            <button class="toggle active" type="button" data-lang="ru">RU</button>
+            <button class="toggle" type="button" data-lang="en">EN</button>
+          </div>
+          <div class="toggle-row" id="unitToggleRow" style="margin-top: 10px;">
+            <button class="toggle active" type="button" data-unit="si">SI</button>
+            <button class="toggle" type="button" data-unit="field">Field</button>
+          </div>
+          <div class="status-list" id="statusList"></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <div>
+              <div class="tag" id="promiseTag"></div>
+              <h2 id="promiseTitle"></h2>
+            </div>
+            <div class="badge" id="promiseBadge"></div>
+          </div>
+          <div class="status-list" id="promiseList"></div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="workspace">
+      <aside class="sidebar">
+        <div class="panel-head">
+          <div>
+            <div class="tag" id="filterTag"></div>
+            <h2 id="filterTitle"></h2>
+            <p class="filter-copy" id="filterCopy"></p>
+          </div>
+        </div>
+        <div class="filter-stack" id="filterStack"></div>
+      </aside>
+
+      <section>
+        <div class="panel">
+          <div class="panel-head">
+            <div>
+              <div class="tag" id="searchTag"></div>
+              <h2 id="searchTitle"></h2>
+              <p class="panel-copy" id="searchCopy"></p>
+            </div>
+            <div class="panel-actions" id="searchActions"></div>
+          </div>
+          <div class="search-box">
+            <div class="search-main">
+              <div class="search-icon">⌕</div>
+              <div class="search-placeholder" id="searchPlaceholder"></div>
+            </div>
+            <div class="search-actions" id="heroSearchActions"></div>
+          </div>
+          <div class="category-rail" id="categoryRail"></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <div>
+              <div class="tag" id="resultsTag"></div>
+              <h2 id="resultsTitle"></h2>
+              <p class="panel-copy" id="resultsCopy"></p>
+            </div>
+            <div class="badge" id="resultsBadge"></div>
+          </div>
+          <div class="row-top" id="rowTop"></div>
+          <div class="product-list" id="productList"></div>
+        </div>
+      </section>
+
+      <aside class="sidebar">
+        <div class="panel-head">
+          <div>
+            <div class="tag" id="cartTag"></div>
+            <h2 id="cartTitle"></h2>
+            <p class="cart-copy" id="cartCopy"></p>
+          </div>
+        </div>
+        <div class="cart-head">
+          <div>
+            <div class="filter-label" id="cartValueLabel"></div>
+            <div class="cart-total" id="cartTotal"></div>
+          </div>
+          <a class="button" href="146_nexus_rfq_command.html" id="cartCta"></a>
+        </div>
+        <div class="cart-list" id="cartList"></div>
+      </aside>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <div class="tag" id="supplierTag"></div>
+          <h2 id="supplierTitle"></h2>
+          <p class="panel-copy" id="supplierCopy"></p>
+        </div>
+      </div>
+      <div class="supplier-grid" id="supplierGrid"></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <div class="tag" id="rfqTag"></div>
+          <h2 id="rfqTitle"></h2>
+          <p class="panel-copy" id="rfqCopy"></p>
+        </div>
+      </div>
+      <div class="rfq-grid" id="rfqGrid"></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <div class="tag" id="routesTag"></div>
+          <h2 id="routesTitle"></h2>
+          <p class="panel-copy" id="routesCopy"></p>
+        </div>
+      </div>
+      <div class="route-grid" id="routeGrid"></div>
+    </section>
+  </main>
+  <script src="assets/js/global-auth-widget.js"></script>
+  <script>
+    (function () {
+      var CONTEXT_STORAGE_KEY = 'nexus-marketplace-context';
+      var storedContext = {};
+      try {
+        storedContext = JSON.parse(localStorage.getItem(CONTEXT_STORAGE_KEY) || '{}') || {};
+      } catch (error) {
+        storedContext = {};
+      }
+
+      var state = {
+        lang: storedContext.lang === 'en' ? 'en' : 'ru',
+        unit: storedContext.unit === 'field' ? 'field' : 'si'
+      };
+
+      var dictionary = {
+        ru: {
+          brandLabel: 'Nexus Oilfield Market',
+          nexusCta: 'Nexus',
+          towerCta: 'Control Tower',
+          heroEyebrow: 'Oilfield supply exchange',
+          heroTitle: 'Новый Alibaba Для Нефтегаза, Но Не Для Мусора, А Для Реальной Закупки',
+          heroCopy: 'Точка входа в закупку: dense search by spec, curated oilfield catalog, verified suppliers, analog match, live RFQ и быстрый переход из товара в сделку. Никакой презентационной болтовни, только товарный поток и торговые действия.',
+          catalogCta: 'Открыть товарный каталог',
+          rfqCta: 'Создать RFQ',
+          heroMetrics: [
+            { tag: 'Live SKUs', value: '1,284', copy: 'Нормализованные нефтегазовые SKU в трех стартовых вертикалях.' },
+            { tag: 'Verified suppliers', value: '18', copy: 'Поставщики с документами, коридорами поставки и response SLA.' },
+            { tag: 'Open buyer demand', value: '46', copy: 'Рабочие RFQ и inquiry packs, которые реально можно закрывать.' }
+          ],
+          controlTag: 'Workspace state',
+          controlTitle: 'Язык, Единицы И Режим Рынка',
+          controlCopy: 'Одна торговая оболочка для buyer и supplier. Меняются только язык интерфейса и система единиц.',
+          status: [
+            { left: 'Language', right: 'RU active' },
+            { left: 'Units', right: 'SI default' },
+            { left: 'Model', right: 'Curated supply' },
+            { left: 'Buyer mode', right: 'Spec-first sourcing' }
+          ],
+          promiseTag: 'Why it works',
+          promiseTitle: 'Что Здесь Видит Закупщик За 10 Секунд',
+          promiseBadge: 'Trade-first',
+          promises: [
+            { left: '1', right: 'Есть поиск по категории, spec и аналогу' },
+            { left: '2', right: 'Есть живой товарный ряд, а не набор абстрактных карточек' },
+            { left: '3', right: 'Есть supplier access, stock route и lead time' },
+            { left: '4', right: 'Есть прямой вход в RFQ и коммерческий follow-up' }
+          ],
+          filterTag: 'Market filters',
+          filterTitle: 'Фильтры Покупателя',
+          filterCopy: 'Слева всегда быстрый procurement narrow-down: category, supplier region, docs, incoterms, delivery horizon.',
+          filters: [
+            { label: 'Категории', copy: 'Фокус на узких вертикалях с глубокой нормализацией.', items: [['Буровая химия', '420 SKU'], ['Flow control', '360 SKU'], ['Расходники', '290 SKU']] },
+            { label: 'Регионы поставки', copy: 'Сразу видно, кто реально везет.', items: [['EU / Rotterdam', '8 suppliers'], ['MENA / Dubai', '6 suppliers'], ['Houston / US Gulf', '5 suppliers']] },
+            { label: 'Документы', copy: 'Только позиции, которые можно быстро провести дальше.', items: [['COA / SDS linked', '64 lines'], ['REACH / NACE', '31 lines'], ['Export-cleared', '27 lines']] },
+            { label: 'Коммерция', copy: 'Фильтр по тому, что можно реально купить сейчас.', items: [['Stock in 72h', '18 offers'], ['RFQ unlock ready', '12 suppliers'], ['Exclusive lane', '4 live deals']] }
+          ],
+          searchTag: 'Procurement search',
+          searchTitle: 'Поиск По Спецификации, Аналогу И Пакету Поставки',
+          searchCopy: 'Это витрина не для просмотра, а для быстрого narrowing: найти товар, проверить supplier fit, положить в inquiry pack и открыть RFQ.',
+          searchPlaceholder: 'Ищи: shale inhibitor, spacer system, class 1500 gate valve, shaker screen API 170, CaBr2 brine...',
+          searchButtons: ['Upload spec', 'Parse PDF', 'Import analog'],
+          categoryRail: ['Drilling chemistry', 'Completion fluids', 'Flow control', 'Solids control', 'Rig consumables', 'Emergency stock'],
+          resultsTag: 'Product lane',
+          resultsTitle: 'Товарная Выдача',
+          resultsCopy: 'Каждая строка должна отвечать на простой вопрос: можно ли это быстро купить, у кого, по какому маршруту и что делать дальше.',
+          resultsBadge: '6 hot lines',
+          rowHeaders: ['Product', 'Supplier', 'Region', 'Availability', 'Lead time', 'Price'],
+          products: [
+            { tag: 'Top match', title: 'Lubricor 22', copy: 'Смазочная добавка для WBM и brine systems. Часто используется в ERD и high-angle wells.', supplier: ['Nouryon', 'Verified supplier'], region: ['EU / Russia / MENA', 'Rotterdam + Dubai'], stock: ['Ready in 72h', 'COA + SDS linked'], lead: ['3 days', 'DAP / FCA'], price: ['$2,260 / t', 'Min lot 4 t'], actions: ['Supplier desk', 'Open RFQ'], supplierHref: '145_nexus_supplier_trust_desk.html?supplier=Nouryon', rfqHref: '146_nexus_rfq_command.html?supplier=Nouryon' },
+            { tag: 'Fastest response', title: 'WBM XP-7', copy: 'Система для shale inhibition и torque control в наклонно-направленных секциях.', supplier: ['MI-SWACO', '4h median response'], region: ['Houston / Jubail', 'US Gulf + GCC'], stock: ['Stock visible', 'TDS pack linked'], lead: ['5 days', 'CPT / DAP'], price: ['$1,840 / t', 'Min lot 18 t'], actions: ['Supplier desk', 'Open RFQ'], supplierHref: '145_nexus_supplier_trust_desk.html?supplier=MI-SWACO', rfqHref: '146_nexus_rfq_command.html?supplier=MI-SWACO' },
+            { tag: 'Offshore ready', title: 'ClearBrine CaBr2', copy: 'Прозрачный brine для completion и workover с offshore docs.', supplier: ['TETRA', 'Blend-on-demand'], region: ['North Sea / GCC', 'Offshore hubs'], stock: ['On demand blend', 'COA / density window'], lead: ['7 days', 'FOB / DAP'], price: ['$690 / m3', 'Min lot 25 m3'], actions: ['Supplier desk', 'Open RFQ'], supplierHref: '145_nexus_supplier_trust_desk.html?supplier=TETRA', rfqHref: '146_nexus_rfq_command.html?supplier=TETRA' },
+            { tag: 'Urgent rig line', title: 'ScreenPulse 4', copy: 'Shaker screen line для fine solids control и emergency rig package replenishment.', supplier: ['NOV Brandt', 'API mapped'], region: ['US / LATAM / Caspian', 'Regional stock'], stock: ['Dispatch within week', 'Batch visibility'], lead: ['6 days', 'EXW / FCA'], price: ['$140 / panel', 'Crate 24 panels'], actions: ['Supplier desk', 'Open RFQ'], supplierHref: '145_nexus_supplier_trust_desk.html?supplier=NOV%20Brandt', rfqHref: '146_nexus_rfq_command.html?supplier=NOV%20Brandt' },
+            { tag: 'Import analog', title: 'Spacer HP-11', copy: 'Spacer system перед цементированием для displacement efficiency и mud separation.', supplier: ['Halliburton', 'Docs under review'], region: ['Global supply', 'Batch confirm'], stock: ['Lot confirmation', 'TDS ready'], lead: ['9 days', 'FCA / CPT'], price: ['$1,380 / t', 'Min lot 12 t'], actions: ['Supplier desk', 'Open RFQ'], supplierHref: '145_nexus_supplier_trust_desk.html?supplier=Halliburton', rfqHref: '146_nexus_rfq_command.html?supplier=Halliburton' },
+            { tag: 'Premium deal', title: 'BrineClean 2', copy: 'Фильтрационная защита для completion brines и cleanup packs с premium offshore handling.', supplier: ['Baker Hughes', '4 day lead'], region: ['Global offshore', 'Dubai route'], stock: ['Ready for award', 'Full document packet'], lead: ['4 days', 'DAP / CPT'], price: ['$2,980 / t', 'Min lot 2.5 t'], actions: ['Supplier desk', 'Open RFQ'], supplierHref: '145_nexus_supplier_trust_desk.html?supplier=Baker%20Hughes', rfqHref: '146_nexus_rfq_command.html?supplier=Baker%20Hughes' }
+          ],
+          cartTag: 'Inquiry pack',
+          cartTitle: 'Buyer Inquiry Cart',
+          cartCopy: 'Не просто shortlist, а коммерчески готовый inquiry pack для следующего движения в RFQ.',
+          cartValueLabel: 'Pack value',
+          cartTotal: '$28.4k',
+          cartCta: 'Перейти в RFQ',
+          cartItems: [
+            { left: '3 supplier lines pinned', right: 'Chemicals + screens' },
+            { left: '2 lines urgent', right: 'Need in 21 days' },
+            { left: 'Compliance pack', right: 'COA / SDS / Incoterms' },
+            { left: 'Decision state', right: 'Ready for supplier unlock' }
+          ],
+          supplierTag: 'Featured suppliers',
+          supplierTitle: 'Supplier Storefronts С Реальным Trade Signal',
+          supplierCopy: 'Поставщик здесь выглядит как торговый контур: offer lanes, документы, регион поставки, response discipline и RFQ fit.',
+          suppliers: [
+            { badge: 'Verified', name: 'Nouryon', value: '126 SKU', copy: 'Drilling chemicals supplier с сильной позицией по lubricity, completion chemistry и emergency delivery lanes.', stats: ['6h response', 'EU / MENA', '18 analog links'], href: '145_nexus_supplier_trust_desk.html?supplier=Nouryon' },
+            { badge: 'Verified', name: 'MI-SWACO', value: '184 SKU', copy: 'Высокоплотный mud chemicals catalog с stock hubs и strong field-proven lines.', stats: ['4h response', 'Houston / Jubail', '26 analog links'], href: '145_nexus_supplier_trust_desk.html?supplier=MI-SWACO' },
+            { badge: 'Offshore', name: 'TETRA', value: '84 SKU', copy: 'Completion brines и offshore-ready delivery board с blend-on-demand workflow.', stats: ['Density envelopes', 'North Sea / GCC', '7 day lead'], href: '145_nexus_supplier_trust_desk.html?supplier=TETRA' }
+          ],
+          rfqTag: 'Live demand board',
+          rfqTitle: 'Горячие RFQ И Коммерческие Триггеры',
+          rfqCopy: 'Покупатель и operator видят не только товары, но и live demand: какой пакет горячий, где идет unlock и что уже близко к award.',
+          rfqs: [
+            { badge: 'Grade A', hot: true, title: 'Arctic WBM package', value: '$180 unlock', copy: '12 позиций для Yamal delivery, buyer verified, docs required.', stats: ['3 suppliers invited', 'Response 48h', 'DAP route'] },
+            { badge: 'Exclusive', hot: false, title: 'Valve replacement lot', value: '$420 premium lane', copy: 'High-spec flow control lot с NACE trim и импортозамещением.', stats: ['2 shortlisted', 'RF warehouse', '72h reply'] },
+            { badge: 'Award watch', hot: true, title: 'Completion cleanup set', value: '1.5% success fee', copy: 'Deal перешел в quote compare и ждет commercial alignment before PO.', stats: ['PO pending', 'Offshore', 'Buyer review'] }
+          ],
+          routesTag: 'Market work zones',
+          routesTitle: 'Куда Переходит Пользователь Дальше',
+          routesCopy: 'Главная страница должна быстро отдавать человека в рабочий модуль, а не удерживать его в красивой витрине.',
+          routes: [
+            { title: '142 · Control Tower', copy: 'Операционный стол спроса, supplier response и исключений.', href: '142_nexus_marketplace_build_tracker.html' },
+            { title: '143 · Marketplace Hub', copy: 'Главный товарный вход: поиск, выдача, supplier storefront и live demand.', href: null, current: true },
+            { title: '144 · Catalog Workbench', copy: 'Полный каталог, collections, shortlist и переход в RFQ.', href: '144_nexus_catalog_workbench.html' },
+            { title: '145 · Supplier Trust Desk', copy: 'Supplier desk с offer lanes, docs, export и readiness.', href: '145_nexus_supplier_trust_desk.html' },
+            { title: '146 · RFQ Command', copy: 'Сделка, квалификация, quote compare и award flow.', href: '146_nexus_rfq_command.html' }
+          ]
+        },
+        en: {
+          brandLabel: 'Nexus Oilfield Market',
+          nexusCta: 'Nexus',
+          towerCta: 'Control Tower',
+          heroEyebrow: 'Oilfield supply exchange',
+          heroTitle: 'A New Alibaba For Oilfield Procurement, Not For Noise But For Real Sourcing',
+          heroCopy: 'A buyer entry point for dense search by spec, curated oilfield catalog, verified suppliers, analog match, live RFQ, and fast movement from product discovery into a deal. No presentation filler, only product flow and trade actions.',
+          catalogCta: 'Open Product Catalog',
+          rfqCta: 'Create RFQ',
+          heroMetrics: [
+            { tag: 'Live SKUs', value: '1,284', copy: 'Normalized oilfield SKUs across three launch verticals.' },
+            { tag: 'Verified suppliers', value: '18', copy: 'Suppliers with documents, delivery corridors, and response SLA.' },
+            { tag: 'Open buyer demand', value: '46', copy: 'Working RFQ and inquiry packs that can actually be closed.' }
+          ],
+          controlTag: 'Workspace state',
+          controlTitle: 'Language, Units, And Market Mode',
+          controlCopy: 'One trade shell for buyer and supplier. Only interface language and measurement system change.',
+          status: [
+            { left: 'Language', right: 'EN active' },
+            { left: 'Units', right: 'Field default' },
+            { left: 'Model', right: 'Curated supply' },
+            { left: 'Buyer mode', right: 'Spec-first sourcing' }
+          ],
+          promiseTag: 'Why it works',
+          promiseTitle: 'What A Buyer Sees In 10 Seconds',
+          promiseBadge: 'Trade-first',
+          promises: [
+            { left: '1', right: 'Search by category, spec, and analog is visible' },
+            { left: '2', right: 'There is a live product lane, not abstract cards' },
+            { left: '3', right: 'Supplier access, stock route, and lead time are visible' },
+            { left: '4', right: 'There is a direct path into RFQ and commercial follow-up' }
+          ],
+          filterTag: 'Market filters',
+          filterTitle: 'Buyer Filters',
+          filterCopy: 'The left rail always gives a fast procurement narrow-down: category, supplier region, docs, incoterms, and delivery horizon.',
+          filters: [
+            { label: 'Categories', copy: 'Focus on narrow verticals with deep normalization.', items: [['Drilling chemicals', '420 SKU'], ['Flow control', '360 SKU'], ['Consumables', '290 SKU']] },
+            { label: 'Delivery regions', copy: 'Visible routes where suppliers can actually ship.', items: [['EU / Rotterdam', '8 suppliers'], ['MENA / Dubai', '6 suppliers'], ['Houston / US Gulf', '5 suppliers']] },
+            { label: 'Documents', copy: 'Only lines that can move forward fast.', items: [['COA / SDS linked', '64 lines'], ['REACH / NACE', '31 lines'], ['Export-cleared', '27 lines']] },
+            { label: 'Commercial', copy: 'Filter for what can actually be bought now.', items: [['Stock in 72h', '18 offers'], ['RFQ unlock ready', '12 suppliers'], ['Exclusive lane', '4 live deals']] }
+          ],
+          searchTag: 'Procurement search',
+          searchTitle: 'Search By Spec, Analog, And Delivery Pack',
+          searchCopy: 'This is not a storefront for browsing. It is a workspace for finding a line, checking supplier fit, building an inquiry pack, and opening RFQ.',
+          searchPlaceholder: 'Search: shale inhibitor, spacer system, class 1500 gate valve, shaker screen API 170, CaBr2 brine...',
+          searchButtons: ['Upload spec', 'Parse PDF', 'Import analog'],
+          categoryRail: ['Drilling chemistry', 'Completion fluids', 'Flow control', 'Solids control', 'Rig consumables', 'Emergency stock'],
+          resultsTag: 'Product lane',
+          resultsTitle: 'Product Results',
+          resultsCopy: 'Every row must answer a simple question: can this be sourced quickly, from whom, through which route, and what should happen next?',
+          resultsBadge: '6 hot lines',
+          rowHeaders: ['Product', 'Supplier', 'Region', 'Availability', 'Lead time', 'Price'],
+          products: [
+            { tag: 'Top match', title: 'Lubricor 22', copy: 'Lubricity additive for WBM and brine systems. Common in ERD and high-angle wells.', supplier: ['Nouryon', 'Verified supplier'], region: ['EU / Russia / MENA', 'Rotterdam + Dubai'], stock: ['Ready in 72h', 'COA + SDS linked'], lead: ['3 days', 'DAP / FCA'], price: ['$2,260 / t', 'Min lot 4 t'], actions: ['Supplier desk', 'Open RFQ'], supplierHref: '145_nexus_supplier_trust_desk.html?supplier=Nouryon', rfqHref: '146_nexus_rfq_command.html?supplier=Nouryon' },
+            { tag: 'Fastest response', title: 'WBM XP-7', copy: 'Shale inhibition and torque-control system for directional sections.', supplier: ['MI-SWACO', '4h median response'], region: ['Houston / Jubail', 'US Gulf + GCC'], stock: ['Stock visible', 'TDS pack linked'], lead: ['5 days', 'CPT / DAP'], price: ['$1,840 / t', 'Min lot 18 t'], actions: ['Supplier desk', 'Open RFQ'], supplierHref: '145_nexus_supplier_trust_desk.html?supplier=MI-SWACO', rfqHref: '146_nexus_rfq_command.html?supplier=MI-SWACO' },
+            { tag: 'Offshore ready', title: 'ClearBrine CaBr2', copy: 'Clear brine for completion and workover with offshore documentation pack.', supplier: ['TETRA', 'Blend-on-demand'], region: ['North Sea / GCC', 'Offshore hubs'], stock: ['On demand blend', 'COA / density window'], lead: ['7 days', 'FOB / DAP'], price: ['$690 / m3', 'Min lot 25 m3'], actions: ['Supplier desk', 'Open RFQ'], supplierHref: '145_nexus_supplier_trust_desk.html?supplier=TETRA', rfqHref: '146_nexus_rfq_command.html?supplier=TETRA' },
+            { tag: 'Urgent rig line', title: 'ScreenPulse 4', copy: 'Shaker screen line for fine solids control and emergency rig package replenishment.', supplier: ['NOV Brandt', 'API mapped'], region: ['US / LATAM / Caspian', 'Regional stock'], stock: ['Dispatch within week', 'Batch visibility'], lead: ['6 days', 'EXW / FCA'], price: ['$140 / panel', 'Crate 24 panels'], actions: ['Supplier desk', 'Open RFQ'], supplierHref: '145_nexus_supplier_trust_desk.html?supplier=NOV%20Brandt', rfqHref: '146_nexus_rfq_command.html?supplier=NOV%20Brandt' },
+            { tag: 'Import analog', title: 'Spacer HP-11', copy: 'Spacer system ahead of cementing for better displacement efficiency and mud separation.', supplier: ['Halliburton', 'Docs under review'], region: ['Global supply', 'Batch confirm'], stock: ['Lot confirmation', 'TDS ready'], lead: ['9 days', 'FCA / CPT'], price: ['$1,380 / t', 'Min lot 12 t'], actions: ['Supplier desk', 'Open RFQ'], supplierHref: '145_nexus_supplier_trust_desk.html?supplier=Halliburton', rfqHref: '146_nexus_rfq_command.html?supplier=Halliburton' },
+            { tag: 'Premium deal', title: 'BrineClean 2', copy: 'Filtration protection for completion brines and cleanup packs with premium offshore handling.', supplier: ['Baker Hughes', '4 day lead'], region: ['Global offshore', 'Dubai route'], stock: ['Ready for award', 'Full document packet'], lead: ['4 days', 'DAP / CPT'], price: ['$2,980 / t', 'Min lot 2.5 t'], actions: ['Supplier desk', 'Open RFQ'], supplierHref: '145_nexus_supplier_trust_desk.html?supplier=Baker%20Hughes', rfqHref: '146_nexus_rfq_command.html?supplier=Baker%20Hughes' }
+          ],
+          cartTag: 'Inquiry pack',
+          cartTitle: 'Buyer Inquiry Cart',
+          cartCopy: 'Not just a shortlist but a commercially ready inquiry pack for the next RFQ step.',
+          cartValueLabel: 'Pack value',
+          cartTotal: '$28.4k',
+          cartCta: 'Go To RFQ',
+          cartItems: [
+            { left: '3 supplier lines pinned', right: 'Chemicals + screens' },
+            { left: '2 lines urgent', right: 'Need in 21 days' },
+            { left: 'Compliance pack', right: 'COA / SDS / Incoterms' },
+            { left: 'Decision state', right: 'Ready for supplier unlock' }
+          ],
+          supplierTag: 'Featured suppliers',
+          supplierTitle: 'Supplier Storefronts With Real Trade Signal',
+          supplierCopy: 'The supplier must look like a trade desk: offer lanes, documents, delivery region, response discipline, and RFQ fit.',
+          suppliers: [
+            { badge: 'Verified', name: 'Nouryon', value: '126 SKU', copy: 'Drilling chemicals supplier with strong lubricity, completion chemistry, and emergency delivery lanes.', stats: ['6h response', 'EU / MENA', '18 analog links'], href: '145_nexus_supplier_trust_desk.html?supplier=Nouryon' },
+            { badge: 'Verified', name: 'MI-SWACO', value: '184 SKU', copy: 'High-density mud chemicals catalog with stock hubs and field-proven lines.', stats: ['4h response', 'Houston / Jubail', '26 analog links'], href: '145_nexus_supplier_trust_desk.html?supplier=MI-SWACO' },
+            { badge: 'Offshore', name: 'TETRA', value: '84 SKU', copy: 'Completion brines and offshore-ready delivery board with blend-on-demand workflow.', stats: ['Density envelopes', 'North Sea / GCC', '7 day lead'], href: '145_nexus_supplier_trust_desk.html?supplier=TETRA' }
+          ],
+          rfqTag: 'Live demand board',
+          rfqTitle: 'Hot RFQs And Commercial Triggers',
+          rfqCopy: 'The buyer and operator see more than products: live demand, hot packs, unlock events, and what is close to award.',
+          rfqs: [
+            { badge: 'Grade A', hot: true, title: 'Arctic WBM package', value: '$180 unlock', copy: '12 lines for Yamal delivery, buyer verified, documents required.', stats: ['3 suppliers invited', 'Response 48h', 'DAP route'] },
+            { badge: 'Exclusive', hot: false, title: 'Valve replacement lot', value: '$420 premium lane', copy: 'High-spec flow control lot with NACE trim and import substitution option.', stats: ['2 shortlisted', 'RF warehouse', '72h reply'] },
+            { badge: 'Award watch', hot: true, title: 'Completion cleanup set', value: '1.5% success fee', copy: 'The deal moved into quote compare and awaits commercial alignment before PO.', stats: ['PO pending', 'Offshore', 'Buyer review'] }
+          ],
+          routesTag: 'Market work zones',
+          routesTitle: 'Where The User Goes Next',
+          routesCopy: 'The home page should hand the user into a working module fast instead of trapping them in a pretty storefront.',
+          routes: [
+            { title: '142 · Control Tower', copy: 'Demand desk, supplier response lane, and exception handling.', href: '142_nexus_marketplace_build_tracker.html' },
+            { title: '143 · Marketplace Hub', copy: 'Main product entry: search, results, supplier storefront, and live demand.', href: null, current: true },
+            { title: '144 · Catalog Workbench', copy: 'Full catalog, collections, shortlist, and RFQ handoff.', href: '144_nexus_catalog_workbench.html' },
+            { title: '145 · Supplier Trust Desk', copy: 'Supplier desk with offer lanes, docs, export, and readiness.', href: '145_nexus_supplier_trust_desk.html' },
+            { title: '146 · RFQ Command', copy: 'Deal, qualification, quote compare, and award flow.', href: '146_nexus_rfq_command.html' }
+          ]
+        }
+      };
+
+      var unitByLang = {
+        ru: { si: 'SI default', field: 'Field active' },
+        en: { si: 'SI active', field: 'Field default' }
+      };
+
+      var brandLabel = document.getElementById('brandLabel');
+      var nexusCta = document.getElementById('nexusCta');
+      var towerCta = document.getElementById('towerCta');
+      var heroEyebrow = document.getElementById('heroEyebrow');
+      var heroTitle = document.getElementById('heroTitle');
+      var heroCopy = document.getElementById('heroCopy');
+      var catalogCta = document.getElementById('catalogCta');
+      var rfqCta = document.getElementById('rfqCta');
+      var heroMetrics = document.getElementById('heroMetrics');
+      var controlTag = document.getElementById('controlTag');
+      var controlTitle = document.getElementById('controlTitle');
+      var controlCopy = document.getElementById('controlCopy');
+      var statusList = document.getElementById('statusList');
+      var promiseTag = document.getElementById('promiseTag');
+      var promiseTitle = document.getElementById('promiseTitle');
+      var promiseBadge = document.getElementById('promiseBadge');
+      var promiseList = document.getElementById('promiseList');
+      var filterTag = document.getElementById('filterTag');
+      var filterTitle = document.getElementById('filterTitle');
+      var filterCopy = document.getElementById('filterCopy');
+      var filterStack = document.getElementById('filterStack');
+      var searchTag = document.getElementById('searchTag');
+      var searchTitle = document.getElementById('searchTitle');
+      var searchCopy = document.getElementById('searchCopy');
+      var searchPlaceholder = document.getElementById('searchPlaceholder');
+      var searchActions = document.getElementById('searchActions');
+      var heroSearchActions = document.getElementById('heroSearchActions');
+      var categoryRail = document.getElementById('categoryRail');
+      var resultsTag = document.getElementById('resultsTag');
+      var resultsTitle = document.getElementById('resultsTitle');
+      var resultsCopy = document.getElementById('resultsCopy');
+      var resultsBadge = document.getElementById('resultsBadge');
+      var rowTop = document.getElementById('rowTop');
+      var productList = document.getElementById('productList');
+      var cartTag = document.getElementById('cartTag');
+      var cartTitle = document.getElementById('cartTitle');
+      var cartCopy = document.getElementById('cartCopy');
+      var cartValueLabel = document.getElementById('cartValueLabel');
+      var cartTotal = document.getElementById('cartTotal');
+      var cartCta = document.getElementById('cartCta');
+      var cartList = document.getElementById('cartList');
+      var supplierTag = document.getElementById('supplierTag');
+      var supplierTitle = document.getElementById('supplierTitle');
+      var supplierCopy = document.getElementById('supplierCopy');
+      var supplierGrid = document.getElementById('supplierGrid');
+      var rfqTag = document.getElementById('rfqTag');
+      var rfqTitle = document.getElementById('rfqTitle');
+      var rfqCopy = document.getElementById('rfqCopy');
+      var rfqGrid = document.getElementById('rfqGrid');
+      var routesTag = document.getElementById('routesTag');
+      var routesTitle = document.getElementById('routesTitle');
+      var routesCopy = document.getElementById('routesCopy');
+      var routeGrid = document.getElementById('routeGrid');
+      var langButtons = Array.prototype.slice.call(document.querySelectorAll('[data-lang]'));
+      var unitButtons = Array.prototype.slice.call(document.querySelectorAll('[data-unit]'));
+
+      function saveState() {
+        localStorage.setItem(CONTEXT_STORAGE_KEY, JSON.stringify({
+          lang: state.lang,
+          unit: state.unit
+        }));
+      }
+
+      function render() {
+        var copy = dictionary[state.lang];
+        brandLabel.textContent = copy.brandLabel;
+        nexusCta.textContent = copy.nexusCta;
+        towerCta.textContent = copy.towerCta;
+        heroEyebrow.textContent = copy.heroEyebrow;
+        heroTitle.textContent = copy.heroTitle;
+        heroCopy.textContent = copy.heroCopy;
+        catalogCta.textContent = copy.catalogCta;
+        rfqCta.textContent = copy.rfqCta;
+
+        heroMetrics.innerHTML = copy.heroMetrics.map(function (item) {
+          return '<article class="metric-tile"><div class="filter-label">' + item.tag + '</div><div class="metric-value">' + item.value + '</div><div class="metric-copy">' + item.copy + '</div></article>';
+        }).join('');
+
+        controlTag.textContent = copy.controlTag;
+        controlTitle.textContent = copy.controlTitle;
+        controlCopy.textContent = copy.controlCopy;
+        statusList.innerHTML = copy.status.map(function (item, index) {
+          var right = item.right;
+          if (index === 0) {
+            right = state.lang === 'ru' ? 'RU active' : 'EN active';
+          }
+          if (index === 1) {
+            right = unitByLang[state.lang][state.unit];
+          }
+          return '<div class="status-item"><strong>' + item.left + '</strong><span>' + right + '</span></div>';
+        }).join('');
+
+        promiseTag.textContent = copy.promiseTag;
+        promiseTitle.textContent = copy.promiseTitle;
+        promiseBadge.textContent = copy.promiseBadge;
+        promiseList.innerHTML = copy.promises.map(function (item) {
+          return '<div class="status-item"><strong>' + item.left + '</strong><span>' + item.right + '</span></div>';
+        }).join('');
+
+        filterTag.textContent = copy.filterTag;
+        filterTitle.textContent = copy.filterTitle;
+        filterCopy.textContent = copy.filterCopy;
+        filterStack.innerHTML = copy.filters.map(function (group) {
+          return '<article class="filter-group"><div class="filter-label">' + group.label + '</div><div class="filter-copy">' + group.copy + '</div><div class="filter-list">' + group.items.map(function (item) { return '<div class="filter-item"><strong>' + item[0] + '</strong><span>' + item[1] + '</span></div>'; }).join('') + '</div></article>';
+        }).join('');
+
+        searchTag.textContent = copy.searchTag;
+        searchTitle.textContent = copy.searchTitle;
+        searchCopy.textContent = copy.searchCopy;
+        searchPlaceholder.textContent = copy.searchPlaceholder;
+        searchActions.innerHTML = copy.searchButtons.map(function (item) {
+          return '<button class="tiny-button" type="button">' + item + '</button>';
+        }).join('');
+        heroSearchActions.innerHTML = '<a class="button" href="144_nexus_catalog_workbench.html">' + copy.catalogCta + '</a><a class="button-secondary" href="146_nexus_rfq_command.html">' + copy.rfqCta + '</a>';
+        categoryRail.innerHTML = copy.categoryRail.map(function (item, index) {
+          return '<button class="chip' + (index === 0 ? ' active' : '') + '" type="button">' + item + '</button>';
+        }).join('');
+
+        resultsTag.textContent = copy.resultsTag;
+        resultsTitle.textContent = copy.resultsTitle;
+        resultsCopy.textContent = copy.resultsCopy;
+        resultsBadge.textContent = copy.resultsBadge;
+        rowTop.innerHTML = copy.rowHeaders.map(function (item) {
+          return '<div class="row-header">' + item + '</div>';
+        }).join('');
+        productList.innerHTML = copy.products.map(function (item) {
+          return '<article class="product-row"><div class="row-grid"><div><div class="row-tag">' + item.tag + '</div><div class="row-title">' + item.title + '</div><div class="row-subcopy">' + item.copy + '</div></div><div class="row-meta"><strong>' + item.supplier[0] + '</strong><span>' + item.supplier[1] + '</span></div><div class="row-meta"><strong>' + item.region[0] + '</strong><span>' + item.region[1] + '</span></div><div class="row-meta"><strong>' + item.stock[0] + '</strong><span>' + item.stock[1] + '</span></div><div class="row-meta"><strong>' + item.lead[0] + '</strong><span>' + item.lead[1] + '</span></div><div class="row-meta"><strong>' + item.price[0] + '</strong><span>' + item.price[1] + '</span></div></div><div class="row-actions"><a class="row-button" href="' + item.supplierHref + '">' + item.actions[0] + '</a><a class="row-button primary" href="' + item.rfqHref + '">' + item.actions[1] + '</a></div></article>';
+        }).join('');
+
+        cartTag.textContent = copy.cartTag;
+        cartTitle.textContent = copy.cartTitle;
+        cartCopy.textContent = copy.cartCopy;
+        cartValueLabel.textContent = copy.cartValueLabel;
+        cartTotal.textContent = copy.cartTotal;
+        cartCta.textContent = copy.cartCta;
+        cartList.innerHTML = copy.cartItems.map(function (item) {
+          return '<div class="cart-item"><strong>' + item.left + '</strong><span>' + item.right + '</span></div>';
+        }).join('');
+
+        supplierTag.textContent = copy.supplierTag;
+        supplierTitle.textContent = copy.supplierTitle;
+        supplierCopy.textContent = copy.supplierCopy;
+        supplierGrid.innerHTML = copy.suppliers.map(function (item) {
+          return '<article class="supplier-card"><div class="supplier-top"><div class="supplier-badge">' + item.badge + '</div><div class="supplier-value">' + item.value + '</div></div><div class="supplier-name">' + item.name + '</div><div class="supplier-copy">' + item.copy + '</div><div class="rail-line">' + item.stats.map(function (line) { return '<span class="rail-chip">' + line + '</span>'; }).join('') + '</div><div class="row-actions"><a class="row-button primary" href="' + item.href + '">Open Supplier Desk</a></div></article>';
+        }).join('');
+
+        rfqTag.textContent = copy.rfqTag;
+        rfqTitle.textContent = copy.rfqTitle;
+        rfqCopy.textContent = copy.rfqCopy;
+        rfqGrid.innerHTML = copy.rfqs.map(function (item) {
+          return '<article class="rfq-card"><div class="rfq-top"><div class="rfq-badge' + (item.hot ? ' hot' : '') + '">' + item.badge + '</div><div class="rfq-value">' + item.value + '</div></div><div class="rfq-title">' + item.title + '</div><div class="rfq-copy">' + item.copy + '</div><div class="rail-line">' + item.stats.map(function (line) { return '<span class="rail-chip">' + line + '</span>'; }).join('') + '</div><div class="row-actions"><a class="row-button primary" href="146_nexus_rfq_command.html">Open RFQ Command</a></div></article>';
+        }).join('');
+
+        routesTag.textContent = copy.routesTag;
+        routesTitle.textContent = copy.routesTitle;
+        routesCopy.textContent = copy.routesCopy;
+        routeGrid.innerHTML = copy.routes.map(function (item) {
+          var className = 'route-card' + (item.current ? ' current' : '');
+          var inner = '<div class="route-head"><div><div class="tag">Route</div><div class="route-title">' + item.title + '</div></div></div><div class="route-copy">' + item.copy + '</div>';
+          if (item.href) {
+            return '<a class="' + className + '" href="' + item.href + '">' + inner + '</a>';
+          }
+          return '<article class="' + className + '">' + inner + '</article>';
+        }).join('');
+
+        langButtons.forEach(function (button) {
+          button.classList.toggle('active', button.getAttribute('data-lang') === state.lang);
+        });
+        unitButtons.forEach(function (button) {
+          button.classList.toggle('active', button.getAttribute('data-unit') === state.unit);
+        });
+      }
+
+      langButtons.forEach(function (button) {
+        button.addEventListener('click', function () {
+          state.lang = button.getAttribute('data-lang');
+          saveState();
+          render();
+        });
+      });
+
+      unitButtons.forEach(function (button) {
+        button.addEventListener('click', function () {
+          state.unit = button.getAttribute('data-unit');
+          saveState();
+          render();
+        });
+      });
+
+      render();
+    })();
+  </script>
+</body>
+</html>
+        document.getElementById('flowTag').textContent = copy.flowTag;

@@ -1,0 +1,412 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DRILL-Q · Закупки / RFQ · Маркетплейс</title>
+  <link rel="stylesheet" href="drill-q.css">
+  <style>
+    .mp-wrap { max-width:1360px;margin:0 auto;padding:36px 48px 80px; }
+    .pg-header { display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:28px;gap:20px; }
+    .pg-title { font-size:30px;font-weight:700;letter-spacing:-.03em;color:rgba(255,255,255,.97);margin:0 0 6px; }
+    .pg-sub { font-size:13px;color:rgba(255,255,255,.4); }
+    .pg-btn { display:inline-flex;align-items:center;gap:7px;background:var(--blue);border:1px solid #2563EB;color:#fff;border-radius:8px;padding:11px 18px;font-size:13px;font-weight:600;text-decoration:none;cursor:pointer;border:1px solid #2563EB;transition:all .15s; }
+    .pg-btn:hover { background:#2563EB; }
+
+    .tabs { display:flex;gap:2px;background:var(--bg-02);border:1px solid var(--b-01);border-radius:8px;padding:4px;margin-bottom:24px;width:fit-content; }
+    .tab { padding:7px 16px;border-radius:6px;font-size:13px;cursor:pointer;color:rgba(255,255,255,.45);transition:all .15s; }
+    .tab.active { background:rgba(59,130,246,.12);color:var(--blue);font-weight:500; }
+    .tab:hover:not(.active) { color:rgba(255,255,255,.7); }
+
+    .rfq-table-wrap { background:var(--bg-02);border:1px solid var(--b-01);border-radius:var(--r2);overflow:hidden;margin-bottom:24px; }
+    .rfq-table { width:100%;border-collapse:collapse; }
+    .rfq-table th { text-align:left;font-size:11px;font-family:var(--mono);color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.08em;padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.02); }
+    .rfq-table td { padding:16px;border-bottom:1px solid rgba(255,255,255,.04);font-size:13px;vertical-align:top; }
+    .rfq-table tr:last-child td { border-bottom:none; }
+    .rfq-table tr:hover td { background:rgba(255,255,255,.02); }
+    .rfq-id-cell { font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.4); }
+    .rfq-title-cell { font-weight:500;color:rgba(255,255,255,.85); }
+    .rfq-qty-cell { font-family:var(--mono);font-size:12px;color:rgba(255,255,255,.5); }
+    .rfq-dl-cell { font-family:var(--mono);font-size:12px;color:rgba(255,255,255,.4); }
+    .rfq-owner-cell { font-size:12px;color:rgba(255,255,255,.4); }
+    .rfq-action { font-size:12px;color:var(--blue);cursor:pointer;border:none;background:none;text-decoration:none;font-weight:500; }
+
+    .badge-sm { display:inline-flex;align-items:center;border-radius:4px;padding:3px 8px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap; }
+    .bs-blue { background:rgba(59,130,246,.15);color:#3B82F6; }
+    .bs-yellow { background:rgba(245,158,11,.15);color:#F59E0B; }
+    .bs-green { background:rgba(16,185,129,.15);color:#10B981; }
+    .bs-gray { background:rgba(255,255,255,.07);color:rgba(255,255,255,.4); }
+
+    /* BIDS TABLE */
+    .bids-section { background:var(--bg-02);border:1px solid var(--b-01);border-radius:var(--r2);padding:24px;margin-bottom:24px; }
+    .bids-title { font-size:16px;font-weight:600;color:rgba(255,255,255,.9);margin-bottom:6px; }
+    .bids-sub { font-size:13px;color:rgba(255,255,255,.4);margin-bottom:20px; }
+    .bid-card { border:1px solid var(--b-01);border-radius:10px;padding:18px;margin-bottom:10px;display:flex;gap:16px;align-items:flex-start; }
+    .bid-card:last-child { margin-bottom:0; }
+    .bid-card.winner { border-color:rgba(16,185,129,.25);background:rgba(16,185,129,.04); }
+    .bid-supplier { font-size:15px;font-weight:600;color:rgba(255,255,255,.9);margin-bottom:4px; }
+    .bid-location { font-size:12px;color:rgba(255,255,255,.4);margin-bottom:10px; }
+    .bid-meta { display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:10px; }
+    .bid-meta-item { display:flex;flex-direction:column;gap:2px; }
+    .bid-meta-label { font-size:10px;font-family:var(--mono);color:rgba(255,255,255,.3);text-transform:uppercase; }
+    .bid-meta-val { font-size:13px;color:rgba(255,255,255,.75);font-weight:500; }
+    .bid-comment { font-size:12px;color:rgba(255,255,255,.4);line-height:1.5; }
+    .bid-actions { display:flex;gap:8px;margin-top:10px; }
+    .bid-btn { font-size:12px;padding:7px 14px;border-radius:6px;cursor:pointer;font-weight:500;border:none;text-decoration:none;display:inline-flex;align-items:center; }
+    .bid-btn-blue { background:var(--blue);color:#fff; }
+    .bid-btn-outline { background:transparent;border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.6); }
+    .winner-badge { display:inline-flex;align-items:center;gap:5px;font-size:11px;color:#10B981;font-weight:600;margin-left:auto; }
+
+    /* NEW RFQ FORM */
+    .rfq-form { background:var(--bg-02);border:1px solid var(--b-01);border-radius:var(--r2);padding:28px;margin-bottom:24px;display:none; }
+    .rfq-form.open { display:block; }
+    .form-title { font-size:18px;font-weight:600;color:rgba(255,255,255,.9);margin-bottom:20px; }
+    .form-grid { display:grid;grid-template-columns:repeat(2,1fr);gap:16px; }
+    .form-field { display:flex;flex-direction:column;gap:8px; }
+    .form-field label { font-size:12px;font-weight:600;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono); }
+    .form-field input, .form-field select, .form-field textarea { background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:11px 14px;color:rgba(255,255,255,.85);font-size:13px;font-family:inherit;outline:none;transition:border-color .15s; }
+    .form-field input:focus, .form-field select:focus, .form-field textarea:focus { border-color:rgba(59,130,246,.4); }
+    .form-field select option { background:#0C0C1B;color:rgba(255,255,255,.9); }
+    .form-full { grid-column:1/-1; }
+    .form-actions { display:flex;gap:10px;margin-top:20px; }
+    .form-submit { background:var(--blue);border:1px solid #2563EB;color:#fff;border-radius:8px;padding:12px 24px;font-size:14px;font-weight:600;cursor:pointer;border:none; }
+    .form-cancel { background:transparent;border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.5);border-radius:8px;padding:12px 18px;font-size:14px;cursor:pointer; }
+  </style>
+</head>
+<body>
+
+<div class="ticker-bar">
+  <div class="ticker-track">
+    <span class="ticker-item"><span class="lbl">RFQ</span><span class="t-warn">4 активных · RFQ-2026-002 дедлайн сегодня</span></span>
+    <span class="ticker-item sep">·</span>
+    <span class="ticker-item"><span class="lbl">КОТИРОВКИ</span><span class="t-blue">Миррико · PAC LV · 118 000 ₽/т</span></span>
+    <span class="ticker-item sep">·</span>
+    <span class="ticker-item"><span class="lbl">КОНТРАКТ</span><span class="t-up">CTR-2026-001 · Миррико · активен</span></span>
+    <span class="ticker-item sep">·</span>
+    <span class="ticker-item"><span class="lbl">КЛОТО</span><span class="t-up">с 1991 · Буровые растворы и химия</span></span>
+  </div>
+</div>
+
+<nav>
+  <a class="nav-logo" href="index-ru.html">
+    <div class="dq-mark">DQ</div>
+    <div class="dq-wordmark">
+      <div class="dq-name">DRILL-Q</div>
+      <div class="dq-powered">powered by <span>cloto</span></div>
+    </div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index-ru.html">Платформа</a></li>
+    <li><a href="catalog-ru.html">Химия</a></li>
+    <li><a href="proposal-ru.html">Тендеры</a></li>
+    <li><a href="tools-ru.html">Инструменты</a></li>
+    <li><a href="marketplace-ru.html"><span class="nav-dot"></span>Маркетплейс</a></li>
+  </ul>
+  <div class="nav-right">
+    <a class="lang-link" href="#">EN</a>
+    <button class="pg-btn" onclick="toggleNewRFQ()">+ Создать RFQ</button>
+  </div>
+</nav>
+
+<div class="mp-wrap">
+  <div class="pg-header">
+    <div>
+      <div class="pg-title">Закупки / RFQ</div>
+      <div class="pg-sub"><a href="marketplace-ru.html" style="color:rgba(255,255,255,.3);">← Маркетплейс</a> · Запросы предложений, котировки, контракты</div>
+    </div>
+    <button class="pg-btn" onclick="toggleNewRFQ()">+ Новый RFQ</button>
+  </div>
+
+  <!-- NEW RFQ FORM -->
+  <div class="rfq-form" id="rfqForm">
+    <div class="form-title">Создать запрос на коммерческое предложение</div>
+    <div class="form-grid">
+      <div class="form-field">
+        <label>Продукт</label>
+        <input type="text" id="rfqProduct" placeholder="PAC LV, KCl, Xanthan Gum...">
+      </div>
+      <div class="form-field">
+        <label>Объём (MT)</label>
+        <input type="number" placeholder="24">
+      </div>
+      <div class="form-field">
+        <label>Дедлайн</label>
+        <input type="date">
+      </div>
+      <div class="form-field">
+        <label>Ответственный</label>
+        <input type="text" placeholder="Procurement Team">
+      </div>
+      <div class="form-field form-full">
+        <label>Дополнительные требования</label>
+        <textarea rows="3" placeholder="Техническая спецификация, условия поставки, инкотермс..."></textarea>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button class="form-submit" onclick="submitRFQ()">Отправить запрос</button>
+      <button class="form-cancel" onclick="toggleNewRFQ()">Отмена</button>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab(this,'rfqs')">Активные RFQ</div>
+    <div class="tab" onclick="switchTab(this,'bids')">Котировки</div>
+    <div class="tab" onclick="switchTab(this,'contracts')">Контракты</div>
+  </div>
+
+  <!-- RFQ LIST -->
+  <div id="tab-rfqs">
+    <div class="rfq-table-wrap">
+      <table class="rfq-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Продукт / программа</th>
+            <th>Объём</th>
+            <th>Дедлайн</th>
+            <th>Ответственный</th>
+            <th>Статус</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="rfq-id-cell">RFQ-2026-001</td>
+            <td><div class="rfq-title-cell">PAC LV for WBM Program</div></td>
+            <td class="rfq-qty-cell">24 MT</td>
+            <td class="rfq-dl-cell">12 мая</td>
+            <td class="rfq-owner-cell">Procurement Team</td>
+            <td><span class="badge-sm bs-blue">В работе</span></td>
+            <td><a class="rfq-action" onclick="switchTab(document.querySelectorAll('.tab')[1],'bids')">Котировки →</a></td>
+          </tr>
+          <tr>
+            <td class="rfq-id-cell">RFQ-2026-002</td>
+            <td><div class="rfq-title-cell">KCl Bulk Supply</div></td>
+            <td class="rfq-qty-cell">120 MT</td>
+            <td class="rfq-dl-cell">8 мая</td>
+            <td class="rfq-owner-cell">Category Buyer</td>
+            <td><span class="badge-sm bs-yellow">Review</span></td>
+            <td><a class="rfq-action" onclick="switchTab(document.querySelectorAll('.tab')[1],'bids')">Котировки →</a></td>
+          </tr>
+          <tr>
+            <td class="rfq-id-cell">RFQ-2026-003</td>
+            <td><div class="rfq-title-cell">Xanthan Gum Annual Frame</div></td>
+            <td class="rfq-qty-cell">36 MT</td>
+            <td class="rfq-dl-cell">20 мая</td>
+            <td class="rfq-owner-cell">Procurement Team</td>
+            <td><span class="badge-sm bs-green">Awarded</span></td>
+            <td><span style="font-size:12px;color:rgba(255,255,255,.3);">KemX</span></td>
+          </tr>
+          <tr>
+            <td class="rfq-id-cell">RFQ-2026-004</td>
+            <td><div class="rfq-title-cell">Defoamer for Pilot Well</div></td>
+            <td class="rfq-qty-cell">4 MT</td>
+            <td class="rfq-dl-cell">2 мая</td>
+            <td class="rfq-owner-cell">Project Buyer</td>
+            <td><span class="badge-sm bs-gray">Pending</span></td>
+            <td><a class="rfq-action" href="marketplace-catalog.html">Каталог →</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- BIDS -->
+  <div id="tab-bids" style="display:none;">
+    <div class="bids-section">
+      <div class="bids-title">RFQ-2026-001 · PAC LV for WBM Program · 24 MT</div>
+      <div class="bids-sub">2 котировки получено · Дедлайн: 12 мая 2026</div>
+
+      <div class="bid-card winner">
+        <div style="flex:1;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+            <div class="bid-supplier">Миррико</div>
+            <div class="winner-badge">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Рекомендован
+            </div>
+          </div>
+          <div class="bid-location">Пыть-Ях, ХМАО · EXW</div>
+          <div class="bid-meta">
+            <div class="bid-meta-item"><div class="bid-meta-label">Цена</div><div class="bid-meta-val">118 000 ₽/т</div></div>
+            <div class="bid-meta-item"><div class="bid-meta-label">Остаток</div><div class="bid-meta-val">20–50 т</div></div>
+            <div class="bid-meta-item"><div class="bid-meta-label">Срок поставки</div><div class="bid-meta-val">1–5 дней</div></div>
+            <div class="bid-meta-item"><div class="bid-meta-label">Оплата</div><div class="bid-meta-val">20 дней</div></div>
+          </div>
+          <div class="bid-comment">Локальный склад и быстрая отгрузка, требуется финальная техпроверка.</div>
+          <div class="bid-actions">
+            <a class="bid-btn bid-btn-blue" href="marketplace-rfq.html#contracts">Выдать PO</a>
+            <button class="bid-btn bid-btn-outline">Запросить уточнение</button>
+          </div>
+        </div>
+        <span class="badge-sm" style="background:rgba(245,158,11,.15);color:#F59E0B;flex-shrink:0;">Tech Review</span>
+      </div>
+
+      <div class="bid-card">
+        <div style="flex:1;">
+          <div class="bid-supplier">Baroid</div>
+          <div class="bid-location">Dubai Free Zone Hub, ОАЭ · FOB</div>
+          <div class="bid-meta">
+            <div class="bid-meta-item"><div class="bid-meta-label">Цена</div><div class="bid-meta-val">129 500 ₽/т</div></div>
+            <div class="bid-meta-item"><div class="bid-meta-label">Остаток</div><div class="bid-meta-val">20–50 т</div></div>
+            <div class="bid-meta-item"><div class="bid-meta-label">Срок поставки</div><div class="bid-meta-val">3–5 недель</div></div>
+            <div class="bid-meta-item"><div class="bid-meta-label">Оплата</div><div class="bid-meta-val">30 дней</div></div>
+          </div>
+          <div class="bid-comment">Полностью соответствует требованиям WBM-программы.</div>
+        </div>
+        <span class="badge-sm bs-green" style="flex-shrink:0;">Approved</span>
+      </div>
+    </div>
+
+    <div class="bids-section">
+      <div class="bids-title">RFQ-2026-002 · KCl Bulk Supply · 120 MT</div>
+      <div class="bids-sub">1 котировка получена · Дедлайн: 8 мая 2026</div>
+      <div class="bid-card winner">
+        <div style="flex:1;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+            <div class="bid-supplier">Миррико</div>
+            <div class="winner-badge">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Рекомендован
+            </div>
+          </div>
+          <div class="bid-location">Нижневартовск, ХМАО · EXW</div>
+          <div class="bid-meta">
+            <div class="bid-meta-item"><div class="bid-meta-label">Цена</div><div class="bid-meta-val">32 000 ₽/т</div></div>
+            <div class="bid-meta-item"><div class="bid-meta-label">Остаток</div><div class="bid-meta-val">50–100 т</div></div>
+            <div class="bid-meta-item"><div class="bid-meta-label">Срок поставки</div><div class="bid-meta-val">1–3 дня</div></div>
+            <div class="bid-meta-item"><div class="bid-meta-label">Оплата</div><div class="bid-meta-val">15 дней</div></div>
+          </div>
+          <div class="bid-comment">Подтверждён локальный объём и быстрая отгрузка.</div>
+          <div class="bid-actions">
+            <a class="bid-btn bid-btn-blue" href="marketplace-rfq.html#contracts">Выдать PO</a>
+          </div>
+        </div>
+        <span class="badge-sm bs-green" style="flex-shrink:0;">Approved</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTRACTS -->
+  <div id="tab-contracts" style="display:none;">
+    <div class="rfq-table-wrap">
+      <table class="rfq-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Поставщик</th>
+            <th>Статус</th>
+            <th>Период</th>
+            <th>Валюта</th>
+            <th>Продукты</th>
+            <th>PO</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="rfq-id-cell">CTR-2026-001</td>
+            <td><div class="rfq-title-cell">Миррико</div><div style="font-size:11px;color:rgba(255,255,255,.3);">Master Supply Agreement</div></td>
+            <td><span class="badge-sm bs-green">Active</span></td>
+            <td class="rfq-dl-cell">01.01–31.12.2026</td>
+            <td class="rfq-owner-cell">RUB</td>
+            <td class="rfq-owner-cell">PAC LV, KCl, PHPA</td>
+            <td><div style="display:flex;flex-direction:column;gap:4px;"><span class="badge-sm bs-yellow">PO-2026-001 draft</span><span class="badge-sm bs-blue">PO-2026-002 issued</span></div></td>
+          </tr>
+          <tr>
+            <td class="rfq-id-cell">CTR-2026-002</td>
+            <td><div class="rfq-title-cell">Baroid</div><div style="font-size:11px;color:rgba(255,255,255,.3);">Master Supply Agreement</div></td>
+            <td><span class="badge-sm bs-yellow">Under Review</span></td>
+            <td class="rfq-dl-cell">01.02–31.12.2026</td>
+            <td class="rfq-owner-cell">USD</td>
+            <td class="rfq-owner-cell">PAC LV</td>
+            <td><span style="font-size:12px;color:rgba(255,255,255,.3);">—</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<footer >
+  <div class="footer-grid">
+    <div>
+      <a class="nav-logo" style="margin-bottom:16px;display:inline-flex;" href="index-ru.html">
+        <div class="dq-mark">DQ</div>
+        <div class="dq-wordmark"><div class="dq-name">DRILL-Q</div><div class="dq-powered">powered by <span>cloto</span></div></div>
+      </a>
+      <p class="footer-brand-desc">Маркетплейс закупок буровых растворов и химических реагентов.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Маркетплейс</h4>
+      <ul>
+        <li><a href="marketplace-ru.html">Обзор</a></li>
+        <li><a href="marketplace-catalog.html">Каталог</a></li>
+        <li><a href="marketplace-warehouses.html">Склады</a></li>
+        <li><a href="marketplace-rfq.html">Закупки / RFQ</a></li>
+        <li><a href="marketplace-ai.html">AI Инженер</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>DRILL-Q</h4>
+      <ul>
+        <li><a href="index-ru.html">Платформа</a></li>
+        <li><a href="tools-ru.html">Инструменты</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Клото</h4>
+      <ul>
+        <li><a href="proposal-ru.html">Запрос доступа</a></li>
+        <li><a href="mailto:arcticdf@gmail.com">arcticdf@gmail.com</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 ООО «КЛОТО» · DRILL-Q Platform · Архангельск</span>
+    <div style="display:flex;gap:20px;">
+      <a href="marketplace-ru.html">Маркетплейс</a>
+      <a href="marketplace-catalog.html">Каталог</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+function toggleNewRFQ() {
+  var f = document.getElementById('rfqForm');
+  f.classList.toggle('open');
+  if(f.classList.contains('open')) f.scrollIntoView({behavior:'smooth'});
+  // pre-fill product from URL param
+  var params = new URLSearchParams(window.location.search);
+  if(params.get('product')) document.getElementById('rfqProduct').value = params.get('product');
+}
+
+function submitRFQ() {
+  alert('Запрос отправлен! Поставщики получат уведомление. Ответ ожидается в течение 24 часов.');
+  document.getElementById('rfqForm').classList.remove('open');
+}
+
+function switchTab(el, id) {
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
+  if(el && el.classList) el.classList.add('active');
+  document.getElementById('tab-rfqs').style.display='none';
+  document.getElementById('tab-bids').style.display='none';
+  document.getElementById('tab-contracts').style.display='none';
+  document.getElementById('tab-'+id).style.display='block';
+}
+
+// Check URL hash
+if(window.location.hash==='#new') { document.getElementById('rfqForm').classList.add('open'); }
+if(window.location.hash==='#contracts') { switchTab(document.querySelectorAll('.tab')[2], 'contracts'); document.querySelectorAll('.tab')[2].classList.add('active'); }
+
+// Pre-fill from catalog
+var params = new URLSearchParams(window.location.search);
+if(params.get('product')) {
+  document.getElementById('rfqForm').classList.add('open');
+  document.getElementById('rfqProduct').value = params.get('product');
+}
+</script>
+</body>
+</html>
+

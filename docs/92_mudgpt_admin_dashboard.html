@@ -1,0 +1,427 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>92 · MudGPT Admin Dashboard</title>
+  <style>
+    :root {
+      --bg: #08111d;
+      --panel: rgba(14, 24, 39, 0.84);
+      --panel-2: rgba(19, 32, 52, 0.92);
+      --line: rgba(198, 220, 255, 0.12);
+      --text: #eef5ff;
+      --muted: #a8b9d5;
+      --mint: #83f2c5;
+      --amber: #ffcf7b;
+      --blue: #8cb8ff;
+      --shadow: 0 28px 90px rgba(0, 0, 0, 0.34);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Bahnschrift", "Trebuchet MS", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 12% 10%, rgba(131, 242, 197, 0.12), transparent 22%),
+        radial-gradient(circle at 84% 18%, rgba(140, 184, 255, 0.16), transparent 28%),
+        linear-gradient(180deg, #08111d 0%, #0b1321 45%, #09111a 100%);
+    }
+
+    .shell {
+      width: min(1380px, calc(100vw - 40px));
+      margin: 28px auto 36px;
+    }
+
+    .topbar,
+    .hero,
+    .section,
+    .module-card,
+    .status-card {
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(16px);
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+      padding: 14px 18px;
+      border-radius: 22px;
+      background: rgba(9, 17, 30, 0.72);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #dfeaff;
+    }
+
+    .brand-badge {
+      width: 12px;
+      height: 12px;
+      border-radius: 4px;
+      background: linear-gradient(135deg, var(--mint), var(--blue));
+      box-shadow: 0 0 18px rgba(131, 242, 197, 0.55);
+    }
+
+    .topbar-links {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .topbar a {
+      color: var(--text);
+      text-decoration: none;
+      font-size: 14px;
+      padding: 10px 14px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 34px;
+      border-radius: 30px;
+      background:
+        linear-gradient(135deg, rgba(24, 39, 63, 0.96), rgba(10, 19, 34, 0.92)),
+        linear-gradient(120deg, rgba(131, 242, 197, 0.1), transparent 42%);
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: auto -50px -60px auto;
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 207, 123, 0.2), transparent 68%);
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+      color: var(--mint);
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 34px;
+      height: 1px;
+      background: currentColor;
+    }
+
+    h1 {
+      margin: 0;
+      max-width: 920px;
+      font-size: clamp(42px, 6vw, 74px);
+      line-height: 0.96;
+      letter-spacing: -0.04em;
+    }
+
+    .hero p,
+    .status-card span,
+    .module-copy,
+    .section p,
+    .section li {
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 15px;
+    }
+
+    .hero-grid,
+    .status-grid,
+    .module-grid {
+      display: grid;
+      gap: 16px;
+      margin-top: 28px;
+    }
+
+    .hero-grid,
+    .status-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .module-grid {
+      grid-template-columns: 1.2fr 0.8fr;
+    }
+
+    .status-card,
+    .module-card,
+    .section {
+      padding: 22px;
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .status-card strong {
+      display: block;
+      font-size: 30px;
+      color: var(--amber);
+    }
+
+    .status-card .label {
+      display: inline-flex;
+      min-height: 30px;
+      align-items: center;
+      padding: 0 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(131, 242, 197, 0.28);
+      background: rgba(131, 242, 197, 0.1);
+      color: #d7fff3;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .section {
+      margin-top: 20px;
+      background: var(--panel);
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .section-head h2,
+    .module-card h2 {
+      margin: 0;
+      font-size: 30px;
+      letter-spacing: -0.03em;
+    }
+
+    .module-card {
+      background:
+        linear-gradient(135deg, rgba(24, 39, 63, 0.92), rgba(13, 24, 40, 0.9)),
+        linear-gradient(120deg, rgba(140, 184, 255, 0.1), transparent 42%);
+    }
+
+    .module-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 30px;
+      padding: 0 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--mint);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .module-metrics {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin: 20px 0 24px;
+    }
+
+    .module-metrics div {
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .module-metrics a {
+      display: block;
+      text-decoration: none;
+      transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+    }
+
+    .module-metrics a:hover {
+      transform: translateY(-2px);
+      border-color: rgba(131, 242, 197, 0.28);
+      background: rgba(131, 242, 197, 0.06);
+    }
+
+    .module-metrics .catalog-link:hover {
+      border-color: rgba(255, 207, 123, 0.32);
+      background: rgba(255, 207, 123, 0.06);
+    }
+
+    .module-metrics strong {
+      display: block;
+      font-size: 24px;
+      color: var(--amber);
+    }
+
+    .module-metrics span {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .module-action,
+    .secondary-action {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: 0 18px;
+      border-radius: 14px;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .module-action {
+      color: #082321;
+      background: linear-gradient(130deg, #c8fff1, #83f2c5);
+      border: 1px solid rgba(131, 242, 197, 0.5);
+      box-shadow: 0 18px 36px rgba(18, 92, 83, 0.28);
+    }
+
+    .secondary-action {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--line);
+    }
+
+    .module-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .checklist {
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    .checklist li + li {
+      margin-top: 10px;
+    }
+
+    @media (max-width: 980px) {
+      .shell { width: min(1380px, calc(100vw - 20px)); }
+      .hero,
+      .section,
+      .status-card,
+      .module-card { padding: 20px; }
+      .hero-grid,
+      .status-grid,
+      .module-grid,
+      .module-metrics { grid-template-columns: 1fr; }
+    }
+  </style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+  <main class="shell">
+    <div class="topbar">
+      <div class="brand"><span class="brand-badge" aria-hidden="true"></span><span>MudGPT · Admin Dashboard</span></div>
+      <div class="topbar-links">
+        <a href="91_mudgpt_materials_admin.html">Модуль 01 · Химреагенты</a>
+        <a href="87_mudgpt_chemicals_materials.html">Клиентская витрина</a>
+        <a href="65_my_wells_auth.html">Аккаунт</a>
+      </div>
+    </div>
+
+    <section class="hero">
+      <div class="eyebrow">Admin control layer</div>
+      <h1>Админ-дашборд управления материалами</h1>
+      <p>Это новая стартовая страница для владельца. Отсюда вы открываете рабочие модули, контролируете, что опубликовано для пользователей, и заходите в таблицы, где вводятся остатки на складах, цены и статус продуктовых карточек.</p>
+
+      <div class="hero-grid">
+        <div class="status-card">
+          <div class="label">Контур</div>
+          <strong>Owner</strong>
+          <span>полный доступ к управлению каталогом и публикации данных для пользователей</span>
+        </div>
+        <div class="status-card">
+          <div class="label">Модули</div>
+          <strong>01</strong>
+          <span>первый рабочий модуль уже поднят и готов для ввода данных</span>
+        </div>
+        <div class="status-card">
+          <div class="label">Синхронизация</div>
+          <strong>Live</strong>
+          <span>все изменения из модуля сразу видны на пользовательской витрине</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>Рабочие модули</h2>
+        <span>Начинаем с прикладного модуля, а не с обзорной страницы без действия</span>
+      </div>
+
+      <div class="module-grid">
+        <article class="module-card">
+          <div class="module-kicker">Module 01</div>
+          <h2>Химреагенты для буровых растворов</h2>
+          <p class="module-copy">Основная операционная таблица для ввода наличия на складах, цен, статуса карточек и управления партнерским доступом к ежедневным обновлениям.</p>
+          <div class="module-metrics">
+            <a href="93_mudgpt_stock_arkhangelsk.html">
+              <strong>Stocks</strong>
+              <span>остатки по складам и готовность материала к отгрузке</span>
+            </a>
+            <div>
+              <strong>Pricing</strong>
+              <span>актуальные цены и коммерческие параметры по продуктам</span>
+            </div>
+            <a class="catalog-link" href="94_mudgpt_products_catalog.html">
+              <strong>Catalog</strong>
+              <span>название, группа и статус продуктовых страниц</span>
+            </a>
+            <div>
+              <strong>Access</strong>
+              <span>выдача прав партнерам только на операционные поля</span>
+            </div>
+          </div>
+          <div class="module-actions">
+            <a class="module-action" href="91_mudgpt_materials_admin.html">Открыть модуль</a>
+            <a class="secondary-action" href="87_mudgpt_chemicals_materials.html">Смотреть user page</a>
+          </div>
+        </article>
+
+        <aside class="module-card">
+          <div class="module-kicker">Now</div>
+          <h2>Что здесь делать</h2>
+          <ul class="checklist">
+            <li>Зайти в модуль химреагентов и заполнить наличие на складах.</li>
+            <li>Задать цены по каждому продукту для клиентской витрины.</li>
+            <li>Проверить, как пользователь видит изменения на отдельной странице просмотра.</li>
+            <li>При необходимости добавить партнеров, которым разрешено обновлять только цены и остатки.</li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+  </main>
+  <script src="assets/js/global-auth-widget.js"></script>
+</body>
+</html>

@@ -1,0 +1,1585 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>78 · Drilling Lifecycle Cockpit</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap");
+
+    :root {
+      --bg-0: #061019;
+      --bg-1: #0d1d2f;
+      --bg-2: #17314a;
+      --panel: rgba(8, 18, 30, 0.84);
+      --panel-strong: rgba(9, 16, 26, 0.94);
+      --line: rgba(226, 237, 255, 0.14);
+      --line-soft: rgba(226, 237, 255, 0.08);
+      --text: #edf5ff;
+      --muted: #97acc4;
+      --cyan: #22d7b4;
+      --blue: #8db4ff;
+      --amber: #ffbf66;
+      --violet: #c6a6ff;
+      --green: #79e3a5;
+      --red: #ff7f8e;
+      --shadow: 0 28px 60px rgba(0, 0, 0, 0.42);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      font-family: "Manrope", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(960px 520px at 0% -10%, rgba(34, 215, 180, 0.16), transparent),
+        radial-gradient(900px 520px at 100% 0%, rgba(255, 191, 102, 0.14), transparent),
+        linear-gradient(145deg, var(--bg-0), var(--bg-1) 48%, var(--bg-2));
+    }
+
+    a { color: inherit; }
+    .wrap {
+      width: min(1460px, 94vw);
+      margin: 0 auto;
+      padding: 24px 0 72px;
+    }
+
+    .top {
+      display: none;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text);
+      font-family: "Oswald", sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-size: 21px;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 35% 35%, #d8fff8, var(--cyan));
+      box-shadow: 0 0 18px rgba(34, 215, 180, 0.55);
+    }
+
+    .top-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .page-actions {
+      position: fixed;
+      top: calc(var(--nexus-auth-clearance, 86px) + 16px);
+      left: 32px;
+      z-index: 24;
+      margin: 0;
+      padding: 0;
+      border: none;
+      border-radius: 0;
+      background: transparent;
+      backdrop-filter: none;
+      box-shadow: none;
+    }
+
+    .top-link {
+      text-decoration: none;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-weight: 800;
+      border-radius: 10px;
+      padding: 9px 12px;
+      color: #082922;
+      background: linear-gradient(130deg, #a0f9eb, #22d7b4);
+      border: 1px solid rgba(34, 215, 180, 0.74);
+    }
+
+    .top-link.alt {
+      color: #0b1530;
+      background: linear-gradient(130deg, #dce9ff, #8db4ff);
+      border-color: rgba(141, 180, 255, 0.64);
+    }
+
+    .hero,
+    .section {
+      margin-top: 18px;
+      border: 1px solid var(--line);
+      border-radius: 26px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      padding: 24px;
+    }
+
+    .hero {
+      background:
+        radial-gradient(520px 240px at 0% 0%, rgba(34, 215, 180, 0.16), transparent),
+        radial-gradient(460px 220px at 100% 0%, rgba(255, 191, 102, 0.12), transparent),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.015)),
+        var(--panel);
+    }
+
+    .eyebrow,
+    .tag,
+    .status-chip,
+    .mini-chip {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      border: 1px solid var(--line-soft);
+      background: rgba(255, 255, 255, 0.04);
+      color: #d7e6f8;
+    }
+
+    .eyebrow,
+    .tag,
+    .mini-chip {
+      padding: 6px 10px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+    }
+
+    .status-chip {
+      padding: 7px 11px;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+    }
+
+    .hero h1 {
+      margin: 14px 0 10px;
+      font-family: "Oswald", sans-serif;
+      font-size: clamp(38px, 5vw, 62px);
+      line-height: 0.98;
+      letter-spacing: -0.02em;
+      max-width: 1080px;
+    }
+
+    .hero p {
+      margin: 0;
+      max-width: 980px;
+      color: #cbdaec;
+      line-height: 1.75;
+      font-size: 15px;
+    }
+
+    .hero-grid {
+      margin-top: 20px;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 18px;
+    }
+
+    .panel-card,
+    .kpi,
+    .stage-card,
+    .launch-card,
+    .action-card,
+    .checkpoint-card,
+    .summary-card,
+    .metric-card,
+    .score-card,
+    .gate-card {
+      border: 1px solid var(--line-soft);
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.03);
+      padding: 18px;
+    }
+
+    .hero-grid .panel-card {
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
+    }
+
+    .panel-card h3,
+    .stage-card h3,
+    .launch-card h3,
+    .action-card h3,
+    .checkpoint-card h3,
+    .summary-card h3,
+    .metric-card h3,
+    .score-card h3,
+    .gate-card h3 {
+      margin: 0 0 10px;
+      font-size: 16px;
+    }
+
+    .panel-card p,
+    .stage-card p,
+    .launch-card p,
+    .action-card p,
+    .checkpoint-card p,
+    .summary-card p,
+    .metric-card p,
+    .score-card p,
+    .gate-card p {
+      margin: 0;
+      color: #ccdbee;
+      line-height: 1.65;
+      font-size: 13px;
+    }
+
+    .hero-kpis,
+    .summary-grid,
+    .launch-grid,
+    .checkpoints-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .hero-kpis { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .summary-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); margin-top: 14px; }
+    .launch-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .checkpoints-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+    .kpi strong,
+    .summary-card strong,
+    .metric-card strong {
+      display: block;
+      font-size: 27px;
+      line-height: 1;
+    }
+
+    .kpi span,
+    .summary-card span,
+    .metric-card span {
+      display: block;
+      margin-top: 7px;
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .section-head h2 {
+      margin: 0;
+      font-size: 25px;
+    }
+
+    .section-head p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .section-head span {
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .control-grid,
+    .map-grid,
+    .work-grid,
+    .score-grid,
+    .gate-board {
+      display: grid;
+      gap: 18px;
+    }
+
+    .control-grid { grid-template-columns: 430px 1fr; }
+    .map-grid { grid-template-columns: 1.1fr 0.9fr; }
+    .work-grid { grid-template-columns: 1fr 1fr; }
+    .score-grid { grid-template-columns: 1.15fr 0.85fr; }
+    .gate-board { grid-template-columns: 1fr; }
+
+    .control-panel {
+      background: linear-gradient(145deg, rgba(8, 18, 30, 0.94), rgba(16, 34, 51, 0.88));
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .field {
+      display: grid;
+      gap: 8px;
+    }
+
+    .field.wide { grid-column: 1 / -1; }
+
+    .field label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+    }
+
+    .field input,
+    .field select {
+      min-height: 50px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text);
+      padding: 0 14px;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .field input:focus,
+    .field select:focus {
+      border-color: rgba(34, 215, 180, 0.72);
+      box-shadow: 0 0 0 4px rgba(34, 215, 180, 0.12);
+    }
+
+    .control-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .btn {
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: 0 16px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .btn.primary {
+      color: #082922;
+      background: linear-gradient(130deg, #a0f9eb, #22d7b4);
+      border-color: rgba(34, 215, 180, 0.74);
+    }
+
+    .btn.secondary {
+      color: #1a2435;
+      background: linear-gradient(130deg, #ffe5af, #ffbf66);
+      border-color: rgba(255, 191, 102, 0.68);
+    }
+
+    .lifecycle-track {
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .lifecycle-track::before {
+      content: "";
+      position: absolute;
+      left: 32px;
+      right: 32px;
+      top: 46px;
+      height: 4px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(34, 215, 180, 0.25), rgba(141, 180, 255, 0.22), rgba(255, 191, 102, 0.22), rgba(198, 166, 255, 0.22));
+    }
+
+    .stage-card {
+      position: relative;
+      overflow: hidden;
+      padding-top: 54px;
+    }
+
+    .stage-card::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 6px;
+      background: var(--accent);
+    }
+
+    .stage-node {
+      position: absolute;
+      left: 18px;
+      top: 18px;
+      width: 24px;
+      height: 24px;
+      border-radius: 999px;
+      border: 3px solid rgba(255, 255, 255, 0.24);
+      background: var(--accent);
+      box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.04);
+    }
+
+    .stage-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .stage-score {
+      min-width: 62px;
+      text-align: center;
+      padding: 8px 10px;
+      border-radius: 14px;
+      border: 1px solid var(--line-soft);
+      background: rgba(255, 255, 255, 0.05);
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .stage-links,
+    .action-list,
+    .checkpoint-list,
+    .summary-list {
+      display: grid;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .stage-links a,
+    .launch-links a {
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 40px;
+      padding: 0 12px;
+      border-radius: 12px;
+      border: 1px solid var(--line-soft);
+      background: rgba(255, 255, 255, 0.03);
+      color: #dbe9fb;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .stage-links { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .launch-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+
+    .map-card {
+      border: 1px solid var(--line-soft);
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.03);
+      padding: 18px;
+    }
+
+    .map-card svg { width: 100%; height: auto; display: block; }
+
+    .bullet,
+    .checkpoint,
+    .summary-item {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      color: #d7e4f5;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .bullet::before,
+    .checkpoint::before,
+    .summary-item::before {
+      content: "";
+      width: 10px;
+      height: 10px;
+      margin-top: 5px;
+      border-radius: 999px;
+      background: var(--dot-color, var(--cyan));
+      flex: 0 0 auto;
+      box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.03);
+    }
+
+    .launch-card {
+      text-decoration: none;
+      color: inherit;
+      transition: transform 180ms ease, border-color 180ms ease;
+    }
+
+    .launch-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(34, 215, 180, 0.44);
+    }
+
+    .launch-card[data-tone="cyan"] { background: linear-gradient(145deg, rgba(34, 215, 180, 0.1), rgba(255, 255, 255, 0.03)); }
+    .launch-card[data-tone="blue"] { background: linear-gradient(145deg, rgba(141, 180, 255, 0.1), rgba(255, 255, 255, 0.03)); }
+    .launch-card[data-tone="amber"] { background: linear-gradient(145deg, rgba(255, 191, 102, 0.1), rgba(255, 255, 255, 0.03)); }
+
+    .score-stack,
+    .gate-stack {
+      display: grid;
+      gap: 12px;
+    }
+
+    .score-card {
+      background: linear-gradient(145deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+    }
+
+    .score-top,
+    .gate-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .score-value {
+      font-size: 30px;
+      line-height: 1;
+      font-weight: 800;
+    }
+
+    .score-sub {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .meter {
+      margin-top: 14px;
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.06);
+      overflow: hidden;
+      border: 1px solid var(--line-soft);
+    }
+
+    .meter-fill {
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--meter-from, var(--cyan)), var(--meter-to, var(--blue)));
+      width: 0%;
+    }
+
+    .gate-notes {
+      display: grid;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .gate-card {
+      background: linear-gradient(145deg, rgba(14, 28, 44, 0.88), rgba(255,255,255,0.02));
+    }
+
+    .gate-track {
+      margin-top: 10px;
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.06);
+      overflow: hidden;
+    }
+
+    .gate-fill {
+      height: 100%;
+      border-radius: inherit;
+      width: 0%;
+      background: linear-gradient(90deg, var(--fill-start, var(--amber)), var(--fill-end, var(--cyan)));
+    }
+
+    .gate-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: #e9f2ff;
+    }
+
+    .gate-value {
+      font-size: 13px;
+      font-weight: 800;
+      color: #dfeeff;
+    }
+
+    .tool-grid,
+    .tool-metrics {
+      display: grid;
+      gap: 12px;
+    }
+
+    .tool-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .tool-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 12px; }
+
+    .tool-card {
+      border: 1px solid var(--line-soft);
+      border-radius: 20px;
+      background: linear-gradient(145deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+      padding: 18px;
+    }
+
+    .tool-item {
+      border: 1px solid var(--line-soft);
+      border-radius: 16px;
+      background: rgba(255,255,255,0.03);
+      padding: 14px;
+    }
+
+    .tool-item strong {
+      display: block;
+      font-size: 22px;
+      line-height: 1;
+    }
+
+    .tool-item span {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .tool-list {
+      display: grid;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .footer {
+      margin-top: 18px;
+      color: #8ca1ba;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      text-align: center;
+    }
+
+    @media (max-width: 1320px) {
+      .hero-grid,
+      .control-grid,
+      .map-grid,
+      .work-grid,
+      .score-grid,
+      .tool-grid,
+      .launch-grid,
+      .checkpoints-grid,
+      .tool-metrics,
+      .summary-grid,
+      .lifecycle-track {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+      .lifecycle-track::before { display: none; }
+    }
+
+    @media (max-width: 900px) {
+      .wrap { padding-top: 24px; }
+      .page-actions {
+        top: calc(var(--nexus-auth-clearance, 86px) + 18px);
+        left: 16px;
+      }
+      .section-head { flex-direction: column; align-items: flex-start; }
+      .form-grid,
+      .hero-kpis,
+      .stage-links { grid-template-columns: 1fr; }
+    }
+  </style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+  <main class="wrap">
+    <header class="top">
+      <a class="brand" href="37_drilling_modules.html"><span class="dot" aria-hidden="true"></span><span>Nexus Oilfield AI · Well Lifecycle</span></a>
+    </header>
+
+    <nav class="page-actions" aria-label="Page actions">
+      <a class="top-link" href="37_drilling_modules.html">Назад к модулю бурения</a>
+    </nav>
+
+    <section class="hero">
+      <span class="eyebrow">Drilling Lifecycle Cockpit</span>
+      <h1>Один понятный инструмент для буровиков: от проектирования скважины до сдачи объекта</h1>
+      <p>Здесь весь цикл собран в один экран. Сначала видно, на каком этапе находится скважина, где узкое место, что делать в ближайшие 24 часа и в какой специализированный модуль надо зайти дальше. Это не витрина из разрозненных страниц, а единый маршрут для инженера, супервайзера и drilling manager на любом проекте бурения. Если внутри встречаются эталонные кейсы, они используются как шаблоны прикладной работы, а не как ограничение системы одним месторождением.</p>
+      <div class="hero-grid">
+        <div>
+          <div class="hero-kpis">
+            <div class="kpi"><strong>6 этапов</strong><span>design → mobilization → drill → control → cement → handover</span></div>
+            <div class="kpi"><strong id="overallScore">76%</strong><span>общая готовность скважины</span></div>
+            <div class="kpi"><strong id="activePhaseLabel">Бурение</strong><span>текущий управленческий фокус</span></div>
+            <div class="kpi"><strong id="nextGateLabel">Gate 4</strong><span>следующий quality gate</span></div>
+          </div>
+          <div class="summary-grid">
+            <div class="summary-card"><strong id="daysToTD">6.5</strong><span>суток до TD по текущему темпу</span></div>
+            <div class="summary-card"><strong id="lossesState">Moderate</strong><span>контур осложнений</span></div>
+            <div class="summary-card"><strong id="docPackValue">82%</strong><span>готовность отчетного пакета</span></div>
+            <div class="summary-card"><strong id="nextActionShort">Контроль потерь</strong><span>главное действие смены</span></div>
+          </div>
+        </div>
+        <div class="panel-card">
+          <h3>Как читать cockpit</h3>
+          <p>Слева задаешь фактическое состояние скважины. Система сразу пересчитывает зрелость этапов, next-best-action и открывает правильный маршрут: проектирование, daily control, борьба с осложнениями, крепление, испытание и сдача.</p>
+          <div class="action-list">
+            <div class="bullet" style="--dot-color:var(--cyan)">Сначала смотри общий статус и слабое звено по этапам.</div>
+            <div class="bullet" style="--dot-color:var(--blue)">Потом открывай нужный инструмент через быстрые launch-карты ниже.</div>
+            <div class="bullet" style="--dot-color:var(--amber)">Для сдачи скважины используй quality gates и пакет отчетности, а не только суточные KPI.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>Состояние Скважины</h2>
+          <p>Вводишь фактическое положение дел, cockpit показывает где ты находишься и что делать дальше.</p>
+        </div>
+        <span>live scenario control</span>
+      </div>
+      <div class="control-grid">
+        <div class="panel-card control-panel">
+          <span class="tag">Scenario Builder</span>
+          <div class="form-grid">
+            <div class="field wide">
+              <label for="wellName">Скважина</label>
+              <input id="wellName" value="Well-12 North" />
+            </div>
+            <div class="field">
+              <label for="currentPhase">Текущий этап</label>
+              <select id="currentPhase">
+                <option value="design">Проектирование</option>
+                <option value="mobilization">Подготовка</option>
+                <option value="drill" selected>Бурение</option>
+                <option value="control">Осложнения и контроль</option>
+                <option value="cement">Крепление и цементирование</option>
+                <option value="handover">Испытание и сдача</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="planDepth">Плановая глубина, м</label>
+              <input id="planDepth" type="number" value="4200" min="500" step="10" />
+            </div>
+            <div class="field">
+              <label for="currentDepth">Текущая глубина, м</label>
+              <input id="currentDepth" type="number" value="3180" min="0" step="10" />
+            </div>
+            <div class="field">
+              <label for="dailyRate">Текущий темп, м/сут</label>
+              <input id="dailyRate" type="number" value="158" min="1" step="1" />
+            </div>
+            <div class="field">
+              <label for="nptHours">NPT за 24ч, ч</label>
+              <input id="nptHours" type="number" value="3.5" min="0" step="0.5" />
+            </div>
+            <div class="field">
+              <label for="lossRate">Поглощения, м3/ч</label>
+              <input id="lossRate" type="number" value="4.2" min="0" step="0.1" />
+            </div>
+            <div class="field">
+              <label for="hydMargin">Запас по гидравлике, ppg</label>
+              <input id="hydMargin" type="number" value="0.18" min="0" step="0.01" />
+            </div>
+            <div class="field">
+              <label for="designReady">Готовность проекта, %</label>
+              <input id="designReady" type="number" value="88" min="0" max="100" step="1" />
+            </div>
+            <div class="field">
+              <label for="materialsReady">Материалы и BHA, %</label>
+              <input id="materialsReady" type="number" value="81" min="0" max="100" step="1" />
+            </div>
+            <div class="field">
+              <label for="cementReady">Готовность к креплению, %</label>
+              <input id="cementReady" type="number" value="74" min="0" max="100" step="1" />
+            </div>
+            <div class="field">
+              <label for="docsReady">Готовность отчетов, %</label>
+              <input id="docsReady" type="number" value="82" min="0" max="100" step="1" />
+            </div>
+            <div class="field">
+              <label for="testReady">Готовность к испытанию, %</label>
+              <input id="testReady" type="number" value="68" min="0" max="100" step="1" />
+            </div>
+            <div class="field">
+              <label for="acceptanceReady">Приемка и сдача, %</label>
+              <input id="acceptanceReady" type="number" value="61" min="0" max="100" step="1" />
+            </div>
+          </div>
+          <div class="control-actions">
+            <button class="btn primary" id="recalcBtn" type="button">Пересчитать cockpit</button>
+            <button class="btn secondary" id="resetBtn" type="button">Сценарий по умолчанию</button>
+          </div>
+        </div>
+
+        <div class="map-grid">
+          <div class="map-card">
+            <h3>Маршрут скважины</h3>
+            <svg viewBox="0 0 900 340" role="img" aria-label="Жизненный цикл скважины">
+              <defs>
+                <linearGradient id="lifeA" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#22d7b4" /><stop offset="100%" stop-color="#7be4cc" /></linearGradient>
+                <linearGradient id="lifeB" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#8db4ff" /><stop offset="100%" stop-color="#6296ff" /></linearGradient>
+                <linearGradient id="lifeC" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#ffbf66" /><stop offset="100%" stop-color="#ff9f49" /></linearGradient>
+                <linearGradient id="lifeD" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#c6a6ff" /><stop offset="100%" stop-color="#9671ff" /></linearGradient>
+              </defs>
+              <rect x="0" y="0" width="900" height="340" rx="24" fill="rgba(255,255,255,.02)" stroke="rgba(226,237,255,.08)" />
+              <path d="M 80 100 C 180 100, 180 100, 280 100 C 380 100, 380 164, 480 164 C 580 164, 580 164, 680 164 C 760 164, 792 112, 842 112" fill="none" stroke="rgba(255,255,255,.18)" stroke-width="10" stroke-linecap="round" />
+              <g>
+                <circle cx="80" cy="100" r="24" fill="url(#lifeA)" /><text x="80" y="106" fill="#07101a" font-size="14" font-weight="800" text-anchor="middle">1</text>
+                <text x="36" y="148" fill="#eff6ff" font-size="17" font-weight="800">Проект</text>
+                <text x="18" y="170" fill="#bbd0e7" font-size="12">геология · профиль · КНБК</text>
+              </g>
+              <g>
+                <circle cx="280" cy="100" r="24" fill="url(#lifeB)" /><text x="280" y="106" fill="#07101a" font-size="14" font-weight="800" text-anchor="middle">2</text>
+                <text x="222" y="148" fill="#eff6ff" font-size="17" font-weight="800">Подготовка</text>
+                <text x="204" y="170" fill="#bbd0e7" font-size="12">материалы · мобилизация · QA</text>
+              </g>
+              <g>
+                <circle cx="480" cy="164" r="24" fill="url(#lifeA)" /><text x="480" y="170" fill="#07101a" font-size="14" font-weight="800" text-anchor="middle">3</text>
+                <text x="430" y="212" fill="#eff6ff" font-size="17" font-weight="800">Бурение</text>
+                <text x="376" y="234" fill="#bbd0e7" font-size="12">daily control · depth/day · NPT</text>
+              </g>
+              <g>
+                <circle cx="680" cy="164" r="24" fill="url(#lifeC)" /><text x="680" y="170" fill="#07101a" font-size="14" font-weight="800" text-anchor="middle">4</text>
+                <text x="598" y="212" fill="#eff6ff" font-size="17" font-weight="800">Осложнения</text>
+                <text x="574" y="234" fill="#bbd0e7" font-size="12">поглощения · гидравлика · реакции</text>
+              </g>
+              <g>
+                <circle cx="842" cy="112" r="24" fill="url(#lifeD)" /><text x="842" y="118" fill="#07101a" font-size="14" font-weight="800" text-anchor="middle">5</text>
+                <text x="768" y="70" fill="#eff6ff" font-size="17" font-weight="800">Крепление</text>
+                <text x="730" y="92" fill="#bbd0e7" font-size="12">обсадка · цементирование</text>
+              </g>
+              <g>
+                <circle cx="842" cy="252" r="24" fill="#79e3a5" /><text x="842" y="258" fill="#07101a" font-size="14" font-weight="800" text-anchor="middle">6</text>
+                <path d="M 842 136 L 842 228" fill="none" stroke="rgba(121,227,165,.55)" stroke-width="8" stroke-linecap="round" />
+                <text x="744" y="304" fill="#eff6ff" font-size="17" font-weight="800">Испытание и сдача</text>
+                <text x="724" y="326" fill="#bbd0e7" font-size="12">приемка · отчеты · закрытие работ</text>
+              </g>
+            </svg>
+            <div class="summary-list" id="routeSummary">
+              <div class="summary-item" style="--dot-color:var(--cyan)">Маршрут готов: сначала инженерная база, потом ежедневное управление, затем сдача без дыр в документах.</div>
+            </div>
+          </div>
+
+          <div class="panel-card">
+            <h3>Следующее действие</h3>
+            <p id="nextActionText">Уточнить контур потерь, сравнить loss rate с safe window и открыть I3 cockpit для решения по материалам и режиму.</p>
+            <div class="summary-grid" style="grid-template-columns:repeat(2,minmax(0,1fr)); margin-top:14px;">
+              <div class="metric-card"><strong id="mainRiskValue">Losses</strong><span>главный риск</span></div>
+              <div class="metric-card"><strong id="gateOwnerValue">Drilling team</strong><span>владелец gate</span></div>
+            </div>
+            <div class="action-list" id="priorityList">
+              <div class="bullet" style="--dot-color:var(--amber)">Зафиксировать баланс прихода/расхода и сверить документированные потери.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>Этапы Жизненного Цикла</h2>
+          <p>Каждый этап показывает уровень готовности, управленческий смысл и правильные инструменты для перехода дальше.</p>
+        </div>
+        <span>quality gates by stage</span>
+      </div>
+      <div class="lifecycle-track" id="stageTrack"></div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>Инженерный Scorecard</h2>
+          <p>Это уже рабочая часть cockpit: темп, NPT, пакет по поглощениям, готовность к креплению и реальный разрыв до сдачи.</p>
+        </div>
+        <span>operations + handover</span>
+      </div>
+      <div class="score-grid">
+        <div class="score-stack" id="engineeringBoard"></div>
+        <div class="gate-stack">
+          <div class="gate-card">
+            <h3>Gate Board</h3>
+            <p>По этим полосам сразу видно, какой этап реально тянет скважину назад.</p>
+            <div class="gate-board" id="gateBoard"></div>
+          </div>
+          <div class="gate-card">
+            <h3>Решение По Сдаче</h3>
+            <div class="gate-notes" id="closeoutDecision"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>Быстрый Запуск Инструментов</h2>
+          <p>Открывай не все подряд, а только тот модуль, который нужен именно на текущем этапе.</p>
+        </div>
+        <span>role-based shortcuts</span>
+      </div>
+      <div class="launch-grid">
+        <div class="launch-card" data-tone="cyan">
+          <span class="tag">Route 01</span>
+          <h3>Паспорт и архитектура скважины</h3>
+          <p>Единая точка для профиля, геологии, конструкции, раствора, ННБ и программы работ по скважине.</p>
+          <div class="launch-links">
+            <a href="project_well_dashboard.html">Открыть dashboard</a>
+            <a href="19_drilling_stage_1_design.html">Stage 1 design</a>
+            <a href="47_drilling_fluid_system_selection.html">Fluid selection</a>
+          </div>
+        </div>
+        <div class="launch-card" data-tone="blue">
+          <span class="tag">Route 02</span>
+          <h3>Ежедневное управление бурением</h3>
+          <p>Суточный контур: daily report, volumes/losses, hydraulics, costing, audit и report manager в одном рабочем столе.</p>
+          <div class="launch-links">
+            <a href="40_wellsite_program_site_edition.html">WS2000 full</a>
+            <a href="39_wellsite_daily_report_studio.html">Daily studio</a>
+            <a href="21_digitalization_i1_depth_day_optimizer_charter.html">I1 depth/day</a>
+          </div>
+        </div>
+        <div class="launch-card" data-tone="amber">
+          <span class="tag">Route 03</span>
+          <h3>Осложнения, крепление и сдача</h3>
+          <p>Когда скважина начинает «болеть», не теряешься: поглощения, гидравлика, крепление, цементирование и пакет сдачи уже связаны.</p>
+          <div class="launch-links">
+            <a href="77_i3_losses_cockpit.html">Losses cockpit</a>
+            <a href="43_cementing_calculator.html">Cementing</a>
+            <a href="33_delivery_checklist.html">Delivery checklist</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>Мини-Инструменты Инженера</h2>
+          <p>Это быстрые рабочие расчеты внутри cockpit: что грузить против поглощений, можно ли идти в крепление и насколько реально готово закрытие работ.</p>
+        </div>
+        <span>embedded work tools</span>
+      </div>
+      <div class="tool-grid">
+        <div class="tool-card">
+          <h3>Loss Response Pack</h3>
+          <div class="tool-metrics" id="lossToolMetrics"></div>
+          <div class="tool-list" id="lossToolList"></div>
+        </div>
+        <div class="tool-card">
+          <h3>Cement Launch Check</h3>
+          <div class="tool-metrics" id="cementToolMetrics"></div>
+          <div class="tool-list" id="cementToolList"></div>
+        </div>
+        <div class="tool-card">
+          <h3>Пакет закрытия работ</h3>
+          <div class="tool-metrics" id="closeoutToolMetrics"></div>
+          <div class="tool-list" id="closeoutToolList"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>Контрольные Точки Сдачи</h2>
+          <p>Скважина считается готовой только когда закрыты и операция, и документы, и приемка.</p>
+        </div>
+        <span>handover discipline</span>
+      </div>
+      <div class="work-grid">
+        <div class="action-card">
+          <h3>Пакет закрытия работ</h3>
+          <div class="checkpoints-grid" id="handoverChecks"></div>
+        </div>
+        <div class="action-card">
+          <h3>План на ближайшие 24 часа</h3>
+          <div class="checkpoint-list" id="dayPlan"></div>
+        </div>
+      </div>
+    </section>
+
+    <p class="footer">Doc 78 · единый маршрут буровика по полному циклу скважины</p>
+  </main>
+
+  <script>
+    const defaults = {
+      wellName: "Well-12 North",
+      currentPhase: "drill",
+      planDepth: 4200,
+      currentDepth: 3180,
+      dailyRate: 158,
+      nptHours: 3.5,
+      lossRate: 4.2,
+      hydMargin: 0.18,
+      designReady: 88,
+      materialsReady: 81,
+      cementReady: 74,
+      docsReady: 82,
+      testReady: 68,
+      acceptanceReady: 61
+    };
+
+    const stageMeta = [
+      {
+        id: "design",
+        title: "1. Проектирование",
+        accent: "var(--cyan)",
+        desc: "Фиксирует геологию, профиль, конструкцию, растворы, КНБК и критерии успеха до старта работ.",
+        tools: [
+          { label: "Dashboard", href: "project_well_dashboard.html" },
+          { label: "Stage 1", href: "19_drilling_stage_1_design.html" }
+        ]
+      },
+      {
+        id: "mobilization",
+        title: "2. Подготовка",
+        accent: "var(--blue)",
+        desc: "Проверяет готовность материалов, BHA, сервисов, данных и quality gates перед мобилизацией.",
+        tools: [
+          { label: "Execution", href: "20_drilling_stage_1_execution_playbook.html" },
+          { label: "Fluids", href: "47_drilling_fluid_system_selection.html" }
+        ]
+      },
+      {
+        id: "drill",
+        title: "3. Бурение",
+        accent: "var(--cyan)",
+        desc: "Управляет суточным темпом, ROP, NPT, критическим путем и отклонением факта от плана.",
+        tools: [
+          { label: "WS2000", href: "40_wellsite_program_site_edition.html" },
+          { label: "I1", href: "21_digitalization_i1_depth_day_optimizer_charter.html" }
+        ]
+      },
+      {
+        id: "control",
+        title: "4. Осложнения",
+        accent: "var(--amber)",
+        desc: "Закрывает поглощения, safe window, гидравлику и решение по corrective actions без потери времени.",
+        tools: [
+          { label: "I3 cockpit", href: "77_i3_losses_cockpit.html" },
+          { label: "Hydraulics", href: "36_hydraulics_calculator_interactive.html" }
+        ]
+      },
+      {
+        id: "cement",
+        title: "5. Крепление",
+        accent: "var(--violet)",
+        desc: "Проверяет readiness к обсадке, расчетам цемента, качеству замещения и post-job verification.",
+        tools: [
+          { label: "I4", href: "24_digitalization_i4_casing_cementing_charter.html" },
+          { label: "Calculator", href: "43_cementing_calculator.html" }
+        ]
+      },
+      {
+        id: "handover",
+        title: "6. Испытание и сдача",
+        accent: "var(--green)",
+        desc: "Собирает испытание, пакет закрытия работ, итоговую отчетность и критерии приемки скважины заказчиком.",
+        tools: [
+          { label: "Daily studio", href: "39_wellsite_daily_report_studio.html" },
+          { label: "Checklist", href: "33_delivery_checklist.html" }
+        ]
+      }
+    ];
+
+    const phaseLabels = {
+      design: "Проектирование",
+      mobilization: "Подготовка",
+      drill: "Бурение",
+      control: "Осложнения",
+      cement: "Крепление",
+      handover: "Сдача"
+    };
+
+    const phaseOwners = {
+      design: "Well engineering",
+      mobilization: "Rig readiness team",
+      drill: "Drilling team",
+      control: "Drilling + fluids",
+      cement: "Cementing lead",
+      handover: "Superintendent"
+    };
+
+    const byId = (id) => document.getElementById(id);
+
+    function clamp(value, min, max) {
+      return Math.min(max, Math.max(min, value));
+    }
+
+    function statusFromScore(score) {
+      if (score >= 85) return { label: "On track", color: "var(--green)" };
+      if (score >= 65) return { label: "Attention", color: "var(--amber)" };
+      return { label: "Critical", color: "var(--red)" };
+    }
+
+    function formatLosses(lossRate) {
+      if (lossRate < 2) return "Low";
+      if (lossRate < 6) return "Moderate";
+      if (lossRate < 10) return "High";
+      return "Severe";
+    }
+
+    function gateFromPhase(phase) {
+      const order = {
+        design: "Gate 1",
+        mobilization: "Gate 2",
+        drill: "Gate 3",
+        control: "Gate 4",
+        cement: "Gate 5",
+        handover: "Gate 6"
+      };
+      return order[phase] || "Gate";
+    }
+
+    function getScenario() {
+      return {
+        wellName: byId("wellName").value.trim() || defaults.wellName,
+        currentPhase: byId("currentPhase").value,
+        planDepth: Number(byId("planDepth").value) || defaults.planDepth,
+        currentDepth: Number(byId("currentDepth").value) || defaults.currentDepth,
+        dailyRate: Number(byId("dailyRate").value) || defaults.dailyRate,
+        nptHours: Number(byId("nptHours").value) || defaults.nptHours,
+        lossRate: Number(byId("lossRate").value) || defaults.lossRate,
+        hydMargin: Number(byId("hydMargin").value) || defaults.hydMargin,
+        designReady: clamp(Number(byId("designReady").value) || defaults.designReady, 0, 100),
+        materialsReady: clamp(Number(byId("materialsReady").value) || defaults.materialsReady, 0, 100),
+        cementReady: clamp(Number(byId("cementReady").value) || defaults.cementReady, 0, 100),
+        docsReady: clamp(Number(byId("docsReady").value) || defaults.docsReady, 0, 100),
+        testReady: clamp(Number(byId("testReady").value) || defaults.testReady, 0, 100),
+        acceptanceReady: clamp(Number(byId("acceptanceReady").value) || defaults.acceptanceReady, 0, 100)
+      };
+    }
+
+    function computeStageScores(data) {
+      const progress = clamp((data.currentDepth / Math.max(data.planDepth, 1)) * 100, 0, 100);
+      const drillScore = clamp(68 + progress * 0.2 - data.nptHours * 3 - data.lossRate * 1.5 + data.hydMargin * 80, 10, 99);
+      const controlScore = clamp(88 - data.lossRate * 5 - Math.max(0, 0.2 - data.hydMargin) * 150 + data.docsReady * 0.1, 5, 98);
+      const handoverBase = data.docsReady * 0.45 + data.testReady * 0.3 + data.acceptanceReady * 0.25;
+
+      return {
+        design: clamp(data.designReady, 0, 100),
+        mobilization: clamp(data.materialsReady * 0.7 + data.designReady * 0.3, 0, 100),
+        drill: Math.round(drillScore),
+        control: Math.round(controlScore),
+        cement: clamp(Math.round(data.cementReady * 0.75 + data.materialsReady * 0.25), 0, 100),
+        handover: clamp(Math.round(handoverBase), 0, 100)
+      };
+    }
+
+    function weakestStage(scores) {
+      const names = {
+        design: "проектирование",
+        mobilization: "подготовка",
+        drill: "бурение",
+        control: "осложнения",
+        cement: "крепление",
+        handover: "сдача"
+      };
+      const weakest = Object.entries(scores).sort((a, b) => a[1] - b[1])[0][0];
+      return names[weakest] || weakest;
+    }
+
+    function computeEngineeringMetrics(data, scores) {
+      const progress = clamp((data.currentDepth / Math.max(data.planDepth, 1)) * 100, 0, 100);
+      const nptShare = clamp((data.nptHours / 24) * 100, 0, 100);
+      const lossSeverity = formatLosses(data.lossRate);
+      const pillVolume = data.lossRate < 2 ? 6 : data.lossRate < 6 ? 8 : data.lossRate < 10 ? 12 : 15;
+      const vusVolume = data.lossRate < 6 ? 10 : data.lossRate < 10 ? 12 : 15;
+      const safeWindowLabel = data.hydMargin >= 0.08 ? "Комфортное" : data.hydMargin >= 0.03 ? "Узкое" : "Критическое";
+      const safeWindowScore = clamp(Math.round((data.hydMargin + 0.02) * 400), 0, 100);
+      const cementLaunchScore = clamp(Math.round((scores.cement * 0.6) + (data.docsReady * 0.15) + (data.materialsReady * 0.25)), 0, 100);
+      const closeoutGap = clamp(100 - scores.handover, 0, 100);
+
+      return {
+        progress,
+        nptShare,
+        lossSeverity,
+        pillVolume,
+        vusVolume,
+        safeWindowLabel,
+        safeWindowScore,
+        cementLaunchScore,
+        closeoutGap,
+        weakest: weakestStage(scores)
+      };
+    }
+
+    function getNextAction(data, scores) {
+      if (data.currentPhase === "design") {
+        return {
+          title: "Закрыть проектный baseline",
+          text: "Проверить геологию, конструкцию, профиль, программу раствора и критерии успеха до перехода в мобилизацию.",
+          owner: phaseOwners.design,
+          risk: "Design gaps",
+          items: [
+            "Сверить профиль и обсадную программу с проектом скважины.",
+            "Подтвердить программу раствора и ограничения safe window.",
+            "Зафиксировать KPI по сроку, NPT и качеству сдачи скважины."
+          ]
+        };
+      }
+
+      if (data.currentPhase === "mobilization") {
+        return {
+          title: "Закрыть rig readiness",
+          text: "Проверить BHA, материалы, data readiness и набор сервисов до старта интервала.",
+          owner: phaseOwners.mobilization,
+          risk: "Readiness",
+          items: [
+            "Проверить наличие материалов под осложнения и цементирование.",
+            "Подтвердить готовность отчетности и суточного контура.",
+            "Открыть playbook и зафиксировать go/no-go статус."
+          ]
+        };
+      }
+
+      if (data.currentPhase === "drill") {
+        const focus = data.lossRate >= 6 ? "Стабилизировать потери" : "Удержать темп бурения";
+        return {
+          title: focus,
+          text: data.lossRate >= 6
+            ? "Потери уже влияют на цикл. Сверить volume balance, открыть I3 cockpit и пересчитать corrective plan."
+            : "Темп еще управляем. Следить за NPT, держать daily report чистым и контролировать отклонение от плана.",
+          owner: phaseOwners.drill,
+          risk: data.lossRate >= 6 ? "Losses" : "Schedule drift",
+          items: data.lossRate >= 6
+            ? [
+                "Подтвердить фактический loss rate и интервал осложнения.",
+                "Открыть Losses cockpit и определить next material / next action.",
+                "Согласовать решение с гидравликой и обновить daily report."
+              ]
+            : [
+                "Проверить критический путь и остаток до TD.",
+                "Удержать NPT ниже 4 часов за смену.",
+                "Обновить daily report и forecast по сроку."
+              ]
+        };
+      }
+
+      if (data.currentPhase === "control") {
+        return {
+          title: "Локализовать осложнение",
+          text: "Контур осложнений должен быть замкнут быстро: потери, safe window, hydraulics margin и corrective material plan.",
+          owner: phaseOwners.control,
+          risk: "Well stability",
+          items: [
+            "Сверить гидравлический запас и допустимое окно плотности.",
+            "Выбрать пакет LCM или режимную коррекцию по severity.",
+            "Зафиксировать outcome и readiness к возврату в нормальный режим."
+          ]
+        };
+      }
+
+      if (data.currentPhase === "cement") {
+        return {
+          title: "Закрыть крепление без сюрпризов",
+          text: "Перед обсадкой и цементированием нужна чистая readiness-картина: объемы, рецептуры, график закачки и контроль качества.",
+          owner: phaseOwners.cement,
+          risk: "Cement job quality",
+          items: [
+            "Пересчитать объемы и топ цемента.",
+            "Проверить readiness материалов и сервисных окон.",
+            "Подготовить post-job verification и данные для закрытия работ."
+          ]
+        };
+      }
+
+      return {
+        title: "Собрать скважину к сдаче",
+        text: "Операция еще не завершена, пока не закрыты испытания, итоговые отчеты, приемка и финальный пакет закрытия работ.",
+        owner: phaseOwners.handover,
+        risk: "Acceptance",
+        items: [
+          "Проверить тестовую программу и фактический результат испытания.",
+          "Собрать финальный пакет отчетов без незакрытых пробелов.",
+          "Закрыть checklist и передать скважину заказчику."
+        ]
+      };
+    }
+
+    function renderStageCards(scores, data) {
+      const stageTrack = byId("stageTrack");
+      stageTrack.innerHTML = stageMeta.map((stage) => {
+        const score = scores[stage.id];
+        const status = statusFromScore(score);
+        return `
+          <article class="stage-card" style="--accent:${stage.accent}">
+            <span class="stage-node" aria-hidden="true"></span>
+            <div class="stage-top">
+              <div>
+                <div class="tag">${stage.id === data.currentPhase ? "Активный этап" : "Quality gate"}</div>
+                <h3>${stage.title}</h3>
+              </div>
+              <div class="stage-score" style="color:${status.color}">${score}%</div>
+            </div>
+            <div class="status-chip" style="margin-top:10px;color:${status.color};border-color:${status.color};">${status.label}</div>
+            <p style="margin-top:12px;">${stage.desc}</p>
+            <div class="stage-links">
+              <a href="${stage.tools[0].href}">${stage.tools[0].label}</a>
+              <a href="${stage.tools[1].href}">${stage.tools[1].label}</a>
+            </div>
+          </article>
+        `;
+      }).join("");
+    }
+
+    function renderHandoverChecks(data, scores) {
+      const checks = [
+        {
+          title: "Daily / Summary / Recap",
+          text: `Пакет отчетов собран на ${data.docsReady}%.`,
+          color: data.docsReady >= 85 ? "var(--green)" : data.docsReady >= 65 ? "var(--amber)" : "var(--red)"
+        },
+        {
+          title: "Испытание скважины",
+          text: `Тестовая readiness ${data.testReady}% и должна быть закрыта до handover.`,
+          color: data.testReady >= 80 ? "var(--green)" : data.testReady >= 60 ? "var(--amber)" : "var(--red)"
+        },
+        {
+          title: "Приемка заказчиком",
+          text: `Acceptance пакет готов на ${data.acceptanceReady}%.`,
+          color: data.acceptanceReady >= 80 ? "var(--green)" : data.acceptanceReady >= 60 ? "var(--amber)" : "var(--red)"
+        },
+        {
+          title: "Качество цементирования",
+          text: `Cement gate сейчас ${scores.cement}%.`,
+          color: scores.cement >= 80 ? "var(--green)" : scores.cement >= 60 ? "var(--amber)" : "var(--red)"
+        },
+        {
+          title: "Контур осложнений",
+          text: `Статус осложнений: ${formatLosses(data.lossRate)}.`,
+          color: data.lossRate < 2 ? "var(--green)" : data.lossRate < 6 ? "var(--amber)" : "var(--red)"
+        },
+        {
+          title: "Итоговая готовность",
+          text: `Итоговый handover score ${scores.handover}%.`,
+          color: scores.handover >= 80 ? "var(--green)" : scores.handover >= 60 ? "var(--amber)" : "var(--red)"
+        }
+      ];
+
+      byId("handoverChecks").innerHTML = checks.map((item) => `
+        <div class="checkpoint-card">
+          <div class="status-chip" style="color:${item.color};border-color:${item.color};margin-bottom:10px;">${item.title}</div>
+          <p>${item.text}</p>
+        </div>
+      `).join("");
+    }
+
+    function renderPriority(action) {
+      byId("nextActionText").textContent = action.text;
+      byId("nextActionShort").textContent = action.title;
+      byId("mainRiskValue").textContent = action.risk;
+      byId("gateOwnerValue").textContent = action.owner;
+      byId("priorityList").innerHTML = action.items.map((item, index) => `
+        <div class="bullet" style="--dot-color:${index === 0 ? "var(--amber)" : index === 1 ? "var(--blue)" : "var(--cyan)"}">${item}</div>
+      `).join("");
+      byId("dayPlan").innerHTML = action.items.map((item, index) => `
+        <div class="checkpoint" style="--dot-color:${index === 0 ? "var(--cyan)" : index === 1 ? "var(--amber)" : "var(--green)"}">${item}</div>
+      `).join("");
+    }
+
+    function renderRouteSummary(data, scores) {
+      const progress = clamp((data.currentDepth / Math.max(data.planDepth, 1)) * 100, 0, 100);
+      const routeItems = [
+        `Скважина ${data.wellName}: пройдено ${progress.toFixed(0)}% от плановой глубины ${data.planDepth} м.`,
+        `Активный этап: ${phaseLabels[data.currentPhase]}. Следующий gate: ${gateFromPhase(data.currentPhase)}.`,
+        `Наиболее слабый блок сейчас: ${weakestStage(scores)}.`
+      ];
+      byId("routeSummary").innerHTML = routeItems.map((item, index) => `
+        <div class="summary-item" style="--dot-color:${index === 0 ? "var(--cyan)" : index === 1 ? "var(--blue)" : "var(--amber)"}">${item}</div>
+      `).join("");
+    }
+
+    function renderEngineeringBoard(data, scores) {
+      const metrics = computeEngineeringMetrics(data, scores);
+      const scoreCards = [
+        {
+          title: "Темп и проходка",
+          value: `${metrics.progress.toFixed(0)}%`,
+          sub: "выполнено от плановой глубины",
+          note: `${Math.max(data.planDepth - data.currentDepth, 0).toFixed(0)} м осталось до TD при текущем темпе ${data.dailyRate} м/сут.`,
+          meter: metrics.progress,
+          from: "var(--cyan)",
+          to: "var(--blue)"
+        },
+        {
+          title: "NPT давление на цикл",
+          value: `${metrics.nptShare.toFixed(0)}%`,
+          sub: "доля суток, потерянная на NPT",
+          note: metrics.nptShare > 20 ? "NPT уже заметно режет цикл и требует отдельного управленческого разбора." : "NPT пока находится в рабочем диапазоне для сменного контроля.",
+          meter: metrics.nptShare,
+          from: metrics.nptShare > 20 ? "var(--amber)" : "var(--green)",
+          to: metrics.nptShare > 20 ? "var(--red)" : "var(--cyan)"
+        },
+        {
+          title: "Пакет по поглощениям",
+          value: `${metrics.pillVolume} / ${metrics.vusVolume}`,
+          sub: "пачка / VUS, м3",
+          note: `Severity: ${metrics.lossSeverity}. Safe window сейчас ${metrics.safeWindowLabel.toLowerCase()}.`,
+          meter: metrics.safeWindowScore,
+          from: metrics.safeWindowScore < 40 ? "var(--red)" : "var(--amber)",
+          to: metrics.safeWindowScore < 40 ? "var(--amber)" : "var(--cyan)"
+        },
+        {
+          title: "Запуск крепления",
+          value: `${metrics.cementLaunchScore}%`,
+          sub: "готовность к обсадке и цементу",
+          note: metrics.cementLaunchScore >= 80 ? "Крепление можно запускать после финальной сверки объемов и post-job критериев." : "До крепления еще есть пробелы по readiness, материалам или документации.",
+          meter: metrics.cementLaunchScore,
+          from: "var(--violet)",
+          to: "var(--green)"
+        }
+      ];
+
+      byId("engineeringBoard").innerHTML = scoreCards.map((card) => `
+        <div class="score-card">
+          <div class="score-top">
+            <div>
+              <h3>${card.title}</h3>
+              <div class="score-sub">${card.sub}</div>
+            </div>
+            <div class="score-value">${card.value}</div>
+          </div>
+          <p style="margin-top:12px;">${card.note}</p>
+          <div class="meter" style="--meter-from:${card.from};--meter-to:${card.to};"><div class="meter-fill" style="width:${card.meter}%;"></div></div>
+        </div>
+      `).join("");
+
+      const gateRows = [
+        { label: "Проект", value: scores.design },
+        { label: "Подготовка", value: scores.mobilization },
+        { label: "Бурение", value: scores.drill },
+        { label: "Осложнения", value: scores.control },
+        { label: "Крепление", value: scores.cement },
+        { label: "Сдача", value: scores.handover }
+      ];
+
+      byId("gateBoard").innerHTML = gateRows.map((row) => {
+        const colorStart = row.value >= 85 ? "var(--green)" : row.value >= 65 ? "var(--amber)" : "var(--red)";
+        const colorEnd = row.value >= 85 ? "var(--cyan)" : row.value >= 65 ? "var(--amber)" : "var(--amber)";
+        return `
+          <div class="gate-card" style="padding:14px;">
+            <div class="gate-row">
+              <div class="gate-name">${row.label}</div>
+              <div class="gate-value">${row.value}%</div>
+            </div>
+            <div class="gate-track"><div class="gate-fill" style="width:${row.value}%;--fill-start:${colorStart};--fill-end:${colorEnd};"></div></div>
+          </div>
+        `;
+      }).join("");
+
+      const closeoutNotes = [
+        `До полноценной сдачи осталось закрыть ${metrics.closeoutGap}% readiness.`,
+        `Самый слабый блок сейчас: ${metrics.weakest}.`,
+        metrics.closeoutGap <= 15 ? "Скважина близка к приемке: главное не потерять дисциплину отчетов и финальных проверок." : "Сдача пока не готова: нужно закрыть не только операцию, но и приемку с финальным пакетом закрытия работ."
+      ];
+
+      byId("closeoutDecision").innerHTML = closeoutNotes.map((note, index) => `
+        <div class="checkpoint" style="--dot-color:${index === 0 ? "var(--green)" : index === 1 ? "var(--amber)" : "var(--blue)"}">${note}</div>
+      `).join("");
+    }
+
+    function renderMiniTools(data, scores) {
+      const metrics = computeEngineeringMetrics(data, scores);
+      const lossMetrics = [
+        { value: `${metrics.pillVolume} м3`, label: "первичная пачка" },
+        { value: `${metrics.vusVolume} м3`, label: "VUS / усиленный ответ" }
+      ];
+      const cementMetrics = [
+        { value: `${metrics.cementLaunchScore}%`, label: "готовность к запуску" },
+        { value: data.cementReady >= 80 ? "Go" : "Hold", label: "решение по креплению" }
+      ];
+      const closeoutMetrics = [
+        { value: `${scores.handover}%`, label: "handover score" },
+        { value: `${metrics.closeoutGap}%`, label: "осталось закрыть" }
+      ];
+
+      byId("lossToolMetrics").innerHTML = lossMetrics.map((item) => `
+        <div class="tool-item"><strong>${item.value}</strong><span>${item.label}</span></div>
+      `).join("");
+      byId("cementToolMetrics").innerHTML = cementMetrics.map((item) => `
+        <div class="tool-item"><strong>${item.value}</strong><span>${item.label}</span></div>
+      `).join("");
+      byId("closeoutToolMetrics").innerHTML = closeoutMetrics.map((item) => `
+        <div class="tool-item"><strong>${item.value}</strong><span>${item.label}</span></div>
+      `).join("");
+
+      const lossList = [
+        `При интенсивности ${formatLosses(data.lossRate).toLowerCase()} стартовать с пачки ${metrics.pillVolume} м3 и держать в готовности VUS ${metrics.vusVolume} м3.`,
+        data.hydMargin < 0.03 ? "Safe window критически узкое: сначала стабилизировать гидравлику, потом грузить материал." : "Запас по гидравлике позволяет идти staged response без полной остановки цикла.",
+        data.lossRate >= 6 ? "Сразу обновить balance в daily report и перевести эпизод в escalation mode." : "Держать контроль по volume balance и смотреть на тренд в течение ближайшей смены."
+      ];
+
+      const cementList = [
+        data.cementReady >= 80 ? "Readiness по креплению достаточная: можно идти в финальную проверку объемов и top of cement." : "До крепления не хватает readiness: подтянуть программу, материалы или качество исходных данных.",
+        data.materialsReady >= 80 ? "Материальный контур по BHA и сервисам выглядит рабочим." : "Материалы и сервисный контур еще слабые, запуск крепления рискован.",
+        data.docsReady >= 80 ? "Документация поддерживает запуск: расчетный и отчетный след уже почти собран." : "Перед запуском крепления подтянуть документы и шаблоны отчетности."
+      ];
+
+      const closeoutList = [
+        data.testReady >= 80 ? "Испытание почти закрыто и не должно быть bottleneck для сдачи." : "Испытание пока тормозит сдачу: нужна отдельная программа и критерии приемки.",
+        data.acceptanceReady >= 80 ? "Acceptance пакет близок к норме, финальная сдача реалистична." : "Acceptance пакет еще сырой: закрыть финальные отчеты, акты и контрольные критерии.",
+        `Самый слабый участок сейчас: ${metrics.weakest}. Именно он определяет скорость выхода к сдаче.`
+      ];
+
+      byId("lossToolList").innerHTML = lossList.map((item, index) => `
+        <div class="checkpoint" style="--dot-color:${index === 0 ? "var(--amber)" : index === 1 ? "var(--blue)" : "var(--cyan)"}">${item}</div>
+      `).join("");
+      byId("cementToolList").innerHTML = cementList.map((item, index) => `
+        <div class="checkpoint" style="--dot-color:${index === 0 ? "var(--violet)" : index === 1 ? "var(--amber)" : "var(--green)"}">${item}</div>
+      `).join("");
+      byId("closeoutToolList").innerHTML = closeoutList.map((item, index) => `
+        <div class="checkpoint" style="--dot-color:${index === 0 ? "var(--green)" : index === 1 ? "var(--amber)" : "var(--blue)"}">${item}</div>
+      `).join("");
+    }
+
+    function render() {
+      const data = getScenario();
+      const scores = computeStageScores(data);
+      const overall = Math.round(Object.values(scores).reduce((sum, value) => sum + value, 0) / Object.values(scores).length);
+      const remainingDepth = Math.max(data.planDepth - data.currentDepth, 0);
+      const days = remainingDepth / Math.max(data.dailyRate, 1);
+      const action = getNextAction(data, scores);
+
+      byId("overallScore").textContent = `${overall}%`;
+      byId("activePhaseLabel").textContent = phaseLabels[data.currentPhase];
+      byId("nextGateLabel").textContent = gateFromPhase(data.currentPhase);
+      byId("daysToTD").textContent = days.toFixed(1);
+      byId("lossesState").textContent = formatLosses(data.lossRate);
+      byId("docPackValue").textContent = `${data.docsReady}%`;
+
+      renderStageCards(scores, data);
+      renderPriority(action);
+      renderRouteSummary(data, scores);
+      renderHandoverChecks(data, scores);
+      renderEngineeringBoard(data, scores);
+      renderMiniTools(data, scores);
+    }
+
+    function resetScenario() {
+      Object.entries(defaults).forEach(([key, value]) => {
+        const element = byId(key);
+        if (element) element.value = value;
+      });
+      render();
+    }
+
+    byId("recalcBtn").addEventListener("click", render);
+    byId("resetBtn").addEventListener("click", resetScenario);
+    ["wellName", "currentPhase", "planDepth", "currentDepth", "dailyRate", "nptHours", "lossRate", "hydMargin", "designReady", "materialsReady", "cementReady", "docsReady", "testReady", "acceptanceReady"].forEach((id) => {
+      byId(id).addEventListener("input", render);
+      byId(id).addEventListener("change", render);
+    });
+
+    render();
+  </script>
+  <script src="assets/js/global-auth-widget.js"></script>
+</body>
+</html>

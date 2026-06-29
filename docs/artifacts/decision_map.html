@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Карта принятия решений — Бурение Этап 1 | NEXUS OILFIELD AI</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap");
+    :root{--bg:#060a10;--bg1:#0d1522;--panel:rgba(10,16,28,.75);--text:#e8f0ff;--muted:#94a3bb;--cyan:#1ad8b5;--amber:#ffbc4c;--red:#ff7070;--line:rgba(220,235,255,.13);--lines:rgba(220,235,255,.07);--sh:0 18px 44px rgba(0,0,0,.42)}
+    *,*::before,*::after{box-sizing:border-box;margin:0}
+    html,body{min-height:100%;background:radial-gradient(620px 320px at 5% -8%,rgba(255,188,76,.18),transparent),radial-gradient(560px 280px at 98% 4%,rgba(26,216,181,.14),transparent),linear-gradient(148deg,var(--bg),var(--bg1) 55%,#101c32);color:var(--text);font-family:"Manrope",sans-serif}
+    body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;background:linear-gradient(to right,rgba(255,255,255,.02) 1px,transparent 1px),linear-gradient(to bottom,rgba(255,255,255,.02) 1px,transparent 1px);background-size:38px 38px;mask-image:radial-gradient(circle at 50% 20%,rgba(0,0,0,.85),transparent 66%)}
+    .wrap{position:relative;z-index:1;width:min(1140px,94vw);margin:0 auto;padding:26px 0 72px}
+    .topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:11px 16px;border-radius:12px;border:1px solid var(--lines);background:rgba(6,11,20,.55);backdrop-filter:blur(10px);position:sticky;top:14px;z-index:99}
+    .brand{display:flex;align-items:center;gap:9px;font-family:"Oswald",sans-serif;font-size:16px;letter-spacing:.06em;text-transform:uppercase}
+    .bdot{width:11px;height:11px;border-radius:999px;background:radial-gradient(circle at 30% 30%,#fff2ca,#ffbc4c);box-shadow:0 0 0 0 rgba(255,188,76,.7);animation:pulse 2.4s infinite}
+    .actions{display:flex;gap:10px;flex-wrap:wrap}
+    .back{font-size:12px;color:var(--muted);text-decoration:none;letter-spacing:.04em;text-transform:uppercase;border:1px solid var(--lines);border-radius:999px;padding:6px 12px;transition:border-color 160ms,color 160ms}
+    .back:hover{border-color:var(--amber);color:var(--amber)}
+    .hero{margin-top:22px;border-radius:22px;border:1px solid var(--line);padding:clamp(18px,3vw,36px);background:linear-gradient(140deg,rgba(255,188,76,.09),rgba(12,20,36,.88) 46%,rgba(26,216,181,.07)),var(--panel);box-shadow:var(--sh);position:relative;overflow:hidden;isolation:isolate}
+    .hero::before{content:"";position:absolute;width:300px;height:300px;right:-80px;bottom:-80px;border-radius:999px;background:radial-gradient(circle,rgba(255,188,76,.18),transparent 70%);filter:blur(16px);z-index:-1}
+    .badge{display:inline-flex;align-items:center;gap:7px;padding:5px 10px;border-radius:999px;border:1px solid var(--lines);background:rgba(255,255,255,.04);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#b8c9e0}
+    .bdot2{width:6px;height:6px;border-radius:999px;background:var(--amber)}
+    .hero h1{margin-top:11px;font-family:"Oswald",sans-serif;font-size:clamp(30px,4.5vw,52px);line-height:1.02;text-transform:uppercase;letter-spacing:.01em}
+    .hero h1 span{color:var(--amber)}
+    .hero-meta{margin-top:14px;display:flex;flex-wrap:wrap;gap:10px}
+    .meta-pill{border:1px solid var(--lines);border-radius:999px;padding:6px 12px;font-size:12px;color:#c5d4e8;letter-spacing:.04em}
+    .lead{margin-top:14px;max-width:800px;color:#abc0d8;font-size:14px;line-height:1.55}
+    .section{margin-top:20px;border:1px solid var(--lines);border-radius:18px;background:var(--panel);box-shadow:var(--sh);padding:18px}
+    .stitle{font-family:"Oswald",sans-serif;font-size:20px;letter-spacing:.06em;text-transform:uppercase;padding-bottom:12px;border-bottom:1px solid var(--lines);margin-bottom:14px}
+    .sdesc{font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.5}
+    .sync-grid,.lane-grid,.sign-grid{display:grid;gap:12px}
+    .sync-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+    .lane-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .sign-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .sync-field,.lane-card,.sign-box{border:1px solid var(--lines);border-radius:12px;background:rgba(255,255,255,.025);padding:13px}
+    .sync-field{display:grid;gap:6px}
+    .sync-field--wide{grid-column:1/-1}
+    .sync-field label,.lane-card span,.sign-role{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+    .sync-field input,.sync-field select,.sync-field textarea,.lane-card input,.lane-card textarea,.sign-box input,td input,td select,td textarea{
+      width:100%;background:rgba(255,255,255,.04);border:1px solid var(--lines);border-radius:8px;color:var(--text);font-family:"Manrope",sans-serif;font-size:12px;padding:7px 9px;outline:none;resize:vertical;-webkit-appearance:none;appearance:none
+    }
+    .sync-field input:focus,.sync-field select:focus,.sync-field textarea:focus,.lane-card input:focus,.lane-card textarea:focus,.sign-box input:focus,td input:focus,td select:focus,td textarea:focus{border-color:rgba(255,188,76,.55)}
+    .lane-card strong{display:block;margin:8px 0 10px;font-size:18px;color:#ffe2a0}
+    .lane-card .field{margin-top:10px}
+    .table-wrap{overflow-x:auto;border-radius:12px;border:1px solid var(--lines)}
+    table{width:100%;border-collapse:collapse;min-width:980px}
+    thead tr{background:rgba(255,188,76,.09)}
+    th{padding:9px 11px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#e2c086;text-align:left;white-space:nowrap}
+    td{padding:9px 11px;font-size:12px;color:#c4d2e4;border-top:1px solid var(--lines);vertical-align:top;line-height:1.45}
+    tr:hover td{background:rgba(255,255,255,.02)}
+    .btn-row{display:flex;gap:10px;margin-top:16px}
+    .btn{display:inline-flex;align-items:center;gap:7px;padding:10px 18px;border-radius:999px;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:.04em;text-transform:uppercase;border:1px solid rgba(26,216,181,.5);background:rgba(26,216,181,.12);color:var(--cyan);transition:background 160ms;font-family:"Manrope",sans-serif}
+    .btn:hover{background:rgba(26,216,181,.22)}
+    .btn-amber{border-color:rgba(255,188,76,.5);background:rgba(255,188,76,.1);color:var(--amber)}
+    .btn-amber:hover{background:rgba(255,188,76,.2);border-color:var(--amber)}
+    .sign-box .field{margin-top:10px}
+    .footer{margin-top:20px;text-align:center;font-size:11px;color:#4e5f76;letter-spacing:.07em;text-transform:uppercase}
+    @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,188,76,.7)}70%{box-shadow:0 0 0 12px rgba(255,188,76,0)}100%{box-shadow:0 0 0 0 rgba(255,188,76,0)}}
+    @media print{body{background:#fff;color:#000}.topbar,.btn-row{display:none}td input,td select,td textarea,.sync-field input,.sync-field select,.sync-field textarea,.lane-card input,.lane-card textarea,.sign-box input{border-color:#ccc;color:#000;background:#f9f9f9}}
+    @media(max-width:920px){.sync-grid,.lane-grid,.sign-grid{grid-template-columns:1fr 1fr}.topbar{position:static}}
+    @media(max-width:620px){.sync-grid,.lane-grid,.sign-grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<main class="wrap">
+  <header class="topbar">
+    <div class="brand"><span class="bdot"></span>Nexus Oilfield AI</div>
+    <div class="actions">
+      <a class="back" href="../20_drilling_stage_1_execution_playbook.html">← Playbook</a>
+      <a class="back" href="../19_drilling_stage_1_design.html">Stage 1 cockpit</a>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="badge"><span class="bdot2"></span>Артефакт 05 из 06</div>
+    <h1>Карта принятия <span>Решений</span></h1>
+    <div class="hero-meta">
+      <span class="meta-pill">Бурение — Этап 1</span>
+      <span class="meta-pill">Версия: 1.0</span>
+      <span class="meta-pill">Дата: <span id="today"></span></span>
+    </div>
+    <p class="lead">Рабочая карта подтверждения, исполнения и закрытия решений по Stage 1. Здесь фиксируются триггеры, подтверждающие роли, исполнитель, SLA, контур отката и фактический эффект, а статус A5 синхронизируется с общим пакетом артефактов.</p>
+  </section>
+
+  <section class="section">
+    <div class="stitle">Управление артефактом</div>
+    <div class="sdesc">Этот блок задает управленческий статус A5. Ниже ведите саму матрицу решений, эскалационный контур и журнал эффекта.</div>
+    <div class="sync-grid">
+      <div class="sync-field">
+        <label for="artifactStatus">Статус артефакта</label>
+        <select id="artifactStatus" data-artifact-sync="status">
+          <option value="not_started">Не начат</option>
+          <option value="in_progress">В работе</option>
+          <option value="review">На проверке</option>
+          <option value="approved">Утвержден</option>
+        </select>
+      </div>
+      <div class="sync-field">
+        <label for="artifactOwner">Владелец</label>
+        <input id="artifactOwner" type="text" data-artifact-sync="owner" placeholder="Drilling manager"/>
+      </div>
+      <div class="sync-field sync-field--wide">
+        <label for="artifactNextAction">Ближайшее действие</label>
+        <input id="artifactNextAction" type="text" data-artifact-sync="nextAction" placeholder="Подписать контур подтверждения и исполнения решений."/>
+      </div>
+      <div class="sync-field sync-field--wide">
+        <label for="artifactNote">Рабочая заметка</label>
+        <textarea id="artifactNote" rows="3" data-artifact-sync="note" placeholder="Какие роли еще не подтверждены, где не хватает SLA и кто держит последнее слово в спорных случаях."></textarea>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="stitle">Матрица решений Stage 1</div>
+    <div class="sdesc">Заполняйте по каждому критичному сценарию: кто подтверждает решение, кто исполняет, как быстро и по каким фактам закрывается кейс.</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Триггер</th>
+            <th>Решение</th>
+            <th>Кто подтверждает</th>
+            <th>Кто исполняет</th>
+            <th>SLA</th>
+            <th>Доказательство</th>
+            <th>Стоп-критерий / откат</th>
+            <th>Статус</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><textarea rows="2" placeholder="Критический NPT alert"></textarea></td>
+            <td><textarea rows="2" placeholder="Остановить операцию и перейти на contingency plan"></textarea></td>
+            <td><input type="text" placeholder="Drilling superintendent"></td>
+            <td><input type="text" placeholder="Бурмастер"></td>
+            <td><input type="text" placeholder="<= 5 мин"></td>
+            <td><textarea rows="2" placeholder="Подтверждение в журнале смены и dashboard"></textarea></td>
+            <td><textarea rows="2" placeholder="Вернуться к режиму only after green signal"></textarea></td>
+            <td><select><option>Черновик</option><option>Согласовано</option><option>В работе</option><option>Закрыто</option></select></td>
+          </tr>
+          <tr>
+            <td><textarea rows="2" placeholder="Падение ROP ниже окна"></textarea></td>
+            <td><textarea rows="2" placeholder="Пересмотреть режим бурения и параметры долота"></textarea></td>
+            <td><input type="text" placeholder="Drilling manager"></td>
+            <td><input type="text" placeholder="Технолог"></td>
+            <td><input type="text" placeholder="<= 30 мин"></td>
+            <td><textarea rows="2" placeholder="ROP trend + заключение инженера"></textarea></td>
+            <td><textarea rows="2" placeholder="Откат при росте вибраций и torque"></textarea></td>
+            <td><select><option>Черновик</option><option>Согласовано</option><option>В работе</option><option>Закрыто</option></select></td>
+          </tr>
+          <tr>
+            <td><textarea rows="2" placeholder="Признак прихвата"></textarea></td>
+            <td><textarea rows="2" placeholder="Запустить утвержденный stuck pipe response"></textarea></td>
+            <td><input type="text" placeholder="Супервайзер бурения"></td>
+            <td><input type="text" placeholder="Буровая бригада"></td>
+            <td><input type="text" placeholder="<= 15 мин"></td>
+            <td><textarea rows="2" placeholder="Torque / drag + подтверждение по связи"></textarea></td>
+            <td><textarea rows="2" placeholder="Отмена при нормализации overpull"></textarea></td>
+            <td><select><option>Черновик</option><option>Согласовано</option><option>В работе</option><option>Закрыто</option></select></td>
+          </tr>
+          <tr>
+            <td><textarea rows="2" placeholder="Потеря критичного потока данных"></textarea></td>
+            <td><textarea rows="2" placeholder="Переключить решения в ручной режим и поднять data escalation"></textarea></td>
+            <td><input type="text" placeholder="Дата-лид"></td>
+            <td><input type="text" placeholder="IT / площадка"></td>
+            <td><input type="text" placeholder="<= 10 мин"></td>
+            <td><textarea rows="2" placeholder="Сервисный тикет + фиксация в tracker"></textarea></td>
+            <td><textarea rows="2" placeholder="Вернуть auto mode после восстановления SLA"></textarea></td>
+            <td><select><option>Черновик</option><option>Согласовано</option><option>В работе</option><option>Закрыто</option></select></td>
+          </tr>
+          <tr>
+            <td><textarea rows="2" placeholder="Новый сценарий"></textarea></td>
+            <td><textarea rows="2" placeholder="Решение"></textarea></td>
+            <td><input type="text" placeholder="Кто подтверждает"></td>
+            <td><input type="text" placeholder="Кто исполняет"></td>
+            <td><input type="text" placeholder="SLA"></td>
+            <td><textarea rows="2" placeholder="Какие факты считаются подтверждением"></textarea></td>
+            <td><textarea rows="2" placeholder="Когда откатываем решение"></textarea></td>
+            <td><select><option>Черновик</option><option>Согласовано</option><option>В работе</option><option>Закрыто</option></select></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="stitle">Контур подтверждения и эскалации</div>
+    <div class="lane-grid">
+      <div class="lane-card">
+        <span>Уровень L1</span>
+        <strong>Площадка</strong>
+        <div class="field"><input type="text" placeholder="Основной владелец: бурмастер"/></div>
+        <div class="field"><input type="text" placeholder="Канал: рация / телефон / чат"/></div>
+        <div class="field"><textarea rows="3" placeholder="Какие решения принимаются прямо на буровой"></textarea></div>
+      </div>
+      <div class="lane-card">
+        <span>Уровень L2</span>
+        <strong>Супервайзер и remote ops</strong>
+        <div class="field"><input type="text" placeholder="Основной владелец: drilling superintendent"/></div>
+        <div class="field"><input type="text" placeholder="Канал: Teams / dashboard / телефон"/></div>
+        <div class="field"><textarea rows="3" placeholder="Какие решения должны быть подтверждены на этом уровне"></textarea></div>
+      </div>
+      <div class="lane-card">
+        <span>Уровень L3</span>
+        <strong>Менеджмент</strong>
+        <div class="field"><input type="text" placeholder="Основной владелец: drilling manager"/></div>
+        <div class="field"><input type="text" placeholder="Канал: management review / escalation desk"/></div>
+        <div class="field"><textarea rows="3" placeholder="Какие решения выносятся на управленческое подтверждение"></textarea></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="stitle">Журнал обратной связи и эффекта</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Дата</th>
+            <th>Решение</th>
+            <th>Факт исполнения</th>
+            <th>Эффект</th>
+            <th>Кто закрыл</th>
+            <th>Что меняем дальше</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><input type="date"></td>
+            <td><textarea rows="2" placeholder="Какое решение было принято"></textarea></td>
+            <td><textarea rows="2" placeholder="Что реально сделали на площадке"></textarea></td>
+            <td><textarea rows="2" placeholder="Какой был эффект на операцию"></textarea></td>
+            <td><input type="text" placeholder="ФИО / роль"></td>
+            <td><textarea rows="2" placeholder="Как меняем playbook или alert logic"></textarea></td>
+          </tr>
+          <tr>
+            <td><input type="date"></td>
+            <td><textarea rows="2" placeholder="Следующий кейс"></textarea></td>
+            <td><textarea rows="2" placeholder="Факт"></textarea></td>
+            <td><textarea rows="2" placeholder="Эффект"></textarea></td>
+            <td><input type="text" placeholder="ФИО / роль"></td>
+            <td><textarea rows="2" placeholder="Следующее изменение"></textarea></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="stitle">Подтверждение карты</div>
+    <div class="sign-grid">
+      <div class="sign-box">
+        <div class="sign-role">Drilling manager</div>
+        <div class="field"><input type="text" placeholder="ФИО"/></div>
+        <div class="field"><input type="text" placeholder="Должность"/></div>
+        <div class="field"><input type="date"/></div>
+      </div>
+      <div class="sign-box">
+        <div class="sign-role">Супервайзер бурения</div>
+        <div class="field"><input type="text" placeholder="ФИО"/></div>
+        <div class="field"><input type="text" placeholder="Должность"/></div>
+        <div class="field"><input type="date"/></div>
+      </div>
+      <div class="sign-box">
+        <div class="sign-role">Remote ops / продукт</div>
+        <div class="field"><input type="text" placeholder="ФИО"/></div>
+        <div class="field"><input type="text" placeholder="Должность"/></div>
+        <div class="field"><input type="date"/></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="btn-row">
+    <button class="btn" onclick="window.print()">Распечатать</button>
+    <button class="btn btn-amber" onclick="saveData(this)">Сохранить черновик</button>
+  </div>
+  <p class="footer">Nexus Oilfield AI — Карта принятия решений — Бурение Этап 01</p>
+</main>
+<script>
+  document.getElementById("today").textContent = new Date().toLocaleDateString("ru-RU");
+
+  const DRAFT_KEY = "stage1_decision_map_v1";
+  const ARTIFACTS_KEY = "nexus_stage1_artifact_workbench_v1";
+  const ARTIFACT_ID = "a5";
+  const ARTIFACT_DEFAULTS = {
+    status: "not_started",
+    owner: "Drilling manager",
+    nextAction: "Подписать контур подтверждения и исполнения решений.",
+    note: ""
+  };
+
+  function readJson(key) {
+    try {
+      return JSON.parse(localStorage.getItem(key) || "null");
+    } catch (error) {
+      return null;
+    }
+  }
+
+  function saveJson(key, value) {
+    localStorage.setItem(key, JSON.stringify(value));
+  }
+
+  function loadArtifactState() {
+    const state = readJson(ARTIFACTS_KEY) || {};
+    const current = Object.assign({}, ARTIFACT_DEFAULTS, state[ARTIFACT_ID] || {});
+    document.getElementById("artifactStatus").value = current.status;
+    document.getElementById("artifactOwner").value = current.owner;
+    document.getElementById("artifactNextAction").value = current.nextAction;
+    document.getElementById("artifactNote").value = current.note;
+  }
+
+  function saveArtifactState() {
+    const state = readJson(ARTIFACTS_KEY) || {};
+    state[ARTIFACT_ID] = {
+      status: document.getElementById("artifactStatus").value,
+      owner: document.getElementById("artifactOwner").value,
+      nextAction: document.getElementById("artifactNextAction").value,
+      note: document.getElementById("artifactNote").value
+    };
+    saveJson(ARTIFACTS_KEY, state);
+  }
+
+  function saveData(button) {
+    saveArtifactState();
+    const inputs = document.querySelectorAll("input, select, textarea");
+    const data = {};
+    inputs.forEach((el, index) => { data[index] = el.value; });
+    localStorage.setItem(DRAFT_KEY, JSON.stringify(data));
+    const original = button.innerHTML;
+    button.textContent = "✓ Сохранено";
+    setTimeout(() => { button.innerHTML = original; }, 1800);
+  }
+
+  const saved = localStorage.getItem(DRAFT_KEY);
+  if (saved) {
+    const data = JSON.parse(saved);
+    document.querySelectorAll("input, select, textarea").forEach((el, index) => {
+      if (data[index] !== undefined) {
+        el.value = data[index];
+      }
+    });
+  }
+
+  loadArtifactState();
+  document.querySelectorAll("[data-artifact-sync]").forEach((node) => {
+    node.addEventListener("change", saveArtifactState);
+    node.addEventListener("blur", saveArtifactState, true);
+  });
+</script>
+<script src="../assets/js/global-auth-widget.js"></script>
+</body>
+</html>

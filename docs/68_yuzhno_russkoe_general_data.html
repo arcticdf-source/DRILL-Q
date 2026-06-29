@@ -1,0 +1,254 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Южно-Русское · Раздел 1 · Общие сведения</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap");
+    :root {
+      --bg-0: #071018;
+      --bg-1: #102030;
+      --bg-2: #1b3041;
+      --panel: rgba(11, 20, 31, 0.84);
+      --line: rgba(227, 238, 255, 0.14);
+      --line-soft: rgba(227, 238, 255, 0.08);
+      --text: #edf5ff;
+      --muted: #a8bdd2;
+      --cyan: #22d7b4;
+      --amber: #f8bd5f;
+      --shadow: 0 20px 48px rgba(0, 0, 0, 0.42);
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      font-family: "Manrope", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(900px 460px at 0% -10%, rgba(34, 215, 180, 0.18), rgba(34, 215, 180, 0)),
+        radial-gradient(760px 420px at 100% 0%, rgba(248, 189, 95, 0.16), rgba(248, 189, 95, 0)),
+        linear-gradient(145deg, var(--bg-0), var(--bg-1) 46%, var(--bg-2));
+    }
+    .wrap { width: min(1220px, 92vw); margin: 0 auto; padding: 24px 0 64px; }
+    .top {
+      display: flex; justify-content: space-between; align-items: center; gap: 10px;
+      border: 1px solid var(--line-soft); border-radius: 14px; padding: 12px 14px;
+      background: rgba(8, 15, 24, 0.66); position: sticky; top: 12px; z-index: 20;
+    }
+    .brand {
+      display: flex; align-items: center; gap: 10px; font-family: "Oswald", sans-serif;
+      text-transform: uppercase; letter-spacing: 0.05em; font-size: 20px;
+    }
+    .dot { width: 12px; height: 12px; border-radius: 999px; background: radial-gradient(circle at 35% 35%, #d6fff7, var(--cyan)); }
+    .nav { display: flex; flex-wrap: wrap; gap: 8px; }
+    .nav a {
+      text-decoration: none; font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em;
+      font-weight: 800; border-radius: 10px; padding: 8px 12px; color: #082922;
+      background: linear-gradient(130deg, #a0f9eb, #22d7b4); border: 1px solid rgba(34, 215, 180, 0.75);
+    }
+    .hero, .panel {
+      margin-top: 18px; border: 1px solid var(--line); border-radius: 20px;
+      background: var(--panel); box-shadow: var(--shadow); padding: 22px;
+    }
+    .hero h1 {
+      margin: 0 0 10px; font-family: "Oswald", sans-serif;
+      letter-spacing: -0.01em; font-size: clamp(28px, 4vw, 44px);
+    }
+    .hero p { margin: 0; color: #c7d7ec; line-height: 1.65; }
+    .meta {
+      margin-top: 14px; display: inline-flex; border: 1px solid var(--line-soft);
+      border-radius: 999px; padding: 6px 12px; font-size: 12px; color: #d8e5f6;
+      text-transform: uppercase; letter-spacing: 0.08em;
+    }
+    h2 { margin: 0 0 12px; font-size: 22px; letter-spacing: -0.01em; }
+    .list { display: grid; gap: 10px; }
+    .map-grid {
+      display: grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap: 14px;
+      align-items: start;
+    }
+    .section-block { display: grid; gap: 10px; margin-top: 16px; }
+    .section-title {
+      margin: 0;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--line-soft);
+      font-size: 16px;
+      color: #eaf6ff;
+      letter-spacing: -0.01em;
+    }
+    .item {
+      border: 1px solid var(--line-soft); border-radius: 12px; padding: 12px;
+      background: rgba(255, 255, 255, 0.03); color: #d1def0; line-height: 1.55; font-size: 14px;
+      white-space: pre-wrap;
+    }
+    .item strong {
+      display: block;
+      margin-bottom: 6px;
+      color: #e7f5ff;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .item.empty {
+      color: var(--muted);
+      text-align: center;
+    }
+    .map-card {
+      border: 1px solid var(--line-soft);
+      border-radius: 16px;
+      padding: 14px;
+      background: rgba(255, 255, 255, 0.03);
+    }
+    .map-card h3 {
+      margin: 0 0 10px;
+      font-size: 18px;
+      letter-spacing: -0.01em;
+    }
+    .map-card img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 14px;
+      border: 1px solid rgba(227, 238, 255, 0.1);
+      background: rgba(255, 255, 255, 0.02);
+    }
+    .caption {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+    .raw-text {
+      border: 1px dashed rgba(227, 238, 255, 0.14);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.02);
+      padding: 14px;
+      color: #cfe0f3;
+      font-size: 13px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      max-height: 420px;
+      overflow: auto;
+    }
+    .footer {
+      margin-top: 14px; color: var(--muted); text-transform: uppercase;
+      letter-spacing: 0.08em; font-size: 12px; text-align: center;
+    }
+    @media (max-width: 860px) {
+      .top { position: static; flex-direction: column; align-items: flex-start; }
+      .map-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+  <main class="wrap">
+    <header class="top">
+      <div class="brand"><span class="dot"></span><span>Nexus Oilfield AI</span></div>
+      <nav class="nav">
+        <a href="64_yuzhno_russkoe_project_dashboard.html">К дашборду проекта</a>
+        <a href="56_fields_projects_dashboard.html">Месторождения</a>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <h1>Южно-Русское месторождение · Раздел 1. Общие сведения</h1>
+      <p id="desc">Автоматически собранный паспорт проекта по Южно-Русскому месторождению на основе загруженного изображения и OCR-анализа.</p>
+      <span class="meta" id="meta">Южно-Русское · Общие сведения</span>
+    </section>
+
+    <section class="panel">
+      <h2>Ключевые блоки раздела</h2>
+      <div class="list" id="contentList"></div>
+    </section>
+
+    <section class="panel">
+      <h2>Схема расположения лицензионного участка</h2>
+      <div class="map-grid">
+        <article class="map-card">
+          <h3>Обзорная карта Южно-Русского лицензионного участка</h3>
+          <img src="../STUFF/Images/7.JPG" alt="Обзорная карта Южно-Русского лицензионного участка" />
+          <div class="caption">Оригинальная карта из папки STUFF без изменений.</div>
+        </article>
+        <article class="map-card">
+          <h3>Что читается со схемы</h3>
+          <div class="list">
+            <div class="item"><strong>Лицензионный контур</strong><span>Южно-Русский лицензионный участок выделен на обзорной карте красным контуром и показан как вытянутый меридиональный блок.</span></div>
+            <div class="item"><strong>Региональная привязка</strong><span>На схеме участок расположен в Ямало-Ненецком автономном округе. В подписи карты читаются Тазовский район, Красноселькупский район и Пуровский район как соседние административные ориентиры.</span></div>
+            <div class="item"><strong>Опорные точки</strong><span>На обзорной схеме отдельно отмечены Тазовский и Красноселькуп как административные ориентиры для общей региональной привязки месторождения.</span></div>
+            <div class="item"><strong>Окружение участка</strong><span>Вокруг контура показаны соседние месторождения и лицензионные блоки, что делает карту полезной не только как географическую справку, но и как контекст по ближайшему нефтегазовому окружению.</span></div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Распознанный текст документа</h2>
+      <div class="raw-text" id="rawTextBlock">OCR-текст пока не сформирован.</div>
+    </section>
+
+    <p class="footer">Южно-Русское · General Data</p>
+  </main>
+  <script>
+    const GENERAL_INFO_STORAGE_KEY = "nexus-yuzhno-russkoe-general-info-v1";
+
+    function loadGeneralInfoState() {
+      try {
+        const state = JSON.parse(localStorage.getItem(GENERAL_INFO_STORAGE_KEY) || "{}");
+        return state && typeof state === "object" ? state : {};
+      } catch {
+        return {};
+      }
+    }
+
+    function escapeHtml(value) {
+      return String(value || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/\"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    const state = loadGeneralInfoState();
+    const generalInfo = state["1"];
+    const contentList = document.getElementById("contentList");
+    const meta = document.getElementById("meta");
+    const desc = document.getElementById("desc");
+    const rawTextBlock = document.getElementById("rawTextBlock");
+
+    if (!generalInfo || !Array.isArray(generalInfo.items) || !generalInfo.items.length) {
+      contentList.innerHTML = '<div class="item empty">Общая информация пока не заполнена. Загрузите JPG на дашборде Южно-Русского месторождения, чтобы автоматически собрать этот раздел.</div>';
+    } else {
+      const sourceFile = generalInfo.sourceFile ? `Источник: ${generalInfo.sourceFile}` : "Источник: OCR-анализ";
+      meta.textContent = sourceFile;
+      desc.textContent = "Страница автоматически заполнена по данным, выделенным из загруженного изображения для Южно-Русского месторождения.";
+
+      if (Array.isArray(generalInfo.sections) && generalInfo.sections.length) {
+        contentList.innerHTML = generalInfo.sections.map((section) => {
+          const entries = Array.isArray(section.entries) ? section.entries : [];
+          return `
+            <div class="section-block">
+              <h3 class="section-title">${escapeHtml(section.title || "Раздел")}</h3>
+              ${entries.map((item) => `<div class="item"><strong>${escapeHtml(item.label)}</strong><span>${escapeHtml(item.value)}</span></div>`).join("")}
+            </div>
+          `;
+        }).join("");
+      } else {
+        contentList.innerHTML = generalInfo.items.map((item) => {
+          return `<div class="item"><strong>${escapeHtml(item.label)}</strong><span>${escapeHtml(item.value)}</span></div>`;
+        }).join("");
+      }
+    }
+
+    if (generalInfo && Array.isArray(generalInfo.rawLines) && generalInfo.rawLines.length) {
+      rawTextBlock.textContent = generalInfo.rawLines.join("\n");
+    } else if (generalInfo && generalInfo.rawText) {
+      rawTextBlock.textContent = generalInfo.rawText;
+    }
+  </script>
+  <script src="assets/js/global-auth-widget.js"></script>
+</body>
+</html>

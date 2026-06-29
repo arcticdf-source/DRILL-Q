@@ -1,0 +1,1196 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Дашборд работ по скважине</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap");
+
+    :root {
+      --bg-0:#071018; --bg-1:#102030; --bg-2:#1b3041;
+      --panel:rgba(11,20,31,.84); --line:rgba(227,238,255,.14); --line-soft:rgba(227,238,255,.08);
+      --text:#edf5ff; --muted:#a8bdd2; --cyan:#22d7b4; --amber:#f8bd5f; --blue:#8db4ff; --violet:#c6a6ff;
+      --shadow:0 20px 48px rgba(0,0,0,.42);
+    }
+
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0; min-height: 100%; font-family: "Manrope", sans-serif; color: var(--text);
+      background:
+        radial-gradient(900px 460px at 0% -10%, rgba(34,215,180,.18), rgba(34,215,180,0)),
+        radial-gradient(760px 420px at 100% 0%, rgba(248,189,95,.16), rgba(248,189,95,0)),
+        linear-gradient(145deg, var(--bg-0), var(--bg-1) 46%, var(--bg-2));
+    }
+
+    .wrap { width: min(1240px, 92vw); margin: 0 auto; padding: 24px 0 64px; }
+    .top {
+      display:flex; justify-content:space-between; align-items:center; gap:10px; border:1px solid var(--line-soft);
+      border-radius:14px; padding:12px 14px; background:rgba(8,15,24,.66); position:sticky; top:12px; z-index:20;
+    }
+    .brand {
+      display:flex; align-items:center; gap:10px; font-family:"Oswald", sans-serif; text-transform:uppercase;
+      letter-spacing:.05em; font-size:20px;
+    }
+    .dot {
+      width:12px; height:12px; border-radius:999px; background:radial-gradient(circle at 35% 35%, #d6fff7, var(--cyan));
+    }
+    .nav { display:flex; flex-wrap:wrap; gap:8px; }
+    .nav a {
+      text-decoration:none; font-size:12px; text-transform:uppercase; letter-spacing:.06em; font-weight:800;
+      border-radius:10px; padding:8px 12px; color:#082922; background:linear-gradient(130deg, #a0f9eb, #22d7b4);
+      border:1px solid rgba(34,215,180,.75);
+    }
+    .hero, .panel {
+      margin-top:18px; border:1px solid var(--line); border-radius:22px; background:var(--panel);
+      box-shadow:var(--shadow); padding:24px;
+    }
+    .hero h1 {
+      margin:0 0 10px; font-family:"Oswald", sans-serif; font-size:clamp(30px, 4.5vw, 48px); letter-spacing:-.01em;
+    }
+    .hero p { margin:0; color:#c7d7ec; line-height:1.65; max-width:88ch; }
+    .hero-grid { margin-top:18px; display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); gap:12px; }
+    .hero-stat { border:1px solid var(--line-soft); border-radius:14px; background:rgba(255,255,255,.03); padding:12px 14px; }
+    .hero-stat strong { display:block; font-size:22px; font-weight:800; }
+    .hero-stat span { display:block; margin-top:4px; color:var(--muted); font-size:11px; text-transform:uppercase; letter-spacing:.08em; }
+    .panel h2 { margin:0 0 14px; font-size:22px; letter-spacing:-.01em; }
+    .dmr-shell { border:1px solid var(--line-soft); border-radius:20px; background:rgba(255,255,255,.03); padding:18px; }
+    .dmr-shell h3 { margin:0; font-size:18px; color:#c7d7ec; font-weight:700; }
+    .dmr-actions { display:flex; flex-wrap:wrap; gap:12px; margin-top:18px; }
+    .btn-add {
+      display:inline-flex; align-items:center; justify-content:center; min-width:220px; padding:14px 20px; border-radius:14px; border:1px solid rgba(34,215,180,.75);
+      background:linear-gradient(130deg,#a0f9eb,#22d7b4); color:#082922; font-size:14px; font-weight:800; text-transform:uppercase; letter-spacing:.08em; cursor:pointer;
+    }
+    .btn-add:hover { filter:brightness(1.04); transform:translateY(-1px); }
+    .dmr-list { display:flex; flex-wrap:wrap; gap:12px; margin-top:18px; }
+    .dmr-link {
+      display:inline-flex; align-items:center; justify-content:center; min-width:150px; min-height:64px; padding:12px 18px; border-radius:16px; text-decoration:none;
+      border:1px solid rgba(141,180,255,.45); background:linear-gradient(130deg,#d8e7ff,#8db4ff); color:#0d1f36; font-size:18px; font-weight:800; letter-spacing:.06em;
+    }
+    .dmr-link:hover { transform:translateY(-2px); filter:brightness(1.04); }
+    .pill-row { display:flex; flex-wrap:wrap; gap:8px; margin-top:16px; }
+    .pill {
+      border-radius:999px; padding:5px 9px; font-size:11px; text-transform:uppercase; letter-spacing:.07em;
+      border:1px solid var(--line-soft); background:rgba(255,255,255,.04); color:#d6e4f6;
+    }
+    .pill.cyan { border-color: rgba(34,215,180,.28); color: var(--cyan); }
+    .pill.blue { border-color: rgba(141,180,255,.28); color: var(--blue); }
+    .pill.amber { border-color: rgba(248,189,95,.28); color: var(--amber); }
+    .pill.violet { border-color: rgba(198,166,255,.28); color: var(--violet); }
+    .note { margin-top:14px; border:1px solid rgba(198,166,255,.24); border-radius:12px; background:rgba(198,166,255,.08); padding:12px; color:#e8deff; line-height:1.55; font-size:14px; }
+    .hidden { display:none !important; }
+    .hero-grid.ops-mode { grid-template-columns:repeat(5, minmax(0, 1fr)); }
+    .panel-head {
+      display:flex; justify-content:space-between; align-items:flex-end; gap:12px; flex-wrap:wrap; margin-bottom:14px;
+    }
+    .panel-head h2 { margin:0; font-size:24px; letter-spacing:-.01em; }
+    .panel-tag {
+      display:inline-flex; align-items:center; gap:8px; padding:6px 10px; border-radius:999px; border:1px solid var(--line-soft);
+      background:rgba(255,255,255,.04); color:#d5e7f8; font-size:11px; text-transform:uppercase; letter-spacing:.09em;
+    }
+    .decision-grid, .alerts-grid, .eng-grid, .forecast-grid {
+      display:grid; gap:14px;
+    }
+    .decision-grid { grid-template-columns:repeat(3, minmax(0, 1fr)); }
+    .alerts-grid { grid-template-columns:1.1fr .9fr; }
+    .eng-grid { grid-template-columns:1.1fr .9fr; }
+    .forecast-grid { grid-template-columns:repeat(3, minmax(0, 1fr)); }
+    .decision-card, .chart-card, .calc-card, .alert-card, .action-card, .eng-card, .forecast-card {
+      border:1px solid var(--line-soft); border-radius:20px; background:rgba(255,255,255,.03); padding:18px;
+    }
+    .decision-card strong, .calc-card strong, .forecast-card strong {
+      display:block; font-size:30px; line-height:1; font-weight:800;
+    }
+    .decision-card span, .calc-card span, .forecast-card span {
+      display:block; margin-top:6px; color:var(--muted); font-size:11px; text-transform:uppercase; letter-spacing:.08em;
+    }
+    .decision-card p, .calc-card p, .forecast-card p { margin:12px 0 0; color:#d6e1f0; font-size:13px; line-height:1.6; }
+    .decision-card.state { background:linear-gradient(180deg, rgba(34,215,180,.12), rgba(255,255,255,.02)); }
+    .decision-card.deviation { background:linear-gradient(180deg, rgba(255,191,102,.14), rgba(255,255,255,.02)); }
+    .decision-card.action { background:linear-gradient(180deg, rgba(198,166,255,.16), rgba(255,255,255,.02)); }
+    .core-grid {
+      display:grid; grid-template-columns:1.25fr .75fr; gap:14px; align-items:stretch;
+    }
+    .chart-card svg { width:100%; height:auto; display:block; }
+    .chart-meta {
+      display:flex; flex-wrap:wrap; gap:8px; margin-top:14px;
+    }
+    .legend-pill {
+      display:inline-flex; align-items:center; gap:8px; padding:7px 11px; border-radius:999px; border:1px solid var(--line-soft);
+      background:rgba(255,255,255,.04); color:#dbe8f9; font-size:11px; text-transform:uppercase; letter-spacing:.08em;
+    }
+    .legend-pill i { width:12px; height:12px; border-radius:999px; display:inline-block; }
+    .calc-stack { display:grid; gap:14px; }
+    .calc-card.good { border-color:rgba(34,215,180,.26); }
+    .calc-card.warn { border-color:rgba(255,191,102,.26); }
+    .calc-card.bad { border-color:rgba(255,122,122,.3); }
+    .metric-line {
+      margin-top:12px; height:10px; border-radius:999px; overflow:hidden; background:rgba(255,255,255,.06); border:1px solid var(--line-soft);
+    }
+    .metric-line span { display:block; height:100%; border-radius:999px; }
+    .alert-list, .action-list, .eng-list { display:grid; gap:12px; }
+    .alert-item, .action-item, .eng-item {
+      border:1px solid var(--line-soft); border-radius:16px; padding:14px; background:rgba(255,255,255,.025);
+    }
+    .alert-item.red { border-color:rgba(255,122,122,.34); background:rgba(255,122,122,.08); }
+    .alert-item.yellow { border-color:rgba(255,191,102,.32); background:rgba(255,191,102,.08); }
+    .alert-item.green { border-color:rgba(34,215,180,.28); background:rgba(34,215,180,.08); }
+    .alert-item strong, .action-item strong, .eng-item strong {
+      display:block; font-size:15px; line-height:1.35;
+    }
+    .alert-item p, .action-item p, .eng-item p { margin:8px 0 0; color:#d6e1f0; font-size:13px; line-height:1.55; }
+    .alert-pill {
+      display:inline-flex; align-items:center; margin-top:10px; padding:5px 9px; border-radius:999px; font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:.08em;
+      border:1px solid currentColor;
+    }
+    .alert-item.red .alert-pill { color:#ffb1b1; }
+    .alert-item.yellow .alert-pill { color:#ffd58f; }
+    .alert-item.green .alert-pill { color:#9ff5d8; }
+    .action-item { background:linear-gradient(180deg, rgba(141,180,255,.08), rgba(255,255,255,.02)); }
+    .eng-row {
+      display:grid; grid-template-columns:120px 1fr 76px; gap:12px; align-items:center;
+    }
+    .eng-row + .eng-row { margin-top:12px; }
+    .eng-row .name { font-family:"Oswald", sans-serif; font-size:18px; }
+    .eng-track {
+      position:relative; height:16px; border-radius:999px; overflow:hidden; background:rgba(255,255,255,.05); border:1px solid var(--line-soft);
+    }
+    .eng-band {
+      position:absolute; top:0; bottom:0; background:linear-gradient(90deg, rgba(34,215,180,.45), rgba(255,191,102,.35));
+    }
+    .eng-fill {
+      position:absolute; top:0; bottom:0; background:linear-gradient(90deg, #8db4ff, #22d7b4); box-shadow:0 0 18px rgba(34,215,180,.24);
+    }
+    .eng-value { text-align:right; font-weight:800; font-size:13px; color:#eff6ff; }
+    .eng-sub { margin-top:4px; color:var(--muted); font-size:11px; text-transform:uppercase; letter-spacing:.08em; }
+    .micro-grid { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:12px; margin-top:14px; }
+    .micro-card {
+      border:1px solid var(--line-soft); border-radius:16px; padding:14px; background:rgba(255,255,255,.025);
+    }
+    .micro-card strong { display:block; font-size:22px; }
+    .micro-card span { display:block; margin-top:4px; color:var(--muted); font-size:11px; text-transform:uppercase; letter-spacing:.08em; }
+    .ops-input-grid, .ops-meta-grid { display:grid; gap:14px; }
+    .ops-input-grid { grid-template-columns:1.05fr .95fr; }
+    .ops-meta-grid { grid-template-columns:repeat(3, minmax(0, 1fr)); }
+    .input-card {
+      border:1px solid var(--line-soft); border-radius:20px; background:rgba(255,255,255,.03); padding:18px;
+    }
+    .input-card h3 { margin:0 0 14px; font-size:18px; color:#f1f7ff; }
+    .field-grid { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:12px; }
+    .field { display:grid; gap:8px; }
+    .field.full { grid-column:1 / -1; }
+    .field label {
+      font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:var(--muted);
+    }
+    .field input, .field select, .ops-table input {
+      width:100%; min-height:44px; border:1px solid var(--line); border-radius:12px; background:rgba(255,255,255,.03);
+      color:var(--text); padding:0 12px; font-size:14px; outline:none;
+    }
+    .field input:focus, .field select:focus, .ops-table input:focus {
+      border-color:rgba(34,215,180,.78); box-shadow:0 0 0 3px rgba(34,215,180,.12);
+    }
+    .ops-table-wrap { overflow:auto; border:1px solid var(--line-soft); border-radius:16px; }
+    .ops-table {
+      width:100%; min-width:620px; border-collapse:collapse;
+    }
+    .ops-table th, .ops-table td {
+      border-bottom:1px solid rgba(255,255,255,.06); padding:10px; text-align:left; vertical-align:middle;
+    }
+    .ops-table th {
+      background:rgba(255,255,255,.04); color:#d8e8f8; font-size:11px; text-transform:uppercase; letter-spacing:.08em;
+    }
+    .ops-table td { font-size:13px; color:#d6e1f0; }
+    .table-actions {
+      display:flex; justify-content:space-between; align-items:center; gap:12px; margin-top:14px; flex-wrap:wrap;
+    }
+    .mini-btn, .ghost-btn, .danger-btn {
+      display:inline-flex; align-items:center; justify-content:center; min-height:40px; border-radius:12px; padding:0 14px; text-decoration:none; cursor:pointer;
+      font-size:12px; text-transform:uppercase; letter-spacing:.08em; font-weight:800;
+    }
+    .mini-btn {
+      color:#082922; background:linear-gradient(130deg,#a0f9eb,#22d7b4); border:1px solid rgba(34,215,180,.75);
+    }
+    .ghost-btn {
+      color:#d8e8f8; background:rgba(255,255,255,.04); border:1px solid var(--line-soft);
+    }
+    .danger-btn {
+      color:#ffd9d9; background:rgba(255,122,122,.1); border:1px solid rgba(255,122,122,.3);
+    }
+    .section-note {
+      margin:0 0 14px; color:#d2dfef; font-size:14px; line-height:1.6;
+    }
+    .autosave-note {
+      margin-top:14px; padding:12px 14px; border-radius:14px; border:1px solid rgba(34,215,180,.24); background:rgba(34,215,180,.08);
+      color:#d9fff6; font-size:13px; line-height:1.55;
+    }
+    .feed-grid {
+      display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); gap:12px;
+    }
+    .feed-card {
+      border:1px solid var(--line-soft); border-radius:16px; background:rgba(255,255,255,.03); padding:16px;
+    }
+    .feed-card strong { display:block; font-size:24px; line-height:1.05; font-weight:800; }
+    .feed-card span {
+      display:block; margin-top:6px; color:var(--muted); font-size:11px; text-transform:uppercase; letter-spacing:.08em;
+    }
+    .feed-card p { margin:10px 0 0; color:#d6e1f0; font-size:13px; line-height:1.6; }
+    .feed-note {
+      margin-top:14px; border:1px solid rgba(141,180,255,.28); border-radius:14px; background:rgba(141,180,255,.08); padding:14px; color:#e1ecff; font-size:13px; line-height:1.55;
+    }
+    .footer { margin-top:14px; color:var(--muted); text-transform:uppercase; letter-spacing:.08em; font-size:12px; text-align:center; }
+    @media (max-width: 980px) {
+      .hero-grid, .feed-grid { grid-template-columns:1fr 1fr; }
+      .hero-grid.ops-mode, .decision-grid, .forecast-grid, .core-grid, .alerts-grid, .eng-grid, .ops-input-grid, .ops-meta-grid, .field-grid { grid-template-columns:1fr; }
+      .top { position:static; flex-direction:column; align-items:flex-start; }
+    }
+    @media (max-width: 700px) {
+      .hero-grid, .feed-grid { grid-template-columns:1fr; }
+      .micro-grid { grid-template-columns:1fr; }
+      .eng-row { grid-template-columns:1fr; }
+      .eng-value { text-align:left; }
+    }
+  </style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+  <main class="wrap">
+    <header class="top">
+      <div class="brand"><span class="dot" aria-hidden="true"></span><span>Nexus Oilfield AI</span></div>
+      <nav class="nav" id="nav"></nav>
+    </header>
+
+    <section class="hero">
+      <h1 id="pageTitle">Дашборд работ</h1>
+      <p id="pageDesc">Загрузка...</p>
+      <div class="hero-grid" id="heroGrid">
+        <div class="hero-stat"><strong id="heroWell">9301</strong><span>скважина</span></div>
+        <div class="hero-stat"><strong id="heroDate">14.04.2026</strong><span>дата работ</span></div>
+        <div class="hero-stat"><strong>1</strong><span>активный модуль</span></div>
+        <div class="hero-stat"><strong>Mud Focus</strong><span>первый контур</span></div>
+      </div>
+    </section>
+
+    <section class="panel hidden" id="opsInputPanel">
+      <div class="panel-head">
+        <h2>Ручной ввод данных</h2>
+        <span class="panel-tag">Человек вводит · система считает</span>
+      </div>
+      <p class="section-note">Заполняй вручную план и факт по текущей скважине. Все производные KPI, график глубина/день, ETA, стоимость потерь и алерты пересчитываются автоматически.</p>
+      <div id="opsInputContent"></div>
+      <div class="autosave-note">Данные сохраняются автоматически в браузере для этой скважины и даты.</div>
+    </section>
+
+    <section class="panel hidden" id="opsFeedPanel">
+      <div class="panel-head">
+        <h2>WITSML feed</h2>
+        <span class="panel-tag" id="opsFeedTag">Live mock stream</span>
+      </div>
+      <div class="feed-grid" id="opsFeedGrid"></div>
+      <div class="feed-note" id="opsFeedNote"></div>
+    </section>
+
+    <section class="panel hidden" id="opsDecisionPanel">
+      <div class="panel-head">
+        <h2>1 экран = 3 ответа</h2>
+        <span class="panel-tag">Где мы сейчас · Насколько отклонились · Что делать</span>
+      </div>
+      <div class="decision-grid" id="decisionGrid"></div>
+    </section>
+
+    <section class="panel hidden" id="opsCorePanel">
+      <div class="panel-head">
+        <h2>План vs факт</h2>
+        <span class="panel-tag">Depth vs Time · ядро операционного экрана</span>
+      </div>
+      <div class="core-grid">
+        <article class="chart-card">
+          <div id="depthTimeChart"></div>
+          <div class="chart-meta" id="chartLegend"></div>
+        </article>
+        <aside class="calc-stack" id="calcStack"></aside>
+      </div>
+    </section>
+
+    <section class="panel hidden" id="opsAlertPanel">
+      <div class="panel-head">
+        <h2>Отклонения, риски и действия</h2>
+        <span class="panel-tag">Алерт = рекомендация</span>
+      </div>
+      <div class="alerts-grid">
+        <article class="alert-card">
+          <div class="alert-list" id="alertList"></div>
+        </article>
+        <article class="action-card">
+          <div class="action-list" id="actionList"></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel hidden" id="opsEngineeringPanel">
+      <div class="panel-head">
+        <h2>Инженерные параметры и прогноз</h2>
+        <span class="panel-tag">Норма vs факт · ETA · деньги</span>
+      </div>
+      <div class="eng-grid">
+        <article class="eng-card">
+          <div class="eng-list" id="engineeringList"></div>
+        </article>
+        <article class="eng-card">
+          <div class="forecast-grid" id="forecastGrid"></div>
+          <div class="micro-grid" id="microGrid"></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel" id="dailyMudPanel">
+      <h2>Daily Mud Reports</h2>
+      <div class="dmr-shell">
+        <h3 id="dmrSubtitle">Реестр суточных DMR</h3>
+        <div class="dmr-actions">
+          <button class="btn-add" id="addDmrButton" type="button">Добавить DMR</button>
+        </div>
+        <div class="dmr-list" id="dmrList"></div>
+        <div class="pill-row">
+          <span class="pill cyan">mud</span>
+          <span class="pill amber" id="workDatePill">14.04.2026</span>
+          <span class="pill blue" id="wellPill">well 9301</span>
+        </div>
+      </div>
+    </section>
+
+    <p class="footer">Well work dashboard · Daily operations</p>
+  </main>
+  <script src="assets/js/witsml-simulator.js"></script>
+  <script>
+    function getParam(key, fallback) {
+      const params = new URLSearchParams(window.location.search);
+      return params.get(key) || fallback;
+    }
+
+    function buildProjectLink(page, name, well) {
+      const params = new URLSearchParams();
+      params.set('name', name);
+      if (well) {
+        params.set('well', well);
+      }
+      return `${page}?${params.toString()}`;
+    }
+
+    function buildOperationalSectionLink(name, well, section, number) {
+      const params = new URLSearchParams();
+      params.set('name', name);
+      params.set('well', well);
+      params.set('section', section);
+      params.set('number', number);
+      return `project_well_section.html?${params.toString()}`;
+    }
+
+    function buildDmrLink(name, well, date, dmrId) {
+      const params = new URLSearchParams();
+      params.set('name', name);
+      params.set('well', well);
+      params.set('date', date);
+      params.set('dmr', dmrId);
+      return `project_well_dmr_entry.html?${params.toString()}`;
+    }
+
+    const projectName = getParam('name', 'Проект');
+    const wellName = getParam('well', '9301');
+    const workDate = getParam('date', '14.04.2026');
+    const normalizedProjectName = projectName.trim().toLowerCase();
+    const isSupervisorNewWell = normalizedProjectName === 'новая скважина' && /^new-\d+$/i.test(wellName);
+    const isNewWellMode = isSupervisorNewWell;
+    const dashboardSource = getParam('source', '');
+    const witsmlApi = window.NexusWitsmlSimulator || null;
+    const isWitsmlDashboard = isSupervisorNewWell && dashboardSource === 'witsml';
+    let witsmlUnsubscribe = null;
+
+    const newWellDefaults = {
+      interval: 'Стабилизация 178 мм',
+      operation: 'Бурение / slide-rotate',
+      tvd: 1976,
+      operationHours: 7.5,
+      targetDepth: 4960,
+      planRop: 26,
+      costPerHour: 95000,
+      standpipeThreshold: 225,
+      flowIn: 32,
+      flowOut: 29,
+      engineering: [
+        { name: 'WOB', unit: 'т', actual: 10.8, plan: 10.5, min: 9, max: 12 },
+        { name: 'RPM', unit: 'об/мин', actual: 132, plan: 125, min: 110, max: 140 },
+        { name: 'Torque', unit: 'кН·м', actual: 14.8, plan: 14.0, min: 12, max: 16 },
+        { name: 'Давление', unit: 'бар', actual: 238, plan: 210, min: 190, max: 225 },
+        { name: 'Расход', unit: 'л/с', actual: 32, plan: 32, min: 30, max: 34 }
+      ],
+      depthRows: [
+        { day: 0, planDepth: 0, actualDepth: 0 },
+        { day: 1, planDepth: 0, actualDepth: 0 },
+        { day: 2, planDepth: 1220, actualDepth: 1350 },
+        { day: 3, planDepth: 2450, actualDepth: 2720 },
+        { day: 4, planDepth: 2450, actualDepth: 3200 },
+        { day: 5, planDepth: 3300, actualDepth: 2840 },
+        { day: 6.2, planDepth: 3750, actualDepth: 0 },
+        { day: 7.2, planDepth: 3750, actualDepth: 0 },
+        { day: 8.1, planDepth: 4380, actualDepth: 0 },
+        { day: 8.8, planDepth: 4960, actualDepth: 0 }
+      ],
+      nptEvents: [
+        { start: 2.7, end: 2.85, top: 900, bottom: 2600, label: 'Проблема с очисткой' },
+        { start: 4.0, end: 4.17, top: 2100, bottom: 3900, label: 'Рост давления' },
+        { start: 4.45, end: 4.61, top: 2500, bottom: 3200, label: 'Подозрение на потери' }
+      ]
+    };
+
+    const parameterAdvice = {
+      'WOB': 'Проверь передачу веса на долото и режим slide/rotate.',
+      'RPM': 'Сверь RPM с режимом управления траекторией и вибрациями.',
+      'Torque': 'Проверь drag, cuttings loading и риск прихвата.',
+      'Давление': 'Проверь гидравлику, очистку ствола и состояние циркуляционного тракта.',
+      'Расход': 'Проверь насосный режим и соответствие расхода задачам очистки ствола.'
+    };
+
+    let newWellState = null;
+
+    function deepClone(value) {
+      return JSON.parse(JSON.stringify(value));
+    }
+
+    function formatNumber(value, digits) {
+      return new Intl.NumberFormat('ru-RU', { maximumFractionDigits: digits, minimumFractionDigits: digits }).format(value);
+    }
+
+    function formatMoney(value) {
+      return new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 0 }).format(value);
+    }
+
+    function clamp(value, min, max) {
+      return Math.max(min, Math.min(max, value));
+    }
+
+    function parseNumber(value, fallback) {
+      const normalized = String(value ?? '').replace(',', '.');
+      const parsed = Number(normalized);
+      return Number.isFinite(parsed) ? parsed : fallback;
+    }
+
+    function getNewWellStorageKey() {
+      return `nexus-new-well-ops-${projectName}-${wellName}-${workDate}`;
+    }
+
+    function loadNewWellState() {
+      const base = deepClone(newWellDefaults);
+      const raw = localStorage.getItem(getNewWellStorageKey());
+      if (!raw) {
+        return base;
+      }
+      try {
+        const saved = JSON.parse(raw);
+        if (saved && typeof saved === 'object') {
+          base.interval = saved.interval || base.interval;
+          base.operation = saved.operation || base.operation;
+          base.tvd = parseNumber(saved.tvd, base.tvd);
+          base.operationHours = parseNumber(saved.operationHours, base.operationHours);
+          base.targetDepth = parseNumber(saved.targetDepth, base.targetDepth);
+          base.planRop = parseNumber(saved.planRop, base.planRop);
+          base.costPerHour = parseNumber(saved.costPerHour, base.costPerHour);
+          base.standpipeThreshold = parseNumber(saved.standpipeThreshold, base.standpipeThreshold);
+          base.flowIn = parseNumber(saved.flowIn, base.flowIn);
+          base.flowOut = parseNumber(saved.flowOut, base.flowOut);
+          if (Array.isArray(saved.engineering)) {
+            base.engineering = saved.engineering.map((item, index) => ({
+              ...base.engineering[index],
+              ...item,
+              actual: parseNumber(item.actual, base.engineering[index] ? base.engineering[index].actual : 0),
+              plan: parseNumber(item.plan, base.engineering[index] ? base.engineering[index].plan : 0),
+              min: parseNumber(item.min, base.engineering[index] ? base.engineering[index].min : 0),
+              max: parseNumber(item.max, base.engineering[index] ? base.engineering[index].max : 0)
+            }));
+          }
+          if (Array.isArray(saved.depthRows)) {
+            base.depthRows = saved.depthRows.map((row) => ({
+              day: parseNumber(row.day, 0),
+              planDepth: parseNumber(row.planDepth, 0),
+              actualDepth: parseNumber(row.actualDepth, 0)
+            }));
+          }
+          if (Array.isArray(saved.nptEvents)) {
+            base.nptEvents = saved.nptEvents.map((event) => ({
+              start: parseNumber(event.start, 0),
+              end: parseNumber(event.end, 0),
+              top: parseNumber(event.top, 0),
+              bottom: parseNumber(event.bottom, 0),
+              label: event.label || ''
+            }));
+          }
+        }
+      } catch (error) {
+        console.warn('Failed to parse new well ops state', error);
+      }
+      return base;
+    }
+
+    function getWitsmlSnapshot() {
+      if (!isWitsmlDashboard || !witsmlApi) {
+        return null;
+      }
+      const snapshot = witsmlApi.loadSnapshot();
+      if (!snapshot) {
+        return null;
+      }
+      if (snapshot.activeWellId !== wellName) {
+        return witsmlApi.selectWell(wellName);
+      }
+      return snapshot;
+    }
+
+    function saveNewWellState() {
+      localStorage.setItem(getNewWellStorageKey(), JSON.stringify(newWellState));
+    }
+
+    function getCurve(rows, field) {
+      return rows
+        .map((row) => ({ day: parseNumber(row.day, NaN), depth: parseNumber(row[field], NaN) }))
+        .filter((point) => Number.isFinite(point.day) && Number.isFinite(point.depth) && point.day >= 0 && point.depth >= 0)
+        .sort((a, b) => a.day - b.day);
+    }
+
+    function getLastPositivePoint(points) {
+      const filtered = points.filter((point) => point.depth > 0 || point.day === 0);
+      return filtered.length ? filtered[filtered.length - 1] : { day: 0, depth: 0 };
+    }
+
+    function interpolateDepthByDay(points, day) {
+      if (!points.length) return 0;
+      if (day <= points[0].day) return points[0].depth;
+      for (let index = 1; index < points.length; index += 1) {
+        const prev = points[index - 1];
+        const next = points[index];
+        if (day <= next.day) {
+          const ratio = next.day === prev.day ? 0 : (day - prev.day) / (next.day - prev.day);
+          return prev.depth + (next.depth - prev.depth) * ratio;
+        }
+      }
+      return points[points.length - 1].depth;
+    }
+
+    function interpolateTimeByDepth(points, depth) {
+      if (!points.length) return 0;
+      const sorted = [...points].sort((a, b) => a.depth - b.depth);
+      if (depth <= sorted[0].depth) return sorted[0].day;
+      for (let index = 1; index < sorted.length; index += 1) {
+        const prev = sorted[index - 1];
+        const next = sorted[index];
+        if (depth <= next.depth) {
+          const ratio = next.depth === prev.depth ? 0 : (depth - prev.depth) / (next.depth - prev.depth);
+          return prev.day + (next.day - prev.day) * ratio;
+        }
+      }
+      return sorted[sorted.length - 1].day;
+    }
+
+    function computeCurrentRop(points) {
+      const filtered = points.filter((point) => point.depth > 0 || point.day === 0);
+      if (filtered.length < 2) return 0;
+      for (let index = filtered.length - 1; index > 0; index -= 1) {
+        const current = filtered[index];
+        const previous = filtered[index - 1];
+        const deltaDay = current.day - previous.day;
+        const deltaDepth = current.depth - previous.depth;
+        if (deltaDay > 0 && deltaDepth >= 0) {
+          return deltaDepth / (deltaDay * 24);
+        }
+      }
+      return 0;
+    }
+
+    function sumNptHours(events) {
+      return events.reduce((sum, event) => {
+        const durationDays = Math.max(0, parseNumber(event.end, 0) - parseNumber(event.start, 0));
+        return sum + durationDays * 24;
+      }, 0);
+    }
+
+    function getEngineeringValue(state, name) {
+      const item = state.engineering.find((entry) => entry.name === name);
+      return item ? parseNumber(item.actual, 0) : 0;
+    }
+
+    function buildComputedState(state) {
+      const planCurve = getCurve(state.depthRows, 'planDepth');
+      const actualCurve = getCurve(state.depthRows, 'actualDepth');
+      const currentPoint = getLastPositivePoint(actualCurve);
+      const currentDay = currentPoint.day;
+      const md = currentPoint.depth;
+      const elapsedHours = currentDay * 24;
+      const planDepthAtNow = interpolateDepthByDay(planCurve, currentDay);
+      const plannedTimeAtDepth = interpolateTimeByDepth(planCurve, md) * 24;
+      const ropActual = computeCurrentRop(actualCurve);
+      const planRop = parseNumber(state.planRop, 0);
+      const deviationTime = elapsedHours - plannedTimeAtDepth;
+      const deviationDepth = md - planDepthAtNow;
+      const efficiency = planRop > 0 ? ropActual / planRop : 0;
+      const remainingDepth = Math.max(0, parseNumber(state.targetDepth, 0) - md);
+      const etaHours = ropActual > 0 ? remainingDepth / ropActual : 0;
+      const nptHours = sumNptHours(state.nptEvents);
+      const nptPercent = elapsedHours > 0 ? (nptHours / elapsedHours) * 100 : 0;
+      const costLoss = nptHours * parseNumber(state.costPerHour, 0);
+      const timePenaltyFactor = ropActual > 0 ? planRop / ropActual : 0;
+      const plannedEtaDays = planCurve.length ? planCurve[planCurve.length - 1].day : 0;
+      const actualEtaDays = currentDay + etaHours / 24;
+      const pressureActual = getEngineeringValue(state, 'Давление');
+      const flowActual = getEngineeringValue(state, 'Расход');
+
+      return {
+        planCurve,
+        actualCurve,
+        currentDay,
+        md,
+        elapsedHours,
+        planDepthAtNow,
+        plannedTimeAtDepth,
+        ropActual,
+        planRop,
+        deviationTime,
+        deviationDepth,
+        efficiency,
+        remainingDepth,
+        etaHours,
+        nptHours,
+        nptPercent,
+        costLoss,
+        timePenaltyFactor,
+        plannedEtaDays,
+        actualEtaDays,
+        pressureActual,
+        flowActual
+      };
+    }
+
+    function buildField(label, metaKey, value, type, step) {
+      return `<div class="field"><label>${label}</label><input data-meta="${metaKey}" type="${type || 'text'}" value="${value}"${step ? ` step="${step}"` : ''} /></div>`;
+    }
+
+    function renderOpsInputPanel() {
+      const state = newWellState;
+      const content = document.getElementById('opsInputContent');
+      content.innerHTML = `
+        <div class="ops-input-grid">
+          <article class="input-card">
+            <h3>Статус, план и пороги</h3>
+            <div class="field-grid">
+              <div class="field full"><label>Интервал</label><input data-meta="interval" type="text" value="${state.interval}" /></div>
+              <div class="field full"><label>Тип операции</label><input data-meta="operation" type="text" value="${state.operation}" /></div>
+              ${buildField('TVD, м', 'tvd', state.tvd, 'number', '1')}
+              ${buildField('Время текущей операции, ч', 'operationHours', state.operationHours, 'number', '0.1')}
+              ${buildField('Целевая глубина, м', 'targetDepth', state.targetDepth, 'number', '1')}
+              ${buildField('Плановый ROP, м/ч', 'planRop', state.planRop, 'number', '0.1')}
+              ${buildField('Порог по давлению, бар', 'standpipeThreshold', state.standpipeThreshold, 'number', '1')}
+              ${buildField('Стоимость часа, ₽', 'costPerHour', state.costPerHour, 'number', '1000')}
+              ${buildField('Flow in, л/с', 'flowIn', state.flowIn, 'number', '0.1')}
+              ${buildField('Flow out, л/с', 'flowOut', state.flowOut, 'number', '0.1')}
+            </div>
+          </article>
+          <article class="input-card">
+            <h3>Инженерные параметры: план vs факт</h3>
+            <div class="ops-table-wrap">
+              <table class="ops-table">
+                <thead>
+                  <tr>
+                    <th>Параметр</th>
+                    <th>Факт</th>
+                    <th>План</th>
+                    <th>Мин</th>
+                    <th>Макс</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${state.engineering.map((item, index) => `
+                    <tr data-eng-index="${index}">
+                      <td>${item.name}, ${item.unit}</td>
+                      <td><input data-eng-index="${index}" data-eng-field="actual" type="number" step="0.1" value="${item.actual}" /></td>
+                      <td><input data-eng-index="${index}" data-eng-field="plan" type="number" step="0.1" value="${item.plan}" /></td>
+                      <td><input data-eng-index="${index}" data-eng-field="min" type="number" step="0.1" value="${item.min}" /></td>
+                      <td><input data-eng-index="${index}" data-eng-field="max" type="number" step="0.1" value="${item.max}" /></td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          </article>
+        </div>
+        <div class="ops-meta-grid" style="margin-top:14px">
+          <article class="input-card" style="grid-column:span 2">
+            <h3>График глубина / день</h3>
+            <div class="ops-table-wrap">
+              <table class="ops-table">
+                <thead>
+                  <tr>
+                    <th>День</th>
+                    <th>Глубина по плану, м</th>
+                    <th>Глубина по факту, м</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${state.depthRows.map((row, index) => `
+                    <tr data-depth-index="${index}">
+                      <td><input data-depth-index="${index}" data-depth-field="day" type="number" step="0.1" value="${row.day}" /></td>
+                      <td><input data-depth-index="${index}" data-depth-field="planDepth" type="number" step="1" value="${row.planDepth}" /></td>
+                      <td><input data-depth-index="${index}" data-depth-field="actualDepth" type="number" step="1" value="${row.actualDepth}" /></td>
+                      <td><button class="danger-btn" type="button" data-action="remove-depth-row" data-index="${index}">Убрать</button></td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+            <div class="table-actions">
+              <button class="mini-btn" type="button" data-action="add-depth-row">Добавить точку</button>
+              <span class="panel-tag">По этим точкам график строится автоматически</span>
+            </div>
+          </article>
+          <article class="input-card">
+            <h3>NPT события</h3>
+            <div class="ops-table-wrap">
+              <table class="ops-table">
+                <thead>
+                  <tr>
+                    <th>Start day</th>
+                    <th>End day</th>
+                    <th>Верх, м</th>
+                    <th>Низ, м</th>
+                    <th>Метка</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${state.nptEvents.map((event, index) => `
+                    <tr data-npt-index="${index}">
+                      <td><input data-npt-index="${index}" data-npt-field="start" type="number" step="0.01" value="${event.start}" /></td>
+                      <td><input data-npt-index="${index}" data-npt-field="end" type="number" step="0.01" value="${event.end}" /></td>
+                      <td><input data-npt-index="${index}" data-npt-field="top" type="number" step="1" value="${event.top}" /></td>
+                      <td><input data-npt-index="${index}" data-npt-field="bottom" type="number" step="1" value="${event.bottom}" /></td>
+                      <td><input data-npt-index="${index}" data-npt-field="label" type="text" value="${event.label}" /></td>
+                      <td><button class="danger-btn" type="button" data-action="remove-npt-row" data-index="${index}">Убрать</button></td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+            <div class="table-actions">
+              <button class="mini-btn" type="button" data-action="add-npt-row">Добавить NPT</button>
+              <button class="ghost-btn" type="button" data-action="reset-new-well">Сбросить к шаблону</button>
+            </div>
+          </article>
+        </div>
+      `;
+    }
+
+    function syncNewWellStateFromInputs() {
+      const root = document.getElementById('opsInputContent');
+      if (!root || !newWellState) {
+        return;
+      }
+      root.querySelectorAll('[data-meta]').forEach((input) => {
+        const key = input.dataset.meta;
+        const value = input.type === 'number' ? parseNumber(input.value, newWellState[key]) : input.value;
+        newWellState[key] = value;
+      });
+      newWellState.engineering = Array.from(root.querySelectorAll('tr[data-eng-index]')).map((row, index) => {
+        const template = newWellState.engineering[index] || newWellDefaults.engineering[index];
+        return {
+          ...template,
+          actual: parseNumber(row.querySelector('[data-eng-field="actual"]').value, template.actual),
+          plan: parseNumber(row.querySelector('[data-eng-field="plan"]').value, template.plan),
+          min: parseNumber(row.querySelector('[data-eng-field="min"]').value, template.min),
+          max: parseNumber(row.querySelector('[data-eng-field="max"]').value, template.max)
+        };
+      });
+      newWellState.depthRows = Array.from(root.querySelectorAll('tr[data-depth-index]')).map((row) => ({
+        day: parseNumber(row.querySelector('[data-depth-field="day"]').value, 0),
+        planDepth: parseNumber(row.querySelector('[data-depth-field="planDepth"]').value, 0),
+        actualDepth: parseNumber(row.querySelector('[data-depth-field="actualDepth"]').value, 0)
+      }));
+      newWellState.nptEvents = Array.from(root.querySelectorAll('tr[data-npt-index]')).map((row) => ({
+        start: parseNumber(row.querySelector('[data-npt-field="start"]').value, 0),
+        end: parseNumber(row.querySelector('[data-npt-field="end"]').value, 0),
+        top: parseNumber(row.querySelector('[data-npt-field="top"]').value, 0),
+        bottom: parseNumber(row.querySelector('[data-npt-field="bottom"]').value, 0),
+        label: row.querySelector('[data-npt-field="label"]').value.trim()
+      }));
+    }
+
+    function bindNewWellInputHandlers() {
+      const root = document.getElementById('opsInputContent');
+      if (!root || root.dataset.bound === '1') {
+        return;
+      }
+      root.dataset.bound = '1';
+
+      root.addEventListener('input', () => {
+        syncNewWellStateFromInputs();
+        saveNewWellState();
+        updateNewWellDashboard();
+      });
+
+      root.addEventListener('click', (event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLElement)) {
+          return;
+        }
+        const action = target.dataset.action;
+        if (!action) {
+          return;
+        }
+        if (action === 'add-depth-row') {
+          newWellState.depthRows.push({ day: newWellState.depthRows.length ? newWellState.depthRows[newWellState.depthRows.length - 1].day + 1 : 0, planDepth: 0, actualDepth: 0 });
+        }
+        if (action === 'remove-depth-row' && newWellState.depthRows.length > 2) {
+          newWellState.depthRows.splice(parseNumber(target.dataset.index, 0), 1);
+        }
+        if (action === 'add-npt-row') {
+          newWellState.nptEvents.push({ start: 0, end: 0.1, top: 0, bottom: 0, label: '' });
+        }
+        if (action === 'remove-npt-row' && newWellState.nptEvents.length > 1) {
+          newWellState.nptEvents.splice(parseNumber(target.dataset.index, 0), 1);
+        }
+        if (action === 'reset-new-well') {
+          newWellState = deepClone(newWellDefaults);
+        }
+        saveNewWellState();
+        renderOpsInputPanel();
+        updateNewWellDashboard();
+      });
+    }
+
+    function buildTicks(maxValue, count) {
+      const ticks = [];
+      const step = maxValue / count;
+      for (let index = 0; index <= count; index += 1) {
+        ticks.push(step * index);
+      }
+      return ticks;
+    }
+
+    function renderWitsmlFeedPanel(snapshot) {
+      const panel = document.getElementById('opsFeedPanel');
+      if (!snapshot) {
+        panel.classList.add('hidden');
+        return;
+      }
+      panel.classList.remove('hidden');
+      document.getElementById('opsFeedTag').textContent = snapshot.running ? 'Live mock stream' : 'Paused snapshot';
+      document.getElementById('opsFeedGrid').innerHTML = `
+        <article class="feed-card"><strong>${snapshot.scenarioLabel}</strong><span>scenario</span><p>${snapshot.scenarioSummary}</p></article>
+        <article class="feed-card"><strong>${snapshot.running ? 'Online' : 'Standby'}</strong><span>feed status</span><p>Каналы приходят из WITSML simulator через browser storage и обновляют текущий экран без ручного ввода.</p></article>
+        <article class="feed-card"><strong>${formatNumber(snapshot.telemetry.md, 0)} м</strong><span>measured depth</span><p>Последняя опубликованная глубина. По ней строится фактическая кривая depth vs time.</p></article>
+        <article class="feed-card"><strong>${formatNumber(snapshot.telemetry.flowIn - snapshot.telemetry.flowOut, 1)} л/с</strong><span>flow delta</span><p>${formatNumber(snapshot.telemetry.flowIn, 1)} in / ${formatNumber(snapshot.telemetry.flowOut, 1)} out. Используется для losses detection.</p></article>
+      `;
+      document.getElementById('opsFeedNote').innerHTML = `Источник: <strong>${snapshot.source}</strong>. Текущий режим: <strong>${snapshot.operation}</strong>. Для управления сценарием открой <a href="139_witsml_simulator.html?name=${encodeURIComponent(projectName)}&well=${encodeURIComponent(wellName)}&date=${encodeURIComponent(workDate)}">страницу симулятора</a>.`;
+    }
+
+    function updateNewWellDashboard() {
+      const snapshot = getWitsmlSnapshot();
+      const state = snapshot ? witsmlApi.getDashboardState(snapshot) : newWellState;
+      const computed = buildComputedState(state);
+      const primaryAction = computed.efficiency < 0.7 ? 'Проверить долото / WOB' : computed.pressureActual > state.standpipeThreshold ? 'Снять рост давления' : state.flowOut < state.flowIn ? 'Проверить потери раствора' : 'Продолжать по плану';
+
+      document.title = `${projectName} · ${wellName} · Операционный дашборд`;
+      document.getElementById('pageTitle').textContent = `${projectName} · ${wellName} · Операционный дашборд`;
+      document.getElementById('pageDesc').textContent = snapshot
+        ? 'Экран работает от live WITSML simulator feed: depth, ROP, pressure, flow и NPT-события приходят автоматически, а dashboard пересчитывает KPI и действия без ручного ввода.'
+        : 'Человек вводит живые данные смены вручную, а экран автоматически считает KPI, строит график глубина/день, определяет отклонения от плана и сразу подсказывает, что делать.';
+
+      const heroGrid = document.getElementById('heroGrid');
+      heroGrid.classList.add('ops-mode');
+      heroGrid.innerHTML = `
+        <div class="hero-stat"><strong>${formatNumber(computed.md, 0)} / ${formatNumber(state.tvd, 0)} м</strong><span>текущая глубина MD / TVD</span></div>
+        <div class="hero-stat"><strong>${state.interval}</strong><span>забой / интервал</span></div>
+        <div class="hero-stat"><strong>${state.operation}</strong><span>тип операции</span></div>
+        <div class="hero-stat"><strong>${formatNumber(computed.ropActual, 1)} м/ч</strong><span>ROP факт, автоматом</span></div>
+        <div class="hero-stat"><strong>${formatNumber(state.operationHours, 1)} ч</strong><span>${snapshot ? 'время из симулятора' : 'время текущей операции'}</span></div>
+      `;
+
+      document.getElementById('dailyMudPanel').classList.add('hidden');
+      if (snapshot) {
+        document.getElementById('opsInputPanel').classList.add('hidden');
+      } else {
+        document.getElementById('opsInputPanel').classList.remove('hidden');
+      }
+      document.getElementById('opsDecisionPanel').classList.remove('hidden');
+      document.getElementById('opsCorePanel').classList.remove('hidden');
+      document.getElementById('opsAlertPanel').classList.remove('hidden');
+      document.getElementById('opsEngineeringPanel').classList.remove('hidden');
+      renderWitsmlFeedPanel(snapshot);
+
+      document.getElementById('nav').innerHTML = `
+        <a href="138_new_well_entry_dashboard.html">К модулю новой скважины</a>
+        <a href="83_drilling_entry_dashboard.html">К бурению</a>
+        ${snapshot ? `<a href="139_witsml_simulator.html?name=${encodeURIComponent(projectName)}&well=${encodeURIComponent(wellName)}&date=${encodeURIComponent(workDate)}">К WITSML simulator</a>` : ''}
+        <a href="project_well_dmr_entry.html?name=${encodeURIComponent(projectName)}&well=${encodeURIComponent(wellName)}&date=${encodeURIComponent(workDate)}&dmr=DMR-1">Открыть DMR</a>
+      `;
+
+      document.getElementById('decisionGrid').innerHTML = `
+        <article class="decision-card state">
+          <strong>${formatNumber(computed.md, 0)} м</strong>
+          <span>Где мы сейчас</span>
+          <p>По последней вручную внесенной точке факта скважина находится в интервале ${state.interval}. Текущий режим: ${state.operation}.</p>
+        </article>
+        <article class="decision-card deviation">
+          <strong>${computed.deviationTime > 0 ? '+' : ''}${formatNumber(computed.deviationTime, 1)} ч</strong>
+          <span>Насколько отклонились</span>
+          <p>Δ глубины ${computed.deviationDepth > 0 ? '+' : ''}${formatNumber(computed.deviationDepth, 0)} м, Δ времени ${computed.deviationTime > 0 ? '+' : ''}${formatNumber(computed.deviationTime, 1)} ч, эффективность ${formatNumber(computed.efficiency * 100, 0)}% от плана.</p>
+        </article>
+        <article class="decision-card action">
+          <strong>${primaryAction}</strong>
+          <span>Что делать прямо сейчас</span>
+          <p>Дашборд выбирает это действие автоматически по активным отклонениям: ROP, давление, потери и инженерные параметры вне коридора.</p>
+        </article>
+      `;
+
+      const maxDay = Math.max(8, Math.ceil(Math.max(
+        computed.actualEtaDays || 0,
+        ...computed.planCurve.map((point) => point.day),
+        ...computed.actualCurve.map((point) => point.day),
+        ...state.nptEvents.map((event) => parseNumber(event.end, 0))
+      )) + 1);
+      const maxDepth = Math.max(5000, Math.ceil(Math.max(
+        parseNumber(state.targetDepth, 0),
+        ...computed.planCurve.map((point) => point.depth),
+        ...computed.actualCurve.map((point) => point.depth),
+        ...state.nptEvents.map((event) => parseNumber(event.bottom, 0))
+      ) / 500) * 500);
+      const svgWidth = 760;
+      const svgHeight = 420;
+      const leftPad = 82;
+      const topPad = 36;
+      const rightPad = 24;
+      const bottomPad = 56;
+      const chartWidth = svgWidth - leftPad - rightPad;
+      const chartHeight = svgHeight - topPad - bottomPad;
+      const scaleX = (day) => leftPad + (day / maxDay) * chartWidth;
+      const scaleY = (depth) => topPad + (depth / maxDepth) * chartHeight;
+      const toPath = (points) => points.map((point, index) => `${index === 0 ? 'M' : 'L'} ${scaleX(point.day)} ${scaleY(point.depth)}`).join(' ');
+      const forecastPath = computed.etaHours > 0 ? [
+        { day: computed.currentDay, depth: computed.md },
+        { day: computed.actualEtaDays, depth: parseNumber(state.targetDepth, 0) }
+      ] : [];
+      const axisDays = buildTicks(maxDay, 5);
+      const axisDepths = buildTicks(maxDepth, 4);
+
+      document.getElementById('depthTimeChart').innerHTML = `
+        <svg viewBox="0 0 ${svgWidth} ${svgHeight}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="График план против факта по глубине и времени">
+          <rect x="0" y="0" width="${svgWidth}" height="${svgHeight}" rx="24" fill="rgba(255,255,255,0.02)" />
+          <text x="${svgWidth / 2}" y="22" text-anchor="middle" fill="#eff6ff" font-size="26" font-family="Oswald">Depth vs Time</text>
+          ${axisDays.map((day) => `<line x1="${scaleX(day)}" y1="${topPad}" x2="${scaleX(day)}" y2="${topPad + chartHeight}" stroke="rgba(255,255,255,0.08)" /><text x="${scaleX(day)}" y="${svgHeight - 18}" text-anchor="middle" fill="#97abc4" font-size="11">${formatNumber(day, 0)}</text>`).join('')}
+          ${axisDepths.map((depth) => `<line x1="${leftPad}" y1="${scaleY(depth)}" x2="${leftPad + chartWidth}" y2="${scaleY(depth)}" stroke="rgba(255,255,255,0.08)" /><text x="${leftPad - 12}" y="${scaleY(depth) + 4}" text-anchor="end" fill="#97abc4" font-size="11">${formatNumber(depth, 0)}</text>`).join('')}
+          <text x="${svgWidth / 2}" y="${svgHeight - 4}" text-anchor="middle" fill="#c8d7ea" font-size="12">Дни</text>
+          <text x="18" y="${svgHeight / 2}" transform="rotate(-90 18 ${svgHeight / 2})" text-anchor="middle" fill="#c8d7ea" font-size="12">Глубина, м</text>
+          ${state.nptEvents.map((event) => {
+            const durationHours = Math.max(0, (parseNumber(event.end, 0) - parseNumber(event.start, 0)) * 24);
+            const label = event.label || `NPT ${formatNumber(durationHours, 1)} ч`;
+            return `<rect x="${scaleX(parseNumber(event.start, 0))}" y="${scaleY(parseNumber(event.top, 0))}" width="${Math.max(6, scaleX(parseNumber(event.end, 0)) - scaleX(parseNumber(event.start, 0)))}" height="${Math.max(18, scaleY(parseNumber(event.bottom, 0)) - scaleY(parseNumber(event.top, 0)))}" rx="10" fill="rgba(191,39,45,0.86)" /><text x="${(scaleX(parseNumber(event.start, 0)) + scaleX(parseNumber(event.end, 0))) / 2}" y="${scaleY(parseNumber(event.top, 0)) - 8}" text-anchor="middle" fill="#ffbcbc" font-size="10">${label}</text>`;
+          }).join('')}
+          <path d="${toPath(computed.planCurve)}" fill="none" stroke="#3249ff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+          <path d="${toPath(computed.actualCurve)}" fill="none" stroke="#2fe3e8" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+          ${forecastPath.length ? `<path d="${toPath(forecastPath)}" fill="none" stroke="#ffd36e" stroke-width="3" stroke-dasharray="8 8" stroke-linecap="round" />` : ''}
+          <circle cx="${scaleX(computed.currentDay)}" cy="${scaleY(computed.md)}" r="6" fill="#ffffff" stroke="#2fe3e8" stroke-width="3" />
+        </svg>
+      `;
+
+      document.getElementById('chartLegend').innerHTML = `
+        <span class="legend-pill"><i style="background:#3249ff"></i>План</span>
+        <span class="legend-pill"><i style="background:#2fe3e8"></i>Факт</span>
+        <span class="legend-pill"><i style="background:#bf272d"></i>NPT событие</span>
+        <span class="legend-pill"><i style="background:#ffd36e"></i>ETA forecast</span>
+      `;
+
+      document.getElementById('calcStack').innerHTML = `
+        <article class="calc-card ${computed.deviationDepth < 0 ? 'bad' : 'good'}">
+          <strong>${computed.deviationDepth > 0 ? '+' : ''}${formatNumber(computed.deviationDepth, 0)} м</strong>
+          <span>Δ глубины к плану</span>
+          <p>Глубина рассчитывается автоматически по последней фактической точке и сравнивается с интерполированным планом на тот же день.</p>
+          <div class="metric-line"><span style="width:${clamp(Math.abs(computed.deviationDepth) / 500 * 100, 10, 100)}%;background:linear-gradient(90deg,#ff8a7a,#bf272d)"></span></div>
+        </article>
+        <article class="calc-card ${computed.deviationTime > 0 ? 'warn' : 'good'}">
+          <strong>${computed.deviationTime > 0 ? '+' : ''}${formatNumber(computed.deviationTime, 1)} ч</strong>
+          <span>Δ времени</span>
+          <p>Deviation_time = Actual_time - Planned_time. Время до текущей глубины считается автоматически по плановой кривой.</p>
+          <div class="metric-line"><span style="width:${clamp(Math.abs(computed.deviationTime) / 24 * 100, 10, 100)}%;background:linear-gradient(90deg,#ffd36e,#ff9f40)"></span></div>
+        </article>
+        <article class="calc-card ${computed.efficiency < 0.7 ? 'bad' : 'good'}">
+          <strong>${formatNumber(computed.efficiency * 100, 0)}%</strong>
+          <span>ROP efficiency</span>
+          <p>ROP_efficiency = Actual_ROP / Planned_ROP. Плановый ROP задается вручную, фактический считается по двум последним точкам факта.</p>
+          <div class="metric-line"><span style="width:${clamp(computed.efficiency * 100, 8, 100)}%;background:linear-gradient(90deg,#8db4ff,#22d7b4)"></span></div>
+        </article>
+      `;
+
+      const alerts = [];
+      if (computed.planRop > 0 && computed.ropActual < computed.planRop * 0.7) {
+        alerts.push({ level: 'red', title: `ROP ниже плана на ${formatNumber((1 - computed.efficiency) * 100, 0)}%`, text: 'Алерт сработал автоматически: фактический ROP упал ниже 70% от планового. Рекомендация: проверить долото, WOB, RPM и режим управления траекторией.', pill: 'rop alert' });
+      }
+      if (computed.pressureActual > parseNumber(state.standpipeThreshold, 0)) {
+        alerts.push({ level: 'red', title: `Давление ${formatNumber(computed.pressureActual, 0)} бар выше порога ${formatNumber(parseNumber(state.standpipeThreshold, 0), 0)} бар`, text: 'Алерт давления сработал автоматически: фактическое значение выше введенного плана-порога.', pill: 'pressure alert' });
+      }
+      if (parseNumber(state.flowOut, 0) < parseNumber(state.flowIn, 0)) {
+        alerts.push({ level: 'yellow', title: `Flow out ${formatNumber(parseNumber(state.flowOut, 0), 1)} л/с меньше flow in ${formatNumber(parseNumber(state.flowIn, 0), 1)} л/с`, text: 'Автоматически отмечен риск потерь: выход ниже входа. Проверить pit trend, объемы и необходимость LCM-реакции.', pill: 'losses risk' });
+      }
+      if (computed.nptPercent > 8) {
+        alerts.push({ level: 'red', title: `NPT ${formatNumber(computed.nptHours, 1)} ч · ${formatNumber(computed.nptPercent, 1)}%`, text: 'Доля NPT превышает рабочий порог 8% и начинает сдвигать экономику и календарь.', pill: 'npt' });
+      }
+      state.engineering.forEach((item) => {
+        if (item.actual < item.min || item.actual > item.max) {
+          alerts.push({ level: item.name === 'Давление' ? 'red' : 'yellow', title: `${item.name} вне коридора: ${formatNumber(item.actual, item.actual % 1 ? 1 : 0)} ${item.unit}`, text: parameterAdvice[item.name] || 'Параметр вышел за заданный плановый диапазон.', pill: item.name.toLowerCase() });
+        }
+      });
+      if (!alerts.length) {
+        alerts.push({ level: 'green', title: 'Критических отклонений нет', text: 'Текущие введенные вручную параметры находятся в пределах рабочих допусков.', pill: 'normal' });
+      }
+
+      document.getElementById('alertList').innerHTML = alerts.map((alert) => `
+        <div class="alert-item ${alert.level}">
+          <strong>${alert.title}</strong>
+          <p>${alert.text}</p>
+          <span class="alert-pill">${alert.pill}</span>
+        </div>
+      `).join('');
+
+      const actions = alerts.slice(0, 4).map((alert, index) => ({
+        title: `${index + 1}. ${alert.title}`,
+        text: alert.text
+      }));
+
+      document.getElementById('actionList').innerHTML = actions.map((item) => `
+        <div class="action-item">
+          <strong>${item.title}</strong>
+          <p>${item.text}</p>
+        </div>
+      `).join('');
+
+      document.getElementById('engineeringList').innerHTML = state.engineering.map((item) => {
+        const outerMin = item.min * 0.8;
+        const outerMax = item.max * 1.2;
+        const width = Math.max(1, outerMax - outerMin);
+        const bandLeft = ((item.min - outerMin) / width) * 100;
+        const bandWidth = ((item.max - item.min) / width) * 100;
+        const fillWidth = clamp(((item.actual - outerMin) / width) * 100, 0, 100);
+        const status = item.actual < item.min || item.actual > item.max ? 'вне коридора' : 'в норме';
+        return `
+          <div class="eng-item">
+            <div class="eng-row">
+              <div>
+                <div class="name">${item.name}</div>
+                <div class="eng-sub">План ${formatNumber(item.plan, item.plan % 1 ? 1 : 0)} ${item.unit} · Норма ${formatNumber(item.min, item.min % 1 ? 1 : 0)}-${formatNumber(item.max, item.max % 1 ? 1 : 0)}</div>
+              </div>
+              <div class="eng-track">
+                <span class="eng-band" style="left:${bandLeft}%;width:${bandWidth}%"></span>
+                <span class="eng-fill" style="width:${fillWidth}%"></span>
+              </div>
+              <div class="eng-value">${formatNumber(item.actual, item.actual % 1 ? 1 : 0)} ${item.unit}</div>
+            </div>
+            <p>${item.name}: ${status}. Алерт возникает автоматически, если факт выходит за вручную заданный диапазон.</p>
+          </div>
+        `;
+      }).join('');
+
+      document.getElementById('forecastGrid').innerHTML = `
+        <article class="forecast-card">
+          <strong>${formatNumber(computed.etaHours, 1)} ч</strong>
+          <span>ETA до цели</span>
+          <p>ETA = Remaining_depth / Current_ROP. До ${formatNumber(parseNumber(state.targetDepth, 0), 0)} м осталось ${formatNumber(computed.remainingDepth, 0)} м.</p>
+        </article>
+        <article class="forecast-card">
+          <strong>${formatMoney(computed.costLoss)} ₽</strong>
+          <span>Стоимость потерь</span>
+          <p>Cost_loss = NPT_hours × Cost_per_hour. Стоимость часа вводится вручную, убыток считается автоматически.</p>
+        </article>
+        <article class="forecast-card">
+          <strong>${formatNumber(computed.actualEtaDays, 1)} vs ${formatNumber(computed.plannedEtaDays, 1)} дн</strong>
+          <span>Финиш факт vs план</span>
+          <p>Если текущий темп сохранится, завершение придет позже плана на ${formatNumber(computed.actualEtaDays - computed.plannedEtaDays, 1)} суток.</p>
+        </article>
+      `;
+
+      document.getElementById('microGrid').innerHTML = `
+        <article class="micro-card"><strong>${formatNumber(computed.nptPercent, 1)}%</strong><span>NPT доля</span></article>
+        <article class="micro-card"><strong>${formatNumber(parseNumber(state.flowIn, 0) - parseNumber(state.flowOut, 0), 1)} л/с</strong><span>дисбаланс flow</span></article>
+        <article class="micro-card"><strong>${formatNumber(computed.planRop, 1)} / ${formatNumber(computed.ropActual, 1)} м/ч</strong><span>плановый / фактический ROP</span></article>
+        <article class="micro-card"><strong>${formatNumber(parseNumber(state.standpipeThreshold, 0), 0)} / ${formatNumber(computed.pressureActual, 0)} бар</strong><span>порог / факт по давлению</span></article>
+      `;
+    }
+
+    function renderNewWellDashboard() {
+      newWellState = loadNewWellState();
+      renderOpsInputPanel();
+      bindNewWellInputHandlers();
+      if (isWitsmlDashboard && witsmlApi && !witsmlUnsubscribe) {
+        witsmlUnsubscribe = witsmlApi.subscribe(() => {
+          updateNewWellDashboard();
+        });
+      }
+      updateNewWellDashboard();
+    }
+
+    document.title = `${projectName} · Скважина ${wellName} · Работы ${workDate}`;
+    document.getElementById('pageTitle').textContent = `${projectName} · Скважина ${wellName} · Работы на ${workDate}`;
+    document.getElementById('pageDesc').textContent = `Операционный дашборд на ${workDate} для скважины ${wellName}. Первый рабочий модуль вынесен под буровые растворы с быстрым переходом к интервальному блоку.`;
+    document.getElementById('heroWell').textContent = wellName;
+    document.getElementById('heroDate').textContent = workDate;
+    document.getElementById('dmrSubtitle').textContent = `Реестр суточных DMR по скважине ${wellName}`;
+    document.getElementById('workDatePill').textContent = workDate;
+    document.getElementById('wellPill').textContent = `well ${wellName}`;
+
+    document.getElementById('nav').innerHTML = `
+      <a href="${buildProjectLink('project_well_dashboard.html', projectName, wellName)}">К скважине ${wellName}</a>
+      <a href="${buildProjectLink('project_well_dashboard.html', projectName, '9301')}">К проекту</a>
+      <a href="${buildOperationalSectionLink(projectName, wellName, 'Буровые растворы', '5')}">Буровые растворы</a>
+    `;
+
+    if (isNewWellMode) {
+      renderNewWellDashboard();
+    }
+
+    const dmrStorageKey = `nexus-dmr-list-${projectName}-${wellName}-${workDate}`;
+
+    function getSavedDmrs() {
+      const raw = localStorage.getItem(dmrStorageKey);
+      if (!raw) return [];
+      try {
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch (error) {
+        console.warn('Failed to parse saved DMR list', error);
+        return [];
+      }
+    }
+
+    function saveDmrs(dmrs) {
+      localStorage.setItem(dmrStorageKey, JSON.stringify(dmrs));
+    }
+
+    let dmrItems = getSavedDmrs();
+
+    function renderDmrList() {
+      const list = document.getElementById('dmrList');
+      if (!dmrItems.length) {
+        list.innerHTML = '';
+        return;
+      }
+      list.innerHTML = dmrItems.map((dmrId) => `<a class="dmr-link" href="${buildDmrLink(projectName, wellName, workDate, dmrId)}">${dmrId}</a>`).join('');
+    }
+
+    if (!isNewWellMode) {
+      document.getElementById('addDmrButton').addEventListener('click', () => {
+        const nextId = `DMR-${dmrItems.length + 1}`;
+        dmrItems = [...dmrItems, nextId];
+        saveDmrs(dmrItems);
+        renderDmrList();
+      });
+
+      renderDmrList();
+    }
+  </script>
+  <script src="assets/js/global-auth-widget.js"></script>
+</body>
+</html>

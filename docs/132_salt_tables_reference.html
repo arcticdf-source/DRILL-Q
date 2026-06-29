@@ -1,0 +1,892 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>132 · Таблицы солей</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap");
+
+    :root {
+      --bg-0: #07111a;
+      --bg-1: #102437;
+      --bg-2: #1b3850;
+      --panel: rgba(10, 18, 31, 0.84);
+      --line: rgba(226, 237, 255, 0.1);
+      --text: #edf5ff;
+      --muted: #9bb2c8;
+      --cyan: #20d9b4;
+      --amber: #ffbf66;
+      --blue: #8db4ff;
+      --rose: #ff9d7a;
+      --shadow: 0 24px 58px rgba(0, 0, 0, 0.42);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      font-family: "Manrope", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(820px 420px at 0% -10%, rgba(32,217,180,.18), transparent),
+        radial-gradient(720px 360px at 100% 0%, rgba(141,180,255,.16), transparent),
+        linear-gradient(145deg, var(--bg-0), var(--bg-1) 48%, var(--bg-2));
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(to right, rgba(255,255,255,.022) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,.022) 1px, transparent 1px);
+      background-size: 40px 40px;
+      mask-image: radial-gradient(circle at 50% 12%, rgba(0,0,0,.94), transparent 72%);
+    }
+
+    .wrap {
+      position: relative;
+      z-index: 1;
+      width: min(1440px, 94vw);
+      margin: 0 auto;
+      padding: 24px 0 52px;
+    }
+
+    .topbar,
+    .hero,
+    .panel {
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+    }
+
+    .topbar {
+      position: sticky;
+      top: 12px;
+      z-index: 20;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 12px 16px;
+      border-radius: 16px;
+      background: rgba(7, 13, 23, 0.66);
+      backdrop-filter: blur(10px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: "Oswald", sans-serif;
+      font-size: 20px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 35% 35%, #d8fff7, var(--cyan));
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn,
+    .btn-ghost,
+    .chip-link {
+      text-decoration: none;
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+
+    .btn {
+      color: #07261f;
+      background: linear-gradient(135deg, #9efcef, var(--cyan));
+      border: 1px solid rgba(32, 217, 180, 0.82);
+    }
+
+    .btn-ghost,
+    .chip-link {
+      color: var(--muted);
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.03);
+    }
+
+    .hero {
+      margin-top: 18px;
+      border-radius: 30px;
+      padding: clamp(24px, 3vw, 36px);
+      background:
+        radial-gradient(520px 260px at 4% 0%, rgba(32,217,180,.14), transparent),
+        radial-gradient(600px 260px at 100% 0%, rgba(255,191,102,.12), transparent),
+        linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015)),
+        var(--panel);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      padding: 6px 10px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .09em;
+      color: #d5e7f8;
+    }
+
+    h1 {
+      margin: 14px 0 10px;
+      font-family: "Oswald", sans-serif;
+      font-size: clamp(40px, 5vw, 62px);
+      line-height: .97;
+    }
+
+    h1 span { color: var(--amber); }
+
+    .lead {
+      margin: 0;
+      max-width: 1040px;
+      color: #cad9eb;
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    .hero-stats,
+    .note-grid,
+    .table-grid,
+    .chips,
+    .formula-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .hero-stats {
+      margin-top: 20px;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .chips {
+      margin-top: 18px;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .note-grid,
+    .formula-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      margin-top: 18px;
+    }
+
+    .table-grid {
+      margin-top: 22px;
+      grid-template-columns: 1fr;
+    }
+
+    .stat,
+    .note-card,
+    .formula-card,
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255,255,255,.03);
+      padding: 16px;
+    }
+
+    .stat strong {
+      display: block;
+      font-family: "Oswald", sans-serif;
+      font-size: 28px;
+      line-height: 1;
+      color: #eef7ff;
+    }
+
+    .stat span {
+      display: block;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .note-card strong,
+    .formula-card strong,
+    .panel h2,
+    .panel h3 {
+      display: block;
+      font-family: "Oswald", sans-serif;
+      letter-spacing: .03em;
+    }
+
+    .note-card p,
+    .formula-card p,
+    .panel p,
+    .panel li {
+      margin: 8px 0 0;
+      color: #cad9eb;
+      line-height: 1.65;
+      font-size: 14px;
+    }
+
+    .panel {
+      padding: 22px;
+      background: rgba(9, 16, 27, 0.8);
+      backdrop-filter: blur(8px);
+    }
+
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .panel-head p {
+      margin: 8px 0 0;
+      max-width: 880px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      font-size: 11px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: #d5e7f8;
+      white-space: nowrap;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: rgba(3, 10, 18, 0.72);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 880px;
+      font-size: 13px;
+    }
+
+    th,
+    td {
+      padding: 9px 10px;
+      border-bottom: 1px solid rgba(226, 237, 255, 0.08);
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    th:first-child,
+    td:first-child {
+      text-align: left;
+      position: sticky;
+      left: 0;
+      background: rgba(8, 14, 23, 0.96);
+      z-index: 1;
+    }
+
+    th {
+      position: sticky;
+      top: 0;
+      background: rgba(13, 24, 39, 0.98);
+      color: #f4f9ff;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+    }
+
+    tbody tr:hover td {
+      background: rgba(141, 180, 255, 0.08);
+    }
+
+    tbody tr:hover td:first-child {
+      background: rgba(20, 36, 58, 0.98);
+    }
+
+    .footnote {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .mini-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 14px;
+      margin-top: 10px;
+      color: #e7f1fd;
+      font-size: 13px;
+    }
+
+    .mini-list span {
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.04);
+      border: 1px solid var(--line);
+    }
+
+    .conversion-table table {
+      min-width: 980px;
+    }
+
+    @media (max-width: 1180px) {
+      .hero-stats,
+      .note-grid,
+      .chips,
+      .formula-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 820px) {
+      .topbar { position: static; }
+      .hero-stats,
+      .note-grid,
+      .chips,
+      .formula-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .panel {
+        padding: 18px;
+      }
+
+      table {
+        font-size: 12px;
+      }
+    }
+  </style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+  <main class="wrap">
+    <header class="topbar">
+      <div class="brand"><span class="dot" aria-hidden="true"></span><span>Nexus Oilfield AI · Salt Tables</span></div>
+      <div class="actions">
+        <a class="btn-ghost" href="120_drilling_calculations_menu.html">Назад к меню расчетов</a>
+        <a class="btn" href="121_drilling_solids_calc_method.html">Открыть solids расчет</a>
+      </div>
+    </header>
+
+    <section class="hero">
+      <span class="eyebrow">Brine Reference Library</span>
+      <h1>Таблицы <span>солей</span> и рассолов</h1>
+      <p class="lead">Отдельный справочный экран для быстрого подбора плотности рассола, содержания хлоридов, концентрации соли, water activity и температуры кристаллизации в метрической системе. Ниже собраны таблицы по NaCl, CaCl₂, KCl, MgCl₂, NH₄Cl, K₂SO₄, KAc, а также диапазон смесевых NaCl/CaCl₂ brines и конверсионная таблица единиц.</p>
+
+      <div class="hero-stats">
+        <div class="stat"><strong>8</strong><span>salt / brine systems</span></div>
+        <div class="stat"><strong>1.005–1.396</strong><span>density range, kg/l</span></div>
+        <div class="stat"><strong>-44.3–23.9</strong><span>cryst. pt, °C range shown</span></div>
+        <div class="stat"><strong>1</strong><span>conversion cross-table</span></div>
+      </div>
+
+      <div class="chips">
+        <a class="chip-link" href="#nacl">NaCl</a>
+        <a class="chip-link" href="#cacl2">CaCl₂</a>
+        <a class="chip-link" href="#blend">NaCl/CaCl₂ blend</a>
+        <a class="chip-link" href="#kcl">KCl</a>
+        <a class="chip-link" href="#mgcl2">MgCl₂</a>
+        <a class="chip-link" href="#nh4cl">NH₄Cl</a>
+        <a class="chip-link" href="#k2so4">K₂SO₄</a>
+        <a class="chip-link" href="#kac">KAc + conversion</a>
+      </div>
+
+      <div class="note-grid">
+        <div class="note-card">
+          <strong>Что смотреть первым</strong>
+          <p>Если задача на chloride brine, сначала выбирай таблицу по типу соли, затем сверяй плотность и water activity, после чего проверяй crystallization point в °C на ожидаемую температуру участка.</p>
+        </div>
+        <div class="note-card">
+          <strong>Как пользоваться в полях</strong>
+          <p>Для оперативной оценки удобно искать по целевой плотности в кг/л или кг/м³, а затем брать рядом ppm Cl⁻, загрузку соли в кг/м³ и water fraction без дополнительного ручного пересчета.</p>
+        </div>
+        <div class="note-card">
+          <strong>Ограничение справки</strong>
+          <p>Таблицы даны как reference screen для проектирования и контроля; финальную рабочую программу все равно нужно сверять по чистоте соли, температуре и лабораторным данным конкретного реагента.</p>
+        </div>
+      </div>
+
+      <div class="formula-grid">
+        <div class="formula-card">
+          <strong>Основные поля таблиц</strong>
+          <p>Weight % показывает массовую долю соли, density выводится в кг/л и кг/м³, а chloride / cation columns помогают быстро перейти к lab control и retort / titration интерпретации.</p>
+        </div>
+        <div class="formula-card">
+          <strong>Для solids screen</strong>
+          <p>Эти reference tables удобно использовать рядом с [Cl⁻], brine density, salt volume correction и выбором солевого base fluid при отдельном solids-анализе.</p>
+        </div>
+        <div class="formula-card">
+          <strong>Критическая проверка</strong>
+          <p>Если требуемая плотность попадает между строками, для поля лучше брать ближайшую более консервативную комбинацию по crystallization point и затем уточнять лабораторно.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="table-grid" id="tableGrid"></section>
+  </main>
+
+  <script>
+    const tableSections = [
+      {
+        id: 'nacl',
+        title: 'Таблица 10 · Sodium chloride',
+        tag: 'NaCl brine',
+        description: 'Насыщение NaCl для быстрых оценок chloride concentration, salt loading, water content и crystallization point.',
+        footnote: '% volume salt = 100 × (1.0 - water fraction). Salt loading is shown in kg/m³ of final brine. Properties based on 20°C and 100% purity.',
+        rows: [
+          ['1', '1.005', '8.38', '6,127', '3,973', '3.5', '0.995', '30.9', '0.994'],
+          ['2', '1.013', '8.44', '12,254', '7,946', '7.1', '0.992', '29.9', '0.989'],
+          ['3', '1.020', '8.50', '18,563', '12,037', '10.7', '0.989', '28.8', '0.983'],
+          ['4', '1.027', '8.56', '24,932', '16,168', '14.4', '0.986', '27.7', '0.977'],
+          ['5', '1.034', '8.62', '31,363', '20,337', '18.1', '0.982', '26.5', '0.970'],
+          ['6', '1.041', '8.68', '37,914', '24,586', '21.9', '0.979', '25.3', '0.964'],
+          ['7', '1.049', '8.75', '44,526', '28,874', '25.7', '0.975', '24.1', '0.957'],
+          ['8', '1.056', '8.81', '51,260', '33,240', '29.6', '0.971', '22.9', '0.950'],
+          ['9', '1.063', '8.87', '58,054', '37,646', '33.5', '0.968', '21.5', '0.943'],
+          ['10', '1.071', '8.93', '64,970', '42,130', '37.5', '0.964', '20.2', '0.935'],
+          ['11', '1.078', '8.99', '71,946', '46,654', '41.5', '0.960', '18.8', '0.927'],
+          ['12', '1.086', '9.05', '79,044', '51,256', '45.6', '0.955', '17.3', '0.919'],
+          ['13', '1.093', '9.12', '86,202', '55,898', '49.7', '0.951', '15.7', '0.911'],
+          ['14', '1.101', '9.18', '93,481', '60,619', '53.9', '0.947', '14.1', '0.902'],
+          ['15', '1.109', '9.24', '100,882', '65,418', '58.2', '0.942', '12.4', '0.892'],
+          ['16', '1.116', '9.31', '108,344', '70,256', '62.5', '0.938', '10.6', '0.883'],
+          ['17', '1.124', '9.37', '115,927', '75,173', '66.9', '0.933', '8.7', '0.872'],
+          ['18', '1.132', '9.44', '123,570', '80,130', '71.3', '0.928', '6.7', '0.862'],
+          ['19', '1.140', '9.51', '131,396', '85,204', '75.8', '0.923', '4.6', '0.851'],
+          ['20', '1.148', '9.57', '139,282', '90,318', '80.4', '0.918', '2.4', '0.839'],
+          ['21', '1.156', '9.64', '147,229', '95,471', '84.9', '0.913', '0.0', '0.827'],
+          ['22', '1.164', '9.71', '155,357', '100,743', '89.6', '0.908', '-2.5', '0.815'],
+          ['23', '1.172', '9.78', '163,547', '106,053', '94.4', '0.903', '-5.2', '0.802'],
+          ['24', '1.180', '9.84', '171,858', '111,442', '99.2', '0.897', '1.4', '0.788'],
+          ['25', '1.189', '9.91', '180,290', '116,910', '104.0', '0.892', '14.7', '0.774'],
+          ['26', '1.197', '9.98', '188,843', '122,457', '109.0', '0.886', '27.9', '0.759']
+        ]
+      },
+      {
+        id: 'cacl2',
+        title: 'Таблица 11 · Calcium chloride',
+        tag: 'CaCl₂ brine',
+        description: 'Классическая таблица по CaCl₂ для более тяжелых хлоридных рассолов и оценки low-temperature behavior.',
+        footnote: '% volume salt = 100 × (1.0 - water fraction). Salt loading is shown in kg/m³ of final brine. Properties based on 20°C and 100% purity.',
+        rows: [
+          ['1', '1.007', '8.39', '6,453', '3,647', '3.5', '0.996', '31.2', '0.994'],
+          ['2', '1.015', '8.46', '12,969', '7,331', '7.1', '0.995', '30.4', '0.989'],
+          ['3', '1.023', '8.53', '19,513', '11,087', '10.7', '0.993', '29.6', '0.985'],
+          ['4', '1.032', '8.60', '26,885', '14,915', '14.3', '0.990', '28.7', '0.980'],
+          ['5', '1.040', '8.67', '33,221', '18,779', '18.2', '0.988', '27.8', '0.975'],
+          ['6', '1.049', '8.75', '40,185', '22,715', '22.0', '0.986', '26.7', '0.971'],
+          ['7', '1.057', '8.82', '47,277', '26,723', '25.9', '0.983', '25.6', '0.965'],
+          ['8', '1.066', '8.89', '54,496', '30,804', '29.9', '0.981', '24.3', '0.960'],
+          ['9', '1.075', '8.96', '61,779', '34,921', '33.8', '0.978', '22.9', '0.954'],
+          ['10', '1.084', '9.04', '69,190', '39,110', '37.9', '0.975', '21.5', '0.948'],
+          ['11', '1.092', '9.11', '76,793', '43,407', '42.1', '0.972', '19.9', '0.940'],
+          ['12', '1.101', '9.19', '84,459', '47,741', '46.3', '0.969', '18.1', '0.932'],
+          ['13', '1.111', '9.26', '92,253', '52,147', '50.5', '0.966', '16.3', '0.924'],
+          ['14', '1.120', '9.34', '100,175', '56,625', '54.9', '0.963', '14.3', '0.914'],
+          ['15', '1.129', '9.42', '108,225', '61,175', '59.3', '0.960', '12.2', '0.904'],
+          ['16', '1.139', '9.50', '116,403', '65,797', '63.8', '0.957', '9.9', '0.892'],
+          ['17', '1.148', '9.58', '124,708', '70,492', '68.3', '0.953', '7.4', '0.880'],
+          ['18', '1.158', '9.66', '133,141', '75,259', '72.9', '0.950', '4.8', '0.867'],
+          ['19', '1.168', '9.74', '141,766', '80,134', '77.7', '0.946', '1.9', '0.852'],
+          ['20', '1.178', '9.82', '150,455', '85,045', '82.4', '0.942', '-0.9', '0.837'],
+          ['22', '1.198', '9.99', '168,343', '95,157', '92.2', '0.934', '-7.1', '0.804'],
+          ['24', '1.218', '10.16', '186,743', '105,557', '102.3', '0.926', '13.5', '0.767'],
+          ['26', '1.239', '10.33', '205,781', '116,319', '112.7', '0.917', '21.5', '0.726'],
+          ['28', '1.260', '10.51', '225,395', '127,405', '123.5', '0.907', '31.2', '0.683'],
+          ['30', '1.282', '10.69', '245,647', '138,853', '134.6', '0.897', '-47.7', '0.637'],
+          ['32', '1.304', '10.87', '266,474', '150,626', '146.0', '0.886', '19.5', '0.590'],
+          ['34', '1.326', '11.06', '288,004', '162,796', '157.8', '0.875', '4.3', '0.541'],
+          ['36', '1.349', '11.25', '310,237', '175,363', '170.0', '0.863', '24.1', '0.492'],
+          ['38', '1.372', '11.44', '333,109', '188,291', '182.5', '0.851', '42.1', '0.443'],
+          ['40', '1.396', '11.64', '356,683', '201,617', '195.4', '0.837', '55.9', '0.395']
+        ]
+      },
+      {
+        id: 'blend',
+        title: 'Таблица 12 · Sodium-calcium chloride blends',
+        tag: 'blend brines',
+        description: 'Удобный диапазон смешанных NaCl/CaCl₂ brines для промежуточных плотностей и низких температур.',
+        footnote: 'Blend table shows water fraction together with equivalent 100% NaCl and 94-97% CaCl₂ loading, converted to metric output.',
+        rows: [
+          ['10.1', '0.887', '88', '29', '-4'],
+          ['10.2', '0.875', '70', '52', '-10'],
+          ['10.3', '0.875', '54', '72', '-15'],
+          ['10.4', '0.876', '41', '89', '-21'],
+          ['10.5', '0.871', '32', '104', '-26'],
+          ['10.6', '0.868', '25', '116', '-32'],
+          ['10.7', '0.866', '20', '126', '-38'],
+          ['10.8', '0.864', '16', '135', '-42'],
+          ['10.9', '0.862', '13', '144', '-24'],
+          ['11.0', '0.859', '10', '151', '-12'],
+          ['11.1', '0.854', '8', '159', '0']
+        ]
+      },
+      {
+        id: 'kcl',
+        title: 'Таблица 13 · Potassium chloride',
+        tag: 'KCl brine',
+        description: 'Таблица по KCl для ингибирующих систем, где важны potassium level, chloride level и water activity.',
+        footnote: '% volume salt = 100 × (1.0 - water fraction). Salt loading is shown in kg/m³ of final brine. Properties based on 20°C and 100% purity.',
+        rows: [
+          ['1', '1.005', '8.38', '4,756', '2,544', '3.5', '0.995', '31.2', '0.996'],
+          ['2', '1.011', '8.43', '9,606', '5,094', '7.1', '0.991', '30.3', '0.991'],
+          ['3', '1.017', '8.49', '14,504', '15,996', '10.7', '0.987', '29.5', '0.987'],
+          ['4', '1.024', '8.54', '19,498', '21,502', '14.4', '0.983', '28.7', '0.982'],
+          ['5', '1.030', '8.59', '24,491', '27,009', '18.0', '0.979', '27.8', '0.977'],
+          ['6', '1.037', '8.65', '29,579', '32,621', '21.8', '0.975', '27.0', '0.973'],
+          ['7', '1.043', '8.70', '34,715', '38,285', '25.6', '0.970', '26.1', '0.968'],
+          ['8', '1.050', '8.76', '39,947', '44,053', '29.4', '0.966', '25.2', '0.963'],
+          ['9', '1.057', '8.81', '45,225', '49,875', '33.3', '0.962', '24.3', '0.958'],
+          ['10', '1.063', '8.87', '50,551', '55,749', '37.2', '0.957', '23.4', '0.953'],
+          ['11', '1.070', '8.92', '55,973', '61,727', '41.2', '0.952', '22.4', '0.947'],
+          ['12', '1.077', '8.98', '61,442', '67,758', '45.2', '0.948', '21.4', '0.942'],
+          ['13', '1.084', '9.04', '67,006', '73,894', '49.3', '0.943', '20.4', '0.936'],
+          ['14', '1.091', '9.09', '72,617', '80,083', '53.4', '0.938', '20.0', '0.930'],
+          ['15', '1.097', '9.15', '78,276', '86,324', '57.6', '0.933', '18.5', '0.925'],
+          ['16', '1.104', '9.21', '84,030', '92,670', '61.8', '0.928', '17.0', '0.918'],
+          ['17', '1.111', '9.27', '89,822', '99,068', '66.1', '0.922', '16.0', '0.912'],
+          ['18', '1.119', '9.33', '95,729', '105,571', '70.5', '0.917', '15.0', '0.906'],
+          ['19', '1.126', '9.39', '101,721', '112,179', '74.9', '0.912', '14.0', '0.899'],
+          ['20', '1.133', '9.45', '107,760', '118,840', '79.3', '0.906', '13.0', '0.892'],
+          ['22', '1.147', '9.57', '120,030', '132,370', '88.3', '0.895', '34.0', '0.878'],
+          ['24', '1.162', '9.69', '132,632', '146,268', '97.6', '0.883', '59.0', '0.862']
+        ]
+      },
+      {
+        id: 'mgcl2',
+        title: 'Таблица 14 · Magnesium chloride',
+        tag: 'MgCl₂ brine',
+        description: 'MgCl₂ reference useful for high-solids brine design and very low water activity targets.',
+        footnote: '% volume salt = 100 × (1.0 - water fraction). Salt loading is shown in kg/m³ of final brine. Properties based on 20°C and 100% purity.',
+        rows: [
+          ['1', '1.006', '8.39', '7,492', '2,568', '3.54', '0.992', '31.1', '0.995'],
+          ['2', '1.014', '8.46', '15,106', '5,178', '7.21', '0.994', '30.1', '0.990'],
+          ['3', '1.023', '8.52', '22,842', '7,830', '10.98', '0.991', '29.0', '0.984'],
+          ['4', '1.031', '8.59', '30,703', '10,524', '14.88', '0.987', '27.9', '0.978'],
+          ['5', '1.039', '8.66', '38,696', '13,264', '18.91', '0.984', '26.6', '0.972'],
+          ['6', '1.048', '8.74', '46,814', '16,047', '23.07', '0.985', '24.3', '0.964'],
+          ['7', '1.056', '8.81', '55,060', '18,873', '27.35', '0.982', '22.3', '0.957'],
+          ['8', '1.065', '8.88', '63,444', '21,747', '31.77', '0.979', '21.5', '0.948'],
+          ['9', '1.074', '8.95', '71,957', '24,665', '36.33', '0.977', '19.6', '0.939'],
+          ['10', '1.083', '9.02', '80,508', '27,651', '41.03', '0.974', '18.0', '0.929'],
+          ['12', '1.101', '9.17', '98,239', '33,705', '50.88', '0.968', '14.4', '0.906'],
+          ['14', '1.119', '9.33', '116,635', '39,980', '61.36', '0.962', '5.8', '0.879'],
+          ['16', '1.137', '9.48', '135,477', '46,499', '72.44', '0.955', '-1.9', '0.848'],
+          ['18', '1.155', '9.63', '154,838', '53,075', '84.11', '0.947', '-13', '0.812'],
+          ['20', '1.174', '9.79', '174,856', '59,937', '96.54', '0.939', '-27.8', '0.772'],
+          ['22', '1.194', '9.95', '195,553', '67,031', '109.77', '0.9312', '-18.5', '0.727'],
+          ['24', '1.214', '10.12', '216,940', '74,362', '123.84', '0.9226', '-11.8', '0.677'],
+          ['26', '1.235', '10.29', '239,006', '81,926', '138.75', '0.9136', '-5.5', '0.624'],
+          ['28', '1.256', '10.47', '261,748', '89,722', '154.52', '0.9039', '1.3', '0.567'],
+          ['30', '1.276', '10.64', '285,091', '97,723', '171.09', '0.8934', '5.4', '0.507']
+        ]
+      },
+      {
+        id: 'nh4cl',
+        title: 'Таблица 15 · Ammonium chloride',
+        tag: 'NH₄Cl brine',
+        description: 'NH₄Cl data for ammonium systems where ammonium ion and chloride loading are required together.',
+        footnote: '% volume salt = 100 × (1.0 - water fraction). Salt loading is shown in kg/m³ of final brine. Properties based on 20°C and 100% purity.',
+        rows: [
+          ['1', '1.001', '8.35', '6,066', '3,934', '3.5', '0.991', '30.9', '0.99'],
+          ['2', '1.005', '8.38', '12,193', '7,907', '7.0', '0.984', '29.7', ''],
+          ['3', '1.008', '8.40', '18,320', '11,880', '10.6', '0.977', '28.6', ''],
+          ['4', '1.011', '8.43', '24,508', '15,892', '14.1', '0.970', '27.4', ''],
+          ['5', '1.014', '8.46', '30,756', '19,944', '17.7', '0.963', '26.2', ''],
+          ['6', '1.017', '8.48', '37,004', '23,996', '21.4', '0.956', '24.9', ''],
+          ['7', '1.020', '8.51', '43,313', '28,087', '25.0', '0.948', '23.6', ''],
+          ['8', '1.023', '8.53', '49,623', '32,178', '28.6', '0.941', '22.3', ''],
+          ['9', '1.026', '8.55', '55,992', '36,308', '32.3', '0.933', '20.9', ''],
+          ['10', '1.029', '8.58', '62,422', '40,478', '36.0', '0.926', '19.5', ''],
+          ['11', '1.032', '8.60', '68,852', '44,648', '39.7', '0.918', '18.0', ''],
+          ['12', '1.034', '8.63', '75,282', '48,818', '43.4', '0.910', '16.5', ''],
+          ['13', '1.037', '8.65', '81,773', '53,027', '47.2', '0.902', '15.0', ''],
+          ['14', '1.040', '8.67', '88,325', '57,275', '51.0', '0.895', '', ''],
+          ['15', '1.043', '8.70', '94,877', '61,523', '54.7', '0.887', '11.0', ''],
+          ['16', '1.046', '8.72', '101,489', '65,811', '58.6', '0.878', '', ''],
+          ['17', '1.049', '8.74', '108,101', '70,099', '62.4', '0.870', '', ''],
+          ['18', '1.051', '8.77', '114,774', '74,426', '66.2', '0.862', '', ''],
+          ['19', '1.054', '8.79', '121,508', '78,792', '70.1', '0.854', '', ''],
+          ['20', '1.057', '8.81', '128,180', '83,120', '74.0', '0.845', '', ''],
+          ['22', '1.062', '8.86', '141,769', '91,931', '81.8', '0.828', '', ''],
+          ['24', '1.067', '8.90', '155,418', '100,782', '89.7', '0.811', '31.0', '']
+        ]
+      },
+      {
+        id: 'k2so4',
+        title: 'Таблица 16 · Potassium sulfate',
+        tag: 'K₂SO₄ brine',
+        description: 'K₂SO₄ reference with potassium and sulfate concentrations, useful for specialty completion or inhibition systems.',
+        footnote: '% volume salt = 100 × (1.0 - water fraction). Salt loading is shown in kg/m³ of final brine. Properties based on 20°C and 100% purity.',
+        rows: [
+          ['0.5', '1.004', '8.37', '2,244', '2,756', '1.8', '0.997', '31.8', ''],
+          ['1.0', '1.008', '8.41', '4,532', '5,568', '3.5', '0.996', '31.5', ''],
+          ['1.5', '1.012', '8.44', '6,821', '8,379', '5.3', '0.995', '31.9', ''],
+          ['2.0', '1.016', '8.47', '9,110', '11,190', '7.1', '0.994', '31.1', ''],
+          ['2.5', '1.020', '8.51', '11,443', '14,057', '8.9', '0.993', '31.9', ''],
+          ['3.0', '1.024', '8.54', '13,776', '16,924', '10.7', '0.992', '31.9', ''],
+          ['3.5', '1.028', '8.58', '16,110', '19,790', '12.6', '0.991', '31.8', ''],
+          ['4.0', '1.032', '8.61', '18,488', '22,712', '14.4', '0.989', '31.8', ''],
+          ['4.5', '1.037', '8.64', '20,911', '25,689', '16.3', '0.988', '30.1', ''],
+          ['5.0', '1.041', '8.68', '23,290', '28,610', '18.2', '0.987', '29.9', ''],
+          ['5.5', '1.045', '8.71', '25,758', '31,642', '20.1', '0.986', '', ''],
+          ['6.0', '1.049', '8.75', '28,181', '34,619', '22.0', '0.984', '', ''],
+          ['6.5', '1.053', '8.78', '30,649', '37,651', '23.9', '0.983', '', ''],
+          ['7.0', '1.057', '8.82', '33,162', '40,738', '25.9', '0.981', '', ''],
+          ['7.5', '1.061', '8.85', '35,675', '43,825', '27.8', '0.980', '', ''],
+          ['8.0', '1.066', '8.89', '38,188', '46,912', '29.8', '0.979', '', ''],
+          ['8.5', '1.070', '8.92', '40,746', '50,054', '31.8', '0.977', '', ''],
+          ['9.0', '1.074', '8.96', '43,304', '53,196', '33.8', '0.976', '', ''],
+          ['9.5', '1.078', '8.99', '45,907', '56,393', '35.8', '0.974', '', ''],
+          ['10.0', '1.083', '9.03', '48,509', '59,591', '37.8', '0.973', '', '']
+        ]
+      },
+      {
+        id: 'kac',
+        title: 'Таблица 17 · KC₂H₃O₂ (potassium acetate)',
+        tag: 'KAc brine',
+        description: 'Potassium acetate reference for completion fluids where chloride-free potassium system is required.',
+        footnote: '% volume salt = 100 × (1.0 - water fraction). Salt loading is shown in kg/m³ of final brine. Properties based on 20°C and 100% purity.',
+        rows: [
+          ['1', '1.004', '8.37', '3,684', '6,016', '3.5', '0.994', '32.0', '0.99'],
+          ['2', '1.009', '8.41', '7,967', '12,033', '7.0', '0.989', '31.5', '0.98'],
+          ['3', '1.014', '8.45', '11,951', '18,049', '10.5', '0.984', '31.0', '0.97'],
+          ['4', '1.019', '8.49', '15,935', '24,065', '14.0', '0.979', '', '0.96'],
+          ['5', '1.024', '8.54', '19,918', '30,082', '17.5', '0.974', '', '0.95'],
+          ['6', '1.029', '8.58', '25,040', '37,817', '22.0', '0.966', '', '0.94'],
+          ['7', '1.034', '8.62', '29,593', '44,693', '26.0', '0.960', '', '0.93'],
+          ['8', '1.040', '8.66', '34,146', '51,568', '30.0', '0.954', '', '0.92'],
+          ['9', '1.045', '8.71', '39,837', '60,163', '35.0', '0.945', '', '0.91'],
+          ['10', '1.050', '8.75', '44,390', '67,039', '39.0', '0.938', '', '0.90'],
+          ['11', '1.055', '8.79', '48,943', '73,915', '43.0', '0.932', '', '0.89'],
+          ['12', '1.060', '8.83', '54,634', '82,509', '48.0', '0.923', '', '0.88'],
+          ['13', '1.065', '8.88', '59,186', '89,385', '52.0', '0.917', '', '0.87'],
+          ['14', '1.070', '8.92', '64,877', '97,980', '57.0', '0.907', '', '0.86'],
+          ['15', '1.076', '8.96', '70,568', '106,574', '61.0', '0.898', '', '0.85'],
+          ['16', '1.081', '9.01', '76,259', '115,169', '67.0', '0.889', '', '0.84'],
+          ['17', '1.086', '9.05', '81,950', '123,764', '72.0', '0.880', '', '0.83'],
+          ['18', '1.091', '9.10', '87,641', '132,359', '77.0', '0.871', '', '0.82'],
+          ['19', '1.097', '9.14', '93,332', '140,953', '82.0', '0.863', '', '0.81'],
+          ['20', '1.102', '9.19', '100,162', '151,267', '88.0', '0.851', '', '0.80'],
+          ['21', '1.086', '9.05', '105,853', '159,862', '93.0', '0.820', '', '0.79'],
+          ['22', '1.113', '9.28', '112,682', '170,175', '99.0', '0.830', '', '0.78'],
+          ['23', '1.119', '9.32', '119,511', '180,489', '105.0', '0.819', '', '0.77'],
+          ['24', '1.124', '9.37', '126,340', '190,803', '110.0', '0.807', '1.0', '0.76'],
+          ['25', '1.129', '9.41', '133,169', '201,116', '117', '0.795', '75', '0.75']
+        ]
+      }
+    ];
+
+    const conversionSection = {
+      id: 'conversion',
+      title: 'Таблица 18 · Concentration conversions for brines',
+      tag: 'cross conversion',
+      description: 'Быстрые пересчеты между salt %, chloride ppm, salt ppm и chloride mg/l без ручного вывода коэффициентов в полях.',
+      footnote: 'All titration results are in mg/l.',
+      columns: ['From / To', 'Salt % wt', 'Chloride % wt', 'Salt ppm', 'Chloride ppm', 'Salt mg/l', 'Chloride mg/l'],
+      rows: [
+        ['Salt % wt', '1.0', '1 / factor', 'x 10⁴', 'x 1/factor x 10⁴', 'x 1/SG x 10⁴', 'x 1/factor x 1/SG x 10⁴'],
+        ['Cl- % wt', 'x factor', '1.0', 'x factor x 10⁴', 'x 10⁴', 'x factor / SG x 10⁴', 'x 1/SG x 10⁴'],
+        ['Salt ppm', 'x 10⁻⁴', 'x 1/factor x 10⁻⁴', '1.0', 'x 1/factor', 'x 1/SG', 'x 1/factor x 1/SG'],
+        ['Cl- ppm', 'x factor x 10⁻⁴', 'x 10⁻⁴', 'x factor', '1.0', 'x factor / SG', 'x 1/SG'],
+        ['Salt mg/l', 'x 10⁻⁴ x SG', 'x 1/factor x 10⁻⁴ x SG', 'x SG', 'x 1/factor x SG', '1.0', 'x 1/factor'],
+        ['Cl- mg/l', 'x factor x 10⁻⁴ x SG', 'x 10⁻⁴ x SG', 'x factor x SG', 'x SG', 'x factor', '1.0']
+      ],
+      factors: [
+        'CaCl₂: 1.5642',
+        'NaCl: 1.6488',
+        'KCl: 2.103',
+        'Example: 384,000 mg/l CaCl₂ = (384,000/0.6393)/(1.282) = 191,000 ppm Cl⁻'
+      ]
+    };
+
+    const LB_BBL_TO_KG_M3 = 2.853010174;
+    const LB_GAL_TO_KG_L = 1 / 8.345404;
+
+    function formatMetricNumber(value, digits) {
+      if (!Number.isFinite(value)) {
+        return '—';
+      }
+      return value.toFixed(digits);
+    }
+
+    function toCelsius(value) {
+      if (value === '') {
+        return '—';
+      }
+
+      const fahrenheit = Number(String(value).replace(/,/g, ''));
+      if (!Number.isFinite(fahrenheit)) {
+        return '—';
+      }
+
+      return formatMetricNumber((fahrenheit - 32) * 5 / 9, 1);
+    }
+
+    function toKgM3(value) {
+      const numeric = Number(String(value).replace(/,/g, ''));
+      if (!Number.isFinite(numeric)) {
+        return '—';
+      }
+      return formatMetricNumber(numeric * LB_BBL_TO_KG_M3, 1);
+    }
+
+    function toKgLFromLbGal(value) {
+      const numeric = Number(String(value).replace(/,/g, ''));
+      if (!Number.isFinite(numeric)) {
+        return '—';
+      }
+      return formatMetricNumber(numeric * LB_GAL_TO_KG_L, 3);
+    }
+
+    function metricColumnsForSection(section) {
+      if (section.id === 'conversion') {
+        return section.columns;
+      }
+
+      if (section.id === 'blend') {
+        return ['Density kg/l', 'Density kg/m³', 'Water m³/m³', '100% NaCl kg/m³', '94-97% CaCl2 kg/m³', 'Cryst. Pt. °C'];
+      }
+
+      const ionColumn = section.id === 'k2so4' ? 'K+ mg/l' : section.id === 'kac' ? 'C2H3O2 mg/l' : 'Cl- mg/l';
+      const cationColumn = section.id === 'nacl'
+        ? 'Na+ mg/l'
+        : section.id === 'cacl2'
+          ? 'Ca2+ mg/l'
+          : section.id === 'kcl'
+            ? 'K+ mg/l'
+            : section.id === 'mgcl2'
+              ? 'Mg2+ mg/l'
+              : section.id === 'nh4cl'
+                ? 'NH4+ mg/l'
+                : section.id === 'k2so4'
+                  ? 'SO4 2- mg/l'
+                  : 'K+ mg/l';
+
+      return ['Weight %', 'Density kg/l', 'Density kg/m³', ionColumn, cationColumn, 'Salt kg/m³', 'Water m³/m³', 'Cryst. Pt. °C', 'Water Activity'];
+    }
+
+    function metricRowForSection(section, row) {
+      if (section.id === 'conversion') {
+        return row;
+      }
+
+      if (section.id === 'blend') {
+        const densityKgL = toKgLFromLbGal(row[0]);
+        return [
+          densityKgL,
+          formatMetricNumber(Number(densityKgL) * 1000, 0),
+          row[1],
+          toKgM3(row[2]),
+          toKgM3(row[3]),
+          toCelsius(row[4])
+        ];
+      }
+
+      return [
+        row[0],
+        row[1],
+        formatMetricNumber(Number(row[1]) * 1000, 0),
+        row[3],
+        row[4],
+        toKgM3(row[5]),
+        row[6],
+        toCelsius(row[7]),
+        row[8] || '—'
+      ];
+    }
+
+    function renderTableSection(section) {
+      const panel = document.createElement('section');
+      panel.className = 'panel';
+      panel.id = section.id;
+
+      const head = document.createElement('div');
+      head.className = 'panel-head';
+      head.innerHTML = `
+        <div>
+          <h2>${section.title}</h2>
+          <p>${section.description}</p>
+        </div>
+        <span class="tag">${section.tag}</span>
+      `;
+      panel.appendChild(head);
+
+      const tableWrap = document.createElement('div');
+      tableWrap.className = 'table-wrap';
+      if (section.id === 'conversion') {
+        tableWrap.classList.add('conversion-table');
+      }
+
+      const table = document.createElement('table');
+      const thead = document.createElement('thead');
+      const headRow = document.createElement('tr');
+      metricColumnsForSection(section).forEach((label) => {
+        const th = document.createElement('th');
+        th.textContent = label;
+        headRow.appendChild(th);
+      });
+      thead.appendChild(headRow);
+      table.appendChild(thead);
+
+      const tbody = document.createElement('tbody');
+      section.rows.forEach((row) => {
+        const tr = document.createElement('tr');
+        metricRowForSection(section, row).forEach((cell) => {
+          const td = document.createElement('td');
+          td.textContent = cell;
+          tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+      });
+      table.appendChild(tbody);
+      tableWrap.appendChild(table);
+      panel.appendChild(tableWrap);
+
+      if (section.factors) {
+        const miniList = document.createElement('div');
+        miniList.className = 'mini-list';
+        section.factors.forEach((item) => {
+          const span = document.createElement('span');
+          span.textContent = item;
+          miniList.appendChild(span);
+        });
+        panel.appendChild(miniList);
+      }
+
+      const footnote = document.createElement('div');
+      footnote.className = 'footnote';
+      footnote.textContent = section.footnote;
+      panel.appendChild(footnote);
+
+      return panel;
+    }
+
+    const tableGrid = document.getElementById('tableGrid');
+    tableSections.forEach((section) => tableGrid.appendChild(renderTableSection(section)));
+    tableGrid.appendChild(renderTableSection(conversionSection));
+  </script>
+</body>
+</html>

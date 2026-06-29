@@ -1,0 +1,360 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>102 · Западно-Лугинецкое · Профиль</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap");
+
+    :root {
+      --bg-0: #071019;
+      --bg-1: #122334;
+      --bg-2: #1a3348;
+      --panel: rgba(8, 18, 29, 0.9);
+      --line: rgba(226, 237, 255, 0.15);
+      --line-soft: rgba(226, 237, 255, 0.08);
+      --text: #edf5ff;
+      --muted: #9bb1c9;
+      --cyan: #23d8b3;
+      --amber: #ffbf66;
+      --shadow: 0 28px 68px rgba(0, 0, 0, 0.42);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      font-family: "Manrope", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(860px 420px at 0% -8%, rgba(35, 216, 179, .16), transparent),
+        radial-gradient(760px 420px at 100% 0%, rgba(255, 191, 102, .12), transparent),
+        linear-gradient(145deg, var(--bg-0), var(--bg-1) 46%, var(--bg-2));
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(to right, rgba(255,255,255,.02) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,.02) 1px, transparent 1px);
+      background-size: 40px 40px;
+      mask-image: radial-gradient(circle at 50% 18%, rgba(0,0,0,.96), transparent 72%);
+    }
+
+    .wrap {
+      width: min(1380px, 94vw);
+      margin: 0 auto;
+      padding: 24px 0 56px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .top,
+    .hero,
+    .panel {
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+    }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 12px 16px;
+      border-radius: 16px;
+      background: rgba(8, 14, 24, 0.66);
+      backdrop-filter: blur(10px);
+      position: sticky;
+      top: 12px;
+      z-index: 20;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text);
+      text-decoration: none;
+      font-family: "Oswald", sans-serif;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      font-size: 20px;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 35% 35%, #defff8, var(--cyan));
+      box-shadow: 0 0 18px rgba(35, 216, 179, .45);
+    }
+
+    .nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .nav a {
+      text-decoration: none;
+      border-radius: 999px;
+      padding: 9px 14px;
+      font: 800 12px/1 "Manrope", sans-serif;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: #06231f;
+      background: linear-gradient(135deg, #9efcef, var(--cyan));
+      border: 1px solid rgba(35, 216, 179, .8);
+    }
+
+    .hero,
+    .panel {
+      margin-top: 18px;
+      border-radius: 28px;
+      padding: clamp(22px, 3vw, 34px);
+      background: var(--panel);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line-soft);
+      background: rgba(255,255,255,.04);
+      color: #d8e8f8;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    h1, h2 {
+      margin: 0;
+      font-family: "Oswald", sans-serif;
+      letter-spacing: -.01em;
+    }
+
+    h1 {
+      margin-top: 14px;
+      font-size: clamp(40px, 5vw, 66px);
+      line-height: .96;
+    }
+
+    h1 span { color: var(--amber); }
+
+    p {
+      color: #d0dded;
+      line-height: 1.72;
+      font-size: 14px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .hero-stat {
+      border: 1px solid var(--line-soft);
+      border-radius: 20px;
+      background: rgba(255,255,255,.035);
+      padding: 16px;
+    }
+
+    .hero-stat strong {
+      display: block;
+      font-size: 26px;
+      line-height: 1;
+    }
+
+    .hero-stat span {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .figure {
+      border: 1px solid var(--line-soft);
+      border-radius: 24px;
+      background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01));
+      padding: 18px;
+      overflow: auto;
+    }
+
+    .figure svg {
+      width: 100%;
+      height: auto;
+      display: block;
+      min-width: 860px;
+    }
+
+    .caption {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .footer {
+      margin-top: 18px;
+      text-align: center;
+      color: #8197b0;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    @media (max-width: 900px) {
+      .top {
+        position: static;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .hero-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+  <main class="wrap">
+    <header class="top">
+      <a class="brand" href="97_zapadno_luginetskoe_project_dashboard.html"><span class="dot" aria-hidden="true"></span><span>Западно-Лугинецкое · Profile</span></a>
+      <nav class="nav">
+        <a href="97_zapadno_luginetskoe_project_dashboard.html">К дашборду</a>
+        <a href="99_zapadno_luginetskoe_well_constructions.html">Конструкция</a>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <span class="eyebrow">Trajectory view · Западно-Лугинецкое · Раздел 5</span>
+      <h1>Раздел 5. <span>Профиль</span></h1>
+      <p>На этой странице намеренно только один визуальный артефакт: пространственная схема профиля с вертикальным верхом, точкой кондуктора и расходящимися пилотными ветвями. Без дополнительных таблиц и текста, как ты и попросил.</p>
+      <div class="hero-grid">
+        <div class="hero-stat"><strong>3D</strong><span>формат представления</span></div>
+        <div class="hero-stat"><strong>4 ветви</strong><span>пилотный и нижний профиль</span></div>
+        <div class="hero-stat"><strong>101ПО</strong><span>визуализация траектории</span></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="figure">
+        <svg viewBox="0 0 1100 860" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Профиль скважины">
+          <defs>
+            <linearGradient id="bgGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#ffffff" />
+              <stop offset="100%" stop-color="#f6f8fb" />
+            </linearGradient>
+          </defs>
+
+          <rect x="0" y="0" width="1100" height="860" fill="url(#bgGrad)" />
+
+          <g stroke="#d5dbe6" stroke-width="1.2" stroke-dasharray="2 4" fill="none">
+            <path d="M170 180 L520 96 L980 184" />
+            <path d="M170 180 L170 720 L620 806" />
+            <path d="M520 96 L520 634 L980 720" />
+            <path d="M980 184 L980 720" />
+
+            <path d="M226 171 L226 703" />
+            <path d="M282 157 L282 688" />
+            <path d="M338 144 L338 677" />
+            <path d="M394 130 L394 664" />
+            <path d="M450 116 L450 649" />
+            <path d="M577 108 L577 646" />
+            <path d="M634 119 L634 655" />
+            <path d="M691 129 L691 666" />
+            <path d="M748 140 L748 678" />
+            <path d="M805 151 L805 687" />
+            <path d="M862 162 L862 698" />
+            <path d="M919 173 L919 709" />
+
+            <path d="M170 250 L629 339" />
+            <path d="M170 320 L691 422" />
+            <path d="M170 390 L748 500" />
+            <path d="M170 460 L805 583" />
+            <path d="M170 530 L862 657" />
+            <path d="M170 600 L919 735" />
+
+            <path d="M240 198 L700 286" />
+            <path d="M312 182 L772 272" />
+            <path d="M384 165 L844 255" />
+            <path d="M456 148 L916 239" />
+          </g>
+
+          <g stroke="#8e95a2" stroke-width="2" fill="none">
+            <path d="M170 180 L520 96 L980 184" />
+            <path d="M170 180 L170 720 L620 806" />
+            <path d="M520 96 L520 634 L980 720" />
+            <path d="M980 184 L980 720" />
+            <path d="M170 720 L620 806 L980 720" />
+          </g>
+
+          <g font-family="Manrope, sans-serif" font-size="18" fill="#414754">
+            <text x="104" y="196">0</text>
+            <text x="94" y="266">400</text>
+            <text x="85" y="336">800</text>
+            <text x="72" y="407">1200</text>
+            <text x="72" y="478">1600</text>
+            <text x="63" y="548">2000</text>
+            <text x="63" y="619">2400</text>
+            <text x="53" y="690">2800</text>
+            <text x="52" y="760">3200</text>
+
+            <text x="240" y="783" transform="rotate(-62 240 783)">-800</text>
+            <text x="330" y="799" transform="rotate(-62 330 799)">-400</text>
+            <text x="425" y="817" transform="rotate(-62 425 817)">0</text>
+            <text x="525" y="834" transform="rotate(-62 525 834)">400</text>
+            <text x="628" y="852" transform="rotate(-62 628 852)">800</text>
+            <text x="734" y="836" transform="rotate(-18 734 836)">1200</text>
+            <text x="848" y="815" transform="rotate(-18 848 815)">1600</text>
+          </g>
+
+          <g stroke-linecap="round" stroke-linejoin="round" fill="none">
+            <path d="M572 178 C570 270, 568 336, 565 420" stroke="#324bff" stroke-width="4" />
+            <path d="M565 420 C560 454, 520 474, 470 496" stroke="#324bff" stroke-width="4" />
+            <path d="M565 420 C608 468, 676 548, 826 678" stroke="#4a6bff" stroke-width="4" />
+            <path d="M565 420 C552 470, 520 548, 500 720" stroke="#4e8c56" stroke-width="4" />
+            <path d="M565 420 C602 446, 635 485, 667 553" stroke="#ff4aa6" stroke-width="4" />
+          </g>
+
+          <g fill="#1f2430" stroke="#1f2430">
+            <circle cx="572" cy="178" r="4" />
+            <circle cx="565" cy="420" r="4" />
+            <circle cx="470" cy="496" r="4" />
+          </g>
+
+          <g fill="#1f2430" font-family="Manrope, sans-serif" font-size="19" font-weight="600">
+            <text x="595" y="170">Направление</text>
+            <text x="587" y="398">Кондуктор</text>
+            <text x="497" y="487">Т1-106 Пилот 1</text>
+          </g>
+
+          <g fill="#1f2430">
+            <path d="M566 170 l10 20 -8 -4 0 13 -4 0 0 -13 -8 4z" />
+            <path d="M557 182 l8 -10 8 10 -8 3z" />
+            <path d="M559 412 l8 -10 8 10 -8 3z" />
+          </g>
+        </svg>
+      </div>
+      <div class="caption">Визуализация вставлена как отдельный статичный экран профиля: светлый 3D-вид, вертикальная ось глубины, верхний вертикальный ствол и расходящиеся вниз ветви, как на присланной картинке.</div>
+    </section>
+
+    <p class="footer">Западно-Лугинецкое · Doc 102 · Профиль</p>
+  </main>
+  <script src="assets/js/global-auth-widget.js"></script>
+</body>
+</html>

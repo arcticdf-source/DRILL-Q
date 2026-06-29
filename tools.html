@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Инструменты — DRILL-Q</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Arial, sans-serif; background: #F5F5F7; color: #1D1D1F; font-size: 15px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+:root { --white:#FFFFFF; --bg:#F5F5F7; --text:#1D1D1F; --text2:#6E6E73; --text3:#AEAEB2; --blue:#2563EB; --blue-l:#EFF6FF; --border:rgba(0,0,0,0.08); --sh-sm:0 1px 4px rgba(0,0,0,0.06); --sh:0 4px 20px rgba(0,0,0,0.08); --r:16px; --r-sm:10px; }
+nav { position:sticky; top:0; z-index:100; background:rgba(255,255,255,0.85); backdrop-filter:saturate(180%) blur(20px); border-bottom:1px solid var(--border); height:56px; display:flex; align-items:center; padding:0 40px; justify-content:space-between; }
+.nav-logo { display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--text); }
+.nav-mark { width:28px; height:28px; border-radius:7px; background:var(--blue); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:#fff; }
+.nav-name { font-size:15px; font-weight:700; letter-spacing:-.4px; }
+.btn-ghost { padding:7px 16px; border-radius:var(--r-sm); border:1px solid var(--border); background:transparent; color:var(--text); font-size:13px; font-weight:500; text-decoration:none; } .btn-ghost:hover { background:var(--bg); }
+.btn-nav { padding:7px 16px; border-radius:var(--r-sm); background:var(--blue); color:#fff; font-size:13px; font-weight:600; text-decoration:none; } .btn-nav:hover { background:#1D4ED8; }
+.nav-right { display:flex; gap:10px; }
+.wrap { width:min(1120px, 92vw); margin:0 auto; padding:56px 0 80px; }
+.breadcrumb { display:flex; align-items:center; gap:6px; font-size:13px; color:var(--text3); margin-bottom:32px; }
+.breadcrumb a { color:var(--text3); text-decoration:none; } .breadcrumb a:hover { color:var(--blue); }
+
+/* Hero */
+.hero { margin-bottom:48px; }
+.hero-eyebrow { display:inline-flex; align-items:center; gap:8px; background:var(--blue-l); color:var(--blue); border-radius:99px; padding:4px 14px; font-size:12px; font-weight:600; margin-bottom:16px; }
+.hero h1 { font-size:clamp(32px, 5vw, 52px); font-weight:700; letter-spacing:-1px; line-height:1.05; margin-bottom:14px; }
+.hero p { color:var(--text2); font-size:17px; max-width:600px; line-height:1.65; }
+
+/* Tools grid */
+.tools-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(340px, 1fr)); gap:20px; }
+.tool-card { background:var(--white); border:1.5px solid var(--border); border-radius:var(--r); padding:32px; text-decoration:none; color:inherit; display:flex; flex-direction:column; gap:16px; transition:all .2s; position:relative; box-shadow:var(--sh-sm); }
+.tool-card:hover { border-color:var(--blue); box-shadow:var(--sh), 0 0 0 3px rgba(37,99,235,0.08); transform:translateY(-3px); }
+.tool-icon { width:52px; height:52px; border-radius:14px; background:var(--blue-l); display:flex; align-items:center; justify-content:center; font-size:22px; }
+.tool-badge { display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:600; color:#16A34A; background:#F0FDF4; border:1px solid #BBF7D0; border-radius:99px; padding:3px 10px; }
+.tool-badge.beta { color:#D97706; background:#FFFBEB; border-color:#FDE68A; }
+.tool-card h2 { font-size:20px; font-weight:700; letter-spacing:-.3px; }
+.tool-card .tool-sub { font-size:13px; color:var(--blue); font-weight:600; letter-spacing:.02em; }
+.tool-card p { color:var(--text2); font-size:14px; line-height:1.6; flex:1; }
+.tool-chips { display:flex; flex-wrap:wrap; gap:6px; }
+.chip { font-size:11px; font-weight:500; color:var(--text2); background:var(--bg); border:1px solid var(--border); border-radius:99px; padding:3px 10px; }
+.tool-cta { display:flex; align-items:center; justify-content:space-between; padding-top:16px; border-top:1px solid var(--border); }
+.tool-cta span { font-size:14px; font-weight:600; color:var(--blue); }
+.tool-cta .arrow { font-size:18px; color:var(--text3); transition:color .2s, transform .2s; }
+.tool-card:hover .arrow { color:var(--blue); transform:translateX(3px); }
+
+/* Coming soon */
+.tool-card.soon { opacity:.6; pointer-events:none; }
+.tool-card.soon .tool-badge { color:var(--text3); background:var(--bg); border-color:var(--border); }
+
+/* Section header */
+.section-hd { display:flex; align-items:baseline; gap:12px; margin-bottom:20px; }
+.section-hd h2 { font-size:22px; font-weight:700; letter-spacing:-.3px; }
+.section-hd span { font-size:13px; color:var(--text3); }
+.section-gap { margin-top:48px; }
+
+@media(max-width:640px){ nav{padding:0 20px;} .wrap{padding:40px 0 60px;} .tools-grid{grid-template-columns:1fr;} }
+</style>
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="index.html"><div class="nav-mark">DQ</div><span class="nav-name">DRILL-Q</span></a>
+  <div class="nav-right">
+    <a class="btn-ghost" href="index.html">← Главная</a>
+    <a class="btn-nav" href="app.html">Приложение →</a>
+  </div>
+</nav>
+
+<div class="wrap">
+  <div class="breadcrumb">
+    <a href="index.html">DRILL-Q</a> <span>/</span>
+    <span style="color:var(--text)">Инструменты</span>
+  </div>
+
+  <div class="hero">
+    <div class="hero-eyebrow">🛠 Инженерные инструменты</div>
+    <h1>Инструменты<br>для бурения</h1>
+    <p>Прикладные инженерные программы для буровых операций — расчёты, рапорты, гидравлика и управление данными прямо в браузере.</p>
+  </div>
+
+  <div class="section-hd">
+    <h2>Доступные инструменты</h2>
+    <span>4 инструмента</span>
+  </div>
+  <div class="tools-grid">
+
+    <a class="tool-card" href="docs/mudgpt_dmr_new_well.html">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;">
+        <div class="tool-icon">📋</div>
+        <span class="tool-badge">Готов</span>
+      </div>
+      <div>
+        <div class="tool-sub">MudGPT-DMR</div>
+        <h2>Daily Mud Report</h2>
+      </div>
+      <p>Полный цикл суточного рапорта по буровому раствору: данные скважины, конструкция, траектория, свойства раствора, гидравлика, объёмы, стоимость, испытание и генерация отчёта в TXT / CSV / XLS / PDF.</p>
+      <div class="tool-chips">
+        <span class="chip">Well Data</span>
+        <span class="chip">Mud Properties</span>
+        <span class="chip">Hydraulics</span>
+        <span class="chip">Report Gen</span>
+        <span class="chip">QC Gate</span>
+      </div>
+      <div class="tool-cta">
+        <span>Открыть инструмент</span>
+        <span class="arrow">→</span>
+      </div>
+    </a>
+
+    <a class="tool-card" href="docs/vankor_ai_demo.html">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;">
+        <div class="tool-icon">🤖</div>
+        <span class="tool-badge">Demo</span>
+      </div>
+      <div>
+        <div class="tool-sub">DRILL-Q AI · Предиктив</div>
+        <h2>AI-мониторинг бурения</h2>
+      </div>
+      <p>Интерактивное демо на реальных данных Ванкорского месторождения: AI-модель обнаруживает прихват инструмента за 3 дня до события, анализируя тренды ДНС и РОП. Сравнение факта с AI-сценарием и расчёт экономии НПВ.</p>
+      <div class="tool-chips">
+        <span class="chip">Vankor</span>
+        <span class="chip">NPT Prediction</span>
+        <span class="chip">Mud Trends</span>
+        <span class="chip">$480K Saved</span>
+      </div>
+      <div class="tool-cta">
+        <span>Открыть демо</span>
+        <span class="arrow">→</span>
+      </div>
+    </a>
+
+    <a class="tool-card" href="docs/drilling_cockpit.html">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;">
+        <div class="tool-icon">🧠</div>
+        <span class="tool-badge" style="background:rgba(168,85,247,.15);color:#A855F7;border:1px solid rgba(168,85,247,.3)">AI</span>
+      </div>
+      <div>
+        <div class="tool-sub">DRILL-Q AI · Кокпит</div>
+        <h2>AI Drilling Cockpit</h2>
+      </div>
+      <p>Загрузите PDF, DOCX и XLSX — AI извлечёт параметры скважины, оценит риски по интервалам и откроет интерактивный кокпит с предиктивными алертами: прихват, ГНВП, износ долота, АВПД, ЕЦД в реальном времени.</p>
+      <div class="tool-chips">
+        <span class="chip">AI Extraction</span>
+        <span class="chip">Predictive Alerts</span>
+        <span class="chip">Stuck Pipe</span>
+        <span class="chip">Kick Detection</span>
+        <span class="chip">D-exponent</span>
+      </div>
+      <div class="tool-cta">
+        <span>Открыть кокпит</span>
+        <span class="arrow">→</span>
+      </div>
+    </a>
+
+    <a class="tool-card" href="docs/drilling_hub.html">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;">
+        <div class="tool-icon">🔩</div>
+        <span class="tool-badge" style="background:rgba(0,230,118,.15);color:#00e676;border:1px solid rgba(0,230,118,.3)">NEW</span>
+      </div>
+      <div>
+        <div class="tool-sub">DRILL-Q · Единая платформа</div>
+        <h2>Кокпит бурения</h2>
+      </div>
+      <p>Полный цикл управления скважиной: загрузка исторических данных, AI-анализ рисков по пластам, симуляция бурения в реальном времени, ввод параметров вручную, суточный рапорт DMR — всё в одном месте.</p>
+      <div class="tool-chips">
+        <span class="chip">AI Insights</span>
+        <span class="chip">Live Drilling</span>
+        <span class="chip">DMR Form</span>
+        <span class="chip">Risk Map</span>
+      </div>
+      <div class="tool-cta">
+        <span>Открыть платформу</span>
+        <span class="arrow">→</span>
+      </div>
+    </a>
+
+    <div class="tool-card soon">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;">
+        <div class="tool-icon">⚙️</div>
+        <span class="tool-badge">Скоро</span>
+      </div>
+      <div>
+        <div class="tool-sub">MudGPT-HYD</div>
+        <h2>Fast Hydraulics</h2>
+      </div>
+      <p>Расчёт реологии, гидравлик, потерь давления, ECD и производительности насадок в режиме реального времени.</p>
+      <div class="tool-chips">
+        <span class="chip">ECD</span>
+        <span class="chip">Rheology</span>
+        <span class="chip">Nozzles</span>
+      </div>
+      <div class="tool-cta">
+        <span>В разработке</span>
+        <span class="arrow">→</span>
+      </div>
+    </div>
+
+    <div class="tool-card soon">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;">
+        <div class="tool-icon">🧪</div>
+        <span class="tool-badge">Скоро</span>
+      </div>
+      <div>
+        <div class="tool-sub">MudGPT-CHEM</div>
+        <h2>Химреагенты и материалы</h2>
+      </div>
+      <p>Каталог продуктов, расчёт концентраций, матрица реагентов по интервалам и программа химобработки.</p>
+      <div class="tool-chips">
+        <span class="chip">Chemicals</span>
+        <span class="chip">Materials</span>
+        <span class="chip">Program</span>
+      </div>
+      <div class="tool-cta">
+        <span>В разработке</span>
+        <span class="arrow">→</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>
