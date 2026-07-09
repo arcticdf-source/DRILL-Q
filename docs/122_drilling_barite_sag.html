@@ -1,27 +1,21 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="ru">
 <head>
-  <script src="../auth-gate.js" data-dq-gate></script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>122 · Barite SAG</title>
   <style>
-    @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap");
-
     :root {
-      --bg-0: #07111a;
-      --bg-1: #102133;
-      --bg-2: #1b3448;
-      --panel: rgba(10, 18, 30, 0.86);
-      --line: rgba(226, 237, 255, 0.14);
-      --line-soft: rgba(226, 237, 255, 0.08);
-      --text: #edf5ff;
-      --muted: #9ab0c7;
-      --cyan: #20d9b4;
-      --blue: #8db4ff;
-      --amber: #ffbf66;
-      --danger: #ff8f8f;
-      --shadow: 0 24px 56px rgba(0, 0, 0, 0.42);
+      --bg: #F5F5F7;
+      --panel: #FFFFFF;
+      --blue: #2563EB;
+      --text: #1D1D1F;
+      --muted: #6E6E73;
+      --border: #E5E5EA;
+      --shadow: 0 2px 14px rgba(0,0,0,.07);
+      --cyan: #0A9981;
+      --amber: #D97706;
+      --danger: #DC2626;
     }
 
     * { box-sizing: border-box; }
@@ -29,24 +23,9 @@
     html, body {
       margin: 0;
       min-height: 100%;
-      font-family: "Manrope", sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
       color: var(--text);
-      background:
-        radial-gradient(880px 420px at 0% -10%, rgba(32,217,180,.18), transparent),
-        radial-gradient(760px 380px at 100% 0%, rgba(141,180,255,.14), transparent),
-        linear-gradient(145deg, var(--bg-0), var(--bg-1) 48%, var(--bg-2));
-    }
-
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      background:
-        linear-gradient(to right, rgba(255,255,255,.022) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(255,255,255,.022) 1px, transparent 1px);
-      background-size: 42px 42px;
-      mask-image: radial-gradient(circle at 50% 18%, rgba(0,0,0,.92), transparent 72%);
+      background: var(--bg);
     }
 
     .wrap {
@@ -54,11 +33,11 @@
       z-index: 1;
       width: min(1380px, 94vw);
       margin: 0 auto;
-      padding: 24px 0 56px;
+      padding: 12px 0 30px;
     }
 
-    .topbar, .hero, .panel, .note {
-      border: 1px solid var(--line-soft);
+    .hero, .panel, .note {
+      border: 1px solid var(--border);
       box-shadow: var(--shadow);
     }
 
@@ -68,30 +47,35 @@
       align-items: center;
       gap: 12px;
       flex-wrap: wrap;
-      padding: 12px 16px;
-      border-radius: 16px;
-      background: rgba(7, 12, 20, 0.62);
-      backdrop-filter: blur(10px);
+      padding: 9px 20px;
+      border-radius: 0;
+      background: rgba(255,255,255,.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       position: sticky;
-      top: 12px;
+      top: 0;
       z-index: 20;
+      border: none;
+      border-bottom: 1px solid var(--border);
+      box-shadow: none;
     }
 
     .brand {
       display: flex;
       align-items: center;
       gap: 10px;
-      font-family: "Oswald", sans-serif;
-      font-size: 20px;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+      font-size: 13px;
       text-transform: uppercase;
       letter-spacing: .05em;
+      color: var(--text);
     }
 
     .dot {
-      width: 12px;
-      height: 12px;
+      width: 9px;
+      height: 9px;
       border-radius: 999px;
-      background: radial-gradient(circle at 35% 35%, #d8fff7, var(--cyan));
+      background: var(--blue);
     }
 
     .actions {
@@ -115,34 +99,30 @@
     }
 
     .btn {
-      color: #06241f;
-      background: linear-gradient(135deg, #9efcef, var(--cyan));
-      border: 1px solid rgba(32,217,180,.82);
+      color: #fff;
+      background: var(--blue);
+      border: 1px solid var(--blue);
     }
 
     .btn-ghost {
       color: var(--muted);
-      border: 1px solid var(--line-soft);
-      background: rgba(255,255,255,.03);
+      border: 1px solid var(--border);
+      background: #fff;
     }
 
     .hero {
-      margin-top: 18px;
-      border-radius: 26px;
-      padding: clamp(22px, 3vw, 34px);
-      background:
-        radial-gradient(500px 220px at 6% 0%, rgba(32,217,180,.14), transparent),
-        radial-gradient(520px 240px at 100% 0%, rgba(141,180,255,.12), transparent),
-        linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015)),
-        var(--panel);
+      margin-top: 10px;
+      border-radius: 12px;
+      padding: 12px;
+      background: var(--panel);
     }
 
     .eyebrow, .chip, .status-pill {
       display: inline-flex;
       align-items: center;
       border-radius: 999px;
-      border: 1px solid var(--line-soft);
-      background: rgba(255,255,255,.04);
+      border: 1px solid var(--border);
+      background: var(--bg);
     }
 
     .eyebrow {
@@ -150,49 +130,65 @@
       font-size: 11px;
       text-transform: uppercase;
       letter-spacing: .09em;
-      color: #d5e7f8;
+      color: var(--muted);
     }
 
     h1 {
-      margin: 14px 0 10px;
-      font-family: "Oswald", sans-serif;
-      font-size: clamp(38px, 5vw, 58px);
+      margin: 8px 0 6px;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+      font-size: 22px;
       line-height: .97;
+      color: var(--text);
     }
 
-    h1 span { color: var(--cyan); }
+    h1 span { color: var(--blue); }
 
     .lead {
       margin: 0;
-      max-width: 980px;
-      color: #cad9eb;
-      font-size: 15px;
+      max-width: 640px;
+      color: var(--muted);
+      font-size: 12px;
       line-height: 1.7;
     }
 
     .hero-stats {
-      margin-top: 16px;
+      margin-top: 10px;
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 12px;
+      gap: 8px;
     }
 
     .stat, .metric-card, .result-card, .factor-card, .note {
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      background: rgba(255,255,255,.03);
-      padding: 14px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: var(--panel);
+      padding: 9px;
+    }
+
+    .result-card {
+      border-radius: 10px;
+      padding: 10px;
+    }
+
+    .factor-card {
+      border-radius: 9px;
+      padding: 10px;
+    }
+
+    .note {
+      padding: 10px;
+      margin-top: 10px;
     }
 
     .stat strong,
     .result-card .value,
     .result-card .secondary {
       display: block;
-      font-family: "Oswald", sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
     }
 
     .stat strong {
-      font-size: 24px;
+      font-size: 18px;
     }
 
     .stat span,
@@ -203,7 +199,7 @@
     .logic p,
     .logic li,
     .note p {
-      color: #c9d8ea;
+      color: var(--muted);
       line-height: 1.55;
     }
 
@@ -217,16 +213,16 @@
     }
 
     .layout {
-      margin-top: 18px;
+      margin-top: 10px;
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 16px;
+      gap: 10px;
     }
 
     .panel {
-      border-radius: 22px;
+      border-radius: 12px;
       background: var(--panel);
-      padding: 18px;
+      padding: 12px;
     }
 
     .panel-head {
@@ -235,20 +231,20 @@
       align-items: flex-start;
       gap: 12px;
       flex-wrap: wrap;
-      margin-bottom: 14px;
+      margin-bottom: 10px;
     }
 
     .panel-head h2 {
       margin: 0;
-      font-size: 26px;
+      font-size: 16px;
     }
 
     .panel-head p {
       margin: 6px 0 0;
-      color: #c9d8ea;
-      font-size: 13px;
+      color: var(--muted);
+      font-size: 12px;
       line-height: 1.55;
-      max-width: 640px;
+      max-width: 520px;
     }
 
     .status-pill {
@@ -257,7 +253,7 @@
       text-transform: uppercase;
       letter-spacing: .08em;
       font-weight: 800;
-      color: #d5e7f8;
+      color: var(--muted);
       white-space: nowrap;
     }
 
@@ -266,7 +262,7 @@
     .factor-grid,
     .logic-grid {
       display: grid;
-      gap: 12px;
+      gap: 8px;
     }
 
     .metric-grid,
@@ -276,7 +272,7 @@
 
     .field label {
       display: block;
-      margin-bottom: 8px;
+      margin-bottom: 5px;
       color: var(--muted);
       font-size: 11px;
       text-transform: uppercase;
@@ -286,16 +282,20 @@
     .field input,
     .field select {
       width: 100%;
-      border: 1px solid var(--line);
-      background: #0a1422;
+      border: 1px solid var(--border);
+      background: var(--bg);
       color: var(--text);
-      padding: 11px 12px;
+      padding: 6px 9px;
+    }
+
+    .field input::placeholder {
+      color: #AEAEB2;
     }
 
     .field input:focus,
     .field select:focus {
       outline: none;
-      border-color: var(--cyan);
+      border-color: var(--blue);
     }
 
     .field small {
@@ -322,15 +322,19 @@
 
     .result-card .value {
       margin-top: 8px;
-      font-size: 32px;
+      font-size: 24px;
       line-height: 1;
       color: var(--cyan);
+    }
+
+    .result-card .label {
+      font-size: 10px;
     }
 
     .result-card .secondary {
       margin-top: 8px;
       font-size: 18px;
-      color: #eef7ff;
+      color: var(--text);
     }
 
     .risk-low .value,
@@ -342,17 +346,13 @@
 
     .factor-card .secondary {
       margin-top: 8px;
-      font-family: "Oswald", sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
       font-size: 22px;
       color: var(--blue);
     }
 
-    .note {
-      margin-top: 14px;
-    }
-
     .note strong {
-      color: #ffd69a;
+      color: var(--amber);
       margin-bottom: 8px;
     }
 
@@ -363,12 +363,16 @@
 
     .logic h3 {
       margin: 0 0 10px;
-      font-size: 20px;
+      font-size: 13px;
     }
 
     .logic p {
       margin: 0;
-      font-size: 13px;
+      font-size: 12px;
+    }
+
+    .logic li {
+      font-size: 12px;
     }
 
     @media (max-width: 1080px) {
@@ -527,7 +531,7 @@
         </div>
         <div class="factor-grid" style="margin-top:14px;">
           <div class="factor-card"><strong>Ka · угол</strong><span class="secondary" id="factorAngle">0.0</span><small id="factorAngleText">0-10°</small></div>
-          <div class="factor-card"><strong>Kd · диаметр</strong><span class="secondary" id="factorDiameter">0.0</span><small id="factorDiameterText">&lt; 216 мм</small></div>
+          <div class="factor-card"><strong>Kd · диаметр</strong><span class="secondary" id="factorDiameter">0.0</span><small id="factorDiameterText">< 216 мм</small></div>
           <div class="factor-card"><strong>Kf · режим течения</strong><span class="secondary" id="factorFlow">0.0</span><small id="factorFlowText">Turbulent</small></div>
           <div class="factor-card"><strong>Kh · длина участка</strong><span class="secondary" id="factorLength">0.0</span><small id="factorLengthText">0-305 м</small></div>
         </div>

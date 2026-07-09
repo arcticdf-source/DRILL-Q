@@ -1,7 +1,6 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ru">
 <head>
-  <script src="auth-gate.js" data-dq-gate></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>DRILL-Q — AI-платформа для бурения скважин</title>
@@ -90,10 +89,9 @@
 
     /* ── HERO ── */
     .hero {
-      padding: 88px 48px 0;
+      padding: 88px 48px 72px;
       text-align: center;
       background: var(--white);
-      overflow: hidden;
     }
     .hero-badge {
       display:inline-flex; align-items:center; gap:7px;
@@ -142,41 +140,115 @@
     }
     .btn-hero-s:hover { background:rgba(0,0,0,0.09); }
 
-    /* ── PRODUCT MOCKUP ── */
+    /* ── DWOP SIMULATOR ── */
+    #dwop-sim { background:#06090f; border-top:1px solid rgba(255,255,255,.06); }
+    .sim-top { background:linear-gradient(180deg,#0c1220,#06090f); padding:48px 48px 28px; }
+    .sim-top-inner { max-width:1100px; margin:0 auto; display:flex; align-items:flex-start; justify-content:space-between; gap:20px; flex-wrap:wrap; }
+    .sim-eyebrow { font-size:12px; font-weight:600; color:#20d9b4; letter-spacing:.08em; text-transform:uppercase; margin-bottom:8px; }
+    .sim-title { font-size:clamp(22px,3vw,34px); font-weight:700; color:#e8eaf0; letter-spacing:-.5px; margin-bottom:6px; }
+    .sim-sub { font-size:14px; color:rgba(255,255,255,.38); }
+    .sim-badges { display:flex; gap:8px; flex-wrap:wrap; align-items:flex-start; padding-top:4px; }
+    .sim-badge { font-size:11px; font-weight:700; padding:5px 12px; border-radius:99px; }
+    .sim-badge.red   { background:rgba(220,38,38,.15); color:#f87171; border:1px solid rgba(220,38,38,.3); }
+    .sim-badge.cyan  { background:rgba(32,217,180,.12); color:#20d9b4; border:1px solid rgba(32,217,180,.25); }
+    .sim-badge.amber { background:rgba(251,191,36,.1); color:#fbbf24; border:1px solid rgba(251,191,36,.2); }
+    .sim-body { max-width:1100px; margin:0 auto; padding:0 48px; display:grid; grid-template-columns:2fr 1.3fr 1fr; gap:14px; }
+    .sim-canvas-col { display:flex; flex-direction:column; gap:8px; }
+    .sim-col-label { font-size:10px; color:rgba(255,255,255,.28); font-weight:600; letter-spacing:.06em; text-transform:uppercase; }
+    #simCanvas { width:100%; border-radius:12px; border:1px solid rgba(255,255,255,.07); background:#06090f; display:block; }
+    .sim-params-col { display:flex; flex-direction:column; gap:10px; }
+    .sim-depth-card { background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08); border-radius:12px; padding:16px 18px; }
+    .sdl { font-size:10px; color:rgba(255,255,255,.3); text-transform:uppercase; letter-spacing:.06em; margin-bottom:4px; }
+    .sdv { font-size:42px; font-weight:700; color:#20d9b4; font-family:'JetBrains Mono',monospace; letter-spacing:-1px; line-height:1; margin-bottom:4px; }
+    .sdv span { font-size:16px; color:rgba(255,255,255,.4); font-weight:400; }
+    .sdx { font-size:11px; color:rgba(255,255,255,.3); font-family:monospace; }
+    .sim-pcard { background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08); border-radius:12px; overflow:hidden; }
+    .spr { display:flex; justify-content:space-between; align-items:center; padding:8px 13px; border-bottom:1px solid rgba(255,255,255,.05); gap:10px; }
+    .spr:last-child { border-bottom:none; }
+    .sprl { font-size:10px; color:rgba(255,255,255,.32); font-weight:500; white-space:nowrap; }
+    .sprv { font-size:11px; color:rgba(255,255,255,.8); font-weight:600; text-align:right; }
+    .sprv.hi { font-size:13px; color:#20d9b4; }
+    .sim-miles { display:flex; flex-direction:column; gap:3px; }
+    .sm { display:flex; align-items:center; gap:9px; padding:5px 9px; border-radius:7px; font-size:11px; color:rgba(255,255,255,.28); transition:all .25s; }
+    .sm.done { color:#20d9b4; background:rgba(32,217,180,.07); }
+    .sm.act  { color:#fff; background:rgba(32,217,180,.14); font-weight:600; }
+    .sm-dot { width:7px; height:7px; border-radius:50%; background:rgba(255,255,255,.12); flex-shrink:0; transition:background .25s; }
+    .sm.done .sm-dot { background:#20d9b4; }
+    .sm.act  .sm-dot { background:#20d9b4; box-shadow:0 0 6px #20d9b4; animation:pulse 1.5s infinite; }
+    .sim-alerts-col { display:flex; flex-direction:column; gap:8px; padding-top:18px; }
+    #sim-abox { display:flex; flex-direction:column; gap:8px; }
+    .sa-idle { background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.07); border-radius:12px; padding:18px 14px; font-size:12px; color:rgba(255,255,255,.28); text-align:center; line-height:1.6; }
+    .sa { border-radius:12px; padding:12px 13px; border:1px solid; }
+    .sa.crit { background:rgba(220,38,38,.1); border-color:rgba(220,38,38,.28); }
+    .sa.warn { background:rgba(245,158,11,.09); border-color:rgba(245,158,11,.22); }
+    .sa.info { background:rgba(32,217,180,.07); border-color:rgba(32,217,180,.2); }
+    .sa.ok   { background:rgba(32,217,180,.06); border-color:rgba(32,217,180,.15); }
+    .sa-head { display:flex; align-items:center; gap:7px; margin-bottom:5px; }
+    .sa-icon { font-size:14px; }
+    .sa-title { font-size:11px; font-weight:700; }
+    .sa.crit .sa-title { color:#f87171; } .sa.warn .sa-title { color:#fbbf24; }
+    .sa.info .sa-title,.sa.ok .sa-title { color:#20d9b4; }
+    .sa-desc { font-size:10px; color:rgba(255,255,255,.45); line-height:1.5; }
+    .sim-ctrl { max-width:1100px; margin:0 auto; padding:18px 48px 52px; }
+    .sim-slider-row { display:flex; align-items:center; gap:10px; margin-bottom:14px; }
+    .ssl { font-size:10px; color:rgba(255,255,255,.3); white-space:nowrap; font-family:monospace; }
+    #simSlider { flex:1; -webkit-appearance:none; appearance:none; height:5px; background:rgba(255,255,255,.1); border-radius:3px; outline:none; cursor:pointer; }
+    #simSlider::-webkit-slider-thumb { -webkit-appearance:none; width:18px; height:18px; border-radius:50%; background:#20d9b4; box-shadow:0 0 10px rgba(32,217,180,.5); cursor:pointer; }
+    #simSlider::-moz-range-thumb { width:18px; height:18px; border-radius:50%; background:#20d9b4; border:none; cursor:pointer; }
+    .sim-btn-row { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+    .simbtn { padding:9px 18px; border-radius:10px; font-size:13px; font-weight:600; cursor:pointer; font-family:inherit; transition:all .15s; border:none; }
+    .simbtn-p { background:linear-gradient(135deg,#20d9b4,#0891b2); color:#fff; }
+    .simbtn-p:hover { opacity:.9; transform:translateY(-1px); }
+    .simbtn-p:disabled { background:rgba(255,255,255,.1); color:rgba(255,255,255,.3); cursor:not-allowed; transform:none; }
+    .simbtn-g { background:rgba(255,255,255,.07); color:rgba(255,255,255,.65); border:1px solid rgba(255,255,255,.1); }
+    .simbtn-g:hover:not(:disabled) { background:rgba(255,255,255,.12); }
+    .simbtn-g:disabled { opacity:.35; cursor:not-allowed; }
+    .simbtn-l { background:transparent; color:#20d9b4; border:1.5px solid rgba(32,217,180,.35); text-decoration:none; display:inline-flex; align-items:center; margin-left:auto; }
+    .simbtn-l:hover { background:rgba(32,217,180,.08); }
+    .sim-spd { display:flex; align-items:center; gap:4px; margin-left:8px; }
+    .sim-spd-lbl { font-size:10px; color:rgba(255,255,255,.3); margin-right:2px; }
+    .sim-spd-btn { background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.1); color:rgba(255,255,255,.45); padding:6px 11px; border-radius:7px; font-size:11px; font-weight:600; cursor:pointer; font-family:inherit; transition:all .15s; }
+    .sim-spd-btn.on { background:rgba(32,217,180,.15); border-color:rgba(32,217,180,.35); color:#20d9b4; }
+    @media(max-width:900px){ .sim-body{ grid-template-columns:1fr 1fr; } .sim-alerts-col{ grid-column:1/-1; } }
+    @media(max-width:600px){ .sim-body,.sim-ctrl,.sim-top{ padding-left:20px; padding-right:20px; } .sim-body{ grid-template-columns:1fr; } }
+
+    /* ── OLD MOCKUP PLACEHOLDER (removed) ── */
     .mockup-wrap {
       max-width: 1120px;
       margin: 0 auto;
       border-radius: 20px 20px 0 0;
       overflow: hidden;
-      border: 1px solid rgba(0,0,0,0.1);
-      box-shadow: var(--sh-lg);
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 32px 80px rgba(0,0,0,.35), 0 0 0 1px rgba(32,217,180,.12);
     }
     .mockup-bar {
-      background: #F0F0F3;
-      border-bottom: 1px solid var(--border);
+      background: #111827;
+      border-bottom: 1px solid rgba(255,255,255,.07);
       padding: 11px 16px;
       display: flex; align-items: center; gap: 10px;
     }
     .m-dots { display:flex; gap:6px; }
     .m-dot { width:12px; height:12px; border-radius:50%; }
     .m-url {
-      flex:1; background:rgba(255,255,255,.7);
+      flex:1; background:rgba(255,255,255,.07);
       border-radius:6px; padding:4px 12px;
-      font-size:12px; color:var(--text3);
-      text-align:center; max-width:320px; margin:0 auto;
-      border: 1px solid var(--border);
+      font-size:12px; color:rgba(255,255,255,.35);
+      text-align:center; max-width:340px; margin:0 auto;
+      border: 1px solid rgba(255,255,255,.08);
     }
 
     .dash {
       display: grid;
-      grid-template-columns: 210px 1fr 272px;
+      grid-template-columns: 196px 1fr 230px;
       min-height: 440px;
       font-size: 13px;
+      background: #06090f;
     }
 
     /* sidebar */
     .dash-sb {
-      background: #181828;
+      background: #0b0e1a;
+      border-right: 1px solid rgba(255,255,255,.06);
       padding: 16px 10px;
       display: flex; flex-direction: column; gap: 2px;
     }
@@ -185,24 +257,23 @@
       padding:8px; margin-bottom:14px;
     }
     .sb-mark {
-      width:24px; height:24px; background:var(--blue);
+      width:24px; height:24px; background:linear-gradient(135deg,#20d9b4,#0891b2);
       border-radius:6px; display:flex; align-items:center;
       justify-content:center; font-size:10px; font-weight:700; color:#fff;
     }
-    .sb-name { font-size:13px; font-weight:600; color:rgba(255,255,255,.9); letter-spacing:-.3px; }
+    .sb-name { font-size:12px; font-weight:600; color:rgba(255,255,255,.85); letter-spacing:-.2px; line-height:1.3; }
     .sb-section {
-      font-size:10px; color:rgba(255,255,255,.28);
+      font-size:10px; color:rgba(255,255,255,.22);
       letter-spacing:.08em; text-transform:uppercase;
       padding:10px 8px 4px; font-weight:500;
     }
     .sb-item {
       display:flex; align-items:center; gap:8px;
       padding:7px 8px; border-radius:8px;
-      color:rgba(255,255,255,.48); font-size:13px; cursor:pointer;
+      color:rgba(255,255,255,.4); font-size:12px; cursor:pointer;
     }
-    .sb-item.on { background:rgba(37,99,235,.22); color:#93C5FD; }
-    .sb-item:not(.on):hover { background:rgba(255,255,255,.05); color:rgba(255,255,255,.8); }
-    .sb-icon { width:16px; text-align:center; font-size:14px; flex-shrink:0; }
+    .sb-item.on { background:rgba(32,217,180,.14); color:#20d9b4; }
+    .sb-icon { width:16px; text-align:center; font-size:13px; flex-shrink:0; }
     .sb-badge {
       margin-left:auto; background:#DC2626; color:#fff;
       font-size:10px; padding:1px 6px; border-radius:10px; font-weight:600;
@@ -210,7 +281,7 @@
 
     /* main area */
     .dash-main {
-      background: #F6F7F9;
+      background: #06090f;
       padding: 16px;
       overflow: hidden;
     }
@@ -218,14 +289,16 @@
       display:flex; justify-content:space-between;
       align-items:flex-start; margin-bottom:12px;
     }
-    .dm-title { font-size:14px; font-weight:600; color:#1D1D1F; letter-spacing:-.3px; }
-    .dm-sub { font-size:11px; color:#6E6E73; margin-top:2px; }
+    .dm-title { font-size:14px; font-weight:600; color:rgba(255,255,255,.9); letter-spacing:-.3px; }
+    .dm-sub { font-size:11px; color:rgba(255,255,255,.35); margin-top:2px; }
     .live-pill {
       display:flex; align-items:center; gap:5px;
-      font-size:11px; color:var(--green); font-weight:500;
+      font-size:11px; color:#20d9b4; font-weight:600;
+      background:rgba(32,217,180,.12); border:1px solid rgba(32,217,180,.25);
+      border-radius:99px; padding:3px 10px;
     }
     .live-dot {
-      width:7px; height:7px; background:var(--green);
+      width:6px; height:6px; background:#20d9b4;
       border-radius:50%; animation:pulse 2s infinite;
     }
     @keyframes pulse { 0%,100%{opacity:1}50%{opacity:.35} }
@@ -235,80 +308,70 @@
       gap:8px; margin-bottom:10px;
     }
     .metric-box {
-      background:#fff; border-radius:var(--r-sm);
+      background:rgba(255,255,255,.04); border-radius:var(--r-sm);
       padding:10px 12px;
-      border:1px solid rgba(0,0,0,0.06);
+      border:1px solid rgba(255,255,255,.07);
     }
-    .metric-lbl { font-size:10px; color:#6E6E73; text-transform:uppercase; letter-spacing:.05em; margin-bottom:4px; }
+    .metric-lbl { font-size:10px; color:rgba(255,255,255,.3); text-transform:uppercase; letter-spacing:.05em; margin-bottom:4px; }
     .metric-val { font-size:20px; font-weight:700; letter-spacing:-.5px; line-height:1; }
-    .metric-hint { font-size:10px; color:#6E6E73; margin-top:3px; }
+    .metric-hint { font-size:10px; color:rgba(255,255,255,.3); margin-top:3px; }
+
+    .avpd-banner {
+      background:rgba(220,38,38,.12); border:1px solid rgba(220,38,38,.3);
+      border-radius:var(--r-sm); padding:9px 12px;
+      font-size:11px; color:#fca5a5; line-height:1.5; margin-bottom:8px;
+    }
 
     .prog-card {
-      background:#fff; border-radius:var(--r-sm);
-      padding:10px 12px; border:1px solid rgba(0,0,0,0.06);
-      margin-bottom:8px;
+      background:rgba(255,255,255,.04); border-radius:var(--r-sm);
+      padding:10px 12px; border:1px solid rgba(255,255,255,.06);
+      margin-bottom:6px;
     }
     .prog-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:7px; }
-    .prog-label { font-size:11px; font-weight:500; }
-    .prog-pct { font-size:11px; color:#6E6E73; }
-    .prog-track { height:6px; background:#F0F0F3; border-radius:3px; overflow:hidden; }
-    .prog-fill { height:100%; border-radius:3px; background:linear-gradient(90deg,#2563EB,#60A5FA); }
-
-    .alerts-box {
-      background:#fff; border-radius:var(--r-sm);
-      border:1px solid rgba(0,0,0,0.06); overflow:hidden;
-    }
-    .alert-row {
-      display:flex; align-items:flex-start; gap:8px;
-      padding:8px 12px; border-bottom:1px solid rgba(0,0,0,0.05);
-      font-size:11px; color:#1D1D1F; line-height:1.45;
-    }
-    .alert-row:last-child { border-bottom:none; }
-    .alert-dot { width:6px; height:6px; border-radius:50%; margin-top:4px; flex-shrink:0; }
+    .prog-label { font-size:11px; font-weight:500; color:rgba(255,255,255,.65); }
+    .prog-pct { font-size:11px; color:rgba(255,255,255,.35); }
+    .prog-track { height:5px; background:rgba(255,255,255,.08); border-radius:3px; overflow:hidden; }
+    .prog-fill { height:100%; border-radius:3px; }
 
     /* right panel */
     .dash-rp {
-      background:#fff;
-      border-left:1px solid var(--border);
+      background:#0b0e1a;
+      border-left:1px solid rgba(255,255,255,.06);
       padding:16px;
-      display:flex; flex-direction:column; gap:11px;
+      display:flex; flex-direction:column; gap:8px;
     }
     .rp-title {
-      font-size:12px; font-weight:600; color:#1D1D1F;
-      display:flex; align-items:center; gap:6px;
+      font-size:12px; font-weight:600; color:rgba(255,255,255,.7);
+      margin-bottom:4px;
     }
-    .rp-ai-tag {
-      background:var(--blue-l); color:var(--blue);
-      font-size:10px; padding:2px 6px; border-radius:4px; font-weight:500;
+    .risk-item {
+      display:flex; align-items:center; gap:8px;
+      background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.07);
+      border-radius:10px; padding:9px 10px;
     }
-    .rp-rec {
-      background:var(--blue-l); border:1px solid var(--blue-m);
-      border-radius:var(--r-sm); padding:10px 12px;
+    .risk-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
+    .risk-name { font-size:11px; font-weight:600; color:rgba(255,255,255,.8); }
+    .risk-desc { font-size:10px; color:rgba(255,255,255,.35); margin-top:1px; }
+    .risk-badge {
+      margin-left:auto; font-size:9px; font-weight:700;
+      padding:2px 6px; border-radius:6px; flex-shrink:0;
     }
-    .rp-rec-head { font-size:11px; font-weight:600; color:var(--blue); margin-bottom:6px; }
-    .rp-rec-item {
-      font-size:11px; color:#1D1D1F; line-height:1.5;
-      display:flex; gap:5px; margin-top:3px;
-    }
-    .rp-rec-item::before { content:"→"; color:var(--blue); flex-shrink:0; }
+    .risk-crit-badge { background:rgba(220,38,38,.2); color:#f87171; border:1px solid rgba(220,38,38,.3); }
+    .risk-warn-badge { background:rgba(245,158,11,.15); color:#fbbf24; border:1px solid rgba(245,158,11,.25); }
+    .risk-info-badge { background:rgba(96,165,250,.15); color:#93c5fd; border:1px solid rgba(96,165,250,.2); }
     .rp-conf {
-      background:var(--green-l); border:1px solid #BBF7D0;
+      background:rgba(32,217,180,.08); border:1px solid rgba(32,217,180,.2);
       border-radius:var(--r-sm); padding:8px 12px;
       display:flex; align-items:center; justify-content:space-between;
+      margin-top:auto;
     }
-    .rp-conf-lbl { font-size:10px; color:var(--green); font-weight:500; }
-    .rp-conf-val { font-size:20px; font-weight:700; color:var(--green); }
-    .rp-warn {
-      background:var(--orange-l); border:1px solid #FED7AA;
-      border-radius:var(--r-sm); padding:9px 12px;
-    }
-    .rp-warn-head { font-size:10px; font-weight:600; color:#EA580C; margin-bottom:3px; }
-    .rp-warn-text { font-size:11px; color:#7C2D12; line-height:1.45; }
+    .rp-conf-lbl { font-size:10px; color:rgba(255,255,255,.4); font-weight:500; }
+    .rp-conf-val { font-size:20px; font-weight:700; }
     .rp-npt {
-      font-size:11px; color:#6E6E73;
-      text-align:center; padding-top:4px;
+      font-size:11px; color:rgba(255,255,255,.3);
+      text-align:center; padding-top:2px;
     }
-    .rp-npt strong { color:var(--green); }
+    .rp-npt strong { color:#20d9b4; }
 
     /* ── SECTIONS ── */
     .sec { padding: 88px 48px; }
@@ -662,111 +725,268 @@
     <a class="btn-hero btn-hero-s" href="#how">Как это работает</a>
   </div>
 
-  <div class="mockup-wrap">
-    <div class="mockup-bar">
-      <div class="m-dots">
-        <div class="m-dot" style="background:#FF5F57"></div>
-        <div class="m-dot" style="background:#FEBC2E"></div>
-        <div class="m-dot" style="background:#28C840"></div>
-      </div>
-      <div class="m-url">drill-q.ai / app / проект / тамбейское</div>
-    </div>
-    <div class="dash">
+</section>
 
-      <!-- sidebar -->
-      <div class="dash-sb">
-        <div class="sb-logo">
-          <div class="sb-mark">DQ</div>
-          <div class="sb-name">DRILL-Q</div>
-        </div>
-        <div class="sb-section">Проект</div>
-        <div class="sb-item on"><span class="sb-icon">⬛</span>Командный центр</div>
-        <div class="sb-item"><span class="sb-icon">📋</span>Программа бурения</div>
-        <div class="sb-item"><span class="sb-icon">⚠️</span>Алерты<span class="sb-badge">2</span></div>
-        <div class="sb-item"><span class="sb-icon">📊</span>Аналитика НПВ</div>
-        <div class="sb-item"><span class="sb-icon">📄</span>Суточный рапорт</div>
-        <div class="sb-section" style="margin-top:10px">База знаний</div>
-        <div class="sb-item"><span class="sb-icon">🗂</span>Литология</div>
-        <div class="sb-item"><span class="sb-icon">🧪</span>Буровые р-ры</div>
-        <div class="sb-section" style="margin-top:10px">Команда</div>
-        <div class="sb-item"><span class="sb-icon">👤</span>Иванов — супервайзер</div>
-        <div class="sb-item"><span class="sb-icon">👤</span>Петров — инж. по р-рам</div>
+<!-- ── DWOP SIMULATOR ── -->
+<section id="dwop-sim">
+  <div class="sim-top">
+    <div class="sim-top-inner">
+      <div>
+        <div class="sim-eyebrow">🛢 Интерактивный DWOP · Live Demo</div>
+        <h2 class="sim-title">Прокрутите долото до ТД — 4 650 м</h2>
+        <p class="sim-sub">Ванкорское месторождение · скв. 7-002 · Ачимовская + Нижнехетская Нх-I</p>
       </div>
-
-      <!-- main -->
-      <div class="dash-main">
-        <div class="dm-header">
-          <div>
-            <div class="dm-title">Тамбейское · Скв. 12Г · День 14</div>
-            <div class="dm-sub">Марресалинская свита · 843–1 036 м · Долото 215,9 мм</div>
-          </div>
-          <div class="live-pill"><div class="live-dot"></div>В работе</div>
-        </div>
-        <div class="metrics-row">
-          <div class="metric-box">
-            <div class="metric-lbl">Глубина</div>
-            <div class="metric-val" style="color:#2563EB">847 м</div>
-            <div class="metric-hint">цель 1 572 м</div>
-          </div>
-          <div class="metric-box">
-            <div class="metric-lbl">Плотность БР</div>
-            <div class="metric-val" style="color:#1D1D1F">1.38</div>
-            <div class="metric-hint">г/см³ · норма</div>
-          </div>
-          <div class="metric-box">
-            <div class="metric-lbl">МСП</div>
-            <div class="metric-val" style="color:#16A34A">11.4</div>
-            <div class="metric-hint">м/ч · цель 10–14</div>
-          </div>
-          <div class="metric-box">
-            <div class="metric-lbl">Момент</div>
-            <div class="metric-val" style="color:#EA580C">↑19%</div>
-            <div class="metric-hint">отклонение!</div>
-          </div>
-        </div>
-        <div class="prog-card">
-          <div class="prog-row">
-            <span class="prog-label">Прогресс скважины</span>
-            <span class="prog-pct">54% · осталось 725 м</span>
-          </div>
-          <div class="prog-track">
-            <div class="prog-fill" style="width:54%"></div>
-          </div>
-        </div>
-        <div class="alerts-box">
-          <div class="alert-row">
-            <div class="alert-dot" style="background:#EA580C"></div>
-            <div><strong>Момент ↑19%</strong> — риск прихвата 61% · рекомендована проработка до 3 600 м, LUBRIMIX-K 4%</div>
-          </div>
-          <div class="alert-row">
-            <div class="alert-dot" style="background:#F59E0B"></div>
-            <div><strong>Через 121 м</strong> — газовое окно ПК1 · поднять плотность БР до 1.42 г/см³ заблаговременно</div>
-          </div>
-        </div>
+      <div class="sim-badges">
+        <span class="sim-badge red">АВПД · Кп 1.97</span>
+        <span class="sim-badge cyan">ГС 1 550 м</span>
+        <span class="sim-badge amber">35 сут цикл</span>
       </div>
-
-      <!-- right panel -->
-      <div class="dash-rp">
-        <div class="rp-title">AI-рекомендации <span class="rp-ai-tag">Claude AI</span></div>
-        <div class="rp-rec">
-          <div class="rp-rec-head">Действия прямо сейчас</div>
-          <div class="rp-rec-item">Проработка до 3 600 м, скорость 2 м/мин</div>
-          <div class="rp-rec-item">LUBRIMIX-K 4% об. — немедленно</div>
-          <div class="rp-rec-item">Снизить подачу до 18 л/с</div>
-        </div>
-        <div class="rp-conf">
-          <div class="rp-conf-lbl">Уверенность AI</div>
-          <div class="rp-conf-val">91%</div>
-        </div>
-        <div class="rp-warn">
-          <div class="rp-warn-head">⚠ Следующий интервал · 968–1 127 м</div>
-          <div class="rp-warn-text">Газовое окно ПК1 · давление 9.6 МПа<br>Поднять БР до 1.42, дегазатор 100%</div>
-        </div>
-        <div class="rp-npt">НПВ сэкономлено сегодня: <strong>8.5 ч</strong></div>
-      </div>
-
     </div>
   </div>
+
+  <div class="sim-body">
+    <!-- Canvas -->
+    <div class="sim-canvas-col">
+      <div class="sim-col-label">Профиль скважины · TVD / HD</div>
+      <canvas id="simCanvas"></canvas>
+    </div>
+
+    <!-- Params -->
+    <div class="sim-params-col">
+      <div class="sim-col-label">Параметры бурения</div>
+      <div class="sim-depth-card">
+        <div class="sdl">Глубина долота</div>
+        <div class="sdv"><span id="sim-md">0</span> <span>м MD</span></div>
+        <div class="sdx">TVD: <span id="sim-tvd">0</span> м &nbsp;·&nbsp; HD: <span id="sim-hd">0</span> м</div>
+      </div>
+      <div class="sim-pcard">
+        <div class="spr"><span class="sprl">Формация</span><span class="sprv" id="sim-form">—</span></div>
+        <div class="spr"><span class="sprl">Фаза / колонна</span><span class="sprv" id="sim-phase">—</span></div>
+        <div class="spr"><span class="sprl">Тип раствора</span><span class="sprv" id="sim-mud">—</span></div>
+        <div class="spr" id="sim-den-row"><span class="sprl">Плотность БР</span><span class="sprv hi" id="sim-den">—</span></div>
+        <div class="spr"><span class="sprl">РОП (план)</span><span class="sprv" id="sim-rop">—</span></div>
+      </div>
+      <div class="sim-col-label" style="margin-top:4px">Контрольные точки</div>
+      <div class="sim-miles">
+        <div class="sm" id="sm0">  <span class="sm-dot"></span>Устье · 0 м</div>
+        <div class="sm" id="sm620"> <span class="sm-dot"></span>Кондуктор Ø324 · 620 м</div>
+        <div class="sm" id="sm1780"><span class="sm-dot"></span>Тех. колонна Ø245 · 1 780 м</div>
+        <div class="sm" id="sm2100"><span class="sm-dot"></span>KOP · начало набора · 2 100 м</div>
+        <div class="sm" id="sm3100"><span class="sm-dot"></span>EOB · горизонт Нх-I · 3 100 м</div>
+        <div class="sm" id="sm4650"><span class="sm-dot"></span>🎯 ТД достигнут · 4 650 м</div>
+      </div>
+    </div>
+
+    <!-- Alerts -->
+    <div class="sim-alerts-col">
+      <div class="sim-col-label">Состояние / Алерты</div>
+      <div id="sim-abox">
+        <div class="sa-idle">▶ Нажмите «Автобурение» или передвиньте слайдер — долото пойдёт в забой</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sim-ctrl">
+    <div class="sim-slider-row">
+      <span class="ssl">0 м</span>
+      <input type="range" id="simSlider" min="0" max="4650" value="0" step="5">
+      <span class="ssl">4 650 м ТД</span>
+    </div>
+    <div class="sim-btn-row">
+      <button id="sim-play"  class="simbtn simbtn-p">▶ Автобурение</button>
+      <button id="sim-pause" class="simbtn simbtn-g" disabled>⏸ Стоп</button>
+      <button id="sim-reset" class="simbtn simbtn-g">↺ Сброс</button>
+      <div class="sim-spd">
+        <span class="sim-spd-lbl">Скорость:</span>
+        <button class="sim-spd-btn" data-v="2">1×</button>
+        <button class="sim-spd-btn on" data-v="10">5×</button>
+        <button class="sim-spd-btn" data-v="40">20×</button>
+      </div>
+      <a href="docs/vankor_dwop.html" class="simbtn simbtn-l">Полный DWOP →</a>
+    </div>
+  </div>
+
+  <script>
+  (function(){
+    var TD=4650;
+    var PATH=[[0,0,0],[620,620,0],[1780,1780,0],[2100,2100,0],[2300,2287,46],[2500,2449,127],[2700,2555,225],[2900,2640,341],[3000,2693,411],[3100,2841,438],[3500,2841,722],[4000,2841,1075],[4650,2841,1534]];
+    var ZONES=[
+      {f:0,   t:100, name:'Четвертичные отложения',       mud:'Техническая вода',          rho:'1.02',      rop:'25-35 м/ч', ph:'Направление Ø508 мм',   al:null},
+      {f:100, t:620, name:'Танопчинская свита',            mud:'Полимер-глинистый ВБР',     rho:'1.10–1.18', rop:'18-28 м/ч', ph:'Кондуктор Ø393.7 мм',  al:null},
+      {f:620, t:1005,name:'Долганская свита',              mud:'Полимерный ВБР',            rho:'1.12–1.13', rop:'15-22 м/ч', ph:'Тех. кол. Ø295.3 мм',  al:null},
+      {f:1005,t:1031,name:'⛽ Долганская · ГАЗ',           mud:'УТЯЖЕЛИТЬ → ρ 1.16!',      rho:'1.14–1.16', rop:'8-12 м/ч',  ph:'Тех. кол. Ø295.3 мм',  al:{tp:'crit',ic:'⛽',ti:'ГАЗОПРОЯВЛЕНИЕ · 1005–1031 м',ds:'Газоносный горизонт Долганской. Поднять ρ БР до 1.16. ГВА мониторинг. ПВО в боеготовности.'}},
+      {f:1031,t:1350,name:'⚓ Насоновская · ПРИХВАТ',      mud:'Полимер + LUBRIMIX смазка', rho:'1.13',      rop:'8-14 м/ч',  ph:'Тех. кол. Ø295.3 мм',  al:{tp:'warn',ic:'⚓',ti:'ПРИХВАТООПАСНАЯ ЗОНА · 1031–1350 м',ds:'Непрерывная циркуляция. Ясс + нефтяная ванна в готовности. 2 цикла промывки.'}},
+      {f:1350,t:1780,name:'Яковлевская свита',             mud:'Полимерный ВБР',            rho:'1.12–1.14', rop:'14-20 м/ч', ph:'Тех. кол. Ø295.3 мм',  al:null},
+      {f:1780,t:2040,name:'Суходудинская свита',           mud:'Полимерный ВБР',            rho:'1.13–1.16', rop:'12-18 м/ч', ph:'Экспл. кол. Ø219.1 мм', al:null},
+      {f:2040,t:2570,name:'🔧 Малохетская · ТРАППЫ',       mud:'Утяжелённый + смазка',     rho:'1.15–1.18', rop:'4-8 м/ч',   ph:'Экспл. кол. Ø219.1 мм', al:{tp:'warn',ic:'🔧',ti:'ТРАППЫ · РОП ↓ · 2040–2570 м',ds:'Интрузивные породы. РОП 4-8 м/ч, вибрация↑. Проработка каждые 72 ч. 2 цикла промывки.'}},
+      {f:2570,t:3100,name:'⚠️ Нижнехетская · АВПД',        mud:'РУО КА-70 (АВПД)',         rho:'1.68–1.72', rop:'5-8 м/ч',   ph:'Экспл. кол. Ø219.1 мм', al:{tp:'crit',ic:'⚠️',ti:'АВПД · Кп = 1.97 · 2570–3100 м',ds:'Аномально высокое давление. ρ = 1.68–1.72 г/см³. Дегазатор 100%. Контроль утечки.'}},
+      {f:3100,t:4650,name:'🎯 Нх-I · Горизонтальный ствол',mud:'KCl-полимерный',           rho:'1.06–1.08', rop:'14-20 м/ч', ph:'Хвостовик Ø152.4 мм',   al:{tp:'info',ic:'🎯',ti:'ГОРИЗОНТАЛЬНЫЙ СТВОЛ · 3100–4650 м',ds:'Геонавигация RSS. Расход ≥ 30 л/с. ДНС ≥ 20 lb/100ft². Пыжевые промывки каждые 200 м.'}},
+    ];
+    var MILES=[{id:'sm0',md:0},{id:'sm620',md:620},{id:'sm1780',md:1780},{id:'sm2100',md:2100},{id:'sm3100',md:3100},{id:'sm4650',md:4650}];
+    var curMD=0, playing=false, spd=10, animId=null;
+
+    function lerp(a,b,t){return a+t*(b-a);}
+    function getBit(md){
+      if(md<=0)return{tvd:0,hd:0};
+      for(var i=1;i<PATH.length;i++){
+        if(md<=PATH[i][0]){
+          var t=(md-PATH[i-1][0])/(PATH[i][0]-PATH[i-1][0]);
+          return{tvd:lerp(PATH[i-1][1],PATH[i][1],t),hd:lerp(PATH[i-1][2],PATH[i][2],t)};
+        }
+      }
+      return{tvd:PATH[PATH.length-1][1],hd:PATH[PATH.length-1][2]};
+    }
+    function getZone(md){
+      for(var i=0;i<ZONES.length;i++) if(md>=ZONES[i].f&&md<ZONES[i].t) return ZONES[i];
+      return ZONES[ZONES.length-1];
+    }
+
+    function drawCanvas(md){
+      var c=document.getElementById('simCanvas');
+      if(!c)return;
+      var W=c.offsetWidth||480; c.width=W; c.height=400;
+      var ctx=c.getContext('2d');
+      ctx.fillStyle='#06090f'; ctx.fillRect(0,0,W,400);
+      var mTVD=3000,mHD=1600,pL=44,pT=22,pR=20,pB=28;
+      var pw=W-pL-pR, ph=400-pT-pB;
+      function sx(h){return pL+(h/mHD)*pw;}
+      function sy(v){return pT+(v/mTVD)*ph;}
+
+      // Grid
+      ctx.strokeStyle='rgba(255,255,255,.05)'; ctx.lineWidth=1;
+      [0,500,1000,1500,2000,2500,3000].forEach(function(v){
+        ctx.beginPath();ctx.moveTo(pL,sy(v));ctx.lineTo(W-pR,sy(v));ctx.stroke();
+        ctx.fillStyle='rgba(107,127,150,.55)';ctx.font='8px monospace';ctx.textAlign='right';
+        ctx.fillText(v+'м',pL-3,sy(v)+3);
+      });
+      [0,400,800,1200,1600].forEach(function(h){
+        ctx.beginPath();ctx.moveTo(sx(h),pT);ctx.lineTo(sx(h),400-pB);ctx.stroke();
+        ctx.fillStyle='rgba(107,127,150,.55)';ctx.font='8px monospace';ctx.textAlign='center';
+        ctx.fillText(h+'м',sx(h),400-pB+10);
+      });
+
+      // Formation bands
+      [[0,150,'rgba(74,90,74,.25)','Q'],[150,905,'rgba(90,100,85,.18)','Тнп'],[905,1050,'rgba(139,120,75,.35)','⛽ГАЗ'],[1050,1630,'rgba(85,90,100,.18)','Нсн'],[1630,1937,'rgba(136,90,70,.3)','Як'],[1937,2570,'rgba(80,75,90,.18)','Млх'],[2570,2750,'rgba(90,50,110,.4)','⚠АВПД'],[2750,3000,'rgba(40,60,100,.45)','Нх★']].forEach(function(r){
+        var y1=sy(r[0]),y2=Math.min(sy(r[1]),400-pB);
+        ctx.fillStyle=r[2]; ctx.fillRect(pL,y1,pw,y2-y1);
+        if(y2-y1>12){ctx.fillStyle='rgba(255,255,255,.32)';ctx.font='bold 8px system-ui';ctx.textAlign='right';ctx.fillText(r[3],W-pR-3,y1+(y2-y1)/2+3);}
+      });
+
+      // Full path (faint)
+      ctx.beginPath();ctx.strokeStyle='rgba(32,217,180,.12)';ctx.lineWidth=1.5;
+      PATH.forEach(function(p,i){i===0?ctx.moveTo(sx(p[2]),sy(p[1])):ctx.lineTo(sx(p[2]),sy(p[1]));});
+      ctx.stroke();
+
+      // Drilled path
+      var pos=getBit(md), bx=sx(pos.hd), by=sy(pos.tvd);
+      ctx.beginPath();ctx.strokeStyle='#20d9b4';ctx.lineWidth=2.5;
+      ctx.shadowColor='rgba(32,217,180,.5)';ctx.shadowBlur=5;
+      var first=true;
+      for(var i=0;i<PATH.length;i++){
+        if(PATH[i][0]<=md){var px=sx(PATH[i][2]),py=sy(PATH[i][1]);first?ctx.moveTo(px,py):ctx.lineTo(px,py);first=false;}
+        else{if(!first)ctx.lineTo(bx,by);break;}
+      }
+      if(!first&&md>=PATH[PATH.length-1][0])ctx.lineTo(bx,by);
+      ctx.stroke();ctx.shadowBlur=0;
+
+      // Casing markers
+      [[620,620,0,'#7eb8f0','Ø324'],[1780,1780,0,'#a0c8a0','Ø245'],[2100,2100,0,'#ffab00','KOP'],[3100,2841,438,'#ff5555','EOB'],[4650,2841,1534,'#00e676','ТД']].forEach(function(m){
+        if(md>=m[0]){var x=sx(m[2]),y=sy(m[1]);ctx.beginPath();ctx.arc(x,y,4,0,Math.PI*2);ctx.fillStyle=m[3];ctx.shadowColor=m[3];ctx.shadowBlur=6;ctx.fill();ctx.shadowBlur=0;ctx.fillStyle=m[3];ctx.font='bold 8px system-ui';ctx.textAlign='left';ctx.fillText(m[4],x+6,y+3);}
+      });
+
+      // Bit
+      if(md>0){
+        var g=ctx.createRadialGradient(bx,by,0,bx,by,16);
+        g.addColorStop(0,'rgba(255,80,80,.45)');g.addColorStop(1,'rgba(255,80,80,0)');
+        ctx.beginPath();ctx.arc(bx,by,16,0,Math.PI*2);ctx.fillStyle=g;ctx.fill();
+        ctx.beginPath();ctx.arc(bx,by,5,0,Math.PI*2);ctx.fillStyle='#ff4444';ctx.shadowColor='#ff4444';ctx.shadowBlur=14;ctx.fill();ctx.shadowBlur=0;
+        ctx.fillStyle='#ff9999';ctx.font='bold 9px system-ui';ctx.textAlign='left';
+        ctx.fillText('◆ '+Math.round(md)+'м',bx+9,by+3);
+      }
+      // Axis labels
+      ctx.fillStyle='rgba(107,127,150,.55)';ctx.font='9px system-ui';ctx.textAlign='center';
+      ctx.fillText('HD, м →',pL+pw/2,400-2);
+      ctx.save();ctx.translate(10,pT+ph/2);ctx.rotate(-Math.PI/2);ctx.fillText('TVD, м ↓',0,0);ctx.restore();
+    }
+
+    function updateMiles(md){
+      MILES.forEach(function(m){
+        var el=document.getElementById(m.id);if(!el)return;
+        el.classList.remove('done','act');
+        if(md>=m.md+15)el.classList.add('done');
+        else if(md>=m.md-30&&md<m.md+15)el.classList.add('act');
+      });
+    }
+
+    function updateParams(md){
+      var pos=getBit(md), z=getZone(md);
+      document.getElementById('sim-md').textContent=Math.round(md).toLocaleString('ru');
+      document.getElementById('sim-tvd').textContent=Math.round(pos.tvd).toLocaleString('ru');
+      document.getElementById('sim-hd').textContent=Math.round(pos.hd).toLocaleString('ru');
+      document.getElementById('sim-form').textContent=z.name;
+      document.getElementById('sim-phase').textContent=z.ph;
+      document.getElementById('sim-mud').textContent=z.mud;
+      var denEl=document.getElementById('sim-den');
+      denEl.textContent=z.rho+' г/см³';
+      var rhoVal=parseFloat(z.rho);
+      denEl.style.color=rhoVal>=1.5?'#f87171':rhoVal>=1.2?'#fbbf24':'#20d9b4';
+      document.getElementById('sim-rop').textContent=z.rop;
+    }
+
+    function updateAlerts(md){
+      var box=document.getElementById('sim-abox'), z=getZone(md), html='';
+      if(md===0){box.innerHTML='<div class="sa-idle">▶ Нажмите «Автобурение» или передвиньте слайдер — долото пойдёт в забой</div>';return;}
+      if(md>=TD-20){box.innerHTML='<div class="sa ok"><div class="sa-head"><span class="sa-icon">🎉</span><span class="sa-title">ТД ДОСТИГНУТ! 4 650 м</span></div><div class="sa-desc">Скважина пробурена до проектной глубины. Горизонтальный ствол в пласте Нх-I. Ожидаемый дебит 100+ т/сут. Следующий этап — перфорация и освоение.</div></div>';return;}
+      if(z.al){html+='<div class="sa '+z.al.tp+'"><div class="sa-head"><span class="sa-icon">'+z.al.ic+'</span><span class="sa-title">'+z.al.ti+'</span></div><div class="sa-desc">'+z.al.ds+'</div></div>';}
+      else{html+='<div class="sa ok"><div class="sa-head"><span class="sa-icon">✅</span><span class="sa-title">Штатное бурение</span></div><div class="sa-desc">Осложнений не зафиксировано. Параметры в норме. Продолжайте бурение.</div></div>';}
+      var nxt=null;
+      for(var i=0;i<ZONES.length;i++){if(ZONES[i].al&&ZONES[i].f>md&&!nxt)nxt=ZONES[i];}
+      if(nxt&&nxt.f-md<300){html+='<div class="sa warn"><div class="sa-head"><span class="sa-icon">📍</span><span class="sa-title">ЧЕРЕЗ '+(Math.round(nxt.f-md))+' М: '+nxt.al.ti+'</span></div><div class="sa-desc">Подготовьтесь заблаговременно.</div></div>';}
+      box.innerHTML=html;
+    }
+
+    function updateAll(md){drawCanvas(md);updateParams(md);updateAlerts(md);updateMiles(md);document.getElementById('simSlider').value=md;}
+
+    function tick(){
+      if(!playing)return;
+      curMD=Math.min(curMD+spd,TD);
+      updateAll(curMD);
+      if(curMD>=TD){playing=false;document.getElementById('sim-play').disabled=true;document.getElementById('sim-pause').disabled=true;return;}
+      animId=requestAnimationFrame(tick);
+    }
+
+    window.addEventListener('load',function(){
+      updateAll(0);
+      document.getElementById('simSlider').addEventListener('input',function(){
+        curMD=parseFloat(this.value);
+        if(playing){playing=false;cancelAnimationFrame(animId);}
+        updateAll(curMD);
+        document.getElementById('sim-play').disabled=curMD>=TD;
+        document.getElementById('sim-pause').disabled=true;
+      });
+      document.getElementById('sim-play').addEventListener('click',function(){
+        if(curMD>=TD){curMD=0;updateAll(0);}
+        playing=true;this.disabled=true;document.getElementById('sim-pause').disabled=false;tick();
+      });
+      document.getElementById('sim-pause').addEventListener('click',function(){
+        playing=false;cancelAnimationFrame(animId);
+        document.getElementById('sim-play').disabled=false;this.disabled=true;
+      });
+      document.getElementById('sim-reset').addEventListener('click',function(){
+        playing=false;cancelAnimationFrame(animId);curMD=0;updateAll(0);
+        document.getElementById('sim-play').disabled=false;document.getElementById('sim-pause').disabled=true;
+      });
+      document.querySelectorAll('.sim-spd-btn').forEach(function(btn){
+        btn.addEventListener('click',function(){
+          spd=parseFloat(this.getAttribute('data-v'));
+          document.querySelectorAll('.sim-spd-btn').forEach(function(b){b.classList.remove('on');});
+          this.classList.add('on');
+        });
+      });
+      window.addEventListener('resize',function(){drawCanvas(curMD);});
+    });
+  })();
+  </script>
 </section>
 
 <!-- ── HOW IT WORKS ── -->
@@ -1001,6 +1221,26 @@
           <span class="chip-home">Report Gen</span>
         </div>
         <div class="tool-cta-home"><span>Открыть инструмент</span><span class="arrow">→</span></div>
+      </a>
+
+      <a class="tool-card-home" href="docs/vankor_dwop.html">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between">
+          <div class="tool-icon-home">📐</div>
+          <span class="tool-badge-home" style="background:rgba(22,163,74,.15);color:#16A34A;border:1px solid rgba(22,163,74,.3);font-size:10px;font-weight:700;padding:3px 8px;border-radius:99px">DWOP</span>
+        </div>
+        <div>
+          <div class="tool-sub-home">DRILL-Q · Бурение на бумаге</div>
+          <h3>DWOP — Ванкор</h3>
+        </div>
+        <p>Полный предварительный план скважины на данных Ванкорского месторождения: конструкция, траектория, КНБК, программа БР, карта рисков и хронометраж по фазам.</p>
+        <div class="tool-chips-home">
+          <span class="chip-home">Ванкор</span>
+          <span class="chip-home">Траектория</span>
+          <span class="chip-home">КНБК</span>
+          <span class="chip-home">Риски</span>
+          <span class="chip-home">БР-программа</span>
+        </div>
+        <div class="tool-cta-home"><span>Открыть DWOP</span><span class="arrow">→</span></div>
       </a>
 
       <div class="tool-card-home soon">

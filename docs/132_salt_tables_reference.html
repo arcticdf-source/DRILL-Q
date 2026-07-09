@@ -1,26 +1,21 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="ru">
 <head>
-  <script src="../auth-gate.js" data-dq-gate></script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>132 · Таблицы солей</title>
   <style>
-    @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap");
-
     :root {
-      --bg-0: #07111a;
-      --bg-1: #102437;
-      --bg-2: #1b3850;
-      --panel: rgba(10, 18, 31, 0.84);
-      --line: rgba(226, 237, 255, 0.1);
-      --text: #edf5ff;
-      --muted: #9bb2c8;
-      --cyan: #20d9b4;
-      --amber: #ffbf66;
-      --blue: #8db4ff;
-      --rose: #ff9d7a;
-      --shadow: 0 24px 58px rgba(0, 0, 0, 0.42);
+      --bg: #F5F5F7;
+      --panel: #FFFFFF;
+      --blue: #2563EB;
+      --text: #1D1D1F;
+      --muted: #6E6E73;
+      --border: #E5E5EA;
+      --shadow: 0 2px 14px rgba(0,0,0,.07);
+      --cyan: #0A9981;
+      --amber: #D97706;
+      --rose: #DC2626;
     }
 
     * { box-sizing: border-box; }
@@ -28,24 +23,9 @@
     html, body {
       margin: 0;
       min-height: 100%;
-      font-family: "Manrope", sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
       color: var(--text);
-      background:
-        radial-gradient(820px 420px at 0% -10%, rgba(32,217,180,.18), transparent),
-        radial-gradient(720px 360px at 100% 0%, rgba(141,180,255,.16), transparent),
-        linear-gradient(145deg, var(--bg-0), var(--bg-1) 48%, var(--bg-2));
-    }
-
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      background:
-        linear-gradient(to right, rgba(255,255,255,.022) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(255,255,255,.022) 1px, transparent 1px);
-      background-size: 40px 40px;
-      mask-image: radial-gradient(circle at 50% 12%, rgba(0,0,0,.94), transparent 72%);
     }
 
     .wrap {
@@ -59,7 +39,7 @@
     .topbar,
     .hero,
     .panel {
-      border: 1px solid var(--line);
+      border: 1px solid var(--border);
       box-shadow: var(--shadow);
     }
 
@@ -74,25 +54,28 @@
       flex-wrap: wrap;
       padding: 12px 16px;
       border-radius: 16px;
-      background: rgba(7, 13, 23, 0.66);
-      backdrop-filter: blur(10px);
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
     }
 
     .brand {
       display: flex;
       align-items: center;
       gap: 10px;
-      font-family: "Oswald", sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
       font-size: 20px;
+      font-weight: 700;
       text-transform: uppercase;
       letter-spacing: .05em;
+      color: var(--text);
     }
 
     .dot {
       width: 12px;
       height: 12px;
       border-radius: 999px;
-      background: radial-gradient(circle at 35% 35%, #d8fff7, var(--cyan));
+      background: var(--blue);
     }
 
     .actions {
@@ -114,55 +97,53 @@
     }
 
     .btn {
-      color: #07261f;
-      background: linear-gradient(135deg, #9efcef, var(--cyan));
-      border: 1px solid rgba(32, 217, 180, 0.82);
+      color: #fff;
+      background: var(--blue);
+      border: 1px solid var(--blue);
     }
 
     .btn-ghost,
     .chip-link {
       color: var(--muted);
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,.03);
+      border: 1px solid var(--border);
+      background: #fff;
     }
 
     .hero {
       margin-top: 18px;
       border-radius: 30px;
       padding: clamp(24px, 3vw, 36px);
-      background:
-        radial-gradient(520px 260px at 4% 0%, rgba(32,217,180,.14), transparent),
-        radial-gradient(600px 260px at 100% 0%, rgba(255,191,102,.12), transparent),
-        linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015)),
-        var(--panel);
+      background: var(--panel);
     }
 
     .eyebrow {
       display: inline-flex;
       align-items: center;
       border-radius: 999px;
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,.04);
+      border: 1px solid var(--border);
+      background: var(--bg);
       padding: 6px 10px;
       font-size: 11px;
       text-transform: uppercase;
       letter-spacing: .09em;
-      color: #d5e7f8;
+      color: var(--muted);
     }
 
     h1 {
       margin: 14px 0 10px;
-      font-family: "Oswald", sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
       font-size: clamp(40px, 5vw, 62px);
+      font-weight: 800;
       line-height: .97;
+      color: var(--text);
     }
 
-    h1 span { color: var(--amber); }
+    h1 span { color: var(--blue); }
 
     .lead {
       margin: 0;
       max-width: 1040px;
-      color: #cad9eb;
+      color: var(--muted);
       font-size: 15px;
       line-height: 1.7;
     }
@@ -201,18 +182,19 @@
     .note-card,
     .formula-card,
     .panel {
-      border: 1px solid var(--line);
+      border: 1px solid var(--border);
       border-radius: 18px;
-      background: rgba(255,255,255,.03);
+      background: var(--panel);
       padding: 16px;
     }
 
     .stat strong {
       display: block;
-      font-family: "Oswald", sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
       font-size: 28px;
+      font-weight: 700;
       line-height: 1;
-      color: #eef7ff;
+      color: var(--text);
     }
 
     .stat span {
@@ -229,8 +211,10 @@
     .panel h2,
     .panel h3 {
       display: block;
-      font-family: "Oswald", sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+      font-weight: 700;
       letter-spacing: .03em;
+      color: var(--text);
     }
 
     .note-card p,
@@ -238,15 +222,14 @@
     .panel p,
     .panel li {
       margin: 8px 0 0;
-      color: #cad9eb;
+      color: var(--muted);
       line-height: 1.65;
       font-size: 14px;
     }
 
     .panel {
       padding: 22px;
-      background: rgba(9, 16, 27, 0.8);
-      backdrop-filter: blur(8px);
+      background: var(--panel);
     }
 
     .panel-head {
@@ -268,20 +251,20 @@
       align-items: center;
       padding: 6px 10px;
       border-radius: 999px;
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,.04);
+      border: 1px solid var(--border);
+      background: var(--bg);
       font-size: 11px;
       letter-spacing: .08em;
       text-transform: uppercase;
-      color: #d5e7f8;
+      color: var(--muted);
       white-space: nowrap;
     }
 
     .table-wrap {
       overflow-x: auto;
       border-radius: 16px;
-      border: 1px solid var(--line);
-      background: rgba(3, 10, 18, 0.72);
+      border: 1px solid var(--border);
+      background: #fff;
     }
 
     table {
@@ -294,7 +277,7 @@
     th,
     td {
       padding: 9px 10px;
-      border-bottom: 1px solid rgba(226, 237, 255, 0.08);
+      border-bottom: 1px solid var(--border);
       text-align: right;
       white-space: nowrap;
     }
@@ -304,26 +287,26 @@
       text-align: left;
       position: sticky;
       left: 0;
-      background: rgba(8, 14, 23, 0.96);
+      background: #fff;
       z-index: 1;
     }
 
     th {
       position: sticky;
       top: 0;
-      background: rgba(13, 24, 39, 0.98);
-      color: #f4f9ff;
+      background: var(--bg);
+      color: var(--muted);
       font-size: 11px;
       text-transform: uppercase;
       letter-spacing: .07em;
     }
 
     tbody tr:hover td {
-      background: rgba(141, 180, 255, 0.08);
+      background: var(--bg);
     }
 
     tbody tr:hover td:first-child {
-      background: rgba(20, 36, 58, 0.98);
+      background: var(--bg);
     }
 
     .footnote {
@@ -337,15 +320,15 @@
       flex-wrap: wrap;
       gap: 10px 14px;
       margin-top: 10px;
-      color: #e7f1fd;
+      color: var(--text);
       font-size: 13px;
     }
 
     .mini-list span {
       padding: 7px 10px;
       border-radius: 999px;
-      background: rgba(255,255,255,.04);
-      border: 1px solid var(--line);
+      background: var(--bg);
+      border: 1px solid var(--border);
     }
 
     .conversion-table table {

@@ -1,26 +1,39 @@
 ﻿<!doctype html>
 <html lang="ru">
 <head>
-  <script src="../auth-gate.js" data-dq-gate></script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>86 · MudGPT - Drilling Fluids Graphics</title>
   <style>
     :root {
-      --desktop: #dfdccb;
-      --window: #ece7d4;
-      --panel: #e7e1ce;
-      --panel-soft: #f3efdf;
-      --line: #a9a28f;
-      --line-dark: #6b6658;
-      --line-light: #fffdf5;
-      --text: #1e1d18;
-      --muted: #5d584d;
-      --title-start: #0057c7;
-      --title-end: #2d7ef6;
-      --accent: #d60000;
-      --yellow: #f6e56f;
-      --green: #d9f0c3;
+      --white: #FFFFFF;
+      --bg: #F5F5F7;
+      --bg2: #FBFBFD;
+      --panel: #FFFFFF;
+      --panel-soft: #F5F5F7;
+      --text: #1D1D1F;
+      --text2: #6E6E73;
+      --text3: #AEAEB2;
+      --muted: #6E6E73;
+      --blue: #2563EB;
+      --blue-d: #1D4ED8;
+      --blue-l: #EFF6FF;
+      --blue-m: #BFDBFE;
+      --green: #34C759;
+      --green-l: #E7F8EC;
+      --amber: #FF9F0A;
+      --amber-l: #FFF4E0;
+      --red: #FF3B30;
+      --red-l: #FDECEA;
+      --line: rgba(0, 0, 0, 0.08);
+      --line-2: rgba(0, 0, 0, 0.12);
+      --radius: 16px;
+      --radius-md: 12px;
+      --radius-sm: 8px;
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+      --shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 10px 30px rgba(0, 0, 0, 0.05);
+      --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.20);
+      --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
     }
 
     * {
@@ -31,189 +44,219 @@
     body {
       margin: 0;
       min-height: 100%;
-      font-family: Tahoma, "MS Sans Serif", "Segoe UI", sans-serif;
+      font-family: var(--font);
       color: var(--text);
-      background: #d8d2bb;
+      background: var(--bg);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
     }
 
     body {
-      padding: 8px;
+      padding: 24px 20px 40px;
     }
 
+    button,
+    input,
+    select,
+    textarea {
+      font-family: inherit;
+    }
+
+    /* ============ APP SHELL ============ */
     .app-window {
-      width: min(100%, 1220px);
+      width: min(100%, 1320px);
       margin: 0 auto;
-      border: 1px solid #2e2e2e;
-      background: var(--window);
-      box-shadow: 0 0 0 1px #fffdf7 inset;
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
     }
 
     .title-bar {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      min-height: 24px;
-      padding: 2px 4px 2px 6px;
-      background: linear-gradient(90deg, var(--title-start), var(--title-end));
-      color: #fff;
-      font-size: 12px;
-      font-weight: 700;
+      gap: 14px;
+      min-height: 56px;
+      padding: 12px 22px;
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: saturate(180%) blur(12px);
+      border-bottom: 1px solid var(--line);
+      color: var(--text);
+      font-size: 15px;
+      font-weight: 600;
     }
 
     .title-main {
       display: flex;
       align-items: center;
-      gap: 6px;
-      min-width: 0;
+      gap: 12px;
+      letter-spacing: -0.3px;
     }
 
     .title-icon {
-      width: 14px;
-      height: 14px;
-      border: 1px solid rgba(255, 255, 255, 0.8);
-      background: linear-gradient(180deg, #ffd13b, #ff6c6c 55%, #1a4fff);
-      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35) inset;
+      width: 30px;
+      height: 30px;
+      border-radius: var(--radius-sm);
+      background: linear-gradient(135deg, var(--blue), #4F86F7);
       flex: 0 0 auto;
+      position: relative;
+    }
+
+    .title-icon::after {
+      content: "";
+      position: absolute;
+      inset: 8px;
+      border: 2px solid rgba(255, 255, 255, 0.9);
+      border-radius: 3px;
     }
 
     .window-controls {
       display: flex;
-      gap: 3px;
+      align-items: center;
+      gap: 9px;
     }
 
     .control-btn {
-      width: 18px;
-      height: 18px;
-      border: 1px solid #6f6f6f;
-      background: linear-gradient(180deg, #fdfbf1, #ddd6c0);
-      color: #111;
-      font-size: 11px;
-      line-height: 16px;
-      text-align: center;
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      border: none;
       padding: 0;
+      font-size: 0;
+      color: transparent;
+      cursor: default;
     }
 
-    .menu-bar,
-    .toolbar,
-    .status-bar {
+    .window-controls .control-btn:nth-child(1) {
+      background: #FEBC2E;
+    }
+
+    .window-controls .control-btn:nth-child(2) {
+      background: #28C840;
+    }
+
+    .window-controls .control-btn:nth-child(3) {
+      background: #FF5F57;
+    }
+
+    /* ============ MENU BAR ============ */
+    .menu-bar {
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 2px 8px;
-      font-size: 11px;
-    }
-
-    .menu-bar {
-      min-height: 20px;
-      border-top: 1px solid #f9f5e8;
+      gap: 4px;
+      padding: 8px 20px;
+      background: var(--bg2);
       border-bottom: 1px solid var(--line);
-      background: #ede6d3;
-    }
-
-    .menu-item {
-      color: #111;
-      text-decoration: none;
-    }
-
-    .toolbar {
-      gap: 6px;
-      padding: 4px 6px;
-      border-bottom: 1px solid var(--line);
-      background: #efe9d7;
       flex-wrap: wrap;
     }
 
-    .tool-tab,
-    .status-chip,
-    .wizard-button,
-    .mini-button,
-    .action-link {
-      border: 1px solid var(--line);
-      background: linear-gradient(180deg, #fffdf3, #ddd7c3);
-      box-shadow: 1px 1px 0 #fffdf5 inset;
-      color: #1a1814;
-      font: inherit;
+    .menu-item {
+      color: var(--text2);
       text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 5px 12px;
+      border-radius: var(--radius-sm);
+      transition: all 0.15s;
+    }
+
+    .menu-item:first-child {
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    .menu-item:hover {
+      background: rgba(0, 0, 0, 0.05);
+      color: var(--text);
+    }
+
+    /* ============ TOOLBAR / MAIN TABS ============ */
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 16px 20px;
+      background: var(--white);
+      border-bottom: 1px solid var(--line);
+      flex-wrap: wrap;
     }
 
     .tool-tab {
       display: inline-flex;
       align-items: center;
-      gap: 5px;
-      padding: 3px 8px;
-      min-height: 24px;
-      font-size: 11px;
+      gap: 7px;
+      border: 1px solid var(--line);
+      background: var(--white);
+      color: var(--text2);
+      padding: 9px 18px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .tool-tab:hover {
+      background: rgba(0, 0, 0, 0.04);
+      color: var(--text);
     }
 
     .tool-tab.active {
-      background: linear-gradient(180deg, #fff6ba, #eadb7a);
-      border-color: #9c915f;
-      font-weight: 700;
+      background: var(--blue);
+      border-color: var(--blue);
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
     }
 
     .tab-icon {
-      width: 13px;
-      height: 13px;
-      border: 1px solid #8d1a1a;
-      background: #fff4b7;
-      position: relative;
-      flex: 0 0 auto;
+      display: none;
     }
 
-    .tab-icon::after {
-      content: "";
-      position: absolute;
-      inset: 2px;
-      border-left: 2px solid #e21d1d;
-      border-right: 2px solid #2047e0;
-    }
-
+    /* ============ WORKSPACE ============ */
     .workspace {
       display: grid;
-      grid-template-columns: 214px 1fr;
-      gap: 8px;
-      padding: 6px;
-      min-height: 760px;
-      background: #e9e4d2;
+      grid-template-columns: 288px minmax(0, 1fr);
+      gap: 20px;
+      padding: 20px;
+      background: var(--bg);
+      align-items: start;
     }
 
+    /* ============ WIZARD SIDEBAR ============ */
     .wizard {
-      border: 1px solid var(--line-dark);
-      background: #f4efdf;
-      box-shadow: 1px 1px 0 #fffdf5 inset;
-      display: flex;
-      flex-direction: column;
-      min-width: 0;
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+      position: sticky;
+      top: 20px;
     }
 
     .wizard-head {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      gap: 8px;
-      padding: 4px 5px;
+      justify-content: space-between;
+      padding: 16px 18px;
       border-bottom: 1px solid var(--line);
-      background: #e8e2cf;
-      font-size: 11px;
-      font-weight: 700;
     }
 
-    .collapse-toggle {
-      width: 18px;
-      height: 18px;
-      padding: 0;
-      cursor: pointer;
+    .wizard-title {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.2px;
     }
 
     .wizard-body {
-      padding: 5px;
-      overflow: auto;
-      flex: 1 1 auto;
+      padding: 6px 16px 16px;
+      max-height: calc(100vh - 160px);
+      overflow-y: auto;
     }
 
     .wizard.collapsed {
-      grid-template-columns: 1fr;
-      width: 34px;
+      width: 64px;
     }
 
     .wizard.collapsed .wizard-body,
@@ -223,9 +266,8 @@
     }
 
     .wizard-section {
-      margin-bottom: 8px;
-      border-bottom: 1px solid #d6cfba;
-      padding-bottom: 7px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--line);
     }
 
     .wizard-section:last-child {
@@ -233,72 +275,130 @@
     }
 
     .section-label {
-      margin-bottom: 5px;
-      color: var(--accent);
       font-size: 11px;
       font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--text3);
+      margin-bottom: 10px;
     }
 
     .wizard-text {
-      margin: 0 0 5px;
-      font-size: 11px;
-      line-height: 1.2;
+      font-size: 13px;
+      color: var(--text2);
+      margin: 0 0 8px;
+      line-height: 1.5;
     }
 
     .wizard-list {
+      list-style: none;
       margin: 0;
-      padding-left: 14px;
-      color: var(--accent);
-      font-size: 11px;
-      line-height: 1.35;
-      font-weight: 700;
+      padding: 0;
+      display: grid;
+      gap: 6px;
     }
 
     .wizard-list span {
-      color: #111;
-      font-weight: 400;
-    }
-
-    .wizard-button {
-      width: 100%;
-      min-height: 24px;
-      margin-bottom: 3px;
-      font-size: 11px;
-      cursor: pointer;
-    }
-
-    .wizard-button.active {
-      background: #fbf5dc;
-      font-weight: 700;
+      display: block;
+      font-size: 13px;
+      color: var(--text);
+      padding: 7px 10px;
+      background: var(--bg);
+      border-radius: var(--radius-sm);
     }
 
     .button-row {
-      display: grid;
-      grid-template-columns: 1fr 18px;
-      gap: 3px;
-      margin-bottom: 3px;
+      display: flex;
+      gap: 6px;
+      align-items: stretch;
+      margin-bottom: 6px;
     }
 
-    .mini-button {
-      min-height: 24px;
-      padding: 0;
-      font-size: 10px;
-      text-align: center;
+    .button-row .wizard-button {
+      margin-bottom: 0;
+      flex: 1 1 auto;
+    }
+
+    .wizard-button {
+      display: block;
+      width: 100%;
+      text-align: left;
+      border: 1px solid var(--line);
+      background: var(--white);
+      color: var(--text);
+      padding: 9px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 500;
       cursor: pointer;
+      margin-bottom: 6px;
+      transition: all 0.15s;
+    }
+
+    .wizard-button:hover {
+      background: var(--blue-l);
+      border-color: var(--blue-m);
+      color: var(--blue-d);
+    }
+
+    .wizard-button.active {
+      background: var(--blue);
+      border-color: var(--blue);
+      color: #fff;
     }
 
     .wizard-footer {
-      padding: 4px 5px;
+      padding: 14px 18px;
       border-top: 1px solid var(--line);
-      background: #e8e2cf;
+      background: var(--bg2);
     }
 
+    .back-link {
+      color: var(--blue);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .back-link:hover {
+      text-decoration: underline;
+    }
+
+    /* ============ MINI / ICON BUTTONS ============ */
+    .mini-button,
+    .density-arrow {
+      min-width: 30px;
+      height: 30px;
+      border: 1px solid var(--line);
+      background: var(--white);
+      color: var(--text2);
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 6px;
+      transition: all 0.15s;
+    }
+
+    .mini-button:hover,
+    .density-arrow:hover {
+      background: rgba(0, 0, 0, 0.04);
+      color: var(--text);
+    }
+
+    .collapse-toggle {
+      flex: 0 0 auto;
+    }
+
+    /* ============ CONTENT CARD ============ */
     .content {
-      border: 1px solid var(--line-dark);
-      background: #efe9d5;
-      box-shadow: 1px 1px 0 #fffdf5 inset;
-      display: flex;
-      flex-direction: column;
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
       min-width: 0;
     }
 
@@ -307,233 +407,318 @@
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      padding: 4px 8px;
-      background: #b2ac9e;
-      color: #fff;
-      font-size: 11px;
-      font-weight: 700;
+      padding: 16px 22px;
+      border-bottom: 1px solid var(--line);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text2);
+      background: var(--bg2);
+    }
+
+    .content-head span:first-child {
+      color: var(--text);
+      font-size: 15px;
+      letter-spacing: -0.2px;
     }
 
     .content-body {
-      display: grid;
-      grid-template-columns: 360px 1fr;
+      display: none;
+      grid-template-columns: minmax(0, 360px) minmax(0, 1fr);
       gap: 24px;
-      padding: 12px 14px 18px;
-      min-height: 640px;
+      padding: 22px;
     }
 
     .content-screen {
       display: none;
-      min-height: 640px;
     }
 
     .content-screen.active {
       display: grid;
     }
 
+    /* ============ FORMS / FIELDS ============ */
     .form-panel {
       min-width: 0;
     }
 
-    .form-grid {
-      display: grid;
-      grid-template-columns: 88px 1fr;
-      gap: 4px 8px;
-      align-items: center;
-    }
-
     .grid-head {
       display: grid;
-      grid-template-columns: 88px 1fr;
-      gap: 8px;
-      margin-bottom: 4px;
-      color: #fff;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
       font-size: 11px;
       font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text3);
+      margin-bottom: 12px;
     }
 
-    .grid-head span {
-      display: block;
-      padding: 3px 6px;
-      background: #aba497;
-    }
-
-    .field-label {
-      font-size: 11px;
-      color: #333027;
-    }
-
-    .field,
-    .select-field {
-      width: 100%;
-      min-height: 22px;
-      border: 1px solid #b5ae99;
-      border-top-color: #6e685a;
-      border-left-color: #6e685a;
-      border-right-color: #fffdf5;
-      border-bottom-color: #fffdf5;
-      background: #fffefa;
-      padding: 2px 5px;
-      font: inherit;
-      font-size: 11px;
-      color: #111;
+    .grid-head span:last-child {
+      text-align: left;
     }
 
     .select-line {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .form-grid {
       display: grid;
-      grid-template-columns: 1fr 24px;
-      gap: 4px;
-      margin-bottom: 8px;
-      width: 200px;
+      grid-template-columns: 130px 1fr;
+      gap: 10px 12px;
+      align-items: center;
+    }
+
+    .field-label,
+    .drill-label,
+    .density-label,
+    .fann-rpm-label,
+    .sweepcalc-label {
+      font-size: 13px;
+      color: var(--text2);
+      font-weight: 500;
+    }
+
+    input,
+    select,
+    textarea,
+    .field,
+    .small-field,
+    .select-field,
+    .density-field,
+    .density-select,
+    .fann-field,
+    .hyd-input,
+    .hyd-select,
+    .bit-field,
+    .geo-input,
+    .geo-select,
+    .thermal-cell,
+    .sweepcalc-input,
+    .trip-input-field,
+    .status-select {
+      width: 100%;
+      min-height: 38px;
+      border: 1px solid var(--line-2);
+      background: var(--white);
+      color: var(--text);
+      border-radius: var(--radius-sm);
+      padding: 7px 11px;
+      font-size: 13px;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus,
+    .field:focus,
+    .small-field:focus,
+    .select-field:focus,
+    .density-field:focus,
+    .density-select:focus,
+    .fann-field:focus,
+    .hyd-input:focus,
+    .hyd-select:focus,
+    .bit-field:focus,
+    .geo-input:focus,
+    .geo-select:focus,
+    .thermal-cell:focus,
+    .sweepcalc-input:focus,
+    .trip-input-field:focus {
+      outline: none;
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px var(--blue-l);
+    }
+
+    input[readonly],
+    .field[readonly],
+    .small-field[readonly],
+    .bit-field[readonly],
+    .fann-field[readonly],
+    .hyd-input[readonly],
+    .density-field[readonly] {
+      background: var(--bg);
+      color: var(--text2);
+    }
+
+    input[type="checkbox"] {
+      width: 17px;
+      height: 17px;
+      min-height: 17px;
+      accent-color: var(--blue);
+      cursor: pointer;
+      padding: 0;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      min-height: 0;
+      accent-color: var(--blue);
+      padding: 0;
+      border: none;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .select-field {
+      flex: 1 1 auto;
     }
 
     .action-cluster {
-      margin-top: 28px;
-      width: 120px;
+      display: flex;
+      gap: 10px;
+      margin-top: 18px;
+      flex-wrap: wrap;
     }
 
+    /* ============ ACTION LINK / PRIMARY BUTTONS ============ */
     .action-link {
-      display: block;
-      width: 100%;
-      min-height: 24px;
-      margin-bottom: 4px;
-      padding: 4px 8px;
-      font-size: 11px;
-      text-align: center;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--blue);
+      background: var(--blue);
+      color: #fff;
+      padding: 9px 16px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
       cursor: pointer;
+      transition: all 0.15s;
     }
 
+    .action-link:hover {
+      background: var(--blue-d);
+      border-color: var(--blue-d);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+    }
+
+    .action-cluster .action-link {
+      background: var(--white);
+      color: var(--blue);
+      border-color: var(--blue-m);
+    }
+
+    .action-cluster .action-link:hover {
+      background: var(--blue-l);
+    }
+
+    /* ============ CANVAS / INTRO ============ */
     .canvas-area {
-      position: relative;
-      min-height: 560px;
-      border-left: 1px solid #d6cfba;
-      padding-left: 16px;
+      min-width: 0;
+      padding: 4px;
     }
 
     .intro-title {
-      margin: 42px 0 12px;
-      font-size: 28px;
-      color: #2d291f;
-      font-weight: 400;
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 10px;
     }
 
     .intro-copy {
-      max-width: 460px;
-      font-size: 16px;
-      line-height: 1.5;
-      color: #3f3a30;
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--text2);
+      margin-bottom: 16px;
     }
 
-    .metric-note {
-      margin-top: 28px;
-      padding: 10px 12px;
-      width: min(100%, 430px);
-      border: 1px solid #c2b99f;
-      background: #faf6e6;
-      font-size: 12px;
-      line-height: 1.45;
-      color: #494439;
+    .metric-note,
+    .fluid-property-note {
+      font-size: 13px;
+      line-height: 1.55;
+      color: var(--text2);
+      background: var(--blue-l);
+      border: 1px solid var(--blue-m);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
     }
 
     .metric-note strong {
-      color: #181511;
+      color: var(--blue-d);
     }
 
+    .fluid-property-note.missing {
+      background: var(--amber-l);
+      border-color: #FFE2B0;
+      color: #92600A;
+    }
+
+    /* ============ RHEOLOGY CARDS ============ */
     .rheo-layout {
       display: grid;
-      grid-template-columns: 290px 180px 1fr;
+      grid-template-columns: 260px 220px minmax(0, 1fr);
       gap: 18px;
       align-items: start;
     }
 
     .rheo-card {
-      border: 1px solid #c2b99f;
-      background: #f7f1df;
-      min-height: 250px;
+      background: var(--bg2);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 14px;
+    }
+
+    .rheo-head {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      letter-spacing: -0.2px;
+    }
+
+    .rheo-subhead {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text2);
     }
 
     .fluid-property-strip {
       display: grid;
-      grid-template-columns: 84px 1fr 56px;
+      grid-template-columns: 1fr 90px auto;
       gap: 8px;
       align-items: center;
-      padding: 10px 10px 8px;
+      margin-bottom: 10px;
     }
 
     .fluid-property-label {
-      font-size: 12px;
-      font-weight: 700;
-      color: #574f40;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text2);
     }
 
     .fluid-property-unit {
-      font-size: 11px;
-      color: #6b634f;
+      font-size: 12px;
+      color: var(--text3);
+      white-space: nowrap;
     }
 
-    .fluid-property-note {
-      padding: 0 10px 10px;
-      font-size: 11px;
-      line-height: 1.4;
-      color: #6b634f;
-    }
-
-    .fluid-property-note.missing {
-      color: #b03a2e;
-      font-weight: 700;
-    }
-
-    .rheo-head,
-    .rheo-subhead {
-      background: #b2ac9e;
-      color: #fff;
-      font-weight: 700;
-      font-size: 11px;
-      padding: 5px 8px;
-    }
-
-    .rheo-subhead {
-      margin-top: 10px;
-    }
-
-    .rheo-tools {
+    .rheo-tools,
+    .downhole-actions {
       display: flex;
       gap: 6px;
-      padding: 6px 8px 0;
-      justify-content: flex-end;
+      margin: 12px 0;
+      flex-wrap: wrap;
     }
 
-    .rheo-tool {
-      width: 24px;
-      height: 24px;
-      border: 1px solid #b22020;
-      background: #fffdf6;
-      position: relative;
-    }
-
-    .rheo-tool::after {
-      content: "";
-      position: absolute;
-      inset: 4px;
-      border-left: 2px solid #e01f1f;
-      border-bottom: 2px solid #1f46db;
-    }
-
-    .rheo-grid {
+    .rheo-grid,
+    .hb-grid,
+    .gel-grid {
       display: grid;
-      grid-template-columns: 52px 66px 1fr;
-      gap: 6px 8px;
+      grid-template-columns: 60px 1fr auto;
+      gap: 7px 8px;
       align-items: center;
-      padding: 8px;
-      font-size: 11px;
+      font-size: 13px;
+      color: var(--text2);
     }
 
     .rheo-grid.head {
-      padding-top: 4px;
-      color: #fff;
-      background: #b2ac9e;
-      grid-template-columns: 52px 66px 1fr;
+      font-size: 11px;
       font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text3);
+      margin-bottom: 6px;
     }
 
     .rheo-grid.head div:last-child {
@@ -541,1006 +726,653 @@
     }
 
     .small-field {
-      width: 100%;
-      min-height: 22px;
-      border: 1px solid #b5ae99;
-      border-top-color: #6e685a;
-      border-left-color: #6e685a;
-      border-right-color: #fffdf5;
-      border-bottom-color: #fffdf5;
-      background: #fffefa;
-      padding: 2px 4px;
-      font: inherit;
-      font-size: 11px;
-    }
-
-    .hb-grid,
-    .gel-grid {
-      display: grid;
-      grid-template-columns: 28px 52px 1fr;
-      gap: 6px 8px;
-      align-items: center;
-      padding: 8px;
-      font-size: 11px;
-    }
-
-    .gel-grid {
-      grid-template-columns: 42px 56px 1fr;
-      padding-top: 52px;
+      min-height: 34px;
+      padding: 6px 9px;
     }
 
     .section-band {
-      margin: 4px 8px 0;
-      padding: 2px 6px;
-      background: #b2ac9e;
-      color: #fff;
-      font-size: 11px;
+      font-size: 12px;
       font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text3);
+      margin: 14px 0 10px;
+      padding-top: 12px;
+      border-top: 1px solid var(--line);
     }
 
-    .rheo-graph-wrap {
-      padding-top: 36px;
+    .rheo-graph-wrap,
+    .general-rheo-graph-wrap {
+      padding: 6px;
     }
 
-    .rheo-graph {
-      width: 100%;
-      max-width: 420px;
-      aspect-ratio: 1.8;
-      border: 1px solid #4f4f4f;
-      background: #fff;
+    .rheo-graph,
+    .general-rheo-graph,
+    .thermal-graph,
+    .geometry-svg,
+    .drillahead-chart,
+    .sweepresult-chart {
       display: block;
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: var(--white);
     }
 
     .downhole-strip {
-      margin-top: 12px;
-      border: 1px solid #c2b99f;
-      background: #f7f1df;
-    }
-
-    .downhole-actions {
       display: flex;
-      gap: 6px;
-      padding: 6px 8px 8px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid var(--line);
     }
 
-    .drilling-panel {
-      border: 1px solid #c2b99f;
-      background: #f7f1df;
-      width: min(100%, 760px);
+    /* ============ DRILLING PANEL ============ */
+    .drilling-panel,
+    .thermal-strip {
+      background: var(--bg2);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      margin-bottom: 18px;
     }
 
     .drilling-head,
     .thermal-head {
-      background: #b2ac9e;
-      color: #fff;
+      padding: 12px 16px;
+      font-size: 14px;
       font-weight: 700;
-      font-size: 11px;
-      padding: 5px 8px;
+      border-bottom: 1px solid var(--line);
+      background: var(--white);
     }
 
     .drilling-grid {
       display: grid;
-      grid-template-columns: 180px 1fr 180px 1fr;
-      gap: 8px 18px;
-      padding: 10px 14px 14px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px 24px;
+      padding: 16px;
       align-items: center;
-      font-size: 11px;
     }
 
-    .drill-label {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 6px;
-      color: #2b271f;
-      text-align: right;
+    .drilling-grid > .drill-label {
+      grid-column: auto;
     }
 
     .drill-input-row {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 6px;
+      display: flex;
       align-items: center;
+      gap: 8px;
     }
 
-    .drill-unit {
+    .drill-unit,
+    .density-unit,
+    .sweepcalc-unit {
+      font-size: 12px;
+      color: var(--text3);
       white-space: nowrap;
-      color: #27231c;
-      font-size: 11px;
     }
 
     .drill-check {
-      width: 13px;
-      height: 13px;
-      margin: 0;
+      margin-right: 6px;
     }
 
-    .thermal-strip {
-      margin-top: 10px;
-      border: 1px solid #c2b99f;
-      background: #f7f1df;
-      width: min(100%, 760px);
-      min-height: 28px;
-    }
-
+    /* ============ THERMAL ============ */
     .thermal-layout {
       display: grid;
-      grid-template-columns: 180px 1fr;
+      grid-template-columns: 300px minmax(0, 1fr);
       gap: 16px;
-      padding: 10px 10px 12px;
+      padding: 16px;
       align-items: start;
-    }
-
-    .thermal-left {
-      min-width: 0;
     }
 
     .thermal-bht {
       display: grid;
-      grid-template-columns: 36px 1fr auto;
-      gap: 6px;
+      grid-template-columns: auto 1fr auto;
+      gap: 8px;
       align-items: center;
-      margin-bottom: 8px;
-      font-size: 11px;
-    }
-
-    .thermal-table {
-      width: 100%;
-      border-collapse: collapse;
-      table-layout: fixed;
-      font-size: 11px;
-      background: #fffefa;
-    }
-
-    .thermal-table th,
-    .thermal-table td {
-      border: 1px solid #bdb49c;
-      padding: 2px;
-      background: #fffefa;
-    }
-
-    .thermal-table th {
-      background: #d9d3c1;
-      color: #333027;
-      font-weight: 700;
-      text-align: left;
+      margin-bottom: 12px;
+      font-size: 13px;
+      font-weight: 600;
     }
 
     .thermal-table-wrap {
-      border: 1px solid #bdb49c;
-      background: #fffefa;
+      max-height: 360px;
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
     }
 
     .thermal-cell {
+      min-height: 30px;
+      padding: 4px 7px;
+      border-radius: 6px;
+    }
+
+    /* ============ TABLES (shared modern style) ============ */
+    table {
+      border-collapse: collapse;
       width: 100%;
-      min-height: 22px;
-      border: 1px solid #b5ae99;
-      border-top-color: #6e685a;
-      border-left-color: #6e685a;
-      border-right-color: #fffdf5;
-      border-bottom-color: #fffdf5;
-      background: #fffefa;
-      padding: 2px 4px;
-      font: inherit;
+      font-size: 13px;
+    }
+
+    .thermal-table th,
+    .thermal-table td,
+    .density-table th,
+    .density-table td,
+    .downhole-table th,
+    .downhole-table td,
+    .general-rheo-table th,
+    .general-rheo-table td,
+    .geometry-table th,
+    .geometry-table td,
+    .string-table th,
+    .string-table td,
+    .bit-table th,
+    .bit-table td,
+    .hyd-grid th,
+    .hyd-grid td,
+    .gelbreak-table th,
+    .gelbreak-table td,
+    .trip-table th,
+    .trip-table td {
+      border-bottom: 1px solid var(--line);
+      padding: 8px 10px;
+      text-align: left;
+      color: var(--text);
+    }
+
+    .thermal-table th,
+    .density-table th,
+    .downhole-table th,
+    .general-rheo-table th,
+    .geometry-table th,
+    .string-table th,
+    .bit-table th,
+    .hyd-grid th,
+    .gelbreak-table th,
+    .trip-table th {
+      background: var(--bg);
+      color: var(--text2);
       font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      position: sticky;
+      top: 0;
+      z-index: 1;
     }
 
-    .thermal-graph-box {
-      border: 1px solid #d1cab5;
-      background: #fbfaf5;
-      padding: 8px 10px 10px;
-      min-height: 430px;
+    tbody tr:nth-child(even) td {
+      background: rgba(0, 0, 0, 0.015);
     }
 
-    .thermal-graph {
-      width: 100%;
-      height: auto;
-      display: block;
-      background: #fbfaf5;
+    tbody tr:hover td {
+      background: var(--blue-l);
     }
 
+    td.empty {
+      color: var(--text3);
+      text-align: center;
+      font-style: italic;
+      background: var(--bg2) !important;
+    }
+
+    .downhole-section-row td {
+      background: var(--blue-l) !important;
+      color: var(--blue-d);
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0.4px;
+    }
+
+    /* ============ GEOMETRY ============ */
     .geometry-layout {
       display: grid;
-      grid-template-columns: minmax(520px, 1.05fr) minmax(320px, 0.95fr);
-      gap: 14px;
+      grid-template-columns: minmax(0, 1fr) 360px;
+      gap: 18px;
       align-items: start;
     }
 
     .geometry-panel {
-      border: 1px solid #c2b99f;
-      background: #f7f1df;
-    }
-
-    .geometry-head,
-    .geometry-subhead {
-      background: #b2ac9e;
-      color: #fff;
-      font-weight: 700;
-      font-size: 11px;
-      padding: 5px 8px;
+      background: var(--bg2);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 14px;
     }
 
     .geometry-toolbar,
-    .string-toolbar {
+    .string-toolbar,
+    .bit-tools {
       display: flex;
-      gap: 6px;
-      padding: 6px 8px 4px;
-      flex-wrap: wrap;
       align-items: center;
-    }
-
-    .geo-tool {
-      width: 22px;
-      height: 22px;
-      border: 1px solid #c95c5c;
-      border-top-color: #f6c4c4;
-      border-left-color: #f6c4c4;
-      border-right-color: #b53d3d;
-      border-bottom-color: #b53d3d;
-      background: #fffef8;
-      position: relative;
-      padding: 0;
-      font-size: 0;
-      box-shadow: 1px 1px 0 #fff inset;
-    }
-
-    .geo-tool::after {
-      content: "";
-      position: absolute;
-      inset: 1px;
-      border: 1px solid #fff4f4;
-      pointer-events: none;
-    }
-
-    .geo-glyph,
-    .geo-glyph::before,
-    .geo-glyph::after {
-      position: absolute;
-      content: "";
-      box-sizing: border-box;
-    }
-
-    .geo-glyph {
-      inset: 0;
-    }
-
-    .geo-tool.add .geo-glyph::before {
-      left: 9px;
-      top: 4px;
-      width: 4px;
-      height: 10px;
-      background: #10a934;
-    }
-
-    .geo-tool.add .geo-glyph::after {
-      left: 6px;
-      top: 11px;
-      width: 0;
-      height: 0;
-      border-left: 5px solid transparent;
-      border-right: 5px solid transparent;
-      border-top: 6px solid #10a934;
-    }
-
-    .geo-tool.delete .geo-glyph::before {
-      left: 9px;
-      top: 8px;
-      width: 4px;
-      height: 10px;
-      background: #ea1f1f;
-    }
-
-    .geo-tool.delete .geo-glyph::after {
-      left: 6px;
-      top: 4px;
-      width: 0;
-      height: 0;
-      border-left: 5px solid transparent;
-      border-right: 5px solid transparent;
-      border-bottom: 6px solid #ea1f1f;
-    }
-
-    .geo-tool.depth .geo-glyph::before {
-      left: 4px;
-      top: 4px;
-      width: 14px;
-      height: 14px;
-      background: linear-gradient(90deg, #1f4cff 0 45%, transparent 45% 55%, #f04848 55% 100%);
-      border: 1px solid #2740aa;
-    }
-
-    .geo-tool.depth .geo-glyph::after {
-      left: 8px;
-      top: 10px;
-      width: 6px;
-      height: 2px;
-      background: #fff;
-      box-shadow: -2px 0 0 #fff, 2px 0 0 #fff;
-    }
-
-    .geo-tool.schematic .geo-glyph::before {
-      left: 4px;
-      top: 4px;
-      width: 8px;
-      height: 14px;
-      border: 1px solid #e24545;
-      background: #fff7f7;
-    }
-
-    .geo-tool.schematic .geo-glyph::after {
-      right: 4px;
-      top: 10px;
-      width: 6px;
-      height: 2px;
-      background: #5e56c9;
-      box-shadow: -2px -2px 0 #5e56c9, -2px 2px 0 #5e56c9;
-    }
-
-    .geo-tool.clear .geo-glyph::before {
-      left: 4px;
-      top: 5px;
-      width: 14px;
-      height: 10px;
-      border: 1px solid #7f7f7f;
-      background: linear-gradient(135deg, #fff 0 45%, #d54e4e 45% 55%, #fff 55% 100%);
-    }
-
-    .geo-tool.clear .geo-glyph::after {
-      left: 10px;
-      top: 3px;
-      width: 2px;
-      height: 16px;
-      background: #666;
-      transform: rotate(-35deg);
-    }
-
-    .geo-tool.copy .geo-glyph::before {
-      left: 5px;
-      top: 5px;
-      width: 8px;
-      height: 10px;
-      background: #fffef8;
-      border: 1px solid #7e6d52;
-    }
-
-    .geo-tool.copy .geo-glyph::after {
-      left: 9px;
-      top: 8px;
-      width: 8px;
-      height: 10px;
-      background: #fffef8;
-      border: 1px solid #d13e3e;
-    }
-
-    .geo-tool.toggle .geo-glyph::before {
-      left: 4px;
-      top: 4px;
-      width: 14px;
-      height: 14px;
-      border: 1px solid #7e6d52;
-      background: linear-gradient(135deg, transparent 0 46%, #2d58dd 46% 54%, transparent 54% 100%);
-    }
-
-    .geo-tool.toggle .geo-glyph::after {
-      left: 11px;
-      top: 5px;
-      width: 2px;
-      height: 12px;
-      background: #e22d2d;
-      transform: rotate(45deg);
-    }
-
-    .geo-tool.database .geo-glyph::before {
-      left: 7px;
-      top: 4px;
-      width: 8px;
-      height: 9px;
-      border: 1px solid #111;
-      border-radius: 1px;
-      background: #fffef8;
-    }
-
-    .geo-tool.database .geo-glyph::after {
-      left: 10px;
-      top: 6px;
-      width: 2px;
-      height: 8px;
-      background: #111;
-      box-shadow: -3px 3px 0 #111, 3px 3px 0 #111;
-    }
-
-    .geo-tool.folder .geo-glyph::before {
-      left: 3px;
-      top: 7px;
-      width: 15px;
-      height: 9px;
-      background: #ffe57a;
-      border: 1px solid #a88817;
-    }
-
-    .geo-tool.folder .geo-glyph::after {
-      left: 5px;
-      top: 5px;
-      width: 6px;
-      height: 4px;
-      background: #fff0a7;
-      border: 1px solid #a88817;
-      border-bottom: none;
-    }
-
-    .geo-tool.copy-graphic .geo-glyph::before {
-      left: 4px;
-      top: 4px;
-      width: 6px;
-      height: 14px;
-      border: 1px solid #e04848;
-      background: #fff;
-    }
-
-    .geo-tool.copy-graphic .geo-glyph::after {
-      right: 4px;
-      top: 5px;
-      width: 8px;
-      height: 12px;
-      border: 1px solid #2d58dd;
-      background: linear-gradient(180deg, transparent 0 45%, #2d58dd 45% 55%, transparent 55% 100%);
-    }
-
-    .geo-tool.copy-table .geo-glyph::before {
-      left: 4px;
-      top: 4px;
-      width: 14px;
-      height: 14px;
-      border: 1px solid #7e6d52;
-      background: linear-gradient(180deg, #fff 0 30%, #cfe0ff 30% 40%, #fff 40% 60%, #cfe0ff 60% 70%, #fff 70% 100%);
-    }
-
-    .geo-tool.copy-table .geo-glyph::after {
-      right: 3px;
-      top: 3px;
-      width: 7px;
-      height: 7px;
-      border-right: 2px solid #e33a3a;
-      border-bottom: 2px solid #e33a3a;
-      transform: rotate(-45deg);
-    }
-
-    .geo-tool.shift .geo-glyph::before {
-      left: 4px;
-      top: 9px;
-      width: 14px;
-      height: 3px;
-      background: #0c47ff;
-    }
-
-    .geo-tool.shift .geo-glyph::after {
-      left: 12px;
-      top: 6px;
-      width: 0;
-      height: 0;
-      border-top: 5px solid transparent;
-      border-bottom: 5px solid transparent;
-      border-left: 6px solid #d32e88;
-    }
-
-    .geo-tool.lock .geo-glyph::before {
-      left: 6px;
-      top: 9px;
-      width: 10px;
-      height: 8px;
-      border: 1px solid #111;
-      background: #f9f9f9;
-    }
-
-    .geo-tool.lock .geo-glyph::after {
-      left: 8px;
-      top: 4px;
-      width: 6px;
-      height: 7px;
-      border: 2px solid #111;
-      border-bottom: none;
-      border-radius: 6px 6px 0 0;
-    }
-
-    .geo-tool.blank .geo-glyph::before {
-      content: "";
-      left: 5px;
-      top: 5px;
-      width: 12px;
-      height: 12px;
-      border: 1px solid #c7bfb0;
-      background: #f8f5ec;
-    }
-
-    .geo-separator {
-      width: 1px;
-      height: 18px;
-      background: #aca48d;
-      box-shadow: 1px 0 0 #fff6de;
-      margin: 0 1px;
+      gap: 6px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
     }
 
     .geometry-section {
-      padding: 0 8px 8px;
+      margin-bottom: 16px;
     }
 
     .geometry-title {
-      margin: 0 0 4px;
-      font-size: 11px;
-      color: #3b372d;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 8px;
     }
 
     .geometry-table,
-    .string-table {
-      width: 100%;
-      border-collapse: collapse;
-      table-layout: fixed;
-      font-size: 11px;
-      background: #fffefa;
-    }
-
-    .geometry-table th,
-    .geometry-table td,
-    .string-table th,
-    .string-table td {
-      border: 1px solid #bdb49c;
-      padding: 2px;
-      background: #fffefa;
-    }
-
-    .geometry-table th,
-    .string-table th {
-      background: #d9d3c1;
-      color: #333027;
-      font-weight: 700;
-      text-align: left;
-    }
-
-    .row-marker {
-      width: 9px;
-      background: #ffef28;
-    }
-
-    .tiny-check {
-      width: 13px;
-      height: 13px;
-      margin: 0 auto;
-      display: block;
+    .string-table,
+    .bit-table {
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
     }
 
     .geo-input,
     .geo-select {
-      width: 100%;
-      min-height: 22px;
-      border: 1px solid #b5ae99;
-      border-top-color: #6e685a;
-      border-left-color: #6e685a;
-      border-right-color: #fffdf5;
-      border-bottom-color: #fffdf5;
-      background: #fffefa;
-      padding: 2px 4px;
-      font: inherit;
-      font-size: 11px;
-      color: #111;
+      min-height: 30px;
+      padding: 4px 7px;
+      border-radius: 6px;
+      font-size: 12px;
     }
 
-    .string-tabs {
+    .row-marker {
+      width: 8px;
+      padding: 0 !important;
+      background: var(--bg) !important;
+    }
+
+    .tiny-check {
+      width: 16px;
+      height: 16px;
+      min-height: 16px;
+    }
+
+    .geo-separator {
+      width: 1px;
+      height: 22px;
+      background: var(--line-2);
+      margin: 0 4px;
+    }
+
+    .string-tabs,
+    .bit-tabs {
       display: flex;
-      gap: 2px;
-      padding: 0 8px;
-      margin-top: 8px;
+      gap: 6px;
+      margin: 14px 0 10px;
+      flex-wrap: wrap;
     }
 
-    .string-tab {
-      border: 1px solid #a49e8d;
-      border-bottom: none;
-      background: #f2eddc;
-      padding: 4px 9px;
-      font-size: 11px;
-      min-width: 38px;
-      text-align: center;
+    .string-tab,
+    .bit-tab {
+      border: 1px solid var(--line);
+      background: var(--white);
+      color: var(--text2);
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
     }
 
-    .string-tab.active {
-      background: #fffefa;
-      font-weight: 700;
+    .string-tab.active,
+    .bit-tab.active {
+      background: var(--blue);
+      border-color: var(--blue);
+      color: #fff;
     }
 
     .geometry-right {
-      border: 1px solid #cfc7b1;
-      background: #fbfaf5;
-      min-height: 700px;
-      padding: 8px;
+      background: var(--bg2);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 12px;
+      position: sticky;
+      top: 20px;
     }
 
-    .geometry-svg {
-      width: 100%;
-      height: auto;
-      display: block;
-      background: #fbfaf5;
+    .geometry-note,
+    .bit-note {
+      font-size: 12px;
+      line-height: 1.5;
+      color: var(--text2);
+      margin-top: 10px;
     }
 
-    .geometry-note {
-      margin-top: 6px;
-      font-size: 11px;
-      line-height: 1.4;
-      color: #4f4a3d;
+    /* ============ ICON TOOL BUTTONS ============ */
+    .geo-tool,
+    .bit-tool,
+    .fann-tool,
+    .rheo-tool,
+    .density-close {
+      position: relative;
+      width: 32px;
+      height: 32px;
+      border: 1px solid var(--line);
+      background: var(--white);
+      color: var(--text2);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      padding: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      line-height: 1;
+      transition: all 0.15s;
+      flex: 0 0 auto;
     }
 
+    .geo-tool:hover,
+    .bit-tool:hover,
+    .fann-tool:hover,
+    .rheo-tool:hover,
+    .density-close:hover {
+      background: rgba(0, 0, 0, 0.04);
+      color: var(--text);
+      border-color: var(--line-2);
+    }
+
+    .geo-tool.active {
+      background: var(--blue);
+      border-color: var(--blue);
+      color: #fff;
+    }
+
+    .geo-glyph {
+      pointer-events: none;
+    }
+
+    /* icon glyphs via pseudo content */
+    .add::after,
+    .increase::after { content: "+"; }
+    .delete::after,
+    .decrease::after { content: "\2212"; }
+    .clear::after,
+    .blank::after,
+    .reset-selection::after { content: "\00D7"; }
+    .copy::after,
+    .copy-graphic::after,
+    .copy-table::after { content: "\2398"; }
+    .upload::after { content: "\21BB"; }
+    .edit::after { content: "\270E"; }
+    .folder::after { content: "\1F4C1"; font-size: 13px; }
+    .nozzle::after { content: "\25CE"; }
+    .depth::after { content: "\21A7"; }
+    .shift::after { content: "\21C4"; }
+    .toggle::after { content: "\2934"; }
+    .database::after,
+    .schematic::after { content: "\25A6"; }
+    .rheo-tool::after { content: "\2022"; }
+    .density-close::after { content: "\00D7"; font-size: 18px; }
+
+    .bit-tool::after,
+    .geo-tool::after,
+    .fann-tool::after {
+      pointer-events: none;
+    }
+
+    /* ============ BIT ============ */
     .bit-layout {
       display: grid;
-      grid-template-columns: minmax(520px, 0.95fr) minmax(280px, 0.75fr);
-      gap: 14px;
+      grid-template-columns: minmax(0, 1fr) 320px;
+      gap: 18px;
       align-items: start;
     }
 
     .bit-panel,
     .bit-summary {
-      border: 1px solid #c2b99f;
-      background: #f7f1df;
-      min-width: 0;
+      background: var(--bg2);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 16px;
     }
 
     .bit-topline {
       display: grid;
-      grid-template-columns: 26px 78px 88px 1fr;
-      gap: 8px;
+      grid-template-columns: auto 120px 1fr 1fr;
+      gap: 10px;
       align-items: center;
-      padding: 8px 10px 6px;
-      font-size: 11px;
+      margin-bottom: 14px;
+      font-size: 13px;
     }
 
     .bit-mini-icon {
-      width: 18px;
-      height: 18px;
-      border: 1px solid #c95c5c;
-      border-top-color: #f6c4c4;
-      border-left-color: #f6c4c4;
-      border-right-color: #b53d3d;
-      border-bottom-color: #b53d3d;
-      background: #fffef8;
-      position: relative;
-      box-shadow: 1px 1px 0 #fff inset;
-    }
-
-    .bit-mini-icon::before {
-      content: "";
-      position: absolute;
-      left: 7px;
-      top: 3px;
-      width: 4px;
-      height: 11px;
-      background: #e22424;
-    }
-
-    .bit-mini-icon::after {
-      content: "";
-      position: absolute;
-      left: 4px;
-      top: 11px;
-      width: 0;
-      height: 0;
-      border-left: 5px solid transparent;
-      border-right: 5px solid transparent;
-      border-top: 5px solid #e22424;
-    }
-
-    .bit-tabs {
-      display: flex;
-      gap: 2px;
-      padding: 0 10px;
-      margin-top: 2px;
-    }
-
-    .bit-tab {
-      border: 1px solid #aaa28f;
-      border-bottom: none;
-      background: #efe8d4;
-      padding: 4px 8px;
-      font-size: 11px;
-      min-width: 82px;
-      text-align: center;
-    }
-
-    .bit-tab.active {
-      background: #fffefa;
-      font-weight: 700;
+      width: 26px;
+      height: 26px;
+      border-radius: 7px;
+      background: linear-gradient(135deg, var(--blue), #4F86F7);
+      flex: 0 0 auto;
     }
 
     .bit-work {
       display: grid;
-      grid-template-columns: minmax(250px, 0.95fr) minmax(230px, 0.85fr);
-      gap: 12px;
-      padding: 0 10px 10px;
+      gap: 16px;
     }
 
     .bit-subpanel {
-      border: 1px solid #d1c7af;
-      background: #fffefa;
-      min-height: 250px;
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      padding: 14px;
     }
 
     .bit-subhead {
-      background: #b2ac9e;
-      color: #fff;
+      font-size: 13px;
       font-weight: 700;
-      font-size: 11px;
-      padding: 5px 8px;
+      margin-bottom: 10px;
     }
 
-    .bit-tools {
-      display: flex;
-      gap: 6px;
-      padding: 6px 8px;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-
-    .bit-tool {
-      width: 22px;
-      height: 22px;
-      border: 1px solid #c95c5c;
-      border-top-color: #f6c4c4;
-      border-left-color: #f6c4c4;
-      border-right-color: #b53d3d;
-      border-bottom-color: #b53d3d;
-      background: #fffef8;
-      position: relative;
-      padding: 0;
-      box-shadow: 1px 1px 0 #fff inset;
-    }
-
-    .bit-tool::before,
-    .bit-tool::after {
-      content: "";
-      position: absolute;
-      box-sizing: border-box;
-    }
-
-    .bit-tool.add::before {
-      left: 9px;
-      top: 4px;
-      width: 4px;
-      height: 10px;
-      background: #10a934;
-    }
-
-    .bit-tool.add::after {
-      left: 6px;
-      top: 11px;
-      border-left: 5px solid transparent;
-      border-right: 5px solid transparent;
-      border-top: 6px solid #10a934;
-    }
-
-    .bit-tool.delete::before {
-      left: 9px;
-      top: 8px;
-      width: 4px;
-      height: 10px;
-      background: #ea1f1f;
-    }
-
-    .bit-tool.delete::after {
-      left: 6px;
-      top: 4px;
-      border-left: 5px solid transparent;
-      border-right: 5px solid transparent;
-      border-bottom: 6px solid #ea1f1f;
-    }
-
-    .bit-tool.nozzle::before {
-      left: 5px;
-      top: 4px;
-      width: 12px;
-      height: 12px;
-      border: 2px solid #d02020;
-      border-bottom-width: 4px;
-      border-radius: 2px;
-    }
-
-    .bit-tool.clear::before {
-      left: 4px;
-      top: 5px;
-      width: 14px;
-      height: 10px;
-      border: 1px solid #7f7f7f;
-      background: linear-gradient(135deg, #fff 0 45%, #d54e4e 45% 55%, #fff 55% 100%);
-    }
-
-    .bit-tool.clear::after {
-      left: 10px;
-      top: 3px;
-      width: 2px;
-      height: 16px;
-      background: #666;
-      transform: rotate(-35deg);
-    }
-
-    .bit-table {
-      width: calc(100% - 16px);
-      margin: 0 8px 8px;
-      border-collapse: collapse;
-      table-layout: fixed;
-      font-size: 11px;
-      background: #fffefa;
-    }
-
-    .bit-table th,
-    .bit-table td {
-      border: 1px solid #bdb49c;
-      padding: 2px;
-      background: #fffefa;
-    }
-
-    .bit-table th {
-      background: #d9d3c1;
-      color: #333027;
-      font-weight: 700;
-      text-align: left;
-    }
-
-    .bit-field,
-    .bit-select {
-      width: 100%;
-      min-height: 22px;
-      border: 1px solid #b5ae99;
-      border-top-color: #6e685a;
-      border-left-color: #6e685a;
-      border-right-color: #fffdf5;
-      border-bottom-color: #fffdf5;
-      background: #fffefa;
-      padding: 2px 4px;
-      font: inherit;
-      font-size: 11px;
-    }
-
-    .bit-summary-grid {
+    .bit-total,
+    .bit-summary-grid,
+    .bit-summary-form {
       display: grid;
       grid-template-columns: 1fr 120px;
-      gap: 8px;
-      align-items: start;
-      padding: 8px;
-    }
-
-    .bit-combo-list {
-      min-height: 88px;
-      border: 1px solid #c7bea8;
-      background: #fffefa;
-      padding: 8px;
-      font-size: 11px;
-      line-height: 1.45;
-    }
-
-    .bit-slider-wrap {
-      padding: 6px 8px 2px;
-    }
-
-    .bit-slider {
-      width: 100%;
-      accent-color: #7d6d3a;
+      gap: 8px 10px;
+      align-items: center;
+      margin-top: 12px;
+      font-size: 13px;
     }
 
     .bit-summary-form {
-      display: grid;
-      grid-template-columns: 1fr 92px;
-      gap: 6px;
-      align-items: center;
-      padding: 2px 8px 8px;
-      font-size: 11px;
+      grid-template-columns: auto 100px auto 100px;
     }
 
-    .bit-total {
-      display: grid;
-      grid-template-columns: 1fr 120px;
+    .bit-combo-list {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .bit-slider-wrap {
+      margin: 14px 0;
+    }
+
+    /* ============ STATUS BAR ============ */
+    .status-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px 20px;
+      border-top: 1px solid var(--line);
+      background: var(--bg2);
+      flex-wrap: wrap;
+    }
+
+    .status-left,
+    .status-right {
+      display: flex;
+      align-items: center;
       gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .status-chip {
+      display: inline-flex;
       align-items: center;
-      padding: 0 8px 10px;
-      font-size: 11px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: var(--blue-l);
+      border: 1px solid var(--blue-m);
+      color: var(--blue-d);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
     }
 
-    .bit-note {
-      margin-top: 8px;
-      padding: 8px 10px;
-      border-top: 1px solid #d4cab2;
-      font-size: 11px;
-      line-height: 1.4;
-      color: #4d483b;
+    .status-right .status-chip {
+      background: var(--green-l);
+      border-color: #BBEBC7;
+      color: #1B7A32;
+      cursor: default;
     }
 
-    .density-modal {
+    .status-select {
+      width: auto;
+      min-width: 110px;
+      min-height: 32px;
+      padding: 5px 10px;
+      font-size: 12px;
+    }
+
+    /* ============ MODAL SHELL ============ */
+    .density-modal,
+    .fann-modal {
       position: fixed;
       inset: 0;
       display: none;
       align-items: flex-start;
       justify-content: center;
-      padding: 12px;
-      background: rgba(56, 49, 33, 0.28);
-      z-index: 50;
+      padding: 76px 16px 24px;
+      background: rgba(0, 0, 0, 0.30);
+      backdrop-filter: saturate(160%) blur(8px);
+      z-index: 100000;
       overflow: auto;
     }
 
-    .density-modal.open {
+    .density-modal.open,
+    .fann-modal.open {
       display: flex;
     }
 
-    .density-window {
-      width: min(100%, 980px);
-      border: 1px solid #3e3b33;
-      background: #ece6d2;
-      box-shadow: 0 16px 44px rgba(0, 0, 0, 0.28);
+    .density-window,
+    .fann-window,
+    .general-rheo-window,
+    .hyd-window,
+    .drillahead-window,
+    .sweepcalc-window,
+    .gelbreak-window,
+    .trip-window,
+    .trip-input-window {
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      box-shadow: var(--shadow-lg);
       margin: 0 auto;
-      max-height: calc(100vh - 24px);
+      max-height: calc(100vh - 48px);
       overflow: auto;
     }
 
-    .density-titlebar {
+    .density-window { width: min(100%, 1040px); }
+    .fann-window { width: min(100%, 1120px); }
+    .general-rheo-window { width: min(100%, 1040px); }
+    .hyd-window { width: min(100%, 1180px); }
+    .drillahead-window { width: min(100%, 1380px); }
+    .sweepcalc-window { width: min(100%, 1020px); }
+    .gelbreak-window { width: min(100%, 1060px); }
+    .trip-window { width: min(100%, 1080px); }
+    .trip-input-window { width: min(100%, 380px); }
+
+    .density-titlebar,
+    .fann-titlebar {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 10px;
-      padding: 3px 6px;
-      background: linear-gradient(90deg, #0057c7, #2d7ef6);
-      color: #fff;
-      font-size: 12px;
-      font-weight: 700;
+      gap: 12px;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--line);
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: -0.2px;
+      position: sticky;
+      top: 0;
+      background: var(--white);
+      z-index: 2;
     }
 
     .density-titlemain {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 10px;
     }
 
-    .density-close {
-      width: 18px;
-      height: 18px;
-      border: 1px solid #6f6f6f;
-      background: linear-gradient(180deg, #fdfbf1, #ddd6c0);
-      color: #111;
-      font-size: 11px;
-      line-height: 16px;
-      text-align: center;
-      padding: 0;
-    }
-
+    /* ============ DENSITY MODAL ============ */
     .density-head {
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 8px 10px 6px;
-      font-size: 11px;
+      gap: 12px;
+      padding: 16px 20px 4px;
       flex-wrap: wrap;
     }
 
     .density-fluid {
-      font-size: 24px;
-      color: #2a251a;
-      font-weight: 400;
+      font-size: 20px;
+      color: var(--text);
       display: none;
     }
 
-    .density-tabs {
+    .density-tabs,
+    .hyd-tabbar,
+    .hyd-subtabs,
+    .bit-tabs {
       display: flex;
-      gap: 2px;
-      padding: 0 10px;
-      margin-bottom: 8px;
+      gap: 6px;
       flex-wrap: wrap;
     }
 
-    .density-tab {
-      border: 1px solid #a49e8d;
-      border-bottom: none;
-      background: #efe8d4;
-      padding: 4px 8px;
-      font-size: 11px;
-      min-width: 90px;
-      text-align: center;
+    .density-tabs {
+      padding: 12px 20px;
     }
 
-    .density-tab.active {
-      background: #fffefa;
-      font-weight: 700;
+    .density-tab,
+    .hyd-tab,
+    .hyd-subtab {
+      border: 1px solid var(--line);
+      background: var(--white);
+      color: var(--text2);
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      transition: all 0.15s;
+    }
+
+    .density-tab:hover,
+    .hyd-tab:hover,
+    .hyd-subtab:hover {
+      background: rgba(0, 0, 0, 0.04);
+      color: var(--text);
+    }
+
+    .density-tab.active,
+    .hyd-tab.active,
+    .hyd-subtab.active {
+      background: var(--blue);
+      border-color: var(--blue);
+      color: #fff;
+    }
+
+    .hyd-tab .fann-tool,
+    .hyd-tab.active .fann-tool {
+      display: none;
     }
 
     .density-view {
@@ -1551,177 +1383,148 @@
       display: grid;
     }
 
-    .density-layout {
-      display: grid;
-      grid-template-columns: 240px 1fr;
-      gap: 12px;
-      padding: 0 10px 12px;
+    .density-layout,
+    .density-dynamic-layout {
+      grid-template-columns: 260px minmax(0, 1fr);
+      gap: 16px;
+      padding: 8px 20px 20px;
       align-items: start;
     }
 
+    .density-dynamic-layout {
+      grid-template-columns: 340px minmax(0, 1fr);
+    }
+
     .density-left,
-    .density-right {
-      border: 1px solid #c8bea7;
-      background: #f7f1df;
+    .density-right,
+    .density-dynamic-left,
+    .density-dynamic-right {
+      background: var(--bg2);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
       min-width: 0;
     }
 
-    .density-left-inner {
-      padding: 10px 8px 10px;
+    .density-left-inner,
+    .density-dynamic-inner {
+      padding: 14px;
     }
 
-    .density-left-grid {
+    .density-left-grid,
+    .density-dynamic-grid {
       display: grid;
-      grid-template-columns: 82px 1fr auto;
-      gap: 6px 8px;
+      grid-template-columns: 88px 1fr auto;
+      gap: 9px 10px;
       align-items: center;
-      font-size: 11px;
+      font-size: 13px;
     }
 
-    .density-label {
-      color: #2f2b23;
-    }
-
-    .density-field,
-    .density-select {
-      width: 100%;
-      min-height: 22px;
-      border: 1px solid #b5ae99;
-      border-top-color: #6e685a;
-      border-left-color: #6e685a;
-      border-right-color: #fffdf5;
-      border-bottom-color: #fffdf5;
-      background: #fffefa;
-      padding: 2px 4px;
-      font: inherit;
-      font-size: 11px;
-    }
-
-    .density-unit {
-      color: #2f2b23;
-      white-space: nowrap;
-      font-size: 11px;
+    .density-dynamic-grid {
+      grid-template-columns: 110px 90px 1fr;
     }
 
     .density-checkline {
       display: flex;
       align-items: center;
-      gap: 6px;
-      margin-bottom: 8px;
-      font-size: 11px;
+      gap: 8px;
+      margin-bottom: 12px;
+      font-size: 13px;
+      color: var(--text2);
     }
 
-    .density-pin {
+    .density-pin,
+    .density-dynamic-mini {
       width: 22px;
       height: 22px;
-      border: 1px solid #c95c5c;
-      border-top-color: #f6c4c4;
-      border-left-color: #f6c4c4;
-      border-right-color: #b53d3d;
-      border-bottom-color: #b53d3d;
-      background: #fffef8;
+      border-radius: 6px;
+      background: var(--red-l);
+      border: 1px solid #F5B7B1;
       position: relative;
-      box-shadow: 1px 1px 0 #fff inset;
       flex: 0 0 auto;
     }
 
-    .density-pin::before {
+    .density-pin::before,
+    .density-dynamic-mini::before {
       content: "";
       position: absolute;
-      inset: 5px;
-      border: 2px solid #d94d4d;
-      border-left-color: #d3a61a;
-      transform: rotate(-12deg);
+      inset: 6px;
+      border-radius: 50%;
+      background: var(--red);
     }
 
     .density-table-wrap {
-      padding: 8px;
-    }
-
-    .density-table {
-      width: 100%;
-      border-collapse: collapse;
-      table-layout: fixed;
-      font-size: 11px;
-      background: #fffefa;
-    }
-
-    .density-table th,
-    .density-table td {
-      border: 1px solid #bdb49c;
-      padding: 3px 4px;
-      background: #fffefa;
-    }
-
-    .density-table th {
-      background: #b2ac9e;
-      color: #fff;
-      font-weight: 700;
-      text-align: left;
-    }
-
-    .density-table-box {
-      max-height: 430px;
-      overflow: auto;
-      border: 1px solid #cfc4ad;
-      background: #fffefa;
-    }
-
-    .density-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-      padding: 0 10px 10px;
-      font-size: 11px;
-      color: #4e483b;
-    }
-
-    .fann-modal {
-      position: fixed;
-      inset: 0;
-      display: none;
-      align-items: flex-start;
-      justify-content: center;
       padding: 12px;
-      background: rgba(56, 49, 33, 0.28);
-      z-index: 55;
+    }
+
+    .density-table-box,
+    .downhole-table-wrap,
+    .hyd-grid-box,
+    .gelbreak-grid-box,
+    .trip-grid-box {
+      max-height: 440px;
       overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
     }
 
-    .fann-modal.open {
-      display: flex;
-    }
-
-    .fann-window {
-      width: min(100%, 1120px);
-      border: 1px solid #31457a;
-      background: #ece6d2;
-      box-shadow: 0 16px 44px rgba(0, 0, 0, 0.28);
-      margin: 0 auto;
-      max-height: calc(100vh - 24px);
-      overflow: auto;
-    }
-
-    .fann-titlebar {
-      display: flex;
+    .density-dynamic-inline {
+      display: grid;
+      grid-template-columns: 90px 30px 1fr 30px;
+      gap: 6px;
       align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      padding: 3px 6px;
-      background: linear-gradient(90deg, #0057c7, #2d7ef6);
-      color: #fff;
-      font-size: 12px;
+      margin: 12px 0;
+    }
+
+    .density-dynamic-note,
+    .hyd-warning,
+    .hyd-special-title {
+      font-size: 13px;
+      line-height: 1.45;
+      margin: 12px 0;
+      font-weight: 500;
+    }
+
+    .hyd-warning {
+      color: var(--red);
+      background: var(--red-l);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+    }
+
+    .hyd-special-title {
+      color: var(--text);
       font-weight: 700;
     }
 
+    .density-footer,
+    .general-rheo-footer,
+    .hyd-footer,
+    .drillahead-footer,
+    .fann-note,
+    .sweepcalc-note {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 16px 20px;
+      border-top: 1px solid var(--line);
+      font-size: 13px;
+      color: var(--text2);
+      position: sticky;
+      bottom: 0;
+      background: var(--white);
+      z-index: 2;
+    }
+
+    /* ============ FANN MODAL ============ */
     .fann-topline {
       display: grid;
-      grid-template-columns: 68px 110px 96px 110px 1fr;
-      gap: 8px;
+      grid-template-columns: 80px 120px 100px 120px 1fr;
+      gap: 10px;
       align-items: center;
-      padding: 8px 10px 4px;
-      font-size: 11px;
+      padding: 16px 20px 6px;
+      font-size: 13px;
+      color: var(--text2);
     }
 
     .fann-tools {
@@ -1730,122 +1533,43 @@
       gap: 6px;
     }
 
-    .fann-tool {
-      width: 24px;
-      height: 24px;
-      border: 1px solid #c95c5c;
-      border-top-color: #f6c4c4;
-      border-left-color: #f6c4c4;
-      border-right-color: #b53d3d;
-      border-bottom-color: #b53d3d;
-      background: #fffef8;
-      position: relative;
-      box-shadow: 1px 1px 0 #fff inset;
-      padding: 0;
-    }
-
-    .fann-tool::before,
-    .fann-tool::after {
-      content: "";
-      position: absolute;
-      box-sizing: border-box;
-    }
-
-    .fann-tool.folder::before {
-      left: 4px;
-      top: 8px;
-      width: 15px;
-      height: 9px;
-      background: #ffe57a;
-      border: 1px solid #a88817;
-    }
-
-    .fann-tool.folder::after {
-      left: 6px;
-      top: 5px;
-      width: 6px;
-      height: 4px;
-      background: #fff0a7;
-      border: 1px solid #a88817;
-      border-bottom: none;
-    }
-
-    .fann-tool.copy::before {
-      left: 5px;
-      top: 5px;
-      width: 8px;
-      height: 10px;
-      background: #fffef8;
-      border: 1px solid #7e6d52;
-    }
-
-    .fann-tool.copy::after {
-      left: 9px;
-      top: 8px;
-      width: 8px;
-      height: 10px;
-      background: #fffef8;
-      border: 1px solid #d13e3e;
-    }
-
-    .fann-tool.upload::before {
-      left: 10px;
-      top: 4px;
-      width: 4px;
-      height: 11px;
-      background: #e22424;
-    }
-
-    .fann-tool.upload::after {
-      left: 7px;
-      top: 3px;
-      border-left: 5px solid transparent;
-      border-right: 5px solid transparent;
-      border-bottom: 6px solid #e22424;
-    }
-
-    .fann-tool.edit::before {
-      left: 5px;
-      top: 12px;
-      width: 12px;
-      height: 4px;
-      background: #f0d243;
-      border: 1px solid #d34e4e;
-      transform: rotate(-35deg);
-    }
-
     .fann-shell {
-      padding: 4px 10px 10px;
+      padding: 12px 20px 20px;
     }
 
-    .fann-panel {
-      border: 1px solid #c8bea7;
-      background: #f7f1df;
-      padding: 12px 10px 10px;
+    .fann-panel,
+    .downhole-panel {
+      background: var(--bg2);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 16px;
+    }
+
+    .downhole-panel {
+      margin-top: 16px;
+      padding: 0;
+      overflow: hidden;
     }
 
     .fann-panel-title {
-      margin: 0 0 8px;
-      background: #b2ac9e;
-      color: #fff;
-      text-align: center;
-      font-size: 12px;
+      margin: 0 0 14px;
+      font-size: 14px;
       font-weight: 700;
-      padding: 6px 8px;
+      text-align: center;
     }
 
     .fann-grid {
       display: grid;
-      grid-template-columns: 120px repeat(3, 1fr) 120px 120px;
-      gap: 0;
+      grid-template-columns: 130px repeat(3, minmax(0, 1fr)) 130px 130px;
+      gap: 4px;
       align-items: start;
-      font-size: 11px;
+      font-size: 12px;
     }
 
     .fann-col {
-      border-right: 1px solid #c7bea8;
       padding: 0 8px 8px;
       min-width: 0;
+      border-right: 1px solid var(--line);
     }
 
     .fann-col:last-child {
@@ -1855,13 +1579,13 @@
     .fann-col-head {
       text-align: center;
       font-weight: 700;
-      color: #2f2b23;
-      min-height: 44px;
+      color: var(--text);
+      min-height: 46px;
       display: flex;
       flex-direction: column;
-      justify-content: end;
+      justify-content: flex-end;
       gap: 4px;
-      margin-bottom: 4px;
+      margin-bottom: 8px;
     }
 
     .fann-subline {
@@ -1876,34 +1600,20 @@
       grid-template-columns: 52px 1fr;
       gap: 6px;
       align-items: center;
-      margin-bottom: 4px;
-    }
-
-    .fann-rpm-label {
-      font-size: 11px;
-      color: #2f2b23;
-      font-weight: 700;
+      margin-bottom: 5px;
     }
 
     .fann-field {
-      width: 100%;
-      min-height: 22px;
-      border: 1px solid #b5ae99;
-      border-top-color: #6e685a;
-      border-left-color: #6e685a;
-      border-right-color: #fffdf5;
-      border-bottom-color: #fffdf5;
-      background: #fffefa;
-      padding: 2px 4px;
-      font: inherit;
-      font-size: 11px;
+      min-height: 32px;
+      padding: 5px 8px;
+      font-size: 12px;
     }
 
     .fann-bottom {
       display: flex;
       justify-content: space-between;
-      gap: 8px;
-      padding: 10px 2px 0;
+      gap: 10px;
+      padding: 14px 2px 0;
       align-items: center;
       flex-wrap: wrap;
     }
@@ -1917,16 +1627,9 @@
     }
 
     .fann-note {
-      margin-top: 8px;
-      font-size: 11px;
-      color: #4e483b;
-      line-height: 1.4;
-    }
-
-    .downhole-panel {
-      margin-top: 10px;
-      border: 1px solid #c8bea7;
-      background: #f7f1df;
+      border-top: none;
+      padding: 12px 2px 0;
+      line-height: 1.45;
     }
 
     .downhole-head {
@@ -1934,10 +1637,10 @@
       align-items: center;
       justify-content: space-between;
       gap: 10px;
-      padding: 6px 8px;
-      background: #b2ac9e;
-      color: #fff;
-      font-size: 12px;
+      padding: 12px 16px;
+      background: var(--white);
+      border-bottom: 1px solid var(--line);
+      font-size: 14px;
       font-weight: 700;
     }
 
@@ -1948,88 +1651,53 @@
 
     .downhole-table-wrap {
       max-height: 300px;
-      overflow: auto;
-      border-top: 1px solid #c8bea7;
-      background: #fffefa;
+      border-radius: 0;
+      border: none;
+      border-top: 1px solid var(--line);
     }
 
-    .downhole-table {
-      width: 100%;
-      border-collapse: collapse;
-      table-layout: fixed;
-      font-size: 11px;
-      background: #fffefa;
-    }
-
-    .downhole-table th,
-    .downhole-table td {
-      border: 1px solid #bdb49c;
-      padding: 3px 4px;
-      background: #fffefa;
-      text-align: left;
-    }
-
-    .downhole-table th {
-      background: #d0c9b8;
-      color: #2b271f;
-      font-weight: 700;
-    }
-
-    .downhole-section-row td {
-      background: #b2ac9e;
-      color: #fff;
-      font-weight: 700;
-      text-align: left;
-    }
-
-    .general-rheo-window {
-      width: min(100%, 1040px);
-      border: 1px solid #31457a;
-      background: #ece6d2;
-      box-shadow: 0 16px 44px rgba(0, 0, 0, 0.28);
-      margin: 0 auto;
-      max-height: calc(100vh - 24px);
-      overflow: auto;
-    }
-
+    /* ============ GENERAL RHEO MODAL ============ */
     .general-rheo-topline {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 10px;
-      padding: 10px;
-      font-size: 11px;
+      gap: 12px;
+      padding: 16px 20px;
     }
 
     .general-rheo-kpi {
-      border: 1px solid #c8bea7;
-      background: #f7f1df;
-      padding: 8px;
+      background: var(--bg2);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
     }
 
     .general-rheo-kpi-label {
-      color: #5a5244;
-      margin-bottom: 4px;
+      font-size: 12px;
+      color: var(--text2);
+      margin-bottom: 6px;
     }
 
     .general-rheo-kpi-value {
-      font-size: 20px;
+      font-size: 24px;
       font-weight: 700;
-      color: #1d2230;
+      letter-spacing: -0.5px;
       line-height: 1;
     }
 
     .general-rheo-layout {
       display: grid;
-      grid-template-columns: 240px 270px 1fr;
-      gap: 12px;
-      padding: 0 10px 10px;
+      grid-template-columns: 240px 270px minmax(0, 1fr);
+      gap: 14px;
+      padding: 0 20px 16px;
       align-items: start;
     }
 
     .general-rheo-panel {
-      border: 1px solid #c8bea7;
-      background: #f7f1df;
+      background: var(--bg2);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
       min-width: 0;
+      overflow: hidden;
     }
 
     .general-rheo-head {
@@ -2037,145 +1705,69 @@
       align-items: center;
       justify-content: space-between;
       gap: 8px;
-      padding: 4px 8px;
-      border-bottom: 1px solid #c8bea7;
-      background: #d7cfbd;
-      font-size: 11px;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+      background: var(--white);
+      font-size: 13px;
       font-weight: 700;
     }
 
-    .general-rheo-table {
-      width: 100%;
-      border-collapse: collapse;
-      table-layout: fixed;
-      font-size: 11px;
-      background: #fffefa;
-    }
-
-    .general-rheo-table th,
-    .general-rheo-table td {
-      border: 1px solid #bdb49c;
-      padding: 4px 5px;
-      background: #fffefa;
-    }
-
-    .general-rheo-table th {
-      background: #b2ac9e;
-      color: #fff;
-      text-align: left;
-    }
-
     .general-rheo-models {
-      padding: 8px;
+      padding: 12px;
       display: grid;
-      gap: 8px;
+      gap: 12px;
     }
 
     .general-rheo-model-box {
-      border: 1px solid #c8bea7;
-      background: #fffefa;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      background: var(--white);
+      overflow: hidden;
     }
 
     .general-rheo-model-title {
-      padding: 4px 6px;
-      background: #d9d2c3;
-      border-bottom: 1px solid #c8bea7;
-      font-size: 11px;
+      padding: 8px 12px;
+      background: var(--bg);
+      border-bottom: 1px solid var(--line);
+      font-size: 12px;
       font-weight: 700;
     }
 
     .general-rheo-model-grid {
       display: grid;
       grid-template-columns: 56px 1fr auto;
-      gap: 6px 8px;
-      padding: 8px 6px;
+      gap: 8px 10px;
+      padding: 12px;
       align-items: center;
-      font-size: 11px;
+      font-size: 13px;
+      color: var(--text2);
     }
 
     .general-rheo-model-value {
-      min-height: 22px;
-      border: 1px solid #b5ae99;
-      border-top-color: #6e685a;
-      border-left-color: #6e685a;
-      border-right-color: #fffdf5;
-      border-bottom-color: #fffdf5;
-      background: #fffefa;
-      padding: 2px 4px;
+      min-height: 32px;
+      border: 1px solid var(--line-2);
+      background: var(--white);
+      border-radius: 6px;
+      padding: 5px 9px;
       display: flex;
       align-items: center;
+      font-weight: 600;
+      color: var(--text);
     }
 
-    .general-rheo-graph-wrap {
-      padding: 8px;
-    }
-
-    .general-rheo-graph {
-      display: block;
-      width: 100%;
-      min-height: 360px;
-      border: 1px solid #c8bea7;
-      background: #fffefa;
-    }
-
-    .general-rheo-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-      padding: 0 10px 10px;
-      font-size: 11px;
-      color: #4e483b;
-    }
-
-    .hyd-window {
-      width: min(100%, 1180px);
-      border: 1px solid #31457a;
-      background: #ece6d2;
-      box-shadow: 0 16px 44px rgba(0, 0, 0, 0.28);
-      margin: 0 auto;
-      max-height: calc(100vh - 24px);
-      overflow: auto;
-    }
-
+    /* ============ HYDRAULICS MODAL ============ */
     .hyd-tabbar {
-      display: flex;
-      gap: 3px;
-      padding: 6px 8px 0;
-      flex-wrap: wrap;
-    }
-
-    .hyd-tab {
-      min-height: 34px;
-      border: 1px solid #a59c88;
-      background: linear-gradient(180deg, #fffdf3, #ddd7c3);
-      padding: 0 12px;
-      font-size: 11px;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .hyd-tab.active {
-      background: #f7f1df;
-      border-bottom-color: #f7f1df;
-      font-weight: 700;
-    }
-
-    .hyd-tab .fann-tool {
-      width: 18px;
-      height: 18px;
-      flex: 0 0 auto;
+      padding: 16px 20px 0;
     }
 
     .hyd-body {
-      padding: 8px;
+      padding: 16px 20px;
     }
 
     .hyd-layout {
       display: grid;
-      grid-template-columns: 420px 1fr;
-      gap: 10px;
+      grid-template-columns: 420px minmax(0, 1fr);
+      gap: 14px;
       align-items: start;
     }
 
@@ -2185,211 +1777,128 @@
     }
 
     .hyd-panel {
-      border: 1px solid #c8bea7;
-      background: #f7f1df;
-      margin-bottom: 8px;
+      background: var(--bg2);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      margin-bottom: 12px;
+    }
+
+    .hyd-panel .hyd-panel {
+      background: var(--white);
     }
 
     .hyd-panel-body {
-      padding: 8px;
+      padding: 14px;
+    }
+
+    .hyd-top-settings {
+      display: grid;
+      grid-template-columns: 1fr 120px;
+      gap: 8px 12px;
+      align-items: center;
+      margin-bottom: 12px;
+      font-size: 13px;
+      color: var(--text2);
     }
 
     .hyd-line {
       display: grid;
       grid-template-columns: 24px 1fr 96px auto;
-      gap: 6px;
+      gap: 8px;
       align-items: center;
-      margin-bottom: 7px;
-      font-size: 11px;
+      margin-bottom: 10px;
+      font-size: 13px;
+      color: var(--text2);
     }
 
     .hyd-line.compact {
       grid-template-columns: 24px 1fr 74px auto 74px auto;
     }
 
-    .hyd-top-settings {
-      display: grid;
-      grid-template-columns: 96px 1fr;
-      gap: 6px 8px;
-      align-items: center;
-      margin-bottom: 8px;
-      font-size: 11px;
-    }
-
-    .hyd-input,
-    .hyd-select {
-      width: 100%;
-      min-height: 22px;
-      border: 1px solid #b5ae99;
-      border-top-color: #6e685a;
-      border-left-color: #6e685a;
-      border-right-color: #fffdf5;
-      border-bottom-color: #fffdf5;
-      background: #fffefa;
-      padding: 2px 4px;
-      font: inherit;
-      font-size: 11px;
-    }
-
     .hyd-slider-wrap {
       display: grid;
       grid-template-columns: 74px 1fr;
-      gap: 8px;
+      gap: 12px;
       align-items: center;
-      margin-bottom: 8px;
-    }
-
-    .hyd-slider {
-      width: 100%;
+      margin-bottom: 12px;
     }
 
     .hyd-derived {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 6px;
-      margin: 8px 0;
+      gap: 8px;
+      margin: 10px 0;
+      font-size: 12px;
+      color: var(--text2);
     }
 
     .hyd-derived .hyd-input {
-      background: #fff7b8;
+      background: var(--amber-l);
+      border-color: #FFE2B0;
+      font-weight: 600;
+      color: var(--text);
     }
 
-    .hyd-special-title {
-      color: #c62222;
-      font-weight: 700;
-      margin-bottom: 6px;
-      font-size: 11px;
-    }
-
-    .hyd-subtabs {
-      display: flex;
-      gap: 4px;
-      margin-bottom: 8px;
-      flex-wrap: wrap;
-    }
-
-    .hyd-subtab {
-      border: 1px solid #a59c88;
-      background: linear-gradient(180deg, #fffdf3, #ddd7c3);
-      padding: 4px 10px;
-      font-size: 11px;
-    }
-
-    .hyd-subtab.active {
-      background: #f7f1df;
-      font-weight: 700;
-    }
-
-    .hyd-warning {
-      color: #d22a2a;
-      font-size: 11px;
-      line-height: 1.35;
-      margin-bottom: 8px;
-      font-weight: 700;
-    }
-
-    .hyd-grid-wrap {
-      border: 1px solid #a59c88;
-      background: #8b8b8b;
-      min-height: 302px;
+    .hyd-grid-wrap,
+    .gelbreak-grid-wrap,
+    .trip-grid-wrap {
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: var(--white);
+      overflow: hidden;
       display: flex;
       flex-direction: column;
+      margin-bottom: 12px;
     }
 
-    .hyd-grid-wrap.secondary {
-      min-height: 286px;
-    }
-
-    .hyd-grid-header {
-      padding: 4px 6px;
-      background: #b2ac9e;
-      color: #fff;
-      font-size: 11px;
-      font-weight: 700;
+    .hyd-grid-header,
+    .gelbreak-grid-header,
+    .trip-grid-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 8px;
-    }
-
-    .hyd-grid-box {
-      overflow: auto;
-      background: #8b8b8b;
-      flex: 1 1 auto;
-    }
-
-    .hyd-grid {
-      width: 100%;
-      border-collapse: collapse;
-      table-layout: fixed;
-      font-size: 11px;
-      background: #fffef0;
-    }
-
-    .hyd-grid th,
-    .hyd-grid td {
-      border: 1px solid #bdb49c;
-      padding: 4px 5px;
-      text-align: left;
-    }
-
-    .hyd-grid th {
-      background: #b2ac9e;
-      color: #fff;
+      padding: 12px 14px;
+      background: var(--bg);
+      border-bottom: 1px solid var(--line);
+      font-size: 13px;
       font-weight: 700;
     }
 
-    .hyd-grid td {
-      background: #fff9bb;
+    .hyd-grid-box,
+    .gelbreak-grid-box,
+    .trip-grid-box {
+      max-height: 320px;
+      border: none;
+      border-radius: 0;
     }
 
-    .hyd-grid td.empty {
-      background: #8b8b8b;
-      border-color: #8b8b8b;
-      min-height: 22px;
+    .hyd-grid td,
+    .gelbreak-table td,
+    .trip-table td {
+      background: var(--white);
     }
 
     .hyd-toolbar {
       display: flex;
-      gap: 6px;
-      align-items: center;
-      padding: 5px 0 7px;
-      font-size: 11px;
-    }
-
-    .hyd-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
       gap: 8px;
-      padding: 0 8px 8px;
-      font-size: 11px;
-      color: #4e483b;
-    }
-
-    @media (max-width: 1080px) {
-      .hyd-layout {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .drillahead-window {
-      width: min(100%, 1380px);
-      border: 1px solid #31457a;
-      background: #ece6d2;
-      box-shadow: 0 16px 44px rgba(0, 0, 0, 0.28);
-      margin: 0 auto;
-      max-height: calc(100vh - 24px);
-      overflow: auto;
-    }
-
-    .drillahead-toolbar {
-      display: flex;
-      gap: 6px;
       align-items: center;
-      padding: 6px 8px;
-      border-bottom: 1px solid #c8bea7;
-      background: #efe8d4;
+      padding: 4px 0 10px;
+      font-size: 13px;
+      flex-wrap: wrap;
+    }
+
+    /* ============ DRILL AHEAD / SWEEP / GEL / TRIP TOOLBARS ============ */
+    .drillahead-toolbar,
+    .sweepcalc-toolbar,
+    .gelbreak-toolbar,
+    .trip-toolbar {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--line);
+      background: var(--bg2);
       flex-wrap: wrap;
     }
 
@@ -2397,171 +1906,114 @@
       display: none;
     }
 
-    .drillahead-meta-block {
-      min-width: 0;
-    }
-
-    .drillahead-meta-line {
-      display: flex;
-      justify-content: space-between;
-      gap: 8px;
-      margin-bottom: 3px;
-    }
-
-    .drillahead-mono {
-      font-weight: 700;
-      color: #2c2b28;
-    }
-
-    .drillahead-chart-wrap {
-      margin: 0 8px 8px;
-      border: 1px solid #a59c88;
-      background: #fff;
+    .drillahead-chart-wrap,
+    .sweepresult-chart-wrap {
+      margin: 16px 20px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: var(--white);
       overflow: auto;
     }
 
     .drillahead-chart {
-      display: block;
-      width: 100%;
       min-height: 1120px;
-      background: #fff;
     }
 
-    .drillahead-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-      padding: 0 8px 8px;
-      font-size: 11px;
-      color: #4e483b;
+    .sweepresult-chart {
+      min-height: 540px;
     }
 
-    .sweepcalc-window {
-      width: min(100%, 1020px);
-      border: 1px solid #31457a;
-      background: #ece6d2;
-      box-shadow: 0 16px 44px rgba(0, 0, 0, 0.28);
-      margin: 0 auto;
-      max-height: calc(100vh - 24px);
-      overflow: auto;
-    }
-
-    .sweepcalc-toolbar {
-      display: flex;
-      gap: 6px;
-      align-items: center;
-      padding: 6px 8px;
-      border-bottom: 1px solid #c8bea7;
-      background: #efe8d4;
-    }
-
-    .sweepcalc-body {
-      padding: 10px 12px 12px;
-      background: #f3ecd8;
+    /* ============ SWEEP CALC ============ */
+    .sweepcalc-body,
+    .gelbreak-body,
+    .trip-body {
+      padding: 20px;
     }
 
     .sweepcalc-recommend {
       display: flex;
       align-items: center;
-      gap: 8px;
-      margin-bottom: 18px;
+      gap: 12px;
+      margin-bottom: 20px;
     }
 
     .sweepcalc-pill {
-      min-width: 210px;
-      border: 1px solid #8f8771;
-      background: #f7f1df;
-      padding: 4px 8px;
-      font-size: 11px;
+      min-width: 220px;
+      border: 1px solid var(--blue-m);
+      background: var(--blue-l);
+      color: var(--blue-d);
+      border-radius: 999px;
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 600;
       text-align: center;
     }
 
     .sweepcalc-arrow {
+      flex: 1 1 auto;
+      height: 2px;
+      background: var(--line-2);
       position: relative;
-      width: 390px;
-      height: 16px;
-      flex: 0 0 auto;
-    }
-
-    .sweepcalc-arrow::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      right: 18px;
-      top: 7px;
-      border-top: 4px solid #111;
     }
 
     .sweepcalc-arrow::after {
-      content: '';
+      content: "";
       position: absolute;
       right: 0;
-      top: 1px;
-      border-top: 10px solid transparent;
-      border-bottom: 10px solid transparent;
-      border-right: 18px solid #111;
+      top: -4px;
+      border-top: 5px solid transparent;
+      border-bottom: 5px solid transparent;
+      border-left: 8px solid var(--text3);
     }
 
     .sweepcalc-layout {
       display: grid;
-      grid-template-columns: 210px 96px 38px 168px;
-      gap: 6px 10px;
+      grid-template-columns: 180px 120px 30px 180px;
+      gap: 10px 14px;
       align-items: center;
-      width: max-content;
-      margin: 0 auto;
     }
 
-    .sweepcalc-title {
+    .sweepcalc-title,
+    .gelbreak-title,
+    .trip-summary-title {
       grid-column: 1 / -1;
-      text-align: center;
-      font-size: 13px;
+      font-size: 15px;
       font-weight: 700;
-      text-decoration: underline;
-      margin: 8px 0 10px;
-      color: #111;
+      margin: 6px 0 12px;
+      letter-spacing: -0.2px;
+    }
+
+    .gelbreak-title,
+    .trip-summary-title {
+      color: var(--red);
     }
 
     .sweepcalc-head {
-      font-size: 11px;
-      color: #111;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text3);
+      text-transform: uppercase;
     }
 
     .sweepcalc-label {
       text-align: right;
-      font-size: 11px;
-      color: #111;
-      white-space: nowrap;
     }
 
-    .sweepcalc-input {
-      width: 100%;
-      height: 22px;
-      border: 1px solid #b9b09c;
-      background: #fff;
-      padding: 1px 6px;
-      font-size: 11px;
-      font-family: inherit;
-    }
-
-    .sweepcalc-unit {
-      font-size: 11px;
-      color: #111;
-      white-space: nowrap;
-    }
-
-    .sweepcalc-actions {
+    .sweepcalc-actions,
+    .trip-input-actions {
       display: flex;
       gap: 8px;
       align-items: center;
+      flex-wrap: wrap;
     }
 
     .sweepresult-panel {
-      margin-top: 18px;
-      border: 1px solid #b8ae95;
-      background: #fffef8;
-      padding: 10px 10px 8px;
       display: none;
+      margin-top: 20px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: var(--white);
+      padding: 14px;
     }
 
     .sweepresult-panel.open {
@@ -2572,157 +2024,47 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 10px;
-      margin-bottom: 8px;
-      font-size: 11px;
-      color: #2f2b23;
+      gap: 12px;
+      margin-bottom: 12px;
+      font-size: 12px;
+      color: var(--text2);
     }
 
-    .sweepresult-chart-wrap {
-      border: 1px solid #a79d86;
-      background: #ffffff;
-      overflow: auto;
+    .sweepcalc-note {
+      border-top: none;
+      padding: 16px 0 0;
     }
 
-    .sweepresult-chart {
-      display: block;
-      width: 100%;
-      min-height: 540px;
-      background: #fff;
+    /* ============ GEL BREAK / TRIP SUMMARY ============ */
+    .gelbreak-summary,
+    .trip-summary {
+      margin-top: 16px;
+      padding: 16px 18px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: var(--bg2);
+      font-size: 14px;
+      line-height: 1.7;
     }
 
-    .gelbreak-window {
-      width: min(100%, 1060px);
-      border: 1px solid #31457a;
-      background: #ece6d2;
-      box-shadow: 0 16px 44px rgba(0, 0, 0, 0.28);
-      margin: 0 auto;
-      max-height: calc(100vh - 24px);
-      overflow: auto;
-    }
-
-    .gelbreak-toolbar {
-      display: flex;
-      gap: 6px;
-      align-items: center;
-      padding: 6px 8px;
-      border-bottom: 1px solid #c8bea7;
-      background: #efe8d4;
-    }
-
-    .gelbreak-body {
-      padding: 10px 10px 12px;
-      background: #f3ecd8;
-    }
-
-    .gelbreak-grid-wrap {
-      border: 1px solid #a59c88;
-      background: #8b8b8b;
-      min-height: 328px;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .gelbreak-grid-header {
-      padding: 4px 6px;
-      background: #b2ac9e;
-      color: #fff;
-      font-size: 11px;
-      font-weight: 700;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .gelbreak-grid-box {
-      overflow: auto;
-      background: #8b8b8b;
-      flex: 1 1 auto;
-    }
-
-    .gelbreak-table {
-      width: 100%;
-      border-collapse: collapse;
-      table-layout: fixed;
-      font-size: 11px;
-      background: #fffef0;
-    }
-
-    .gelbreak-table th,
-    .gelbreak-table td {
-      border: 1px solid #bdb49c;
-      padding: 4px 5px;
-      text-align: left;
-    }
-
-    .gelbreak-table th {
-      background: #b2ac9e;
-      color: #fff;
-      font-weight: 700;
-    }
-
-    .gelbreak-table td {
-      background: #fff9bb;
-    }
-
-    .gelbreak-summary {
-      margin-top: 14px;
-      padding: 10px 12px;
-      border: 1px solid #bba88a;
-      background: #fff8eb;
-      font-size: 11px;
-      line-height: 1.5;
-    }
-
-    .gelbreak-title {
-      color: #b51212;
-      font-size: 13px;
-      font-weight: 700;
-      margin-bottom: 8px;
-      text-decoration: underline;
-    }
-
-    .gelbreak-summary strong {
-      color: #222;
-    }
-
-    .trip-window {
-      width: min(100%, 1080px);
-      border: 1px solid #31457a;
-      background: #ece6d2;
-      box-shadow: 0 16px 44px rgba(0, 0, 0, 0.28);
-      margin: 0 auto;
-      max-height: calc(100vh - 24px);
-      overflow: auto;
-    }
-
-    .trip-toolbar {
-      display: flex;
-      gap: 6px;
-      align-items: center;
-      padding: 6px 8px;
-      border-bottom: 1px solid #c8bea7;
-      background: #efe8d4;
-    }
-
-    .trip-body {
-      padding: 10px 10px 12px;
-      background: #f3ecd8;
+    .gelbreak-summary strong,
+    .trip-summary strong {
+      color: var(--text);
     }
 
     .trip-topline {
       display: grid;
       grid-template-columns: 1.2fr 1fr 1fr;
-      gap: 8px;
-      margin-bottom: 10px;
+      gap: 12px;
+      margin-bottom: 14px;
     }
 
     .trip-kpi {
-      border: 1px solid #b9b09c;
-      background: #fff8eb;
-      padding: 8px 10px;
-      font-size: 11px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: var(--bg2);
+      padding: 14px 16px;
+      font-size: 13px;
       min-width: 0;
     }
 
@@ -2730,253 +2072,38 @@
       display: flex;
       justify-content: space-between;
       gap: 8px;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
     }
 
-    .trip-grid-wrap {
-      border: 1px solid #a59c88;
-      background: #8b8b8b;
-      min-height: 286px;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .trip-grid-header {
-      padding: 4px 6px;
-      background: #b2ac9e;
-      color: #fff;
-      font-size: 11px;
-      font-weight: 700;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .trip-grid-box {
-      overflow: auto;
-      background: #8b8b8b;
-      flex: 1 1 auto;
-    }
-
-    .trip-table {
-      width: 100%;
-      border-collapse: collapse;
-      table-layout: fixed;
-      font-size: 11px;
-      background: #fffef0;
-    }
-
-    .trip-table th,
-    .trip-table td {
-      border: 1px solid #bdb49c;
-      padding: 4px 5px;
-      text-align: left;
-    }
-
-    .trip-table th {
-      background: #b2ac9e;
-      color: #fff;
-      font-weight: 700;
-    }
-
-    .trip-table td {
-      background: #fff9bb;
-    }
-
-    .trip-summary {
-      margin-top: 12px;
-      padding: 10px 12px;
-      border: 1px solid #bba88a;
-      background: #fff8eb;
-      font-size: 11px;
+    /* ============ TRIP INPUT PROMPT ============ */
+    .trip-input-body {
+      padding: 18px;
+      font-size: 14px;
+      color: var(--text);
       line-height: 1.5;
     }
 
-    .trip-summary-title {
-      font-size: 13px;
-      font-weight: 700;
-      color: #b51212;
-      margin-bottom: 8px;
-      text-decoration: underline;
-    }
-
-    .trip-input-window {
-      width: min(100%, 360px);
-      border: 1px solid #2148d1;
-      background: #ece6d2;
-      box-shadow: 0 16px 44px rgba(0, 0, 0, 0.32);
-      margin: 0 auto;
-    }
-
-    .trip-input-body {
-      padding: 12px 12px 14px;
-      font-size: 11px;
-      color: #111;
-    }
-
     .trip-input-actions {
-      display: flex;
       justify-content: flex-end;
-      gap: 8px;
-      margin-bottom: 12px;
+      margin: 14px 0;
     }
 
-    .trip-input-field {
-      width: 100%;
-      height: 24px;
-      border: 1px solid #b9b09c;
-      background: #fff;
-      padding: 2px 6px;
-      font-size: 11px;
-      font-family: inherit;
-    }
-
-    .sweepcalc-note {
-      margin-top: 20px;
-      font-size: 11px;
-      color: #4e483b;
-      min-height: 16px;
-    }
-
-    @media (max-width: 980px) {
-      .drillahead-meta {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    @media (max-width: 980px) {
-      .general-rheo-layout {
+    /* ============ RESPONSIVE ============ */
+    @media (max-width: 1080px) {
+      .hyd-layout,
+      .rheo-layout,
+      .bit-layout,
+      .geometry-layout,
+      .general-rheo-layout,
+      .thermal-layout,
+      .density-layout,
+      .density-dynamic-layout {
         grid-template-columns: 1fr;
       }
 
-      .general-rheo-topline {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+      .geometry-right {
+        position: static;
       }
-    }
-
-    @media (max-height: 860px) {
-      .density-table-box {
-        max-height: 280px;
-      }
-    }
-
-    .density-dynamic-layout {
-      display: grid;
-      grid-template-columns: 340px 1fr;
-      gap: 12px;
-      padding: 0 10px 12px;
-      align-items: start;
-    }
-
-    .density-dynamic-left,
-    .density-dynamic-right {
-      border: 1px solid #c8bea7;
-      background: #f7f1df;
-      min-width: 0;
-    }
-
-    .density-dynamic-inner {
-      padding: 10px 8px 12px;
-    }
-
-    .density-dynamic-grid {
-      display: grid;
-      grid-template-columns: 110px 86px 1fr;
-      gap: 6px 8px;
-      align-items: center;
-      font-size: 11px;
-    }
-
-    .density-dynamic-inline {
-      display: grid;
-      grid-template-columns: 86px 22px 1fr 22px;
-      gap: 4px;
-      align-items: center;
-      margin: 10px 0 8px;
-    }
-
-    .density-arrow {
-      width: 22px;
-      height: 22px;
-      border: 1px solid #a59c88;
-      background: linear-gradient(180deg, #fffdf3, #ddd7c3);
-      font-size: 12px;
-      line-height: 20px;
-      text-align: center;
-      padding: 0;
-    }
-
-    .density-dynamic-note {
-      margin: 8px 0 6px;
-      font-size: 11px;
-      line-height: 1.35;
-      color: #353127;
-      font-weight: 700;
-    }
-
-    .density-dynamic-mini {
-      width: 22px;
-      height: 22px;
-      border: 1px solid #c95c5c;
-      border-top-color: #f6c4c4;
-      border-left-color: #f6c4c4;
-      border-right-color: #b53d3d;
-      border-bottom-color: #b53d3d;
-      background: #fffef8;
-      position: relative;
-      box-shadow: 1px 1px 0 #fff inset;
-      display: inline-block;
-      vertical-align: middle;
-      margin-left: 6px;
-    }
-
-    .density-dynamic-mini::before {
-      content: "";
-      position: absolute;
-      inset: 5px;
-      border: 2px solid #d94d4d;
-      border-left-color: #d3a61a;
-      transform: rotate(-12deg);
-    }
-
-    .status-bar {
-      justify-content: space-between;
-      min-height: 24px;
-      border-top: 1px solid var(--line);
-      background: #e7e1ce;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-
-    .status-left,
-    .status-right {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      flex-wrap: wrap;
-    }
-
-    .status-chip {
-      min-height: 20px;
-      padding: 2px 8px;
-      font-size: 11px;
-    }
-
-    .status-select {
-      min-width: 92px;
-      min-height: 20px;
-      border: 1px solid var(--line);
-      background: #fffefa;
-      font: inherit;
-      font-size: 11px;
-    }
-
-    .back-link {
-      color: #164bbd;
-      text-decoration: none;
-      font-size: 11px;
-      font-weight: 700;
     }
 
     @media (max-width: 980px) {
@@ -2984,15 +2111,43 @@
         grid-template-columns: 1fr;
       }
 
-      .content-body {
-        grid-template-columns: 1fr;
-        gap: 16px;
+      .wizard {
+        position: static;
       }
 
-      .canvas-area {
-        border-left: none;
-        padding-left: 0;
-        min-height: 220px;
+      .content-body {
+        grid-template-columns: 1fr;
+        gap: 18px;
+      }
+
+      .general-rheo-topline {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .trip-topline {
+        grid-template-columns: 1fr;
+      }
+
+      .drilling-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 680px) {
+      body {
+        padding: 12px 8px 24px;
+      }
+
+      .fann-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .fann-topline {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .sweepcalc-layout {
+        grid-template-columns: 1fr 100px auto;
       }
     }
   </style>
@@ -3003,7 +2158,7 @@
     <div class="title-bar">
       <div class="title-main">
         <span class="title-icon" aria-hidden="true"></span>
-        <span>MudGPT - Drilling Fluids Graphics · Drill Ahead</span>
+        <span>MudGPT - Drilling Fluids Graphics · DRILL-IQ</span>
       </div>
       <div class="window-controls" aria-hidden="true">
         <button class="control-btn" type="button">_</button>
@@ -3012,22 +2167,8 @@
       </div>
     </div>
 
-    <div class="menu-bar">
-      <a class="menu-item" href="#">MudGPT - Drilling Fluids Graphics</a>
-      <a class="menu-item" href="#">Файл</a>
-      <a class="menu-item" href="#">Печать</a>
-      <a class="menu-item" href="#">Правка</a>
-      <a class="menu-item" href="#">Шрифт</a>
-    </div>
-
-    <div class="toolbar">
-      <button class="tool-tab active" type="button" data-screen="well-info"><span class="tab-icon" aria-hidden="true"></span>Скважина</button>
-      <button class="tool-tab" type="button" data-screen="fluid-properties"><span class="tab-icon" aria-hidden="true"></span>Свойства раствора</button>
-      <button class="tool-tab" type="button" data-screen="drilling"><span class="tab-icon" aria-hidden="true"></span>Бурение</button>
-      <button class="tool-tab" type="button" data-screen="geometry"><span class="tab-icon" aria-hidden="true"></span>Геометрия</button>
-      <button class="tool-tab" type="button" data-screen="bit"><span class="tab-icon" aria-hidden="true"></span>Долото</button>
-      <button class="tool-tab" type="button"><span class="tab-icon" aria-hidden="true"></span>Блокнот</button>
-      <button class="tool-tab" type="button"><span class="tab-icon" aria-hidden="true"></span>База данных</button>
+    <div class="toolbar" style="display:flex;align-items:center;justify-content:flex-end;">
+      <button id="dfgSaveBtn" type="button" style="padding:6px 18px;background:#2563EB;color:#fff;border:none;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;transition:background 0.2s;white-space:nowrap;">Сохранить</button>
     </div>
 
     <div class="workspace">
@@ -3038,24 +2179,18 @@
         </div>
         <div class="wizard-body">
           <section class="wizard-section">
-            <div class="section-label">1. Загрузка исходных данных</div>
-            <p class="wizard-text">Используйте вкладки для ввода:</p>
-            <ul class="wizard-list">
-              <li><span>Данные по скважине</span></li>
-              <li><span>Свойства бурового раствора</span></li>
-              <li><span>Параметры бурения</span></li>
-              <li><span>Геометрия ствола</span></li>
-              <li><span>Информация по долоту</span></li>
-            </ul>
+            <div class="section-label">1. Ввод данных</div>
+            <button class="wizard-button tool-tab active" type="button" data-screen="well-info">Скважина</button>
+            <button class="wizard-button tool-tab" type="button" data-screen="fluid-properties">Свойства раствора</button>
+            <button class="wizard-button tool-tab" type="button" data-screen="drilling">Бурение</button>
+            <button class="wizard-button tool-tab" type="button" data-screen="geometry">Геометрия</button>
+            <button class="wizard-button tool-tab" type="button" data-screen="bit">Долото</button>
           </section>
 
           <section class="wizard-section">
             <div class="section-label">2. Плотность по стволу</div>
             <div class="button-row"><button class="wizard-button" type="button" data-density-mode="Статика">Статика</button><button class="mini-button" type="button" data-density-mode="Статика">↗</button></div>
             <div class="button-row"><button class="wizard-button" type="button" data-density-mode="Динамика">Динамика</button><button class="mini-button" type="button" data-density-mode="Динамика">↗</button></div>
-            <div class="button-row"><button class="wizard-button" type="button" data-density-mode="Статика с точками">Статика с точками</button><button class="mini-button" type="button" data-density-mode="Статика с точками">↗</button></div>
-            <div class="button-row"><button class="wizard-button" type="button" data-density-mode="Динамика с точками">Динамика с точками</button><button class="mini-button" type="button" data-density-mode="Динамика с точками">↗</button></div>
-            <button class="wizard-button" type="button" data-density-mode="Объем до давления">Объем до давления</button>
           </section>
 
           <section class="wizard-section">
@@ -3066,19 +2201,12 @@
 
           <section class="wizard-section">
             <div class="section-label">4. Гидравлика</div>
-            <div class="button-row"><button class="wizard-button active" type="button">Забойное давление</button><button class="mini-button" type="button">01</button></div>
-            <button class="wizard-button" type="button" data-hyd-modal="drilling-hydraulics">Drill Ahead</button>
-            <button class="wizard-button" type="button">Кольцевое пространство</button>
-            <div class="button-row"><button class="wizard-button" type="button">Кольцевое пространство / трубы</button><button class="mini-button" type="button">↗</button></div>
-            <button class="wizard-button" type="button" data-trip-open="wizard">СПО</button>
+            <button class="wizard-button" type="button" data-hyd-modal="drilling-hydraulics">DRILL-IQ</button>
             <button class="wizard-button" type="button" data-trip-open="wizard">Surge&amp;Swab</button>
-            <button class="wizard-button" type="button">Долото</button>
           </section>
 
           <section class="wizard-section">
             <div class="section-label">Прочие расчеты</div>
-            <button class="wizard-button" type="button">Средняя скорость в кольце</button>
-            <button class="wizard-button" type="button">Объемы</button>
             <button class="wizard-button" type="button" data-gel-modal="break-pressure">Давление разрушения гелей</button>
           </section>
         </div>
@@ -3095,53 +2223,24 @@
 
         <div class="content-body content-screen active" data-screen="well-info">
           <div class="form-panel">
-            <div class="grid-head">
-              <span>Метки отчета</span>
-              <span>Данные отчета / скважины</span>
-            </div>
-
-            <div class="select-line">
-              <select class="select-field" aria-label="Набор меток">
-                <option selected>Учебные метки класса</option>
-                <option>Training Well #1</option>
-                <option>Новый набор MudGPT - Drilling Fluids Graphics</option>
-              </select>
-              <button class="mini-button" type="button">▼</button>
-            </div>
-
             <div class="form-grid">
               <div class="field-label">Скважина</div>
-              <input class="field" id="wellNameInput" type="text" value="Training Well #1" />
+              <input class="field" id="wellNameInput" type="text" value="" placeholder="Название скважины" />
 
               <div class="field-label">Оператор</div>
-              <input class="field" id="wellOperatorInput" type="text" value="ABC Drilling Co" />
+              <input class="field" id="wellOperatorInput" type="text" value="" placeholder="Оператор" />
 
               <div class="field-label">Подрядчик</div>
-              <input class="field" id="wellContractorInput" type="text" value="DEF Drilling Company" />
+              <input class="field" id="wellContractorInput" type="text" value="" placeholder="Подрядчик" />
 
               <div class="field-label">Установка</div>
-              <input class="field" id="wellRigInput" type="text" value="15" />
+              <input class="field" id="wellRigInput" type="text" value="" placeholder="Номер буровой" />
 
               <div class="field-label">Дата спуска</div>
-              <input class="field" id="wellSpudDateInput" type="text" value="15.07.2004" />
+              <input class="field" id="wellSpudDateInput" type="text" value="" placeholder="дд.мм.гггг" />
 
               <div class="field-label">Интервал</div>
-              <input class="field" id="wellIntervalInput" type="text" value="Интервал 1 - 311,15 мм" />
-            </div>
-
-            <div class="action-cluster">
-              <button class="action-link" type="button">Новый набор меток</button>
-              <button class="action-link" type="button">Удалить</button>
-            </div>
-          </div>
-
-          <div class="canvas-area">
-            <div class="intro-title">Ввод данных по скважине</div>
-            <div class="intro-copy">
-              Первый шаг в логике программы: заполнение базовых реквизитов скважины и активного интервала. Здесь формируется набор меток отчета, который затем будет использоваться в геометрии, температурном профиле, свойствах раствора и гидравлических расчетах.
-            </div>
-            <div class="metric-note">
-              <strong>Текущий переход в SI:</strong> исходное название интервала из DFG было `12.25"`, в программе оно переведено как `311,15 мм`. Дальше геометрия, глубины, температуры, плотность и гидравлика будут собираться только в метрической системе.
+              <input class="field" id="wellIntervalInput" type="text" value="" placeholder="Интервал / секция" />
             </div>
           </div>
         </div>
@@ -3157,12 +2256,6 @@
                   <div class="fluid-property-unit">г/см3</div>
                 </div>
                 <div class="fluid-property-note" id="fluidMudWeightNote">Введите плотность раствора. Пока она пустая, расчеты по гидравлике и ECD не строятся.</div>
-                <div class="rheo-tools">
-                  <button class="rheo-tool" type="button" aria-label="График"></button>
-                  <button class="rheo-tool" type="button" aria-label="Панель"></button>
-                  <button class="rheo-tool" type="button" aria-label="Редактировать"></button>
-                  <button class="rheo-tool" type="button" aria-label="Выделить"></button>
-                </div>
                 <div class="rheo-grid head">
                   <div>rpm</div>
                   <div>dial</div>
@@ -3182,28 +2275,27 @@
                 <div class="rheo-card">
                   <div class="rheo-head">Herschel-Bulkley</div>
                   <div class="hb-grid">
-                    <div>n</div><input class="small-field" type="text" value=".791" /><div></div>
-                    <div>k</div><input class="small-field" type="text" value=".297" /><div>lb/100ft^2 s^n</div>
-                    <div>tau0</div><input class="small-field" type="text" value="8.53" /><div>lb/100ft^2</div>
+                    <div>n</div><input class="small-field" id="rheoHbN" type="text" value="" placeholder="—" readonly style="min-width:72px" /><div></div>
+                    <div>k</div><input class="small-field" id="rheoHbK" type="text" value="" placeholder="—" readonly style="min-width:72px" /><div style="white-space:nowrap;font-size:10px">lb/100ft² s^n</div>
+                    <div>τ₀</div><input class="small-field" id="rheoHbTau0" type="text" value="" placeholder="—" readonly style="min-width:72px" /><div style="font-size:10px">lb/100ft²</div>
                   </div>
                   <div class="section-band">Bingham</div>
                   <div class="hb-grid">
-                    <div>PV</div><input class="small-field" id="surfacePvInput" type="text" value="0" readonly /><div>cP</div>
-                    <div>YP</div><input class="small-field" id="surfaceYpInput" type="text" value="0" readonly /><div>lb/100ft^2</div>
+                    <div>PV</div><input class="small-field" id="surfacePvInput" type="text" value="" placeholder="авто" readonly style="min-width:72px" /><div>cP</div>
+                    <div>YP</div><input class="small-field" id="surfaceYpInput" type="text" value="" placeholder="авто" readonly style="min-width:72px" /><div style="font-size:10px">lb/100ft²</div>
                   </div>
                 </div>
               </div>
 
-              <div>
-                <div class="rheo-layout" style="grid-template-columns: 110px 1fr; gap: 18px;">
-                  <div class="rheo-card">
-                    <div class="rheo-head">gels</div>
-                    <div class="gel-grid">
-                      <div>10 s</div><input class="small-field" type="text" value="11" /><div></div>
-                      <div>10 min</div><input class="small-field" type="text" value="30" /><div></div>
-                      <div>30 min</div><input class="small-field" type="text" value="" /><div></div>
-                    </div>
+              <div style="display:flex; flex-direction:column; gap:16px;">
+                <div class="rheo-card" style="align-self:flex-start; min-width:200px;">
+                  <div class="rheo-head">Гели, lb/100ft²</div>
+                  <div class="gel-grid">
+                    <div>10 с</div><input class="small-field" type="text" value="" placeholder="—" style="min-width:80px" /><div></div>
+                    <div>10 мин</div><input class="small-field" type="text" value="" placeholder="—" style="min-width:80px" /><div></div>
+                    <div>30 мин</div><input class="small-field" type="text" value="" placeholder="—" style="min-width:80px" /><div></div>
                   </div>
+                </div>
 
                   <div class="rheo-graph-wrap">
                     <svg class="rheo-graph" viewBox="0 0 420 240" aria-label="График реологии">
@@ -3248,16 +2340,7 @@
                       </g>
                     </svg>
                   </div>
-                </div>
 
-                <div class="downhole-strip">
-                  <div class="rheo-subhead">Свойства на забое</div>
-                  <div class="downhole-actions">
-                    <button class="rheo-tool" type="button" aria-label="Скачать"></button>
-                    <button class="rheo-tool" type="button" aria-label="Цвет"></button>
-                    <button class="rheo-tool" type="button" aria-label="Правка"></button>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
@@ -3370,55 +2453,45 @@
                   </div>
 
                   <div class="geometry-section">
-                    <div class="geometry-title">Размеры ствола</div>
+                    <div class="geometry-title">Обсадные колонны / Ствол</div>
                     <table class="geometry-table" aria-label="Геометрия ствола">
                       <thead>
                         <tr>
-                          <th class="row-marker"></th>
                           <th>ID, мм</th>
                           <th>MD, м</th>
-                          <th>R</th>
-                          <th>C</th>
                           <th>TVD, м</th>
                           <th>Описание</th>
+                          <th style="width:36px"></th>
                         </tr>
                       </thead>
                       <tbody id="geometryWellboreBody">
                         <tr>
-                          <td class="row-marker"></td>
                           <td><input class="geo-input geo-hole-id" type="text" value="501.65" /></td>
                           <td><input class="geo-input geo-hole-md" type="text" value="102.1" /></td>
-                          <td><input class="tiny-check geo-hole-riser" type="checkbox" checked /></td>
-                          <td><input class="tiny-check geo-hole-casing" type="checkbox" /></td>
                           <td><input class="geo-input geo-hole-tvd" type="text" value="102.1" /></td>
                           <td><input class="geo-input geo-hole-desc" type="text" value="Райзер" /></td>
+                          <td><button type="button" onclick="this.closest('tr').remove()" style="width:28px;height:28px;border:none;background:none;color:#DC2626;font-size:16px;cursor:pointer;border-radius:6px" title="Удалить строку">×</button></td>
                         </tr>
                         <tr>
-                          <td class="row-marker"></td>
                           <td><input class="geo-input geo-hole-id" type="text" value="476.25" /></td>
                           <td><input class="geo-input geo-hole-md" type="text" value="117.3" /></td>
-                          <td><input class="tiny-check geo-hole-riser" type="checkbox" /></td>
-                          <td><input class="tiny-check geo-hole-casing" type="checkbox" checked /></td>
                           <td><input class="geo-input geo-hole-tvd" type="text" value="117.3" /></td>
                           <td><input class="geo-input geo-hole-desc" type="text" value="Обсадная колонна" /></td>
+                          <td><button type="button" onclick="this.closest('tr').remove()" style="width:28px;height:28px;border:none;background:none;color:#DC2626;font-size:16px;cursor:pointer;border-radius:6px" title="Удалить строку">×</button></td>
                         </tr>
                         <tr>
-                          <td class="row-marker"></td>
                           <td><input class="geo-input geo-hole-id" type="text" value="313.61" /></td>
                           <td><input class="geo-input geo-hole-md" type="text" value="3241.5" /></td>
-                          <td><input class="tiny-check geo-hole-riser" type="checkbox" /></td>
-                          <td><input class="tiny-check geo-hole-casing" type="checkbox" checked /></td>
                           <td><input class="geo-input geo-hole-tvd" type="text" value="3241.5" /></td>
                           <td><input class="geo-input geo-hole-desc" type="text" value="Обсадная колонна" /></td>
+                          <td><button type="button" onclick="this.closest('tr').remove()" style="width:28px;height:28px;border:none;background:none;color:#DC2626;font-size:16px;cursor:pointer;border-radius:6px" title="Удалить строку">×</button></td>
                         </tr>
                         <tr>
-                          <td class="row-marker"></td>
                           <td><input class="geo-input geo-hole-id" type="text" value="311.15" /></td>
                           <td><input class="geo-input geo-hole-md" type="text" value="4139.2" /></td>
-                          <td><input class="tiny-check geo-hole-riser" type="checkbox" /></td>
-                          <td><input class="tiny-check geo-hole-casing" type="checkbox" /></td>
                           <td><input class="geo-input geo-hole-tvd" type="text" value="4139.2" /></td>
                           <td><input class="geo-input geo-hole-desc" type="text" value="Открытый ствол" /></td>
+                          <td><button type="button" onclick="this.closest('tr').remove()" style="width:28px;height:28px;border:none;background:none;color:#DC2626;font-size:16px;cursor:pointer;border-radius:6px" title="Удалить строку">×</button></td>
                         </tr>
                       </tbody>
                     </table>
@@ -3426,11 +2499,6 @@
 
                   <div class="string-tabs">
                     <div class="string-tab active">БК</div>
-                    <div class="string-tab">ТЗ 1</div>
-                    <div class="string-tab">ТЗ 2</div>
-                    <div class="string-tab">ТЗ 3</div>
-                    <div class="string-tab">ТЗ 4</div>
-                    <div class="string-tab">Поверхность</div>
                   </div>
 
                   <div class="string-toolbar" id="stringToolbar">
@@ -3541,8 +2609,6 @@
 
                 <div class="bit-tabs">
                   <div class="bit-tab active">Форсунки</div>
-                  <div class="bit-tab">Оптимизация</div>
-                  <div class="bit-tab">Автооптимизация</div>
                 </div>
 
                 <div class="bit-work">
@@ -3603,9 +2669,7 @@
                       <input class="bit-field" id="bitSelectionDiameter" type="text" value="9.53" />
                     </div>
 
-                    <div class="bit-note" id="bitNote">
-                      Для учебного интервала используется долото 311.15 мм с 6 форсунками диаметром 9.53 мм. Все расчеты площади выполняются в метрической системе.
-                    </div>
+                    <div class="bit-note" id="bitNote"></div>
                   </div>
                 </div>
               </div>
@@ -3626,21 +2690,7 @@
     </div>
 
     <div class="status-bar">
-      <div class="status-left">
-        <button class="status-chip" type="button">Очистить</button>
-        <select class="status-select" aria-label="Плотность">
-          <option selected>Плотность</option>
-        </select>
-        <select class="status-select" aria-label="Гидравлика">
-          <option selected>Гидравлика</option>
-        </select>
-        <select class="status-select" aria-label="Реология">
-          <option selected>Реология</option>
-        </select>
-        <select class="status-select" aria-label="Мастер">
-          <option selected>Мастер</option>
-        </select>
-      </div>
+      <div class="status-left"></div>
       <div class="status-right">
         <span class="status-chip">MudGPT - Drilling Fluids Graphics</span>
         <span class="status-chip">Русский · SI</span>
@@ -3669,9 +2719,6 @@
       <div class="density-tabs" id="densityTabs">
         <button class="density-tab active" type="button" data-density-view="input">Ввод / данные</button>
         <button class="density-tab" type="button" data-density-view="dynamic-temp">Плотность в динамике</button>
-        <button class="density-tab" type="button" data-density-view="breakpoints">Точки</button>
-        <button class="density-tab" type="button" data-density-view="multiple">Множественные данные</button>
-        <button class="density-tab" type="button" data-density-view="pumped">Закачанный объем</button>
       </div>
 
       <div class="density-layout density-view active" data-density-view-panel="input">
@@ -3739,8 +2786,8 @@
                     <th>TVD, м</th>
                     <th>Temp, °C</th>
                     <th>Pressure, МПа</th>
-                    <th>Лок. MW, г/см3</th>
-                    <th>EMW, г/см3</th>
+                    <th>MW (T/P), г/см3</th>
+                    <th>ECD, г/см3</th>
                   </tr>
                 </thead>
                 <tbody id="densityTableBody"></tbody>
@@ -3789,8 +2836,8 @@
                     <th>TVD, м</th>
                     <th>Temperature, °C</th>
                     <th>Pressure, МПа</th>
-                    <th>Local MW</th>
-                    <th>EMW</th>
+                    <th>MW (T/P)</th>
+                    <th>ECD</th>
                   </tr>
                 </thead>
                 <tbody id="dynamicStaticProfileBody"></tbody>
@@ -3822,8 +2869,8 @@
                     <th>TVD, м</th>
                     <th>Temp, °C</th>
                     <th>Pressure, МПа</th>
-                    <th>Лок. MW, г/см3</th>
-                    <th>EMW, г/см3</th>
+                    <th>MW (T/P), г/см3</th>
+                    <th>ECD, г/см3</th>
                   </tr>
                 </thead>
                 <tbody id="dynamicDensityTableBody"></tbody>
@@ -3833,24 +2880,10 @@
         </div>
       </div>
 
-      <div class="density-layout density-view" data-density-view-panel="breakpoints">
-        <div class="density-left"><div class="density-left-inner">Точки будут использоваться для детальной привязки профиля по глубине.</div></div>
-        <div class="density-right"><div class="density-table-wrap">Раздел подготавливается.</div></div>
-      </div>
-
-      <div class="density-layout density-view" data-density-view-panel="multiple">
-        <div class="density-left"><div class="density-left-inner">Множественные данные будут использоваться для сценарного сравнения.</div></div>
-        <div class="density-right"><div class="density-table-wrap">Раздел подготавливается.</div></div>
-      </div>
-
-      <div class="density-layout density-view" data-density-view-panel="pumped">
-        <div class="density-left"><div class="density-left-inner">Закачанный объем будет рассчитываться отдельным блоком.</div></div>
-        <div class="density-right"><div class="density-table-wrap">Раздел подготавливается.</div></div>
-      </div>
 
       <div class="density-footer">
         <div id="densityFooterText">Плотности рассчитываются для каждого интервала глубины.</div>
-        <button class="action-link" id="densityApply" type="button" style="width: 120px; margin: 0;">Закрыть</button>
+        <div style="display:flex;gap:8px;"><button class="action-link" onclick="if(typeof dfgSave==='function'){dfgSave();this.textContent='Сохранено ✓';var b=this;setTimeout(function(){b.textContent='Сохранить'},2000)}" type="button" style="margin:0;background:#16A34A;">Сохранить</button><button class="action-link" id="densityApply" type="button" style="margin: 0;">Закрыть</button></div>
       </div>
     </div>
   </div>
@@ -3858,8 +2891,8 @@
   <div class="fann-modal" id="fannModal" aria-hidden="true">
     <div class="fann-window" role="dialog" aria-modal="true" aria-labelledby="fannWindowTitle">
       <div class="fann-titlebar">
-        <span id="fannWindowTitle">Predicted Rheology Using Fann70/75</span>
-        <button class="density-close" id="fannClose" type="button">×</button>
+        <span id="fannWindowTitle">Реология FANN 70/75 — Прогноз забойных свойств</span>
+        <button class="density-close" id="fannClose" type="button" title="Закрыть">×</button>
       </div>
 
       <div class="fann-topline">
@@ -3877,7 +2910,7 @@
 
       <div class="fann-shell">
         <div class="fann-panel">
-          <div class="fann-panel-title">Fann Dial Readings</div>
+          <div class="fann-panel-title">Показания реометра FANN</div>
 
           <div class="fann-grid">
             <div class="fann-col">
@@ -3958,13 +2991,14 @@
 
           <div class="fann-bottom">
             <div class="fann-actions">
-              <button class="action-link" id="fannCopyOldToCurrent" type="button" style="width: 120px; margin: 0;">to Current-&gt;</button>
-              <button class="action-link" id="fannPredictConstantT" type="button" style="width: 150px; margin: 0;">Predict constant T</button>
+              <button class="action-link" id="fannCopyOldToCurrent" type="button" style="margin: 0;" title="Перенести значения Old 35 в Current 35">→ Перенести в Current</button>
+              <button class="action-link" id="fannPredictConstantT" type="button" style="margin: 0;" title="Установить одинаковую температуру для всех наборов">T = const</button>
+              <button class="action-link" id="fannGetCurrent" type="button" style="margin: 0;" title="Взять текущие показания реометра с поверхности">Взять с поверхности</button>
+              <button class="action-link" id="fannModeling" type="button" style="margin: 0;" title="Пересчитать прогноз">Пересчитать</button>
             </div>
             <div class="fann-right-actions">
-              <button class="action-link" id="fannGetCurrent" type="button" style="width: 120px; margin: 0;">Get Current</button>
-              <button class="action-link" id="fannModeling" type="button" style="width: 110px; margin: 0;">Modeling</button>
-              <button class="action-link" id="fannExit" type="button" style="width: 80px; margin: 0;">Exit</button>
+              <button class="action-link" id="dfgFannSave" type="button" style="margin:0;background:#16A34A;" title="Сохранить данные">Сохранить</button>
+              <button class="action-link" id="fannExit" type="button" style="margin: 0;">Закрыть</button>
             </div>
           </div>
 
@@ -3972,7 +3006,7 @@
 
           <div class="downhole-panel">
             <div class="downhole-head">
-              <span>Downhole Properties</span>
+              <span>Свойства на забое</span>
               <div class="downhole-tools">
                 <button class="fann-tool upload" type="button" id="downholeRefresh" aria-label="Refresh downhole table"></button>
                 <button class="fann-tool copy" type="button" id="downholeCopy" aria-label="Copy downhole table"></button>
@@ -4096,7 +3130,7 @@
 
       <div class="general-rheo-footer">
         <div id="generalRheoNote">Общая реология собирает поверхностные показания и пересчитывает Bingham, Power Law и Herschel-Bulkley по текущим данным.</div>
-        <button class="action-link" id="generalRheoApply" type="button" style="width: 120px; margin: 0;">Закрыть</button>
+        <div style="display:flex;gap:8px;"><button class="action-link" onclick="if(typeof dfgSave==='function'){dfgSave();this.textContent='Сохранено ✓';var b=this;setTimeout(function(){b.textContent='Сохранить'},2000)}" type="button" style="margin:0;background:#16A34A;">Сохранить</button><button class="action-link" id="generalRheoApply" type="button" style="margin: 0;">Закрыть</button></div>
       </div>
     </div>
   </div>
@@ -4104,14 +3138,14 @@
   <div class="fann-modal" id="hydraulicsModal" aria-hidden="true">
     <div class="hyd-window" role="dialog" aria-modal="true" aria-labelledby="hydraulicsTitle">
       <div class="fann-titlebar">
-        <span id="hydraulicsTitle">MudGPT - Drilling Fluids Graphics · Drill Ahead</span>
+        <span id="hydraulicsTitle">MudGPT - Drilling Fluids Graphics · DRILL-IQ</span>
         <button class="density-close" id="hydraulicsClose" type="button">×</button>
       </div>
 
       <div class="hyd-tabbar" id="hydraulicsTabs">
         <button class="hyd-tab active" type="button" data-hyd-view="drillahead"><span class="fann-tool edit" aria-hidden="true"></span>Ввод проходки</button>
         <button class="hyd-tab" type="button" data-hyd-view="sweep"><span class="fann-tool copy" aria-hidden="true"></span>Расчет пачек</button>
-        <button class="hyd-tab" type="button" data-hyd-view="run"><span class="fann-tool upload" aria-hidden="true"></span>Drill Ahead</button>
+        <button class="hyd-tab" type="button" data-hyd-view="run"><span class="fann-tool upload" aria-hidden="true"></span>DRILL-IQ</button>
         <button class="hyd-tab" type="button" data-hyd-view="tripping"><span class="fann-tool folder" aria-hidden="true"></span>СПО</button>
       </div>
 
@@ -4245,7 +3279,7 @@
 
       <div class="hyd-footer">
         <div id="hydraulicsNote">Окно гидравлики бурения собирает интервалы ЗП из текущей геометрии и формирует сценарий бурения в метрической системе.</div>
-        <button class="action-link" id="hydraulicsApply" type="button" style="width: 120px; margin: 0;">Закрыть</button>
+        <div style="display:flex;gap:8px;"><button class="action-link" onclick="if(typeof dfgSave==='function'){dfgSave();this.textContent='Сохранено ✓';var b=this;setTimeout(function(){b.textContent='Сохранить'},2000)}" type="button" style="margin:0;background:#16A34A;">Сохранить</button><button class="action-link" id="hydraulicsApply" type="button" style="margin: 0;">Закрыть</button></div>
       </div>
     </div>
   </div>
@@ -4253,14 +3287,14 @@
   <div class="fann-modal" id="drillAheadModal" aria-hidden="true">
     <div class="drillahead-window" role="dialog" aria-modal="true" aria-labelledby="drillAheadTitle">
       <div class="fann-titlebar">
-        <span id="drillAheadTitle">MudGPT - Drilling Fluids Graphics · Drill Ahead</span>
+        <span id="drillAheadTitle">MudGPT - Drilling Fluids Graphics · DRILL-IQ</span>
         <button class="density-close" id="drillAheadClose" type="button">×</button>
       </div>
 
       <div class="drillahead-toolbar">
-        <button class="hyd-tab active" type="button">Drill Ahead</button>
-        <button class="fann-tool upload" type="button" id="drillAheadRefresh" aria-label="Обновить график Drill Ahead"></button>
-        <button class="fann-tool copy" type="button" id="drillAheadCopy" aria-label="Скопировать сводку Drill Ahead"></button>
+        <button class="hyd-tab active" type="button">DRILL-IQ</button>
+        <button class="fann-tool upload" type="button" id="drillAheadRefresh" aria-label="Обновить график DRILL-IQ"></button>
+        <button class="fann-tool copy" type="button" id="drillAheadCopy" aria-label="Скопировать сводку DRILL-IQ"></button>
       </div>
 
       <div class="drillahead-meta">
@@ -4270,12 +3304,12 @@
       </div>
 
       <div class="drillahead-chart-wrap">
-        <svg class="drillahead-chart" id="drillAheadChart" viewBox="0 0 1320 1120" aria-label="Прогнозный график Drill Ahead"></svg>
+        <svg class="drillahead-chart" id="drillAheadChart" viewBox="0 0 1320 1120" aria-label="Прогнозный график DRILL-IQ"></svg>
       </div>
 
       <div class="drillahead-footer">
-        <div id="drillAheadNote">Прогноз Drill Ahead использует уже внесенные данные по скважине, раствору, бурению, геометрии и плотности для расчета ожидаемого поведения на забое.</div>
-        <button class="action-link" id="drillAheadApply" type="button" style="width: 120px; margin: 0;">Закрыть</button>
+        <div id="drillAheadNote">Прогноз DRILL-IQ использует уже внесенные данные по скважине, раствору, бурению, геометрии и плотности для расчета ожидаемого поведения на забое.</div>
+        <div style="display:flex;gap:8px;"><button class="action-link" onclick="if(typeof dfgSave==='function'){dfgSave();this.textContent='Сохранено ✓';var b=this;setTimeout(function(){b.textContent='Сохранить'},2000)}" type="button" style="margin:0;background:#16A34A;">Сохранить</button><button class="action-link" id="drillAheadApply" type="button" style="margin: 0;">Закрыть</button></div>
       </div>
     </div>
   </div>
@@ -4294,86 +3328,45 @@
       </div>
 
       <div class="sweepcalc-body">
-        <div class="sweepcalc-recommend">
-          <div class="sweepcalc-pill" id="sweepRecommendationLabel">Рекомендации по пачке</div>
-          <div class="sweepcalc-arrow" aria-hidden="true"></div>
+
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;flex-wrap:wrap;">
+          <div style="font-size:15px;font-weight:700;letter-spacing:-0.2px;">Утяжеленная / высоковязкая пачка</div>
+          <div id="sweepRecommendationLabel" style="font-size:12px;font-weight:600;color:var(--blue-d);background:var(--blue-l);border:1px solid var(--blue-m);border-radius:999px;padding:4px 14px;">Рекомендации по пачке</div>
         </div>
 
-        <div class="sweepcalc-layout">
-          <div class="sweepcalc-title">Утяжеленная / высоковязкая пачка</div>
-          <div></div>
-          <div class="sweepcalc-head">Пачка 1</div>
-          <div></div>
-          <div class="sweepcalc-actions">
-            <button class="fann-tool edit" type="button" id="sweepCalcRebuild" aria-label="Обновить поля пачки"></button>
-            <button class="action-link" id="sweepCalcAction" type="button" style="width: 116px; margin: 0;">Рассчитать реологию</button>
-            <button class="action-link" id="sweepCalcResult" type="button" style="width: 116px; margin: 0;">Результат</button>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-bottom:20px;">
+
+          <div>
+            <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid var(--line);">Показания реометра</div>
+            <div style="display:grid;grid-template-columns:80px 1fr;gap:8px 12px;align-items:center;font-size:13px;">
+              <div>RPM 600</div><input class="sweepcalc-input" id="sweepRpm600" type="text" />
+              <div>RPM 300</div><input class="sweepcalc-input" id="sweepRpm300" type="text" />
+              <div>RPM 200</div><input class="sweepcalc-input" id="sweepRpm200" type="text" />
+              <div>RPM 100</div><input class="sweepcalc-input" id="sweepRpm100" type="text" />
+              <div>RPM 6</div><input class="sweepcalc-input" id="sweepRpm6" type="text" />
+              <div>RPM 3</div><input class="sweepcalc-input" id="sweepRpm3" type="text" />
+            </div>
           </div>
 
-          <div class="sweepcalc-label">RPM 600</div>
-          <input class="sweepcalc-input" id="sweepRpm600" type="text" />
-          <div></div>
-          <div class="sweepcalc-unit"></div>
+          <div>
+            <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid var(--line);">Параметры пачки</div>
+            <div style="display:grid;grid-template-columns:140px 1fr 110px;gap:8px 10px;align-items:center;font-size:13px;">
+              <div>n</div><input class="sweepcalc-input" id="sweepN" type="text" /><div></div>
+              <div>k</div><input class="sweepcalc-input" id="sweepK" type="text" /><div style="font-size:11px;color:var(--text3);">lb/100ft²·s^n</div>
+              <div>τ₀</div><input class="sweepcalc-input" id="sweepTau0" type="text" /><div style="font-size:11px;color:var(--text3);">lb/100ft²</div>
+              <div>Плотность</div><input class="sweepcalc-input" id="sweepDensity" type="text" /><div style="color:var(--text2);">г/см3</div>
+              <div>Подача насоса</div><input class="sweepcalc-input" id="sweepPumpRate" type="text" /><div style="color:var(--text2);">л/мин</div>
+              <div>Объем пачки</div><input class="sweepcalc-input" id="sweepVolume" type="text" /><div style="color:var(--text2);">м3</div>
+              <div>Обороты ротора</div><input class="sweepcalc-input" id="sweepRotaryRpm" type="text" /><div style="color:var(--text2);">об/мин</div>
+            </div>
+          </div>
 
-          <div class="sweepcalc-label">RPM 300</div>
-          <input class="sweepcalc-input" id="sweepRpm300" type="text" />
-          <div></div>
-          <div class="sweepcalc-unit"></div>
+        </div>
 
-          <div class="sweepcalc-label">RPM 200</div>
-          <input class="sweepcalc-input" id="sweepRpm200" type="text" />
-          <div></div>
-          <div class="sweepcalc-unit"></div>
-
-          <div class="sweepcalc-label">RPM 100</div>
-          <input class="sweepcalc-input" id="sweepRpm100" type="text" />
-          <div></div>
-          <div class="sweepcalc-unit"></div>
-
-          <div class="sweepcalc-label">RPM 6</div>
-          <input class="sweepcalc-input" id="sweepRpm6" type="text" />
-          <div></div>
-          <div class="sweepcalc-unit"></div>
-
-          <div class="sweepcalc-label">RPM 3</div>
-          <input class="sweepcalc-input" id="sweepRpm3" type="text" />
-          <div></div>
-          <div class="sweepcalc-unit"></div>
-
-          <div class="sweepcalc-label">n</div>
-          <input class="sweepcalc-input" id="sweepN" type="text" />
-          <div></div>
-          <div class="sweepcalc-unit"></div>
-
-          <div class="sweepcalc-label">k</div>
-          <input class="sweepcalc-input" id="sweepK" type="text" />
-          <div></div>
-          <div class="sweepcalc-unit">lb/100ft^2·s^n</div>
-
-          <div class="sweepcalc-label">Tau0</div>
-          <input class="sweepcalc-input" id="sweepTau0" type="text" />
-          <div></div>
-          <div class="sweepcalc-unit">lb/100ft^2</div>
-
-          <div class="sweepcalc-label">Плотность пачки</div>
-          <input class="sweepcalc-input" id="sweepDensity" type="text" />
-          <div></div>
-          <div class="sweepcalc-unit">г/см3</div>
-
-          <div class="sweepcalc-label">Подача насоса</div>
-          <input class="sweepcalc-input" id="sweepPumpRate" type="text" />
-          <div></div>
-          <div class="sweepcalc-unit">л/мин</div>
-
-          <div class="sweepcalc-label">Объем пачки</div>
-          <input class="sweepcalc-input" id="sweepVolume" type="text" />
-          <div></div>
-          <div class="sweepcalc-unit">м3</div>
-
-          <div class="sweepcalc-label">Обороты ротора</div>
-          <input class="sweepcalc-input" id="sweepRotaryRpm" type="text" />
-          <div></div>
-          <div class="sweepcalc-unit">об/мин</div>
+        <div style="display:flex;align-items:center;gap:10px;padding:16px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-bottom:12px;">
+          <button class="fann-tool edit" type="button" id="sweepCalcRebuild" title="Обновить поля пачки" aria-label="Обновить поля пачки"></button>
+          <button class="action-link" id="sweepCalcAction" type="button" style="margin:0;">Рассчитать реологию</button>
+          <button class="action-link" id="sweepCalcResult" type="button" style="margin:0;">Показать результат</button>
         </div>
 
         <div class="sweepcalc-note" id="sweepCalcNote">Окно расчета пачек использует текущую реологию, плотность, геометрию и режим циркуляции.</div>
@@ -4391,7 +3384,7 @@
 
       <div class="drillahead-footer">
         <div></div>
-        <button class="action-link" id="sweepCalcApply" type="button" style="width: 120px; margin: 0;">Закрыть</button>
+        <div style="display:flex;gap:8px;"><button class="action-link" onclick="if(typeof dfgSave==='function'){dfgSave();this.textContent='Сохранено ✓';var b=this;setTimeout(function(){b.textContent='Сохранить'},2000)}" type="button" style="margin:0;background:#16A34A;">Сохранить</button><button class="action-link" id="sweepCalcApply" type="button" style="margin: 0;">Закрыть</button></div>
       </div>
     </div>
   </div>
@@ -4448,7 +3441,7 @@
 
       <div class="drillahead-footer">
         <div></div>
-        <button class="action-link" id="gelBreakApply" type="button" style="width: 120px; margin: 0;">Закрыть</button>
+        <div style="display:flex;gap:8px;"><button class="action-link" onclick="if(typeof dfgSave==='function'){dfgSave();this.textContent='Сохранено ✓';var b=this;setTimeout(function(){b.textContent='Сохранить'},2000)}" type="button" style="margin:0;background:#16A34A;">Сохранить</button><button class="action-link" id="gelBreakApply" type="button" style="margin: 0;">Закрыть</button></div>
       </div>
     </div>
   </div>
@@ -4526,7 +3519,7 @@
 
       <div class="drillahead-footer">
         <div></div>
-        <button class="action-link" id="tripApply" type="button" style="width: 120px; margin: 0;">Закрыть</button>
+        <div style="display:flex;gap:8px;"><button class="action-link" onclick="if(typeof dfgSave==='function'){dfgSave();this.textContent='Сохранено ✓';var b=this;setTimeout(function(){b.textContent='Сохранить'},2000)}" type="button" style="margin:0;background:#16A34A;">Сохранить</button><button class="action-link" id="tripApply" type="button" style="margin: 0;">Закрыть</button></div>
       </div>
     </div>
   </div>
@@ -4779,11 +3772,11 @@
           return;
         }
         if (currentMudWeight() === null) {
-          fluidMudWeightNote.textContent = 'Плотность не задана. Пока она пустая, расчеты ECD, выноса шлама, Drill Ahead и Surge/Swab не строятся.';
+          fluidMudWeightNote.textContent = 'Плотность не задана. Пока она пустая, расчеты ECD, выноса шлама, DRILL-IQ и Surge/Swab не строятся.';
           fluidMudWeightNote.classList.add('missing');
           return;
         }
-        fluidMudWeightNote.textContent = 'Эта плотность используется как базовый параметр для профиля по стволу, ECD, гидравлики, выноса шлама, Drill Ahead и Surge/Swab.';
+        fluidMudWeightNote.textContent = 'Эта плотность используется как базовый параметр для профиля по стволу, ECD, гидравлики, выноса шлама, DRILL-IQ и Surge/Swab.';
         fluidMudWeightNote.classList.remove('missing');
       }
 
@@ -4834,13 +3827,12 @@
 
       function createHoleRow(data) {
         var row = document.createElement('tr');
-        row.innerHTML = '<td class="row-marker"></td>' +
+        row.innerHTML =
           '<td><input class="geo-input geo-hole-id" type="text" value="' + data.holeId + '" /></td>' +
           '<td><input class="geo-input geo-hole-md" type="text" value="' + data.md + '" /></td>' +
-          '<td><input class="tiny-check geo-hole-riser" type="checkbox"' + (data.riser ? ' checked' : '') + ' /></td>' +
-          '<td><input class="tiny-check geo-hole-casing" type="checkbox"' + (data.casing ? ' checked' : '') + ' /></td>' +
           '<td><input class="geo-input geo-hole-tvd" type="text" value="' + data.tvd + '" /></td>' +
-          '<td><input class="geo-input geo-hole-desc" type="text" value="' + data.desc + '" /></td>';
+          '<td><input class="geo-input geo-hole-desc" type="text" value="' + data.desc + '" /></td>' +
+          '<td><button type="button" onclick="this.closest(\'tr\').remove()" style="width:28px;height:28px;border:none;background:none;color:#DC2626;font-size:16px;cursor:pointer;border-radius:6px" title="Удалить строку">×</button></td>';
         return row;
       }
 
@@ -4984,6 +3976,12 @@
         if (surfaceYpInput) {
           surfaceYpInput.value = formatValue(model.yp, 1);
         }
+        var _rheoHbN = document.getElementById('rheoHbN');
+        var _rheoHbK = document.getElementById('rheoHbK');
+        var _rheoHbTau0 = document.getElementById('rheoHbTau0');
+        if (_rheoHbN) _rheoHbN.value = formatValue(model.hb.n, 3);
+        if (_rheoHbK) _rheoHbK.value = formatValue(model.hb.k, 3);
+        if (_rheoHbTau0) _rheoHbTau0.value = formatValue(model.hb.tau0, 1);
       }
 
       function refreshRheologyDependents() {
@@ -5123,6 +4121,12 @@
         if (generalGel10m) {
           generalGel10m.textContent = formatValue(model.gels.tenMinutes, 0);
         }
+        var _rheoHbN = document.getElementById('rheoHbN');
+        var _rheoHbK = document.getElementById('rheoHbK');
+        var _rheoHbTau0 = document.getElementById('rheoHbTau0');
+        if (_rheoHbN) _rheoHbN.value = formatValue(model.hb.n, 3);
+        if (_rheoHbK) _rheoHbK.value = formatValue(model.hb.k, 3);
+        if (_rheoHbTau0) _rheoHbTau0.value = formatValue(model.hb.tau0, 1);
         renderGeneralRheoGraph(model);
         setGeneralRheoMessage('Общая реология обновлена по текущим поверхностным показаниям и показывает Bingham, Power Law и Herschel-Bulkley в одном окне.');
       }
@@ -5532,9 +4536,9 @@
         var totalDepth = boreRows.length ? boreRows[boreRows.length - 1].tvd : intervalBottom;
         var casingDepth = boreRows.length > 1 ? boreRows[boreRows.length - 2].tvd : Math.max(0, totalDepth * 0.78);
         var annulusArea = Math.max(0.0025, (Math.PI / 4) * (Math.pow(bottomSection.holeId / 1000, 2) - Math.pow(bottomSection.pipeOd / 1000, 2)));
-        var annularVelocity = Math.max(8, (pack.pumpRate / 1000) / annulusArea / 60);
-        var slugLength = Math.max(120, pack.volume / annulusArea);
-        var totalHours = Math.max(1.6, Math.min(4.5, (totalDepth + slugLength) / annularVelocity / 60));
+        var annularVelocity = Math.max(5, (pack.pumpRate / 1000) / annulusArea); // м/мин
+        var slugLength = Math.max(20, pack.volume / annulusArea); // длина пачки, м
+        var totalHours = (totalDepth + slugLength) / annularVelocity / 60; // реальное время циркуляции, ч
         var pointCount = 32;
         var drillSections = drillAhead.sections || [];
         var currentSection = drillSections.length ? drillSections[drillSections.length - 1] : null;
@@ -5657,8 +4661,8 @@
           '<text x="' + (left + plotWidth / 2) + '" y="' + (height - 10) + '" text-anchor="middle" font-size="12" fill="#111">Часы</text>' +
           '<text x="' + (left + plotWidth - 120) + '" y="' + (yEcd(result.baseEcd) - 6) + '" font-size="11" fill="#111">После пачки ' + formatValue(result.baseEcd, 3) + ' г/см3</text>' +
           '<text x="' + (left + plotWidth - 174) + '" y="' + (yEcd(result.cleanEcd) - 6) + '" font-size="11" fill="#111">Стабилизация без шлама ' + formatValue(result.cleanEcd, 3) + ' г/см3</text>' +
-          '<text x="' + (x(result.totalHours * 0.18)) + '" y="' + (yDepth(result.points[Math.floor(result.points.length * 0.28)].frontDepth) - 8) + '" font-size="11" fill="#111">Фронт пачки</text>' +
-          '<text x="' + (x(result.totalHours * 0.22)) + '" y="' + (yDepth(result.points[Math.floor(result.points.length * 0.35)].backDepth) + 16) + '" font-size="11" fill="#111">Хвост пачки</text>';
+          '<text x="' + (x(result.totalHours * 0.12)) + '" y="' + (yDepth(result.points[Math.floor(result.points.length * 0.12)].frontDepth) - 8) + '" font-size="11" fill="#2563EB">Фронт пачки</text>' +
+          '<text x="' + (x(result.totalHours * 0.68)) + '" y="' + (yDepth(result.points[Math.floor(result.points.length * 0.68)].backDepth) + 16) + '" font-size="11" fill="#7c3aed">Хвост пачки</text>';
 
         sweepResultChart.innerHTML = markup;
         if (sweepResultPanel) {
@@ -5970,12 +4974,12 @@
 
       function drillAheadInfo() {
         return {
-          wellName: wellNameInput && wellNameInput.value ? wellNameInput.value.trim() : 'Training Well #1',
-          operator: wellOperatorInput && wellOperatorInput.value ? wellOperatorInput.value.trim() : 'ABC Drilling Co',
-          contractor: wellContractorInput && wellContractorInput.value ? wellContractorInput.value.trim() : 'DEF Drilling Company',
-          rig: wellRigInput && wellRigInput.value ? wellRigInput.value.trim() : '15',
-          spudDate: wellSpudDateInput && wellSpudDateInput.value ? wellSpudDateInput.value.trim() : '15.07.2004',
-          interval: wellIntervalInput && wellIntervalInput.value ? wellIntervalInput.value.trim() : 'Интервал 1 - 311,15 мм',
+          wellName: wellNameInput && wellNameInput.value ? wellNameInput.value.trim() : '—',
+          operator: wellOperatorInput && wellOperatorInput.value ? wellOperatorInput.value.trim() : '—',
+          contractor: wellContractorInput && wellContractorInput.value ? wellContractorInput.value.trim() : '—',
+          rig: wellRigInput && wellRigInput.value ? wellRigInput.value.trim() : '—',
+          spudDate: wellSpudDateInput && wellSpudDateInput.value ? wellSpudDateInput.value.trim() : '—',
+          interval: wellIntervalInput && wellIntervalInput.value ? wellIntervalInput.value.trim() : '—',
           flowRate: metricNumber(drillingFlowRateInput && drillingFlowRateInput.value) || currentHydraulicFlowRate(),
           mudWeight: currentMudWeight(),
           rop: metricNumber(hydRotaryRop && hydRotaryRop.value) || 10.7,
@@ -6237,8 +5241,8 @@
           drillAheadChart.innerHTML = '<rect x="0" y="0" width="1320" height="1120" fill="#f7f2df"></rect>' +
             '<rect x="18" y="18" width="1284" height="1084" fill="#fbf7ea" stroke="#a59c88" stroke-width="1"></rect>' +
             '<text x="660" y="118" text-anchor="middle" font-size="28" font-weight="700" fill="#4e483b">Введите плотность раствора в свойствах раствора</text>' +
-            '<text x="660" y="156" text-anchor="middle" font-size="18" fill="#6b634f">Без этого параметра Drill Ahead не считает ECD, зашламованность и вынос шлама.</text>';
-          setDrillAheadMessage('Введите плотность раствора в свойствах раствора. Без нее Drill Ahead не строится.');
+            '<text x="660" y="156" text-anchor="middle" font-size="18" fill="#6b634f">Без этого параметра DRILL-IQ не считает ECD, зашламованность и вынос шлама.</text>';
+          setDrillAheadMessage('Введите плотность раствора в свойствах раствора. Без нее DRILL-IQ не строится.');
           return;
         }
         var series = dataset.series;
@@ -6251,8 +5255,8 @@
         var summaryTop = 56;
         var summaryHeight = 64;
         var trackHeaderTop = 126;
-        var trackHeaderHeight = 38;
-        var plotTop = 164;
+        var trackHeaderHeight = 54;
+        var plotTop = 180;
         var mainPlotBottom = 706;
         var plotHeight = mainPlotBottom - plotTop;
         var plotLeft = 70;
@@ -6295,15 +5299,10 @@
 
         var headerMarkup = '<rect x="12" y="' + headerTop + '" width="1294" height="' + headerHeight + '" fill="#ece3c8" stroke="#a59c88" stroke-width="1"></rect>' +
           '<rect x="18" y="24" width="128" height="24" fill="#f8f3e3" stroke="#a59c88" stroke-width="1"></rect>' +
-          '<text x="30" y="40" font-size="11" font-weight="700" fill="#2e2b26">Drill Ahead</text>' +
+          '<text x="30" y="40" font-size="11" font-weight="700" fill="#2e2b26">DRILL-IQ</text>' +
           '<rect x="170" y="24" width="214" height="24" fill="#fffefa" stroke="#a59c88" stroke-width="1"></rect>' +
           '<text x="182" y="40" font-size="10" fill="#2e2b26">Секция кольцевого пространства: ' + info.interval + '</text>' +
-          '<rect x="1188" y="18" width="58" height="34" fill="#f7eb55" stroke="#a59c88" stroke-width="1"></rect>' +
-          '<rect x="1248" y="18" width="58" height="34" fill="#ff3c2d" stroke="#a59c88" stroke-width="1"></rect>' +
-          '<text x="1217" y="31" text-anchor="middle" font-size="11" font-weight="700" fill="#222">Sweep</text>' +
-          '<text x="1277" y="31" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">Optimize</text>' +
-          '<text x="1217" y="45" text-anchor="middle" font-size="10" fill="#444">K  &lt;  &gt;</text>' +
-          '<text x="1277" y="45" text-anchor="middle" font-size="10" fill="#fff">K  &lt;  &gt;</text>';
+          '';
 
         var summaryMarkup = '<rect x="12" y="' + summaryTop + '" width="1294" height="' + summaryHeight + '" fill="#f9f5e8" stroke="#a59c88" stroke-width="1"></rect>' +
           '<rect x="18" y="62" width="722" height="52" fill="#fffefa" stroke="#a59c88" stroke-width="1"></rect>' +
@@ -6334,9 +5333,9 @@
             var tickValue = track.min + ((track.max - track.min) / 4) * tickIndex;
             var tickX = xFor(track, tickValue);
             plotMarkup += '<line x1="' + tickX + '" y1="' + plotTop + '" x2="' + tickX + '" y2="' + (plotTop + plotHeight) + '" stroke="#cccccc" stroke-width="1"></line>' +
-              '<text x="' + tickX + '" y="' + (trackHeaderTop + 31) + '" text-anchor="middle" font-size="10" fill="#333">' + formatValue(tickValue, track.decimals) + '</text>';
+              '<text x="' + tickX + '" y="' + (trackHeaderTop + 49) + '" text-anchor="middle" font-size="9" fill="#555">' + formatValue(tickValue, track.decimals) + '</text>';
           }
-          plotMarkup += textLines(track.x + track.width / 2, trackHeaderTop + 12, track.title.split('\n'), { anchor: 'middle', size: 10, weight: '700' });
+          plotMarkup += textLines(track.x + track.width / 2, trackHeaderTop + 11, track.title.split('\n'), { anchor: 'middle', size: 9, weight: '700' });
         });
 
         sections.forEach(function (section, index) {
@@ -6533,7 +5532,7 @@
         }
 
         drillAheadChart.innerHTML = '<rect x="0" y="0" width="' + width + '" height="' + height + '" fill="#f7f2df"></rect>' + headerMarkup + summaryMarkup + plotMarkup;
-        setDrillAheadMessage('Drill Ahead перестроен в формате DFG: сверху показаны шламовая нагрузка по глубине, транспорт, скорость, угол и две линии ЭЦП, а ниже добавлена карта чувствительности зашламованности по подаче и ЭЦП для критического интервала.');
+        setDrillAheadMessage('DRILL-IQ перестроен в формате DFG: сверху показаны шламовая нагрузка по глубине, транспорт, скорость, угол и две линии ЭЦП, а ниже добавлена карта чувствительности зашламованности по подаче и ЭЦП для критического интервала.');
       }
 
       function openDrillAheadModal() {
@@ -7799,8 +6798,20 @@
 
       if (fannGetCurrent) {
         fannGetCurrent.addEventListener('click', function () {
+          var rpms = [600, 300, 200, 100, 6, 3];
+          var srcIds = ['surfaceDial600','surfaceDial300','surfaceDial200','surfaceDial100','surfaceDial6','surfaceDial3'];
+          rpms.forEach(function(rpm, i) {
+            var src = document.getElementById(srcIds[i]);
+            var dst = document.querySelector('.fann-current[data-rpm="' + rpm + '"]');
+            if (src && dst) dst.value = src.value;
+          });
+          var tempSrc = document.getElementById('fluidMudWeightInput');
+          if (fannCurrentTemp && tempSrc) {
+            var t = metricNumber(document.getElementById('drillingFlowlineTemp') && document.getElementById('drillingFlowlineTemp').value);
+            if (t) fannCurrentTemp.value = formatValue(t * 9/5 + 32, 0);
+          }
           renderFannPredicted();
-          setFannMessage('Predicted обновлен по текущим данным Current 35 и опорным Fann70/75.');
+          setFannMessage('Текущие показания реометра (600/300/200/100/6/3) скопированы в Current 35.');
         });
       }
 
@@ -7864,6 +6875,15 @@
 
       if (fannExit) {
         fannExit.addEventListener('click', closeFannModal);
+      }
+
+      var dfgFannSave = document.getElementById('dfgFannSave');
+      if (dfgFannSave) {
+        dfgFannSave.addEventListener('click', function() {
+          if (typeof dfgSave === 'function') dfgSave();
+          dfgFannSave.textContent = 'Сохранено ✓';
+          setTimeout(function() { dfgFannSave.textContent = 'Сохранить'; }, 2000);
+        });
       }
 
       if (generalRheoClose) {
@@ -8069,7 +7089,7 @@
           var info = drillAheadInfo();
           var dataset = drillAheadSeries();
           var summary = [
-            'Drill Ahead',
+            'DRILL-IQ',
             'Скважина: ' + info.wellName,
             'Оператор: ' + info.operator,
             'Подрядчик: ' + info.contractor,
@@ -8083,9 +7103,9 @@
             'Средняя скорость в ЗП: ' + formatValue(dataset.stats.avgVelocity, 1) + ' м/мин'
           ].join('\n');
           copyText(summary).then(function () {
-            setDrillAheadMessage('Сводка Drill Ahead скопирована в буфер обмена.');
+            setDrillAheadMessage('Сводка DRILL-IQ скопирована в буфер обмена.');
           }).catch(function () {
-            setDrillAheadMessage('Не удалось скопировать сводку Drill Ahead автоматически.');
+            setDrillAheadMessage('Не удалось скопировать сводку DRILL-IQ автоматически.');
           });
         });
       }
@@ -8121,6 +7141,58 @@
       renderGeneralRheoModal();
       renderHydraulicsModal();
       renderDrillAheadChart();
+
+      // ── localStorage persistence ───────────────────────────────
+      var _STORE_KEY = 'dfg_data_v1';
+
+      function dfgSave() {
+        var data = {};
+        document.querySelectorAll('input[id]:not([readonly]), select[id], textarea[id]').forEach(function(el) {
+          data[el.id] = el.type === 'checkbox' ? el.checked : el.value;
+        });
+        try { localStorage.setItem(_STORE_KEY, JSON.stringify(data)); } catch(e) {}
+      }
+
+      function dfgLoad() {
+        try {
+          var raw = localStorage.getItem(_STORE_KEY);
+          if (!raw) return;
+          var data = JSON.parse(raw);
+          Object.keys(data).forEach(function(id) {
+            var el = document.getElementById(id);
+            if (!el || el.hasAttribute('readonly')) return;
+            if (el.type === 'checkbox') { el.checked = Boolean(data[id]); }
+            else { el.value = data[id]; }
+          });
+          refreshRheologyDependents();
+          renderGeometrySchematic();
+          renderBitSummary();
+          applySelectionToSummary();
+          updateMudWeightState();
+        } catch(e) {}
+      }
+
+      var _saveBtn = document.getElementById('dfgSaveBtn');
+      if (_saveBtn) {
+        _saveBtn.addEventListener('click', function() {
+          dfgSave();
+          _saveBtn.textContent = 'Сохранено ✓';
+          _saveBtn.style.background = '#16A34A';
+          setTimeout(function() {
+            _saveBtn.textContent = 'Сохранить';
+            _saveBtn.style.background = '#2563EB';
+          }, 2000);
+        });
+      }
+
+      document.addEventListener('input', function(e) {
+        if (e.target.closest && e.target.closest('.workspace')) { dfgSave(); }
+      });
+      document.addEventListener('change', function(e) {
+        if (e.target.closest && e.target.closest('.workspace')) { dfgSave(); }
+      });
+
+      dfgLoad();
     }());
   </script>
 </body>

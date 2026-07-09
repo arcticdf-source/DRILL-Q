@@ -1,27 +1,21 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="ru">
 <head>
-  <script src="../auth-gate.js" data-dq-gate></script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>123 · Осаждение твердых частиц</title>
   <style>
-    @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap");
-
     :root {
-      --bg-0: #06111a;
-      --bg-1: #0f2233;
-      --bg-2: #1b3548;
-      --panel: rgba(9, 17, 28, 0.84);
-      --line: rgba(226, 237, 255, 0.14);
-      --line-soft: rgba(226, 237, 255, 0.08);
-      --text: #edf5ff;
-      --muted: #9ab0c7;
-      --cyan: #20d9b4;
-      --blue: #8db4ff;
-      --amber: #ffbf66;
-      --danger: #ff8f8f;
-      --shadow: 0 24px 56px rgba(0, 0, 0, 0.42);
+      --bg: #F5F5F7;
+      --panel: #FFFFFF;
+      --blue: #2563EB;
+      --text: #1D1D1F;
+      --muted: #6E6E73;
+      --border: #E5E5EA;
+      --shadow: 0 2px 14px rgba(0,0,0,.07);
+      --cyan: #0A9981;
+      --amber: #D97706;
+      --danger: #DC2626;
     }
 
     * { box-sizing: border-box; }
@@ -29,24 +23,9 @@
     html, body {
       margin: 0;
       min-height: 100%;
-      font-family: "Manrope", sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
       color: var(--text);
-      background:
-        radial-gradient(920px 440px at 0% -10%, rgba(32,217,180,.18), transparent),
-        radial-gradient(760px 360px at 100% 0%, rgba(141,180,255,.14), transparent),
-        linear-gradient(145deg, var(--bg-0), var(--bg-1) 48%, var(--bg-2));
-    }
-
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      background:
-        linear-gradient(to right, rgba(255,255,255,.022) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(255,255,255,.022) 1px, transparent 1px);
-      background-size: 42px 42px;
-      mask-image: radial-gradient(circle at 50% 18%, rgba(0,0,0,.92), transparent 72%);
+      background: var(--bg);
     }
 
     .wrap {
@@ -54,11 +33,11 @@
       z-index: 1;
       width: min(1420px, 94vw);
       margin: 0 auto;
-      padding: 24px 0 56px;
+      padding: 12px 0 30px;
     }
 
-    .topbar, .hero, .panel, .viz-card, .logic-card, .factor-card, .result-card, .field {
-      border: 1px solid var(--line-soft);
+    .hero, .panel, .viz-card, .logic-card, .factor-card, .result-card, .field {
+      border: 1px solid var(--border);
       box-shadow: var(--shadow);
     }
 
@@ -68,12 +47,15 @@
       align-items: center;
       gap: 12px;
       flex-wrap: wrap;
-      padding: 12px 16px;
-      border-radius: 16px;
-      background: rgba(7, 12, 20, 0.62);
-      backdrop-filter: blur(10px);
+      padding: 9px 20px;
+      border-radius: 0;
+      background: rgba(255,255,255,.92);
+      border: none;
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       position: sticky;
-      top: 12px;
+      top: 0;
       z-index: 20;
     }
 
@@ -81,17 +63,18 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      font-family: "Oswald", sans-serif;
-      font-size: 20px;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+      font-size: 13px;
       text-transform: uppercase;
       letter-spacing: .05em;
+      color: var(--text);
     }
 
     .dot {
-      width: 12px;
-      height: 12px;
+      width: 9px;
+      height: 9px;
       border-radius: 999px;
-      background: radial-gradient(circle at 35% 35%, #d8fff7, var(--cyan));
+      background: var(--blue);
     }
 
     .actions {
@@ -115,34 +98,30 @@
     }
 
     .btn {
-      color: #06241f;
-      background: linear-gradient(135deg, #9efcef, var(--cyan));
-      border: 1px solid rgba(32, 217, 180, 0.82);
+      color: #fff;
+      background: var(--blue);
+      border: 1px solid var(--blue);
     }
 
     .btn-ghost {
       color: var(--muted);
-      border: 1px solid var(--line-soft);
-      background: rgba(255,255,255,.03);
+      border: 1px solid var(--border);
+      background: #fff;
     }
 
     .hero {
-      margin-top: 18px;
-      border-radius: 28px;
-      padding: clamp(22px, 3vw, 36px);
-      background:
-        radial-gradient(520px 220px at 4% 0%, rgba(32,217,180,.14), transparent),
-        radial-gradient(540px 240px at 100% 0%, rgba(141,180,255,.12), transparent),
-        linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015)),
-        var(--panel);
+      margin-top: 10px;
+      border-radius: 12px;
+      padding: 12px;
+      background: var(--panel);
     }
 
     .eyebrow, .tag, .status-pill {
       display: inline-flex;
       align-items: center;
       border-radius: 999px;
-      border: 1px solid var(--line-soft);
-      background: rgba(255,255,255,.04);
+      border: 1px solid var(--border);
+      background: var(--bg);
     }
 
     .eyebrow, .tag {
@@ -150,48 +129,67 @@
       font-size: 11px;
       text-transform: uppercase;
       letter-spacing: .09em;
-      color: #d5e7f8;
+      color: var(--muted);
     }
 
     h1 {
-      margin: 14px 0 10px;
-      font-family: "Oswald", sans-serif;
-      font-size: clamp(38px, 5vw, 60px);
-      line-height: .97;
+      margin: 8px 0 6px;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+      font-size: 22px;
+      line-height: 1.1;
+      color: var(--text);
     }
 
-    h1 span { color: var(--cyan); }
+    h1 span { color: var(--blue); }
 
     .lead {
       margin: 0;
-      max-width: 1060px;
-      color: #cad9eb;
-      font-size: 15px;
+      max-width: 760px;
+      color: var(--muted);
+      font-size: 12px;
       line-height: 1.7;
     }
 
     .hero-stats {
-      margin-top: 18px;
+      margin-top: 12px;
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 12px;
+      gap: 8px;
     }
 
-    .hero-stat, .panel, .viz-card, .logic-card {
-      border-radius: 20px;
-      background: rgba(255,255,255,.03);
-      padding: 16px;
+    .hero-stat {
+      border-radius: 9px;
+      background: var(--panel);
+      padding: 9px;
+    }
+
+    .panel {
+      border-radius: 12px;
+      background: var(--panel);
+      padding: 12px;
+    }
+
+    .viz-card {
+      border-radius: 10px;
+      background: var(--panel);
+      padding: 10px;
+    }
+
+    .logic-card {
+      border-radius: 9px;
+      background: var(--panel);
+      padding: 10px;
     }
 
     .hero-stat strong,
     .result-card .value,
     .result-card .secondary {
       display: block;
-      font-family: "Oswald", sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
     }
 
     .hero-stat strong {
-      font-size: 24px;
+      font-size: 18px;
     }
 
     .hero-stat span,
@@ -201,7 +199,7 @@
     .logic-card li,
     .factor-card p,
     .result-card small {
-      color: #c9d8ea;
+      color: var(--muted);
       line-height: 1.55;
     }
 
@@ -215,15 +213,11 @@
     }
 
     .layout {
-      margin-top: 18px;
+      margin-top: 12px;
       display: grid;
       grid-template-columns: 1.1fr .9fr;
-      gap: 16px;
+      gap: 10px;
       align-items: start;
-    }
-
-    .panel {
-      background: var(--panel);
     }
 
     .panel-head {
@@ -232,18 +226,19 @@
       align-items: flex-start;
       gap: 12px;
       flex-wrap: wrap;
-      margin-bottom: 14px;
+      margin-bottom: 10px;
     }
 
     .panel-head h2 {
       margin: 0;
-      font-size: 26px;
+      font-size: 16px;
+      color: var(--text);
     }
 
     .panel-head p {
-      margin: 6px 0 0;
-      font-size: 13px;
-      max-width: 760px;
+      margin: 4px 0 0;
+      font-size: 12px;
+      max-width: 520px;
     }
 
     .status-pill {
@@ -252,7 +247,7 @@
       text-transform: uppercase;
       letter-spacing: .08em;
       font-weight: 800;
-      color: #d5e7f8;
+      color: var(--muted);
       white-space: nowrap;
     }
 
@@ -262,7 +257,7 @@
     .viz-grid,
     .logic-grid {
       display: grid;
-      gap: 12px;
+      gap: 8px;
     }
 
     .field-grid,
@@ -272,14 +267,14 @@
     .logic-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 
     .field {
-      border-radius: 16px;
-      background: rgba(255,255,255,.03);
-      padding: 14px;
+      border-radius: 9px;
+      background: var(--bg);
+      padding: 9px;
     }
 
     .field label {
       display: block;
-      margin-bottom: 8px;
+      margin-bottom: 5px;
       font-size: 11px;
       text-transform: uppercase;
       letter-spacing: .08em;
@@ -289,30 +284,40 @@
     .field input,
     .field select {
       width: 100%;
-      border: 1px solid var(--line);
-      background: #091423;
+      border: 1px solid var(--border);
+      background: #fff;
       color: var(--text);
-      padding: 10px 12px;
+      padding: 6px 9px;
+    }
+
+    .field input::placeholder,
+    .field select::placeholder {
+      color: #AEAEB2;
     }
 
     .field input:focus,
     .field select:focus {
       outline: none;
-      border-color: var(--cyan);
+      border-color: var(--blue);
     }
 
     .field small {
       display: block;
-      margin-top: 7px;
+      margin-top: 5px;
       font-size: 11px;
       color: var(--muted);
     }
 
-    .result-card,
+    .result-card {
+      border-radius: 10px;
+      background: var(--panel);
+      padding: 10px;
+    }
+
     .factor-card {
-      border-radius: 18px;
-      background: rgba(255,255,255,.03);
-      padding: 14px;
+      border-radius: 9px;
+      background: var(--panel);
+      padding: 10px;
     }
 
     .result-card strong,
@@ -326,16 +331,20 @@
     }
 
     .result-card .value {
-      margin-top: 8px;
-      font-size: 31px;
+      margin-top: 6px;
+      font-size: 24px;
       line-height: 1;
       color: var(--cyan);
     }
 
     .result-card .secondary {
-      margin-top: 8px;
-      font-size: 19px;
-      color: #eef7ff;
+      margin-top: 6px;
+      font-size: 16px;
+      color: var(--text);
+    }
+
+    .result-card small {
+      font-size: 10px;
     }
 
     .risk-low .value,
@@ -349,48 +358,42 @@
 
     .factor-card .secondary {
       display: block;
-      margin-top: 8px;
-      font-family: "Oswald", sans-serif;
-      font-size: 24px;
+      margin-top: 6px;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+      font-size: 18px;
       color: var(--blue);
     }
 
     .formula-box {
-      margin-top: 14px;
-      border-radius: 16px;
-      border: 1px dashed var(--line-soft);
-      background: rgba(255,255,255,.025);
-      padding: 14px;
-      color: #d7e6f7;
-      font-size: 13px;
+      margin-top: 10px;
+      border-radius: 10px;
+      border: 1px dashed var(--border);
+      background: var(--bg);
+      padding: 10px;
+      color: var(--text);
+      font-size: 12px;
       line-height: 1.6;
-    }
-
-    .viz-card,
-    .logic-card {
-      background: var(--panel);
     }
 
     .viz-card h3,
     .logic-card h3 {
-      margin: 0 0 10px;
-      font-size: 21px;
+      margin: 0 0 8px;
+      font-size: 13px;
+      color: var(--text);
     }
 
     .viz-caption {
-      margin-top: 10px;
-      color: #bfd0e4;
+      margin-top: 8px;
+      color: var(--muted);
       font-size: 12px;
       line-height: 1.55;
     }
 
     .svg-frame {
-      border-radius: 18px;
-      border: 1px solid var(--line-soft);
-      background:
-        linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02)),
-        rgba(255,255,255,.02);
-      padding: 8px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      padding: 6px;
     }
 
     svg {
@@ -400,7 +403,7 @@
     }
 
     .legend {
-      margin-top: 10px;
+      margin-top: 8px;
       display: flex;
       gap: 10px;
       flex-wrap: wrap;
@@ -411,7 +414,7 @@
       align-items: center;
       gap: 6px;
       font-size: 11px;
-      color: #c9d8ea;
+      color: var(--muted);
     }
 
     .legend i {
@@ -424,12 +427,12 @@
     .bar-chart {
       margin-top: 6px;
       display: grid;
-      gap: 12px;
+      gap: 8px;
     }
 
     .bar-row strong {
       display: block;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
       color: var(--muted);
       font-size: 11px;
       text-transform: uppercase;
@@ -438,9 +441,9 @@
 
     .bar-track {
       position: relative;
-      height: 16px;
+      height: 14px;
       border-radius: 999px;
-      background: rgba(255,255,255,.06);
+      background: var(--border);
       overflow: hidden;
     }
 
@@ -449,42 +452,47 @@
       inset: 0 auto 0 0;
       width: 0;
       border-radius: inherit;
-      background: linear-gradient(90deg, var(--cyan), #8df7ff);
+      background: linear-gradient(90deg, var(--cyan), #0dcfb0);
     }
 
     .bar-fill.warn {
-      background: linear-gradient(90deg, var(--amber), #ffd9a1);
+      background: linear-gradient(90deg, var(--amber), #f59e0b);
     }
 
     .bar-fill.danger {
-      background: linear-gradient(90deg, #ff7e7e, #ffc4c4);
+      background: linear-gradient(90deg, var(--danger), #ef4444);
     }
 
     .bar-value {
-      margin-top: 5px;
+      margin-top: 4px;
       font-size: 12px;
-      color: #d9e8f8;
+      color: var(--text);
+    }
+
+    .logic-card p,
+    .logic-card li {
+      font-size: 12px;
     }
 
     .logic-card ul {
-      margin: 10px 0 0;
-      padding-left: 18px;
+      margin: 8px 0 0;
+      padding-left: 16px;
     }
 
     .factor-table {
       display: grid;
       grid-template-columns: 1fr 1.3fr;
       gap: 1px;
-      border-radius: 18px;
+      border-radius: 10px;
       overflow: hidden;
-      background: rgba(255,255,255,.08);
+      background: var(--border);
     }
 
     .factor-table div {
-      background: rgba(255,255,255,.03);
-      padding: 12px 14px;
-      color: #d9e7f8;
-      font-size: 13px;
+      background: var(--panel);
+      padding: 9px 12px;
+      color: var(--text);
+      font-size: 12px;
       line-height: 1.5;
     }
 
@@ -600,7 +608,7 @@
           </div>
         </div>
 
-        <div class="result-grid" style="margin-top:14px;">
+        <div class="result-grid" style="margin-top:10px;">
           <div class="result-card" id="settlingCard">
             <strong>Скорость осаждения V<sub>s</sub></strong>
             <span class="value" id="settlingVelocity">0.00 м/мин</span>
@@ -633,7 +641,7 @@
           </div>
         </div>
 
-        <div class="factor-grid" style="margin-top:14px;">
+        <div class="factor-grid" style="margin-top:10px;">
           <div class="factor-card">
             <strong>Время подъема на интервал</strong>
             <span class="secondary" id="transportTime">-</span>
@@ -688,7 +696,7 @@
       </article>
     </section>
 
-    <section class="viz-grid" style="margin-top:16px;">
+    <section class="viz-grid" style="margin-top:10px;">
       <article class="viz-card">
         <h3>Инфографика 1. Силы на частицу</h3>
         <div class="svg-frame">
@@ -762,7 +770,7 @@
       </article>
     </section>
 
-    <section class="viz-grid" style="margin-top:16px;">
+    <section class="viz-grid" style="margin-top:10px;">
       <article class="viz-card">
         <h3>График транспортного запаса</h3>
         <div class="bar-chart">
