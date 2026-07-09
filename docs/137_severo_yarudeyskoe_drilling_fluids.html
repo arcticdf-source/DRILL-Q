@@ -1,36 +1,29 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>137 · Северо-Ярудейское · Буровые растворы</title>
   <style>
-    @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap");
-
     :root {
-      --bg-0:#071019;
-      --bg-1:#112334;
-      --bg-2:#1b344a;
-      --panel:rgba(8,18,29,.88);
-      --panel-soft:rgba(255,255,255,.035);
-      --line:rgba(226,237,255,.15);
-      --line-soft:rgba(226,237,255,.08);
-      --text:#edf5ff;
-      --muted:#9ab0c9;
-      --cyan:#23d8b3;
-      --amber:#ffbf66;
-      --blue:#8db4ff;
-      --violet:#c6a6ff;
-      --green:#7fe3a4;
-      --rose:#ff8a7a;
-      --gold:#f6d986;
-      --ink:#07141f;
-      --shadow:0 26px 64px rgba(0,0,0,.42);
-      --sec-1:linear-gradient(180deg, #ffd987, #ffb859);
-      --sec-2:linear-gradient(180deg, #8de8d3, #36c7af);
-      --sec-3:linear-gradient(180deg, #98beff, #5e87ff);
-      --sec-4:linear-gradient(180deg, #d8c8ff, #9874ff);
-      --sec-5:linear-gradient(180deg, #a9efff, #59bfff);
+      --bg:    #F5F5F7;
+      --panel: #FFFFFF;
+      --a:     #2563EB;
+      --a-l:   #EFF6FF;
+      --a-m:   #BFDBFE;
+      --a-d:   #1D4ED8;
+      --txt:   #1D1D1F;
+      --muted: #6E6E73;
+      --line:  #E5E5EA;
+      --g:     #16A34A;
+      --r:     #DC2626;
+      --warn:  #D97706;
+      --shadow: 0 1px 4px rgba(0,0,0,.05), 0 2px 12px rgba(0,0,0,.06);
+      --sec-1: linear-gradient(180deg, #ffd987, #ffb859);
+      --sec-2: linear-gradient(180deg, #8de8d3, #36c7af);
+      --sec-3: linear-gradient(180deg, #98beff, #5e87ff);
+      --sec-4: linear-gradient(180deg, #d8c8ff, #9874ff);
+      --sec-5: linear-gradient(180deg, #a9efff, #59bfff);
     }
 
     * { box-sizing: border-box; }
@@ -38,25 +31,9 @@
     html, body {
       margin: 0;
       min-height: 100%;
-      font-family: "Manrope", sans-serif;
-      color: var(--text);
-      background:
-        radial-gradient(860px 420px at 0% -8%, rgba(35,216,179,.18), transparent),
-        radial-gradient(760px 420px at 100% 0%, rgba(255,191,102,.14), transparent),
-        radial-gradient(620px 280px at 50% 0%, rgba(141,180,255,.14), transparent),
-        linear-gradient(145deg, var(--bg-0), var(--bg-1) 46%, var(--bg-2));
-    }
-
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      background:
-        linear-gradient(to right, rgba(255,255,255,.02) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(255,255,255,.02) 1px, transparent 1px);
-      background-size: 38px 38px;
-      mask-image: radial-gradient(circle at 50% 18%, rgba(0,0,0,.96), transparent 72%);
+      font-family: -apple-system,'SF Pro Text',system-ui,sans-serif;
+      color: var(--txt);
+      background: var(--bg);
     }
 
     .wrap {
@@ -84,7 +61,7 @@
       flex-wrap: wrap;
       padding: 12px 16px;
       border-radius: 16px;
-      background: rgba(8,14,24,.66);
+      background: var(--panel);
       backdrop-filter: blur(10px);
       position: sticky;
       top: 12px;
@@ -96,8 +73,9 @@
       align-items: center;
       gap: 10px;
       text-decoration: none;
-      color: var(--text);
-      font-family: "Oswald", sans-serif;
+      color: var(--txt);
+      font-family: -apple-system,'SF Pro Text',system-ui,sans-serif;
+      font-weight: 700;
       text-transform: uppercase;
       letter-spacing: .05em;
       font-size: 20px;
@@ -107,8 +85,8 @@
       width: 12px;
       height: 12px;
       border-radius: 999px;
-      background: radial-gradient(circle at 35% 35%, #defff8, var(--cyan));
-      box-shadow: 0 0 18px rgba(35,216,179,.45);
+      background: radial-gradient(circle at 35% 35%, #bfdbfe, var(--a));
+      box-shadow: 0 0 10px rgba(37,99,235,.35);
     }
 
     .nav {
@@ -121,12 +99,12 @@
       text-decoration: none;
       border-radius: 999px;
       padding: 9px 14px;
-      font: 800 12px/1 "Manrope", sans-serif;
+      font: 800 12px/1 -apple-system,'SF Pro Text',system-ui,sans-serif;
       text-transform: uppercase;
       letter-spacing: .06em;
-      color: #06231f;
-      background: linear-gradient(135deg, #9efcef, var(--cyan));
-      border: 1px solid rgba(35,216,179,.8);
+      color: #fff;
+      background: var(--a);
+      border: 1px solid var(--a-d);
     }
 
     .hero,
@@ -138,11 +116,7 @@
     }
 
     .hero {
-      background:
-        radial-gradient(420px 220px at 0% 0%, rgba(35,216,179,.14), transparent),
-        radial-gradient(520px 260px at 100% 0%, rgba(255,191,102,.12), transparent),
-        linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015)),
-        var(--panel);
+      background: var(--panel);
     }
 
     .eyebrow,
@@ -153,9 +127,9 @@
       align-items: center;
       gap: 8px;
       border-radius: 999px;
-      border: 1px solid var(--line-soft);
-      background: rgba(255,255,255,.04);
-      color: #d8e8f8;
+      border: 1px solid var(--line);
+      background: var(--a-l);
+      color: var(--a);
       font-size: 11px;
       text-transform: uppercase;
       letter-spacing: .08em;
@@ -164,7 +138,8 @@
 
     h1, h2, h3, h4 {
       margin: 0;
-      font-family: "Oswald", sans-serif;
+      font-family: -apple-system,'SF Pro Text',system-ui,sans-serif;
+      font-weight: 700;
       letter-spacing: -.01em;
     }
 
@@ -175,10 +150,10 @@
       max-width: 1120px;
     }
 
-    h1 span { color: var(--amber); }
+    h1 span { color: var(--warn); }
 
     p, td, th, li {
-      color: #d0dded;
+      color: var(--txt);
       line-height: 1.7;
       font-size: 14px;
       margin: 0;
@@ -187,7 +162,7 @@
     .lead {
       max-width: 1040px;
       font-size: 15px;
-      color: #d7e4f3;
+      color: var(--txt);
       margin-top: 10px;
     }
 
@@ -230,9 +205,9 @@
     .interval-card,
     .kpi-card,
     .volume-card {
-      border: 1px solid var(--line-soft);
+      border: 1px solid var(--line);
       border-radius: 20px;
-      background: var(--panel-soft);
+      background: var(--bg);
       padding: 16px;
       min-width: 0;
     }
@@ -244,6 +219,7 @@
       font-size: clamp(21px, 2.1vw, 26px);
       line-height: 1.04;
       overflow-wrap: anywhere;
+      color: var(--txt);
     }
 
     .hero-stat span,
@@ -304,15 +280,16 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      color: var(--ink);
+      color: #07141f;
       overflow: hidden;
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,.2);
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,.1);
     }
 
     .timeline-seg strong {
       font-size: 18px;
       line-height: 1;
-      font-family: "Oswald", sans-serif;
+      font-family: -apple-system,'SF Pro Text',system-ui,sans-serif;
+      font-weight: 700;
     }
 
     .timeline-seg small {
@@ -346,9 +323,9 @@
       gap: 8px;
       padding: 7px 11px;
       border-radius: 999px;
-      background: rgba(255,255,255,.04);
-      border: 1px solid var(--line-soft);
-      color: #d9e6f7;
+      background: var(--bg);
+      border: 1px solid var(--line);
+      color: var(--txt);
       font-size: 11px;
       text-transform: uppercase;
       letter-spacing: .08em;
@@ -359,7 +336,7 @@
       height: 12px;
       border-radius: 999px;
       display: inline-block;
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,.25);
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,.15);
     }
 
     .interval-card {
@@ -367,9 +344,7 @@
       overflow: hidden;
       display: grid;
       gap: 14px;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.02)),
-        var(--panel-soft);
+      background: var(--panel);
     }
 
     .interval-card::before {
@@ -390,7 +365,7 @@
     .interval-top h3 { font-size: 24px; }
 
     .interval-sub {
-      color: #bed0e6;
+      color: var(--muted);
       font-size: 13px;
       line-height: 1.5;
     }
@@ -408,14 +383,14 @@
       gap: 3px;
       padding: 10px 12px;
       border-radius: 16px;
-      border: 1px solid var(--line-soft);
-      background: rgba(255,255,255,.035);
+      border: 1px solid var(--line);
+      background: var(--bg);
       min-width: 112px;
     }
 
     .metric-pill b {
       font-size: 16px;
-      color: #f2f7ff;
+      color: var(--txt);
     }
 
     .metric-pill span {
@@ -436,9 +411,9 @@
       margin-top: 14px;
       padding: 14px 16px;
       border-radius: 18px;
-      background: rgba(141,180,255,.08);
-      border: 1px solid rgba(141,180,255,.18);
-      color: #dbe8fb;
+      background: var(--a-l);
+      border: 1px solid var(--a-m);
+      color: var(--txt);
     }
 
     .param-table,
@@ -454,7 +429,7 @@
     .param-table td,
     .oil-table th,
     .oil-table td {
-      border: 1px solid rgba(255,255,255,.08);
+      border: 1px solid var(--line);
       padding: 10px 12px;
       text-align: left;
       vertical-align: top;
@@ -462,9 +437,9 @@
 
     .param-table th,
     .oil-table th {
-      background: rgba(255,255,255,.06);
+      background: var(--a-l);
       font-size: 11px;
-      color: #dfeaf8;
+      color: var(--a);
       text-transform: uppercase;
       letter-spacing: .08em;
     }
@@ -472,7 +447,7 @@
     .param-table td,
     .oil-table td {
       font-size: 13px;
-      color: #d1deee;
+      color: var(--txt);
     }
 
     .volume-row {
@@ -485,7 +460,8 @@
     .volume-row + .volume-row { margin-top: 12px; }
 
     .volume-name {
-      font-family: "Oswald", sans-serif;
+      font-family: -apple-system,'SF Pro Text',system-ui,sans-serif;
+      font-weight: 700;
       font-size: 18px;
     }
 
@@ -494,8 +470,8 @@
       border-radius: 999px;
       overflow: hidden;
       display: flex;
-      background: rgba(255,255,255,.06);
-      border: 1px solid var(--line-soft);
+      background: var(--line);
+      border: 1px solid var(--line);
     }
 
     .volume-track span {
@@ -507,18 +483,18 @@
     .volume-total {
       text-align: right;
       font-weight: 700;
-      color: #f1f6ff;
+      color: var(--txt);
       font-size: 13px;
     }
 
     .source-note {
-      color: #b8cbdf;
+      color: var(--muted);
     }
 
     .footer {
       margin-top: 18px;
       font-size: 12px;
-      color: #8ea2bc;
+      color: var(--muted);
       text-align: center;
       text-transform: uppercase;
       letter-spacing: .08em;
@@ -903,10 +879,10 @@
 
       const svg = [
         '<svg viewBox="0 0 ' + width + ' ' + height + '" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Окна плотности по интервалам">',
-        '<rect x="0" y="0" width="' + width + '" height="' + height + '" rx="24" fill="rgba(255,255,255,0.02)"/>',
+        '<rect x="0" y="0" width="' + width + '" height="' + height + '" rx="24" fill="rgba(0,0,0,0.02)"/>',
         ticks.map((tick) => {
           const x = scale(tick);
-          return '<line x1="' + x + '" y1="20" x2="' + x + '" y2="' + (height - 28) + '" stroke="rgba(255,255,255,0.08)"/><text x="' + x + '" y="16" text-anchor="middle" fill="#99aec8" font-size="11">' + tick.toFixed(2).replace('.', ',') + '</text>';
+          return '<line x1="' + x + '" y1="20" x2="' + x + '" y2="' + (height - 28) + '" stroke="rgba(0,0,0,0.1)"/><text x="' + x + '" y="16" text-anchor="middle" fill="#6E6E73" font-size="11">' + tick.toFixed(2).replace('.', ',') + '</text>';
         }).join('')
       ];
 
@@ -914,19 +890,19 @@
         const y = 42 + index * rowHeight;
         const x1 = scale(item.densityMin);
         const x2 = scale(item.densityMax);
-        svg.push('<text x="16" y="' + (y + 22) + '" fill="#e9f2ff" font-size="16" font-family="Oswald">' + item.title + '</text>');
-        svg.push('<text x="16" y="' + (y + 40) + '" fill="#96abc6" font-size="11">' + item.range + '</text>');
+        svg.push('<text x="16" y="' + (y + 22) + '" fill="#1D1D1F" font-size="16" font-family="-apple-system,system-ui,sans-serif" font-weight="600">' + item.title + '</text>');
+        svg.push('<text x="16" y="' + (y + 40) + '" fill="#6E6E73" font-size="11">' + item.range + '</text>');
         svg.push('<rect x="' + x1 + '" y="' + y + '" width="' + Math.max(8, x2 - x1) + '" height="20" rx="10" fill="url(#g' + index + ')"/>');
-        svg.push('<text x="' + (x2 + 10) + '" y="' + (y + 14) + '" fill="#f0f6ff" font-size="12">' + item.density.replace(' г/см³', '') + '</text>');
+        svg.push('<text x="' + (x2 + 10) + '" y="' + (y + 14) + '" fill="#1D1D1F" font-size="12">' + item.density.replace(' г/см³', '') + '</text>');
       });
 
       svg.push('<defs>');
       intervals.forEach((item, index) => {
-        let colors = ['#9efcef', '#1ad8b5'];
+        let colors = ['#8de8d3', '#36c7af'];
         if (index === 0) colors = ['#ffe39b', '#ffb859'];
-        if (index === 2) colors = ['#aed0ff', '#5e87ff'];
-        if (index === 3) colors = ['#e0d4ff', '#9874ff'];
-        if (index === 4) colors = ['#c2f4ff', '#59bfff'];
+        if (index === 2) colors = ['#98beff', '#5e87ff'];
+        if (index === 3) colors = ['#d8c8ff', '#9874ff'];
+        if (index === 4) colors = ['#a9efff', '#59bfff'];
         svg.push('<linearGradient id="g' + index + '" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="' + colors[0] + '"/><stop offset="100%" stop-color="' + colors[1] + '"/></linearGradient>');
       });
       svg.push('</defs></svg>');
@@ -981,7 +957,7 @@
         ['Хвостовик', intervalTotals.tail + ' м³', 'финальный РУО-контур'],
         ['Среднее по фонду', Math.round((intervalTotals.conductor + intervalTotals.section + intervalTotals.pilot + intervalTotals.tail) / wellVolumes.length) + ' м³', 'средний fresh volume на скважину'],
         ['Пиковая скважина', '301 / 858 м³', 'максимум из-за пилотного ствола']
-      ].map((item) => '<article class="volume-card"><strong>' + item[1] + '</strong><span>' + item[0] + '</span><p style="margin-top:10px">' + item[2] + '</p></article>').join('');
+      ].map((item) => '<article class="volume-card"><strong>' + item[1] + '</strong><span>' + item[0] + '</span><p style="margin-top:10px;color:var(--txt)">' + item[2] + '</p></article>').join('');
 
       wellBody.innerHTML = wellVolumes.map((item) => {
         const total = item.conductor + item.section + item.pilot + item.tail;

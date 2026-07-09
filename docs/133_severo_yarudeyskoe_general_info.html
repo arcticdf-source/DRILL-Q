@@ -1,26 +1,24 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>133 · Северо-Ярудейское · Общая информация</title>
   <style>
-    @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap");
-
     :root {
-      --bg-0:#081018;
-      --bg-1:#122233;
-      --bg-2:#173845;
-      --panel:rgba(11,20,31,.84);
-      --panel-soft:rgba(255,255,255,.035);
-      --line:rgba(227,238,255,.14);
-      --line-soft:rgba(227,238,255,.08);
-      --text:#edf5ff;
-      --muted:#a8bdd2;
-      --cyan:#22d7b4;
-      --amber:#f8bd5f;
-      --blue:#8db4ff;
-      --shadow:0 20px 48px rgba(0,0,0,.42);
+      --bg:    #F5F5F7;
+      --panel: #FFFFFF;
+      --a:     #2563EB;
+      --a-l:   #EFF6FF;
+      --a-m:   #BFDBFE;
+      --a-d:   #1D4ED8;
+      --txt:   #1D1D1F;
+      --muted: #6E6E73;
+      --line:  #E5E5EA;
+      --g:     #16A34A;
+      --r:     #DC2626;
+      --warn:  #D97706;
+      --shadow: 0 1px 4px rgba(0,0,0,.05), 0 2px 12px rgba(0,0,0,.06);
     }
 
     * { box-sizing: border-box; }
@@ -28,24 +26,9 @@
     html, body {
       margin: 0;
       min-height: 100%;
-      font-family: "Manrope", sans-serif;
-      color: var(--text);
-      background:
-        radial-gradient(900px 460px at 0% -10%, rgba(34,215,180,.18), transparent),
-        radial-gradient(760px 420px at 100% 0%, rgba(248,189,95,.16), transparent),
-        linear-gradient(145deg, var(--bg-0), var(--bg-1) 46%, var(--bg-2));
-    }
-
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      background:
-        linear-gradient(to right, rgba(255,255,255,.02) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(255,255,255,.02) 1px, transparent 1px);
-      background-size: 34px 34px;
-      mask-image: radial-gradient(circle at 50% 18%, rgba(0,0,0,.94), transparent 72%);
+      font-family: -apple-system,'SF Pro Text',system-ui,sans-serif;
+      color: var(--txt);
+      background: var(--bg);
     }
 
     .wrap {
@@ -80,11 +63,11 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      font-family: "Oswald", sans-serif;
+      font-family: -apple-system,'SF Pro Text',system-ui,sans-serif;
       text-transform: uppercase;
       letter-spacing: .05em;
       font-size: 20px;
-      color: var(--text);
+      color: var(--txt);
       text-decoration: none;
     }
 
@@ -92,7 +75,7 @@
       width: 12px;
       height: 12px;
       border-radius: 999px;
-      background: radial-gradient(circle at 35% 35%, #cffff7, var(--cyan));
+      background: radial-gradient(circle at 35% 35%, var(--a-m), var(--a));
     }
 
     .nav {
@@ -103,9 +86,9 @@
 
     .nav a {
       text-decoration: none;
-      color: #06231f;
-      background: linear-gradient(130deg, #8df7e7, #1ad8b5);
-      border: 1px solid rgba(26,216,181,.8);
+      color: #FFFFFF;
+      background: var(--a);
+      border: 1px solid var(--a-d);
       border-radius: 10px;
       font-size: 12px;
       text-transform: uppercase;
@@ -121,10 +104,7 @@
     }
 
     .hero {
-      background:
-        radial-gradient(520px 220px at 6% 0%, rgba(34,215,180,.12), transparent),
-        radial-gradient(560px 240px at 100% 0%, rgba(248,189,95,.1), transparent),
-        var(--panel);
+      background: var(--panel);
     }
 
     .eyebrow,
@@ -133,10 +113,10 @@
       align-items: center;
       gap: 8px;
       padding: 6px 10px;
-      border: 1px solid var(--line-soft);
+      border: 1px solid var(--line);
       border-radius: 999px;
-      background: rgba(255,255,255,.04);
-      color: #d8e8f8;
+      background: var(--a-l);
+      color: var(--a);
       font-size: 11px;
       text-transform: uppercase;
       letter-spacing: .08em;
@@ -144,7 +124,7 @@
 
     h1, h2, h3 {
       margin: 0;
-      font-family: "Oswald", sans-serif;
+      font-family: -apple-system,'SF Pro Text',system-ui,sans-serif;
       letter-spacing: -.01em;
     }
 
@@ -155,7 +135,7 @@
     }
 
     p, li, td, th {
-      color: #c7d7ec;
+      color: var(--txt);
       line-height: 1.68;
       font-size: 14px;
       margin: 0;
@@ -186,9 +166,9 @@
     .hero-stat,
     .card,
     .table-card {
-      border: 1px solid var(--line-soft);
+      border: 1px solid var(--line);
       border-radius: 18px;
-      background: var(--panel-soft);
+      background: var(--panel);
       padding: 16px;
     }
 
@@ -220,12 +200,12 @@
     }
 
     .list-item {
-      border-top: 1px solid var(--line-soft);
+      border-top: 1px solid var(--line);
       padding-top: 10px;
     }
 
     .accent {
-      color: var(--amber);
+      color: var(--warn);
       font-weight: 800;
     }
 
@@ -256,53 +236,53 @@
       text-align: left;
       vertical-align: top;
       padding: 10px 12px;
-      border-top: 1px solid var(--line-soft);
+      border-top: 1px solid var(--line);
     }
 
     th {
-      color: #eff6ff;
+      color: var(--muted);
       font-size: 12px;
       text-transform: uppercase;
       letter-spacing: .08em;
     }
 
     .subhead td {
-      color: #f3f7ff;
+      color: var(--txt);
       font-weight: 800;
       text-transform: uppercase;
       letter-spacing: .06em;
-      background: rgba(255,255,255,.04);
+      background: var(--bg);
     }
 
     .footer {
       margin-top: 16px;
       font-size: 12px;
-      color: #8ea2bc;
+      color: var(--muted);
       text-align: center;
       text-transform: uppercase;
       letter-spacing: .08em;
     }
 
-      .image-stack {
-        display: grid;
-        gap: 18px;
-        margin-top: 12px;
-      }
+    .image-stack {
+      display: grid;
+      gap: 18px;
+      margin-top: 12px;
+    }
 
-      .image-frame {
-        border: 1px solid var(--line-soft);
-        border-radius: 18px;
-        background: rgba(255,255,255,.02);
-        padding: 10px;
-        overflow: hidden;
-      }
+    .image-frame {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--bg);
+      padding: 10px;
+      overflow: hidden;
+    }
 
-      .image-frame img {
-        display: block;
-        width: 100%;
-        height: auto;
-        border-radius: 12px;
-      }
+    .image-frame img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 12px;
+    }
 
     @media (max-width: 1080px) {
       .top { position: static; }
