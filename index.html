@@ -140,6 +140,25 @@
     }
     .btn-hero-s:hover { background:rgba(0,0,0,0.09); }
 
+    /* ── BRIDGE ── */
+    .sim-bridge {
+      background: linear-gradient(180deg, #ffffff 0%, #06090f 100%);
+      padding: 32px 48px 0;
+      text-align: center;
+    }
+    .sim-bridge__text {
+      display: inline-block;
+      font-size: clamp(13px, 1.6vw, 16px);
+      font-weight: 600;
+      color: transparent;
+      background: linear-gradient(90deg, #6E6E73 0%, #1D1D1F 35%, #20d9b4 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      letter-spacing: -.2px;
+      margin: 0;
+      padding-bottom: 28px;
+    }
+
     /* ── DWOP SIMULATOR ── */
     #dwop-sim { background:#06090f; border-top:1px solid rgba(255,255,255,.06); }
     .sim-top { background:linear-gradient(180deg,#0c1220,#06090f); padding:48px 48px 28px; }
@@ -726,6 +745,11 @@
   </div>
 
 </section>
+
+<!-- ── BRIDGE ── -->
+<div class="sim-bridge">
+  <p class="sim-bridge__text">От симулятора скважины — до командного центра бурения с предиктивными алертами в реальном времени</p>
+</div>
 
 <!-- ── DWOP SIMULATOR ── -->
 <section id="dwop-sim">
