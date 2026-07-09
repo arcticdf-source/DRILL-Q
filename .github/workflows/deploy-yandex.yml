@@ -4,6 +4,8 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *'  # каждый день в 00:00 UTC (03:00 МСК)
 
 jobs:
   deploy:
