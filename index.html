@@ -140,51 +140,52 @@
     }
     .btn-hero-s:hover { background:rgba(0,0,0,0.09); }
 
-    /* ── BRIDGE ── */
-    .sim-bridge {
-      background: #F5F5F7;
-      padding: 80px 24px 88px;
-      text-align: center;
+    /* ── DWOP SIMULATOR ── */
+    #dwop-sim {
+      background: #06090f;
       position: relative;
-      border-bottom: 1px solid #E5E5EA;
     }
-    .sim-bridge__inner {
-      max-width: 720px; margin: 0 auto;
+    /* manifesto block inside dark zone */
+    .sim-manifesto {
+      text-align: center;
+      padding: 100px 24px 72px;
+      position: relative;
     }
-    .sim-bridge__kicker {
+    .sim-manifesto::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 50%; transform: translateX(-50%);
+      width: min(900px, 88vw); height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(32,217,180,.25) 30%, rgba(32,217,180,.25) 70%, transparent);
+    }
+    .sim-manifesto__inner { max-width: 740px; margin: 0 auto; }
+    .sim-manifesto__kicker {
       display: inline-flex; align-items: center; gap: 10px;
       font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
-      color: #2563EB; margin-bottom: 24px;
+      color: #20d9b4; margin-bottom: 28px;
     }
-    .sim-bridge__kicker::before,
-    .sim-bridge__kicker::after {
-      content: ''; display: block;
-      width: 28px; height: 1px; background: #BFDBFE;
+    .sim-manifesto__kicker::before,
+    .sim-manifesto__kicker::after {
+      content: ''; display: block; width: 32px; height: 1px; background: rgba(32,217,180,.35);
     }
-    .sim-bridge__headline {
-      font-size: clamp(28px, 4vw, 48px);
+    .sim-manifesto__headline {
+      font-size: clamp(32px, 4.5vw, 56px);
       font-weight: 800; letter-spacing: -.04em; line-height: 1.1;
-      color: #1D1D1F; margin: 0 0 24px;
+      color: #ffffff; margin: 0 0 24px;
     }
-    .sim-bridge__headline em {
+    .sim-manifesto__headline em {
       font-style: normal;
-      background: linear-gradient(90deg, #2563EB, #0891B2);
+      background: linear-gradient(90deg, #20d9b4, #0891b2);
       -webkit-background-clip: text; background-clip: text;
       -webkit-text-fill-color: transparent;
     }
-    .sim-bridge__body {
+    .sim-manifesto__body {
       font-size: clamp(15px, 1.6vw, 17px);
-      color: #6E6E73;
-      line-height: 1.75; margin: 0;
-      font-weight: 400;
+      color: rgba(255,255,255,.58); line-height: 1.78; margin: 0;
     }
-    .sim-bridge__body strong {
-      color: #1D1D1F; font-weight: 600;
-    }
+    .sim-manifesto__body strong { color: rgba(255,255,255,.88); font-weight: 600; }
 
-    /* ── DWOP SIMULATOR ── */
-    #dwop-sim { background:#06090f; }
-    .sim-top { background:linear-gradient(180deg,#0c1220,#06090f); padding:48px 48px 28px; }
+    .sim-top { background: transparent; padding: 48px 48px 28px; }
     .sim-top-inner { max-width:1100px; margin:0 auto; display:flex; align-items:flex-start; justify-content:space-between; gap:20px; flex-wrap:wrap; }
     .sim-eyebrow { font-size:12px; font-weight:600; color:#20d9b4; letter-spacing:.08em; text-transform:uppercase; margin-bottom:8px; }
     .sim-title { font-size:clamp(22px,3vw,34px); font-weight:700; color:#ffffff; letter-spacing:-.5px; margin-bottom:6px; }
@@ -769,17 +770,15 @@
 
 </section>
 
-<!-- ── BRIDGE ── -->
-<div class="sim-bridge">
-  <div class="sim-bridge__inner">
-    <div class="sim-bridge__kicker">Предиктивное бурение</div>
-    <h2 class="sim-bridge__headline">Перестаньте реагировать на проблемы.<br><em>Начните их предсказывать.</em></h2>
-    <p class="sim-bridge__body">DRILL-Q объединяет <strong>Digital Well Twin</strong>, <strong>искусственный интеллект</strong> и <strong>потоковые данные бурения</strong>,&nbsp;чтобы прогнозировать осложнения, предупреждать инженеров в режиме реального времени и помогать принимать решения — до того, как возникают дорогостоящие простои.</p>
-  </div>
-</div>
-
 <!-- ── DWOP SIMULATOR ── -->
 <section id="dwop-sim">
+  <div class="sim-manifesto">
+    <div class="sim-manifesto__inner">
+      <div class="sim-manifesto__kicker">Предиктивное бурение</div>
+      <h2 class="sim-manifesto__headline">Перестаньте реагировать на проблемы.<br><em>Начните их предсказывать.</em></h2>
+      <p class="sim-manifesto__body">DRILL-Q объединяет <strong>Digital Well Twin</strong>, <strong>искусственный интеллект</strong> и <strong>потоковые данные бурения</strong>, чтобы прогнозировать осложнения, предупреждать инженеров в режиме реального времени и помогать принимать решения — до того, как возникают дорогостоящие простои.</p>
+    </div>
+  </div>
   <div class="sim-top">
     <div class="sim-top-inner">
       <div>
