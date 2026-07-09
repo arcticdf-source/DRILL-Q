@@ -1,27 +1,25 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="ru">
 <head>
-  <script src="../auth-gate.js" data-dq-gate></script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI-помощник</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@500;700;800&display=swap" rel="stylesheet" />
+  <title>NEXUS AI — Помощник</title>
   <link rel="stylesheet" href="assets/css/ai-assistant-chat.css" />
   <script src="../nav-inject.js"></script>
 </head>
 <body>
   <div class="assistant-app">
+
+    <!-- ── SIDEBAR ─────────────────────────────────── -->
     <aside class="assistant-sidebar">
       <div class="assistant-sidebar__brand">
-        <div>
-          <div class="assistant-sidebar__title">AI-помощник</div>
-          <div class="assistant-sidebar__subtitle">Новый чат и история запросов</div>
-        </div>
+        <div class="assistant-sidebar__title">NEXUS AI</div>
+        <div class="assistant-sidebar__subtitle">Инженерный помощник по бурению</div>
       </div>
 
-      <button class="assistant-sidebar__button" id="newChatBtn" type="button">+ Новый чат</button>
+      <button class="assistant-sidebar__button" id="newChatBtn" type="button">
+        + Новый чат
+      </button>
 
       <section class="assistant-side-card assistant-side-card--history">
         <h3>История</h3>
@@ -33,38 +31,114 @@
         <div class="assistant-suggestions" id="starterPrompts"></div>
       </section>
 
-      <div class="assistant-sidebar__footer" id="knowledgeStatus">Подготавливаю индексы и training-pack…</div>
+      <a class="assistant-kb-link" href="81_knowledge_library.html">
+        <span class="assistant-kb-link__icon">📚</span>
+        <span>База знаний</span>
+        <span class="assistant-kb-link__badge" id="kbBadge"></span>
+      </a>
+
+      <div class="assistant-sidebar__footer" id="knowledgeStatus">
+        Загружаю базу знаний…
+      </div>
     </aside>
 
+    <!-- ── MAIN ───────────────────────────────────── -->
     <main class="assistant-main">
       <header class="assistant-main__topbar">
-        <a class="assistant-home-link" href="../index.html">На главную</a>
+        <div class="assistant-topbar-left">
+          <div class="assistant-topbar-dot"></div>
+          <span class="assistant-topbar-name">NEXUS AI</span>
+          <span class="assistant-topbar-model">Drilling Copilot</span>
+        </div>
+        <a class="assistant-home-link" href="../index.html">← На главную</a>
       </header>
 
       <div class="assistant-thread-wrap">
         <div class="assistant-thread" id="threadRoot">
+
+          <!-- empty state -->
           <section class="assistant-empty" id="emptyState">
             <div class="assistant-empty__inner">
+              <div class="assistant-empty__icon">⚡</div>
               <h1>Над чем ты работаешь?</h1>
-              <p>Спроси про бурение, буровые растворы, гидравлику, КНБК, KPI, pilot scope, rollout или экономический эффект. Помощник отвечает кратко, по делу и без инженерной "воды".</p>
+              <p>Спроси про буровые растворы, гидравлику, КНБК, потери, KPI, пилот-проект или экономический эффект. Инженерный ответ — кратко, по делу, с источниками.</p>
             </div>
           </section>
+
+          <!-- message list -->
           <div class="assistant-thread__list assistant-hidden" id="messageList"></div>
+
+          <!-- typing indicator -->
+          <div class="assistant-typing" id="typingIndicator">
+            <div class="assistant-typing__avatar">AI</div>
+            <div class="assistant-typing__bubble">
+              <div class="assistant-typing__dot"></div>
+              <div class="assistant-typing__dot"></div>
+              <div class="assistant-typing__dot"></div>
+            </div>
+          </div>
+
         </div>
 
         <div class="assistant-composer-wrap">
           <form class="assistant-composer" id="assistantComposer">
-            <div class="assistant-composer__icon" aria-hidden="true">+</div>
-            <textarea id="assistantPrompt" placeholder="Спросите AI-помощника" autocomplete="off"></textarea>
-            <button class="assistant-composer__submit" type="submit">↑</button>
+            <div class="assistant-composer__icon" aria-hidden="true"></div>
+            <textarea id="assistantPrompt" placeholder="Задайте вопрос AI-помощнику…" autocomplete="off" rows="1"></textarea>
+            <button class="assistant-composer__submit" type="submit" title="Отправить">↑</button>
           </form>
-          <div class="assistant-composer__hint">Enter отправляет вопрос, Shift+Enter добавляет новую строку.</div>
+          <div class="assistant-composer__hint">Enter — отправить &nbsp;·&nbsp; Shift+Enter — новая строка</div>
         </div>
       </div>
     </main>
   </div>
 
   <script src="assets/js/assistant-training-data.js"></script>
+
+  <!-- inject user knowledge library from localStorage -->
+  <script>
+    (function () {
+      try {
+        var stored = JSON.parse(localStorage.getItem('nexus_kb_articles_v1') || '[]');
+        var badge = document.getElementById('kbBadge');
+        if (stored.length) {
+          if (badge) badge.textContent = stored.length;
+          if (window.NEXUS_ASSISTANT_TRAINING) {
+            var mapped = stored.map(function (a) {
+              return { title: a.title || '', domain: a.domain || 'general', source: a.source || 'База знаний', text: a.text || '' };
+            });
+            window.NEXUS_ASSISTANT_TRAINING.knowledgeNotes =
+              (window.NEXUS_ASSISTANT_TRAINING.knowledgeNotes || []).concat(mapped);
+          }
+        } else {
+          if (badge) badge.style.display = 'none';
+        }
+      } catch (e) {}
+    })();
+  </script>
+
   <script src="assets/js/ai-assistant-chat.js"></script>
+
+  <!-- typing indicator watcher -->
+  <script>
+    (function () {
+      var statusEl = document.getElementById('knowledgeStatus');
+      var typingEl = document.getElementById('typingIndicator');
+      var listEl   = document.getElementById('messageList');
+      if (!statusEl || !typingEl) return;
+
+      function updateTyping() {
+        var thinking = statusEl.getAttribute('data-runtime-status') === 'Думаю над ответом';
+        typingEl.classList.toggle('visible', thinking);
+        if (thinking && listEl && !listEl.classList.contains('assistant-hidden')) {
+          typingEl.scrollIntoView({ behavior: 'smooth', block: 'end' });
+        }
+      }
+
+      new MutationObserver(updateTyping).observe(statusEl, {
+        attributes: true,
+        attributeFilter: ['data-runtime-status']
+      });
+    })();
+  </script>
 </body>
 </html>

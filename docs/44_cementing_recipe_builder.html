@@ -1,31 +1,31 @@
 ﻿<!DOCTYPE html>
 <html lang="ru">
 <head>
-  <script src="../auth-gate.js" data-dq-gate></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>44 · Конструктор рецептур цементирования</title>
 <style>
 :root {
-  --bg-0: #060b12;
-  --bg-1: #0f1a2a;
-  --bg-2: #182840;
-  --text: #edf4ff;
-  --muted: #98abc4;
-  --line: rgba(229, 238, 255, 0.15);
-  --cyan: #1ad8b5;
-  --amber: #ffbc4c;
-  --ok: #3fb950;
-  --warn: #d29922;
-  --bad: #f85149;
+  --bg: #F5F5F7;
+  --panel: #FFFFFF;
+  --a: #2563EB;
+  --a-l: #EFF6FF;
+  --a-m: #BFDBFE;
+  --txt: #1D1D1F;
+  --muted: #6E6E73;
+  --g: #16A34A;
+  --r: #DC2626;
+  --warn: #D97706;
+  --line: #E5E5EA;
+  --shadow: 0 2px 12px rgba(0,0,0,0.07);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 html, body {
-  font-family: 'Manrope', 'Segoe UI', sans-serif;
-  color: var(--text);
-  background: linear-gradient(145deg, var(--bg-0), var(--bg-1) 42%, var(--bg-2));
+  font-family: -apple-system, 'SF Pro Display', 'Segoe UI', sans-serif;
+  color: var(--txt);
+  background: var(--bg);
   min-height: 100vh;
 }
 
@@ -37,35 +37,39 @@ html, body {
   align-items: center;
   border: 1px solid var(--line);
   border-radius: 12px;
-  background: rgba(9, 15, 24, 0.8);
+  background: var(--panel);
   padding: 12px 14px;
   position: sticky;
   top: 8px;
   z-index: 10;
   gap: 12px;
+  box-shadow: var(--shadow);
 }
 
 .brand { font-weight: 800; font-size: 18px; }
-.brand span { color: var(--cyan); }
-
+.brand span { color: var(--a); }
 .actions { display: flex; gap: 8px; flex-wrap: wrap; }
 
 .btn {
   border: 1px solid var(--line);
-  background: #1a2a45;
-  color: #d3e4ff;
+  background: var(--panel);
+  color: var(--txt);
   border-radius: 8px;
   padding: 7px 11px;
   cursor: pointer;
   font-weight: 700;
   font-size: 12px;
   transition: all 200ms ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
 }
 
-.btn:hover { border-color: var(--cyan); background: rgba(26, 216, 181, 0.1); }
-.btn.main { background: linear-gradient(135deg, #8df7e7, #14d7b2); color: #062a24; border-color: #14d7b2; }
+.btn:hover { border-color: var(--a); background: var(--a-l); color: var(--a); }
+.btn.main { background: var(--a); color: #fff; border-color: var(--a); }
+.btn.main:hover { background: #1D4ED8; }
 
-h1 { font-size: 24px; color: var(--cyan); margin: 12px 0 6px; }
+h1 { font-size: 24px; color: var(--a); margin: 12px 0 6px; }
 .hint { font-size: 12px; color: var(--muted); margin-bottom: 12px; }
 
 .container3 {
@@ -78,50 +82,39 @@ h1 { font-size: 24px; color: var(--cyan); margin: 12px 0 6px; }
 .panel {
   border: 1px solid var(--line);
   border-radius: 12px;
-  background: rgba(12, 20, 34, 0.8);
+  background: var(--panel);
   padding: 12px;
+  box-shadow: var(--shadow);
 }
 
 .side { position: sticky; top: 64px; height: calc(100vh - 80px); overflow-y: auto; }
-
 .center { display: flex; flex-direction: column; gap: 12px; }
 
-h2 { font-size: 18px; color: var(--cyan); margin: 8px 0 6px; border-bottom: 1px solid var(--line); padding-bottom: 6px; }
-h3 { font-size: 14px; color: var(--amber); margin: 8px 0 4px; }
+h2 { font-size: 18px; color: var(--a); margin: 8px 0 6px; border-bottom: 1px solid var(--line); padding-bottom: 6px; }
+h3 { font-size: 14px; color: var(--muted); margin: 8px 0 4px; font-weight: 700; }
 
-label {
-  display: block;
-  margin: 6px 0 4px;
-  color: var(--muted);
-  font-size: 12px;
-}
+label { display: block; margin: 6px 0 4px; color: var(--muted); font-size: 12px; }
 
 input, select, textarea {
   width: 100%;
   border: 1px solid var(--line);
   border-radius: 7px;
-  background: #0b1527;
-  color: var(--text);
+  background: var(--panel);
+  color: var(--txt);
   padding: 7px 8px;
   font-size: 13px;
 }
 
-input:focus, select:focus { border-color: var(--cyan); outline: none; }
+input:focus, select:focus { border-color: var(--a); outline: none; }
 
-.card {
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  background: #17253d;
-  padding: 10px;
-  margin-bottom: 8px;
-}
+.card { border: 1px solid var(--line); border-radius: 10px; background: var(--bg); padding: 10px; margin-bottom: 8px; }
 
 .recipe-btn {
   width: 100%;
   text-align: left;
   border: 1px solid var(--line);
-  background: #172742;
-  color: #d7e5fb;
+  background: var(--bg);
+  color: var(--txt);
   border-radius: 8px;
   padding: 8px;
   cursor: pointer;
@@ -131,13 +124,9 @@ input:focus, select:focus { border-color: var(--cyan); outline: none; }
   margin-bottom: 6px;
 }
 
-.recipe-btn:hover, .recipe-btn.active {
-  border-color: var(--cyan);
-  background: #1b2e4d;
-}
-
+.recipe-btn:hover, .recipe-btn.active { border-color: var(--a); background: var(--a-l); color: var(--a); }
 .recipe-title { font-weight: 700; font-size: 13px; }
-.recipe-sub { font-size: 10px; color: #9db2d0; margin-top: 2px; }
+.recipe-sub { font-size: 10px; color: var(--muted); margin-top: 2px; }
 
 .additive-list { display: grid; gap: 6px; }
 
@@ -147,112 +136,64 @@ input:focus, select:focus { border-color: var(--cyan); outline: none; }
   align-items: center;
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: #0f1f34;
+  background: var(--panel);
   padding: 8px;
   position: relative;
 }
 
-.additive-name {
-  flex: 1;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 12px;
-}
+.additive-name { flex: 1; cursor: pointer; font-weight: 600; font-size: 12px; color: var(--txt); }
 
 .additive-amount {
   width: 70px;
-  border: 1px solid #2d4f7b;
-  background: #0b1527;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  color: var(--txt);
   padding: 4px 6px;
   border-radius: 5px;
   font-size: 11px;
   text-align: right;
 }
 
-.additive-unit {
-  width: 50px;
-  font-size: 11px;
-  color: var(--muted);
-  text-align: center;
-}
+.additive-unit { width: 50px; font-size: 11px; color: var(--muted); text-align: center; }
 
 .remove-btn {
   width: 24px;
   height: 24px;
   border: none;
-  background: rgba(248, 81, 73, 0.2);
-  color: var(--bad);
+  background: rgba(220,38,38,0.1);
+  color: var(--r);
   border-radius: 4px;
   cursor: pointer;
   font-size: 12px;
   font-weight: 700;
 }
 
-.remove-btn:hover { background: rgba(248, 81, 73, 0.4); }
+.remove-btn:hover { background: rgba(220,38,38,0.2); }
 
-.out {
-  margin-top: 8px;
-  border: 1px solid #26537f;
-  background: #0b1a2e;
-  border-radius: 8px;
-  padding: 8px;
-}
-
-.or {
-  display: flex;
-  justify-content: space-between;
-  border-bottom: 1px dotted #21456f;
-  padding: 4px 0;
-  font-size: 12px;
-}
-
+.out { margin-top: 8px; border: 1px solid var(--a-m); background: var(--a-l); border-radius: 8px; padding: 8px; }
+.or { display: flex; justify-content: space-between; border-bottom: 1px dotted var(--line); padding: 4px 0; font-size: 12px; }
 .or:last-child { border-bottom: none; }
-
-.mono {
-  font-family: Consolas, monospace;
-  color: var(--cyan);
-  font-weight: 700;
-}
-
-.ok { color: var(--ok); }
+.mono { font-family: Consolas, monospace; color: var(--a); font-weight: 700; }
+.ok { color: var(--g); }
 .warn { color: var(--warn); }
-.bad { color: var(--bad); }
+.bad { color: var(--r); }
 
-.row {
-  display: flex;
-  gap: 8px;
-  align-items: end;
-}
-
+.row { display: flex; gap: 8px; align-items: end; }
 .row > div { flex: 1; }
+.chart-comp { margin-top: 8px; }
 
-.chart-comp {
-  margin-top: 8px;
-}
-
-canvas {
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: #0f1f34;
-  width: 100%;
-  height: auto;
-}
+canvas { border: 1px solid var(--line); border-radius: 8px; background: var(--bg); width: 100%; height: auto; }
 
 table { width: 100%; border-collapse: collapse; margin-top: 7px; }
 th, td { border: 1px solid var(--line); padding: 6px; font-size: 11px; text-align: left; }
-th { background: #111f36; color: var(--cyan); font-weight: 700; }
+th { background: var(--a-l); color: var(--a); font-weight: 700; }
 
-.tab-buttons {
-  display: flex;
-  gap: 6px;
-  margin-bottom: 10px;
-  flex-wrap: wrap;
-}
+.tab-buttons { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
 
 .tab-btn {
   border: 1px solid var(--line);
-  background: #172742;
-  color: #d7e5fb;
+  background: var(--bg);
+  color: var(--txt);
   border-radius: 6px;
   padding: 6px 10px;
   cursor: pointer;
@@ -260,22 +201,12 @@ th { background: #111f36; color: var(--cyan); font-weight: 700; }
   font-weight: 700;
 }
 
-.tab-btn.active {
-  border-color: var(--cyan);
-  background: #1b2e4d;
-}
-
+.tab-btn.active { border-color: var(--a); background: var(--a-l); color: var(--a); }
 .section-tab { display: none; }
 .section-tab.active { display: block; }
 
-@media (max-width: 1300px) {
-  .container3 { grid-template-columns: 1fr; }
-  .side { position: static; height: auto; }
-}
-
-@media (max-width: 880px) {
-  .container3 { grid-template-columns: 1fr; }
-}
+@media (max-width: 1300px) { .container3 { grid-template-columns: 1fr; } .side { position: static; height: auto; } }
+@media (max-width: 880px) { .container3 { grid-template-columns: 1fr; } }
 </style>
   <script src="../nav-inject.js"></script>
 </head>
@@ -529,7 +460,7 @@ function renderAdditives() {
       </div>
     `;
   }
-  if (html === '') html = '<div style="color:#98abc4;font-size:11px;padding:8px;">Выберите добавки выше</div>';
+  if (html === '') html = '<div style="color:var(--muted);font-size:11px;padding:8px;">Выберите добавки выше</div>';
   el('additivesBox').innerHTML = html;
 }
 
@@ -709,8 +640,8 @@ function updateRecommendations() {
     const best = matched[0];
     rec_html = `
       <div class="or"><span>Лучший выбор рецепты:</span></div>
-      <div style="color:#1ad8b5;font-weight:700;margin-top:4px;">${best.name}</div>
-      <div style="color:#98abc4;font-size:11px;margin-top:4px;">Для условий: T°=${bht}°C, TVD=${tvd}м, тип=${formation}</div>
+      <div style="color:var(--a);font-weight:700;margin-top:4px;">${best.name}</div>
+      <div style="color:var(--muted);font-size:11px;margin-top:4px;">Для условий: T°=${bht}°C, TVD=${tvd}м, тип=${formation}</div>
     `;
   }
   el('recipeHint').innerHTML = rec_html;
@@ -735,33 +666,36 @@ function drawPie(components, canvas) {
   canvas.width = 300;
   canvas.height = 300;
   
-  const colors = ['#1ad8b5', '#ffbc4c', '#f85149', '#3fb950', '#58a6ff', '#d29922', '#79c0ff', '#8b949e'];
+  ctx.fillStyle = '#F5F5F7';
+  ctx.fillRect(0, 0, 300, 300);
+
+  const colors = ['#2563EB', '#D97706', '#DC2626', '#16A34A', '#7C3AED', '#0891B2', '#DB2777', '#6E6E73'];
   const dry_comps = components.filter(c => c.unit !== 'л');
   const total = dry_comps.reduce((s, c) => s + c.amount, 0);
-  
+
   let angle = -Math.PI / 2;
   for (let i = 0; i < dry_comps.length; i++) {
     const comp = dry_comps[i];
     const slice = (comp.amount / total) * 2 * Math.PI;
-    
+
     ctx.fillStyle = colors[i % colors.length];
     ctx.beginPath();
     ctx.arc(150, 150, 80, angle, angle + slice);
     ctx.lineTo(150, 150);
     ctx.fill();
-    
-    ctx.strokeStyle = '#060b12';
+
+    ctx.strokeStyle = '#FFFFFF';
     ctx.lineWidth = 2;
     ctx.stroke();
-    
+
     angle += slice;
   }
-  
-  ctx.fillStyle = '#fff';
-  ctx.font = 'bold 14px Manrope';
+
+  ctx.fillStyle = '#1D1D1F';
+  ctx.font = 'bold 14px -apple-system, sans-serif';
   ctx.textAlign = 'center';
   ctx.fillText('СОСТАВ', 150, 145);
-  ctx.font = '11px Manrope';
+  ctx.font = '11px -apple-system, sans-serif';
   ctx.fillText('(сухие)', 150, 160);
 }
 

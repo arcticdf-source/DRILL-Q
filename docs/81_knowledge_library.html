@@ -1,0 +1,614 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>База знаний — NEXUS AI</title>
+  <style>
+    :root {
+      --bg:    #F5F5F7;
+      --panel: #FFFFFF;
+      --a:     #2563EB;
+      --a-l:   #EFF6FF;
+      --a-m:   #BFDBFE;
+      --a-d:   #1D4ED8;
+      --txt:   #1D1D1F;
+      --muted: #6E6E73;
+      --line:  #E5E5EA;
+      --g:     #16A34A;
+      --r:     #DC2626;
+      --warn:  #D97706;
+      --ss: 0 1px 4px rgba(0,0,0,.05), 0 2px 8px rgba(0,0,0,.04);
+      --sm: 0 4px 16px rgba(0,0,0,.07);
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; background: var(--bg); color: var(--txt);
+      font-family: -apple-system,'SF Pro Text','Segoe UI',system-ui,sans-serif;
+      -webkit-font-smoothing: antialiased; min-height: 100vh; }
+
+    /* ── LAYOUT ── */
+    .app { display: grid; grid-template-columns: 252px minmax(0,1fr); min-height: 100vh; }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      background: var(--panel);
+      border-right: 1px solid var(--line);
+      padding: 18px 14px;
+      display: flex; flex-direction: column; gap: 16px;
+      position: sticky; top: 0; height: 100vh; overflow-y: auto;
+    }
+    .brand { padding-bottom: 14px; border-bottom: 1px solid var(--line); }
+    .brand h1 { font-size: 17px; font-weight: 800; letter-spacing: -0.03em; margin: 0 0 2px; }
+    .brand p  { font-size: 12px; color: var(--muted); margin: 0; }
+
+    .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .stat-card {
+      background: var(--bg); border: 1px solid var(--line); border-radius: 12px;
+      padding: 10px 12px; box-shadow: var(--ss);
+    }
+    .stat-card__num  { font-size: 22px; font-weight: 800; color: var(--a); line-height: 1; }
+    .stat-card__lbl  { font-size: 10px; color: var(--muted); margin-top: 2px; }
+
+    .sec-title { font-size: 10px; font-weight: 800; text-transform: uppercase;
+      letter-spacing: 0.1em; color: var(--muted); margin: 0 0 8px; }
+
+    .domain-filters { display: flex; flex-direction: column; gap: 3px; }
+    .df-btn {
+      appearance: none; border: 1px solid transparent; background: transparent;
+      font: 13px/1.4 inherit; text-align: left; padding: 7px 10px; border-radius: 9px;
+      cursor: pointer; color: var(--txt); display: flex; align-items: center;
+      justify-content: space-between; gap: 6px; transition: background 120ms, border-color 120ms;
+    }
+    .df-btn:hover      { background: var(--bg); border-color: var(--line); }
+    .df-btn.active     { background: var(--a-l); border-color: var(--a-m); color: var(--a); font-weight: 700; }
+    .df-badge {
+      min-width: 20px; height: 20px; border-radius: 999px; background: var(--line);
+      color: var(--muted); font-size: 11px; font-weight: 700; display: inline-flex;
+      align-items: center; justify-content: center; padding: 0 6px;
+    }
+    .df-btn.active .df-badge { background: var(--a-m); color: var(--a); }
+
+    .sidebar-links { display: flex; flex-direction: column; gap: 6px; margin-top: auto; }
+    .sidebar-link {
+      display: inline-flex; align-items: center; gap: 6px; padding: 9px 12px;
+      border-radius: 10px; font-size: 13px; font-weight: 700; text-decoration: none;
+      background: var(--bg); border: 1px solid var(--line); color: var(--txt);
+      transition: background 120ms, border-color 120ms, color 120ms;
+    }
+    .sidebar-link:hover { background: var(--a-l); border-color: var(--a-m); color: var(--a); }
+    .sidebar-link.primary { background: var(--a); color: #fff; border-color: var(--a); box-shadow: 0 2px 8px rgba(37,99,235,.25); }
+    .sidebar-link.primary:hover { background: var(--a-d); }
+
+    /* ── MAIN ── */
+    .main { padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+
+    /* topbar */
+    .topbar { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .topbar h2 { font-size: 22px; font-weight: 800; letter-spacing: -0.04em; margin: 0; flex: 1; }
+    .search-wrap { position: relative; flex: 1; max-width: 320px; }
+    .search-wrap input {
+      width: 100%; padding: 9px 12px 9px 36px;
+      border: 1px solid var(--line); border-radius: 10px; background: var(--panel);
+      font: 13px inherit; color: var(--txt); outline: none;
+      transition: border-color 160ms, box-shadow 160ms;
+    }
+    .search-wrap input:focus { border-color: var(--a-m); box-shadow: 0 0 0 3px rgba(37,99,235,.07); }
+    .search-wrap::before {
+      content: '⌕'; position: absolute; left: 11px; top: 50%; transform: translateY(-50%);
+      font-size: 15px; color: var(--muted); pointer-events: none;
+    }
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 9px 16px; border-radius: 10px; font: 700 13px inherit;
+      cursor: pointer; border: 1px solid var(--line); background: var(--panel);
+      color: var(--txt); transition: background 120ms, border-color 120ms, color 120ms;
+      text-decoration: none;
+    }
+    .btn:hover { background: var(--bg); border-color: var(--a-m); color: var(--a); }
+    .btn.primary { background: var(--a); color: #fff; border-color: var(--a); box-shadow: 0 2px 8px rgba(37,99,235,.25); }
+    .btn.primary:hover { background: var(--a-d); }
+    .btn.danger  { background: rgba(220,38,38,.06); border-color: rgba(220,38,38,.3); color: var(--r); }
+    .btn.danger:hover  { background: rgba(220,38,38,.12); }
+
+    /* ── ADD/EDIT FORM ── */
+    .form-card {
+      background: var(--panel); border: 1.5px solid var(--a-m); border-radius: 16px;
+      padding: 20px; box-shadow: var(--sm); display: none; flex-direction: column; gap: 12px;
+    }
+    .form-card.open { display: flex; }
+    .form-card h3 { margin: 0; font-size: 15px; font-weight: 800; color: var(--a); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr 200px; gap: 12px; }
+    .field { display: flex; flex-direction: column; gap: 4px; }
+    .field label { font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--muted); }
+    .field input, .field select, .field textarea {
+      padding: 9px 12px; border: 1px solid var(--line); border-radius: 10px;
+      font: 13px inherit; color: var(--txt); background: var(--bg); outline: none;
+      transition: border-color 160ms, box-shadow 160ms;
+    }
+    .field input:focus, .field select:focus, .field textarea:focus {
+      border-color: var(--a-m); box-shadow: 0 0 0 3px rgba(37,99,235,.07);
+      background: var(--panel);
+    }
+    .field textarea { resize: vertical; min-height: 120px; line-height: 1.6; }
+    .form-actions { display: flex; gap: 8px; justify-content: flex-end; }
+    .char-count { font-size: 11px; color: var(--muted); text-align: right; margin-top: -8px; }
+
+    /* ── ARTICLES ── */
+    .articles-grid { display: flex; flex-direction: column; gap: 10px; }
+
+    .article-card {
+      background: var(--panel); border: 1px solid var(--line); border-radius: 14px;
+      padding: 16px 18px; box-shadow: var(--ss);
+      display: grid; grid-template-columns: 1fr auto; gap: 8px;
+      transition: box-shadow 160ms, border-color 160ms;
+    }
+    .article-card:hover { box-shadow: var(--sm); border-color: var(--a-m); }
+
+    .article-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; flex-wrap: wrap; }
+    .article-title  { font-size: 14px; font-weight: 700; color: var(--txt); }
+    .domain-tag {
+      display: inline-flex; align-items: center; height: 22px; padding: 0 9px;
+      border-radius: 999px; font-size: 11px; font-weight: 700;
+      border: 1px solid; white-space: nowrap;
+    }
+    .article-source { font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+    .article-text   {
+      font-size: 13px; color: var(--muted); line-height: 1.6;
+      display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .article-actions { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; flex-shrink: 0; }
+    .icon-btn {
+      appearance: none; border: 1px solid var(--line); background: var(--bg);
+      border-radius: 8px; width: 32px; height: 32px; cursor: pointer;
+      display: inline-flex; align-items: center; justify-content: center; font-size: 14px;
+      transition: background 120ms, border-color 120ms;
+    }
+    .icon-btn:hover { background: var(--a-l); border-color: var(--a-m); }
+    .icon-btn.del:hover { background: rgba(220,38,38,.08); border-color: rgba(220,38,38,.3); }
+
+    /* ── EMPTY STATE ── */
+    .empty-state {
+      text-align: center; padding: 64px 20px; display: none;
+    }
+    .empty-state.visible { display: block; }
+    .empty-state__icon { font-size: 48px; margin-bottom: 16px; }
+    .empty-state h3  { font-size: 20px; font-weight: 800; margin: 0 0 8px; }
+    .empty-state p   { color: var(--muted); font-size: 14px; max-width: 360px; margin: 0 auto 20px; line-height: 1.6; }
+
+    /* ── IMPORT/EXPORT BAR ── */
+    .io-bar {
+      display: flex; gap: 8px; align-items: center; padding: 12px 16px;
+      background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
+      box-shadow: var(--ss); flex-wrap: wrap;
+    }
+    .io-bar span { font-size: 12px; color: var(--muted); flex: 1; }
+
+    /* ── DOMAIN COLORS ── */
+    .d-drilling_fluids { background: rgba(37,99,235,.08); border-color: rgba(37,99,235,.3); color: #2563EB; }
+    .d-hydraulics      { background: rgba(124,58,237,.08); border-color: rgba(124,58,237,.3); color: #7C3AED; }
+    .d-bha             { background: rgba(217,119,6,.08); border-color: rgba(217,119,6,.3); color: #D97706; }
+    .d-cementing       { background: rgba(22,163,74,.08); border-color: rgba(22,163,74,.3); color: #16A34A; }
+    .d-planning        { background: rgba(79,70,229,.08); border-color: rgba(79,70,229,.3); color: #4F46E5; }
+    .d-kpi             { background: rgba(220,38,38,.08); border-color: rgba(220,38,38,.3); color: #DC2626; }
+    .d-operations      { background: rgba(8,145,178,.08); border-color: rgba(8,145,178,.3); color: #0891B2; }
+    .d-general         { background: rgba(110,110,115,.08); border-color: rgba(110,110,115,.3); color: #6E6E73; }
+
+    @media (max-width: 860px) {
+      .app { grid-template-columns: 1fr; }
+      .sidebar { position: static; height: auto; border-right: none; border-bottom: 1px solid var(--line); }
+      .form-row { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 560px) {
+      .main { padding: 16px; }
+      .form-row { grid-template-columns: 1fr; }
+    }
+  </style>
+  <script src="../nav-inject.js"></script>
+</head>
+<body>
+<div class="app">
+
+  <!-- ── SIDEBAR ──────────────────────────────── -->
+  <aside class="sidebar">
+    <div class="brand">
+      <h1>База знаний</h1>
+      <p>NEXUS AI · локальное хранилище</p>
+    </div>
+
+    <div>
+      <div class="sec-title">Статистика</div>
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-card__num" id="statTotal">0</div>
+          <div class="stat-card__lbl">Всего статей</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card__num" id="statDomains">0</div>
+          <div class="stat-card__lbl">Разделов</div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="sec-title">Фильтр по разделу</div>
+      <div class="domain-filters" id="domainFilters"></div>
+    </div>
+
+    <div class="sidebar-links">
+      <a class="sidebar-link primary" href="80_ai_assistant_chat.html">⚡ Открыть AI-помощника</a>
+      <a class="sidebar-link" href="../index.html">← На главную</a>
+    </div>
+  </aside>
+
+  <!-- ── MAIN ─────────────────────────────────── -->
+  <main class="main">
+
+    <!-- topbar -->
+    <div class="topbar">
+      <h2 id="mainTitle">Все статьи</h2>
+      <div class="search-wrap">
+        <input type="text" id="searchInput" placeholder="Поиск по статьям…">
+      </div>
+      <button class="btn primary" id="addBtn">+ Добавить статью</button>
+    </div>
+
+    <!-- add/edit form -->
+    <div class="form-card" id="formCard">
+      <h3 id="formTitle">Новая статья</h3>
+      <div class="form-row">
+        <div class="field">
+          <label>Заголовок *</label>
+          <input type="text" id="fTitle" placeholder="Например: РУО на Ванкоре — реология">
+        </div>
+        <div class="field">
+          <label>Источник</label>
+          <input type="text" id="fSource" placeholder="DMR 7-002, проектный отчёт…">
+        </div>
+        <div class="field">
+          <label>Раздел *</label>
+          <select id="fDomain">
+            <option value="drilling_fluids">Буровые растворы</option>
+            <option value="hydraulics">Гидравлика</option>
+            <option value="bha">КНБК</option>
+            <option value="cementing">Цементирование</option>
+            <option value="planning">Планирование</option>
+            <option value="kpi">KPI / Экономика</option>
+            <option value="operations">Операции</option>
+            <option value="general">Общее</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label>Текст статьи * <span style="font-weight:400;text-transform:none;letter-spacing:0">— пишите конкретно: цифры, интервалы, решения, результаты</span></label>
+        <textarea id="fText" placeholder="Пример: На скважине Ванкор 7-002 в интервале 2450–2600 м применялась система РУО плотностью 1.82 г/см³. Причина выбора: давление пор 1.74 г/см³, нестабильность глин. Реология: ПВ 28 сП, ДНС 12 дПа. При снижении плотности ниже 1.78 наблюдались затяжки до 8 т..." oninput="updateCharCount()"></textarea>
+        <div class="char-count" id="charCount">0 символов</div>
+      </div>
+      <div class="form-actions">
+        <button class="btn" id="cancelBtn">Отмена</button>
+        <button class="btn primary" id="saveBtn">Сохранить</button>
+      </div>
+    </div>
+
+    <!-- import/export -->
+    <div class="io-bar">
+      <span id="ioStatus">Статьи хранятся локально в браузере и автоматически подгружаются в AI-помощника.</span>
+      <button class="btn" id="exportBtn">↓ Экспорт JSON</button>
+      <label class="btn" style="cursor:pointer">
+        ↑ Импорт JSON
+        <input type="file" accept=".json" id="importFile" style="display:none">
+      </label>
+      <button class="btn danger" id="clearAllBtn">Очистить всё</button>
+    </div>
+
+    <!-- articles -->
+    <div class="articles-grid" id="articlesGrid"></div>
+
+    <!-- empty state -->
+    <div class="empty-state" id="emptyState">
+      <div class="empty-state__icon">📚</div>
+      <h3>База знаний пуста</h3>
+      <p>Добавьте первую статью — конкретные данные по скважинам, растворам, интервалам, решениям. Чем больше деталей, тем точнее отвечает AI.</p>
+      <button class="btn primary" onclick="openForm()">+ Добавить первую статью</button>
+    </div>
+
+  </main>
+</div>
+
+<script>
+const STORAGE_KEY = 'nexus_kb_articles_v1';
+
+const DOMAINS = {
+  drilling_fluids: { label: 'Буровые растворы', cls: 'd-drilling_fluids' },
+  hydraulics:      { label: 'Гидравлика',       cls: 'd-hydraulics' },
+  bha:             { label: 'КНБК',             cls: 'd-bha' },
+  cementing:       { label: 'Цементирование',   cls: 'd-cementing' },
+  planning:        { label: 'Планирование',      cls: 'd-planning' },
+  kpi:             { label: 'KPI / Экономика',  cls: 'd-kpi' },
+  operations:      { label: 'Операции',          cls: 'd-operations' },
+  general:         { label: 'Общее',             cls: 'd-general' }
+};
+
+let articles = [];
+let editingId = null;
+let filterDomain = 'all';
+let searchQuery = '';
+
+/* ── STORAGE ── */
+function load() {
+  try { articles = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
+  catch(e) { articles = []; }
+  if (!Array.isArray(articles)) articles = [];
+}
+
+function save() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(articles)); } catch(e) {}
+}
+
+function genId() {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+}
+
+/* ── FORM ── */
+function openForm(id) {
+  editingId = id || null;
+  const form = document.getElementById('formCard');
+  form.classList.add('open');
+  document.getElementById('formTitle').textContent = id ? 'Редактировать статью' : 'Новая статья';
+  if (id) {
+    const a = articles.find(x => x.id === id);
+    if (!a) return;
+    document.getElementById('fTitle').value = a.title;
+    document.getElementById('fSource').value = a.source || '';
+    document.getElementById('fDomain').value = a.domain;
+    document.getElementById('fText').value = a.text;
+    updateCharCount();
+  } else {
+    document.getElementById('fTitle').value = '';
+    document.getElementById('fSource').value = '';
+    document.getElementById('fText').value = '';
+    updateCharCount();
+  }
+  document.getElementById('fTitle').focus();
+  form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function closeForm() {
+  document.getElementById('formCard').classList.remove('open');
+  editingId = null;
+}
+
+function updateCharCount() {
+  const n = (document.getElementById('fText').value || '').length;
+  const el = document.getElementById('charCount');
+  el.textContent = n + ' символов';
+  el.style.color = n < 80 ? 'var(--warn)' : n > 4000 ? 'var(--muted)' : 'var(--g)';
+}
+
+function saveArticle() {
+  const title  = (document.getElementById('fTitle').value || '').trim();
+  const source = (document.getElementById('fSource').value || '').trim();
+  const domain = document.getElementById('fDomain').value;
+  const text   = (document.getElementById('fText').value || '').trim();
+
+  if (!title) { alert('Укажите заголовок статьи'); document.getElementById('fTitle').focus(); return; }
+  if (!text)  { alert('Добавьте текст статьи'); document.getElementById('fText').focus(); return; }
+  if (text.length < 20) { alert('Текст слишком короткий — AI не сможет использовать такую статью'); return; }
+
+  if (editingId) {
+    const idx = articles.findIndex(x => x.id === editingId);
+    if (idx !== -1) articles[idx] = { ...articles[idx], title, source, domain, text, updatedAt: new Date().toISOString().slice(0,10) };
+  } else {
+    articles.push({ id: genId(), title, source, domain, text, createdAt: new Date().toISOString().slice(0,10) });
+  }
+
+  save();
+  closeForm();
+  render();
+}
+
+function deleteArticle(id) {
+  const a = articles.find(x => x.id === id);
+  if (!a) return;
+  if (!confirm('Удалить статью «' + a.title + '»?')) return;
+  articles = articles.filter(x => x.id !== id);
+  save();
+  render();
+}
+
+/* ── FILTER & SEARCH ── */
+function filteredArticles() {
+  return articles.filter(a => {
+    const domainMatch = filterDomain === 'all' || a.domain === filterDomain;
+    if (!domainMatch) return false;
+    if (!searchQuery) return true;
+    const q = searchQuery.toLowerCase();
+    return (a.title + ' ' + a.source + ' ' + a.text).toLowerCase().includes(q);
+  });
+}
+
+/* ── RENDER ── */
+function render() {
+  renderStats();
+  renderDomainFilters();
+  renderArticles();
+  updateTitle();
+}
+
+function updateTitle() {
+  const fd = filterDomain !== 'all' ? DOMAINS[filterDomain]?.label : null;
+  document.getElementById('mainTitle').textContent = fd || 'Все статьи';
+}
+
+function renderStats() {
+  document.getElementById('statTotal').textContent = articles.length;
+  const domains = new Set(articles.map(a => a.domain));
+  document.getElementById('statDomains').textContent = domains.size;
+}
+
+function renderDomainFilters() {
+  const counts = {};
+  articles.forEach(a => { counts[a.domain] = (counts[a.domain] || 0) + 1; });
+
+  const container = document.getElementById('domainFilters');
+  let html = '<button class="df-btn' + (filterDomain === 'all' ? ' active' : '') + '" data-domain="all">'
+    + 'Все разделы'
+    + '<span class="df-badge">' + articles.length + '</span></button>';
+
+  Object.entries(DOMAINS).forEach(([key, d]) => {
+    const cnt = counts[key] || 0;
+    if (!cnt) return;
+    html += '<button class="df-btn' + (filterDomain === key ? ' active' : '') + '" data-domain="' + key + '">'
+      + d.label
+      + '<span class="df-badge">' + cnt + '</span></button>';
+  });
+
+  container.innerHTML = html;
+  container.querySelectorAll('[data-domain]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterDomain = btn.getAttribute('data-domain');
+      render();
+    });
+  });
+}
+
+function renderArticles() {
+  const list = filteredArticles();
+  const grid = document.getElementById('articlesGrid');
+  const empty = document.getElementById('emptyState');
+
+  if (!list.length) {
+    grid.innerHTML = '';
+    empty.classList.add('visible');
+    return;
+  }
+
+  empty.classList.remove('visible');
+
+  grid.innerHTML = list.map(a => {
+    const d = DOMAINS[a.domain] || DOMAINS.general;
+    const excerpt = a.text.length > 200 ? a.text.slice(0, 200) + '…' : a.text;
+    const date = a.updatedAt || a.createdAt || '';
+    return [
+      '<div class="article-card">',
+        '<div>',
+          '<div class="article-header">',
+            '<span class="article-title">' + esc(a.title) + '</span>',
+            '<span class="domain-tag ' + d.cls + '">' + d.label + '</span>',
+          '</div>',
+          a.source ? '<div class="article-source">📎 ' + esc(a.source) + (date ? ' · ' + date : '') + '</div>' : '',
+          '<div class="article-text">' + esc(excerpt) + '</div>',
+        '</div>',
+        '<div class="article-actions">',
+          '<button class="icon-btn" data-edit="' + a.id + '" title="Редактировать">✏️</button>',
+          '<button class="icon-btn del" data-del="' + a.id + '" title="Удалить">🗑</button>',
+        '</div>',
+      '</div>'
+    ].join('');
+  }).join('');
+
+  grid.querySelectorAll('[data-edit]').forEach(btn =>
+    btn.addEventListener('click', () => openForm(btn.getAttribute('data-edit'))));
+  grid.querySelectorAll('[data-del]').forEach(btn =>
+    btn.addEventListener('click', () => deleteArticle(btn.getAttribute('data-del'))));
+}
+
+function esc(str) {
+  return (str || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+/* ── IMPORT / EXPORT ── */
+function exportJSON() {
+  const blob = new Blob([JSON.stringify({ version: 1, articles }, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'nexus_knowledge_' + new Date().toISOString().slice(0,10) + '.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function importJSON(file) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const data = JSON.parse(e.target.result);
+      const imported = Array.isArray(data) ? data : (data.articles || []);
+      if (!imported.length) { alert('Статьи не найдены в файле'); return; }
+      const added = imported.filter(a => !articles.find(x => x.id === a.id));
+      articles = [...articles, ...added];
+      save();
+      render();
+      document.getElementById('ioStatus').textContent = 'Импортировано: ' + added.length + ' новых статей из ' + imported.length + '.';
+    } catch(err) { alert('Ошибка чтения файла: ' + err.message); }
+  };
+  reader.readAsText(file);
+}
+
+/* ── INIT ── */
+document.getElementById('addBtn').addEventListener('click', () => openForm());
+document.getElementById('cancelBtn').addEventListener('click', closeForm);
+document.getElementById('saveBtn').addEventListener('click', saveArticle);
+document.getElementById('exportBtn').addEventListener('click', exportJSON);
+document.getElementById('clearAllBtn').addEventListener('click', () => {
+  if (!articles.length) return;
+  if (!confirm('Удалить все ' + articles.length + ' статей? Это действие необратимо.')) return;
+  articles = [];
+  save();
+  render();
+});
+document.getElementById('importFile').addEventListener('change', e => {
+  if (e.target.files[0]) importJSON(e.target.files[0]);
+  e.target.value = '';
+});
+document.getElementById('searchInput').addEventListener('input', e => {
+  searchQuery = e.target.value;
+  render();
+});
+
+// Enter to save
+document.getElementById('fText').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && e.ctrlKey) saveArticle();
+});
+
+load();
+
+/* Seed sample articles on very first open */
+if (!articles.length && !localStorage.getItem('nexus_kb_seeded_v1')) {
+  localStorage.setItem('nexus_kb_seeded_v1', '1');
+  var SEED = [
+    {
+      id: 'seed_01', domain: 'drilling_fluids', title: 'Ванкор 7-002 — РУО система, параметры',
+      source: 'DMR скв. 7-002', createdAt: '2026-07-09',
+      text: 'На скважине Ванкор 7-002 применялась система РУО (инвертная эмульсия) в интервале 2 300–3 650 м. Плотность 1.84 г/см³, ПВ 32 сП, ДНС 14 дПа, СНС 10/18 дПа. Причина выбора: нестабильные глины в отложениях покурской свиты, давление пор 1.78 г/см³. При снижении плотности ниже 1.80 наблюдались затяжки до 6–8 т при СПО. Корректировка: добавление 2 % CaCl₂ для поддержания активности воды ≤ 0.72.'
+    },
+    {
+      id: 'seed_02', domain: 'hydraulics', title: 'Ванкор — гидравлика, потери давления',
+      source: 'Гидравлический расчёт Ванкор', createdAt: '2026-07-09',
+      text: 'Расход промывки 28–32 л/с на интервале 3 000–3 650 м. Насосное давление 230–260 атм. ECD на забое 1.91–1.95 г/см³ при плотности раствора 1.84. Потери в бурильной колонне 85 атм, в кольцевом пространстве 12 атм, на долоте 130 атм. При увеличении расхода до 34 л/с — рост ECD до 1.97, опасность ГРП. Рекомендуемый расход: не более 30 л/с.'
+    },
+    {
+      id: 'seed_03', domain: 'bha', title: 'Ванкор — КНБК для горизонтального участка',
+      source: 'Проект КНБК 7-002', createdAt: '2026-07-09',
+      text: 'КНБК для горизонтального бурения: PDC долото 215.9 мм + ВЗД 172 мм (угол перекоса 1.5°) + телесистема MWD/LWD + стабилизатор 214 мм + УБТС 178 мм × 9 м + ФС + бурильные трубы. Ожидаемый набор угла: 4–5 °/30 м. ВЗД диапазон оборотов 150–200 об/мин при расходе 28 л/с. Нагрузка на долото 8–12 т.'
+    },
+    {
+      id: 'seed_04', domain: 'kpi', title: 'Экономика РУО vs ВЗБ — Ванкор',
+      source: 'Анализ затрат 2025', createdAt: '2026-07-09',
+      text: 'Сравнение РУО и водной системы KCl-PHPA на Ванкоре. РУО: стоимость приготовления $45/м³, объём 280 м³, итого $12 600. Прирост МСП: +1.8 м/ч vs водная система. Экономия НПВ на затяжках: 18 часов × $8 500/ч = $153 000. Утилизация РУО: $18 000. NPT на затяжках при водной системе был 12–15% от фонда времени на этом интервале. Вывод: применение РУО окупается при интервале > 600 м.'
+    },
+    {
+      id: 'seed_05', domain: 'cementing', title: 'Тампонажные рецептуры — Ванкор, кондуктор',
+      source: 'Программа цементирования', createdAt: '2026-07-09',
+      text: 'Цементирование кондуктора 324 мм: буферная жидкость 15 м³ + продавка. Рецептура: ПЦТ-I-50 + хлористый кальций 2% + пластификатор 0.3%. Плотность тампонажного раствора 1.83 г/см³. Водоцементное отношение 0.44. Время загустевания ВК-50 мин при 60°С. ПКЦ-10% за 24 часа ≥ 14 МПа. Объём буферной жидкости 18 м³ (вода + 1% ПАВ). Результат: подъём цемента до устья, КЦО 100%.'
+    }
+  ];
+  articles = SEED;
+  save();
+}
+
+render();
+</script>
+
+</body>
+</html>

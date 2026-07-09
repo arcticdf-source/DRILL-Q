@@ -1,80 +1,67 @@
 ﻿<!DOCTYPE html>
 <html lang="ru">
 <head>
-  <script src="../auth-gate.js" data-dq-gate></script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ROI Calculator - Digital Drilling Model</title>
   <style>
-    @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap");
     :root {
-      --bg: #0a111b;
-      --panel: #121d2b;
-      --line: #22344c;
-      --text: #e9f1fb;
-      --muted: #9db1c9;
-      --accent: #19c7b0;
-      --accent-2: #f4b85f;
-      --danger: #ff6a88;
+      --bg: #F5F5F7;
+      --panel: #FFFFFF;
+      --a: #2563EB;
+      --a-l: #EFF6FF;
+      --a-m: #BFDBFE;
+      --txt: #1D1D1F;
+      --muted: #6E6E73;
+      --g: #16A34A;
+      --r: #DC2626;
+      --warn: #D97706;
+      --line: #E5E5EA;
+      --shadow: 0 2px 12px rgba(0,0,0,0.07);
     }
     * { box-sizing: border-box; }
     body {
       margin: 0;
-      font-family: "Manrope", "Segoe UI", Tahoma, sans-serif;
-      color: var(--text);
-      background: radial-gradient(920px 500px at 0% -12%, rgba(26,216,181,.16), transparent), radial-gradient(900px 540px at 100% 0%, rgba(244,184,95,.14), transparent), radial-gradient(1200px 500px at 70% -10%, #1a2a3f 0%, var(--bg) 55%);
+      font-family: -apple-system, 'SF Pro Display', 'Segoe UI', sans-serif;
+      color: var(--txt);
+      background: var(--bg);
     }
-    .topbar { max-width: 1100px; margin: 24px auto 0; padding: 12px 16px; display:flex; align-items:center; justify-content:space-between; gap:12px; background: rgba(8,15,24,.66); border:1px solid rgba(226,237,255,.08); border-radius:14px; }
-    .brandline { display:flex; align-items:center; gap:10px; font-family:'Oswald',sans-serif; font-size:20px; letter-spacing:.05em; text-transform:uppercase; color:#eef5ff; }
-    .branddot { width:12px; height:12px; border-radius:999px; background:radial-gradient(circle at 35% 35%, #fff1d7, #f4b85f); }
+    .topbar { max-width: 1100px; margin: 24px auto 0; padding: 12px 16px; display:flex; align-items:center; justify-content:space-between; gap:12px; background: var(--panel); border:1px solid var(--line); border-radius:14px; box-shadow: var(--shadow); }
+    .brandline { display:flex; align-items:center; gap:10px; font-size:18px; font-weight:800; text-transform:uppercase; letter-spacing:.05em; color:var(--txt); }
+    .branddot { width:12px; height:12px; border-radius:999px; background:var(--a); }
     .rail { display:flex; flex-wrap:wrap; gap:8px; }
-    .rail a { text-decoration:none; font-size:11px; text-transform:uppercase; letter-spacing:.07em; font-weight:800; border-radius:999px; padding:7px 11px; color:#9fb4cb; border:1px solid rgba(226,237,255,.08); background:rgba(255,255,255,.03); }
-    .rail a.active { color:#2f2406; background:linear-gradient(130deg,#ffe2a7,#f4b85f); border-color:rgba(244,184,95,.75); }
-    .wrap {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 24px;
-    }
-    h1 { margin: 0 0 8px; font-size: 28px; font-family:'Oswald',sans-serif; text-transform:uppercase; letter-spacing:.03em; }
-    .sub { color: var(--muted); margin-bottom: 20px; }
-    .grid {
-      display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
-      gap: 16px;
-    }
-    .card {
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.00));
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 16px;
-    }
+    .rail a { text-decoration:none; font-size:11px; text-transform:uppercase; letter-spacing:.07em; font-weight:700; border-radius:999px; padding:7px 11px; color:var(--muted); border:1px solid var(--line); background:var(--panel); }
+    .rail a:hover { color:var(--a); border-color:var(--a); background:var(--a-l); }
+    .rail a.active { color:#fff; background:var(--a); border-color:var(--a); }
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 24px; }
+    h1 { margin: 0 0 8px; font-size: 28px; font-weight:800; text-transform:uppercase; letter-spacing:.03em; color: var(--a); }
+    h3 { color: var(--txt); font-size: 16px; font-weight: 700; margin: 0 0 12px; }
+    .sub { color: var(--muted); margin-bottom: 20px; font-size: 14px; }
+    .grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 16px; }
+    .card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px; box-shadow: var(--shadow); }
     .field { margin-bottom: 14px; }
     label { display: block; margin-bottom: 6px; color: var(--muted); font-size: 13px; }
-    input[type="range"] { width: 100%; }
+    input[type="range"] { width: 100%; accent-color: var(--a); }
     input[type="number"] {
       width: 100%;
-      background: #0b1626;
-      color: var(--text);
+      background: var(--bg);
+      color: var(--txt);
       border: 1px solid var(--line);
       border-radius: 8px;
       padding: 8px 10px;
+      font-size: 13px;
     }
+    input[type="number"]:focus { border-color: var(--a); outline: none; }
     .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .kpi {
-      border: 1px solid var(--line);
-      border-radius: 10px;
-      padding: 12px;
-      background: #0d1726;
-      margin-bottom: 10px;
-    }
+    .kpi { border: 1px solid var(--line); border-radius: 10px; padding: 12px; background: var(--bg); margin-bottom: 10px; }
     .kpi .name { color: var(--muted); font-size: 12px; }
-    .kpi .val { font-size: 22px; margin-top: 4px; }
-    .accent { color: var(--accent); }
-    .accent2 { color: var(--accent-2); }
-    .danger { color: var(--danger); }
+    .kpi .val { font-size: 22px; margin-top: 4px; font-weight: 700; }
+    .accent { color: var(--a); }
+    .accent2 { color: var(--warn); }
+    .danger { color: var(--r); }
     table { width: 100%; border-collapse: collapse; margin-top: 8px; }
     th, td { border-bottom: 1px solid var(--line); padding: 8px; text-align: left; font-size: 13px; }
-    th { color: var(--muted); font-weight: 600; }
+    th { color: var(--a); font-weight: 700; background: var(--a-l); }
     .hint { color: var(--muted); font-size: 12px; margin-top: 8px; }
     @media (max-width: 900px) {
       .topbar { flex-direction: column; align-items: flex-start; }
