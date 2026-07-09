@@ -80,6 +80,10 @@ html,body{height:100%;background:var(--bg);color:var(--t);font-family:'Inter',-a
 .btn-primary:hover{background:#1d4ed8}
 .btn-ghost{background:var(--p2);color:var(--t);border-color:var(--line)}
 .btn-ghost:hover{border-color:var(--cyan);color:var(--cyan)}
+.btn-launch{background:linear-gradient(135deg,#2563eb 0%,#7c3aed 100%);color:#fff;border-color:transparent;font-size:13px;padding:9px 22px;box-shadow:0 0 18px rgba(37,99,235,.5),0 4px 16px rgba(124,58,237,.35)}
+.btn-launch:hover{box-shadow:0 0 28px rgba(37,99,235,.7),0 6px 24px rgba(124,58,237,.5);transform:translateY(-1px)}
+@keyframes launch-glow{0%,100%{box-shadow:0 0 18px rgba(37,99,235,.5),0 4px 16px rgba(124,58,237,.35)}50%{box-shadow:0 0 30px rgba(37,99,235,.75),0 6px 24px rgba(124,58,237,.6)}}
+.btn-launch{animation:launch-glow 2.2s ease-in-out infinite}
 
 /* CARDS */
 .card{background:var(--p1);border:1px solid var(--line);border-radius:10px;margin-bottom:14px}
@@ -301,7 +305,7 @@ html,body{height:100%;background:var(--bg);color:var(--t);font-family:'Inter',-a
       <div class="ph-sub">Ванкорское НГМ · Предбуровой анализ · AI-рекомендации на основе аналогов</div>
     </div>
     <div class="ph-actions">
-      <button class="btn btn-ghost" onclick="showView('sim')">▶ Запустить симулятор</button>
+      <button class="btn btn-launch" onclick="showView('sim')">▶ Запустить симулятор</button>
       <button class="btn btn-primary" onclick="showView('risks')">🚨 Карта рисков</button>
     </div>
   </div>

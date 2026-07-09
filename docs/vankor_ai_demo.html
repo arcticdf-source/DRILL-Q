@@ -169,10 +169,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Ne
 .ctrl-btn:hover{border-color:rgba(0,212,255,.4);color:var(--cyan)}
 .ctrl-btn.active{background:#2563eb;border-color:#2563eb;color:#fff}
 .speed-btn{padding:4px 8px;font-size:10px}
-#progressTrack{flex:1;position:relative;height:32px;cursor:pointer;min-width:60px}
+#progressTrack{flex:1;position:relative;height:36px;cursor:pointer;min-width:60px;user-select:none}
+#progressTrack:hover #progressBar{height:8px}
 #progressBar{position:absolute;top:50%;transform:translateY(-50%);width:100%;
-  height:4px;background:rgba(255,255,255,.08);border-radius:99px}
-#progressFill{height:100%;background:var(--cyan);border-radius:99px;width:0%}
+  height:6px;background:rgba(255,255,255,.12);border-radius:99px;transition:height .15s}
+#progressFill{height:100%;background:linear-gradient(90deg,var(--cyan),#4af);border-radius:99px;width:0%;position:relative;transition:width .1s linear}
+#progressFill::after{content:'';position:absolute;right:-8px;top:50%;transform:translateY(-50%);
+  width:16px;height:16px;border-radius:50%;
+  background:#fff;border:3px solid var(--cyan);
+  box-shadow:0 0 10px var(--cyan),0 0 4px rgba(0,212,255,.6);
+  transition:box-shadow .15s}
+#progressTrack:hover #progressFill::after{box-shadow:0 0 16px var(--cyan),0 0 6px rgba(0,212,255,.8),0 2px 8px rgba(0,0,0,.4)}
 #progressNPT{position:absolute;top:0;height:100%;background:rgba(255,61,61,.3);pointer-events:none;border-radius:2px}
 #depthInput{width:80px;border:1px solid var(--line);background:var(--p2);color:var(--txt);
   border-radius:6px;padding:4px 8px;font-size:11px;font-family:monospace;text-align:center;font-weight:700}
@@ -251,7 +258,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Ne
 <div id="topbar">
   <a class="tb-logo" href="../tools.html"><div class="tb-mark">DQ</div><span class="tb-name">DRILL-Q</span></a>
   <span class="tb-sep">/</span>
-  <span class="tb-field">Ванкорское НГМ · Скв. 7-002 · Куст 7</span>
+  <span class="tb-field">Ванкорское НГМ</span>
   <span class="tb-sep">/</span>
   <span class="tb-phase drill" id="phaseChip">БУРЕНИЕ</span>
   <div class="tb-right">
@@ -419,7 +426,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Ne
   <button class="ctrl-btn speed-btn" onclick="setSpeed(100)" id="sp100">100×</button>
   <button class="ctrl-btn speed-btn active" onclick="setSpeed(500)" id="sp500">500×</button>
   <button class="ctrl-btn speed-btn" onclick="setSpeed(1000)" id="sp1000">1000×</button>
-  <div id="progressTrack" onclick="seekClick(event)">
+  <div id="progressTrack">
     <div id="progressBar">
       <div id="progressFill"></div>
       <div id="progressNPT"></div>
@@ -2141,7 +2148,7 @@ function tick(ts) {
     if (nptActive) nptDays += dt * speed / 86400;
     bitDepth = Math.min(phase.to, bitDepth + rate * dt);
     checkEvents(bitDepth);
-    if (bitDepth >= phase.to && !nptActive) { playing = false; broadcastState(); }
+    if (bitDepth >= phase.to && !nptActive) { nextPhase(); return; }
 
   } else if (phase.type === 'pooh') {
     const dist = Math.abs(phase.from - phase.to);
@@ -2564,6 +2571,22 @@ window.addEventListener('load', () => {
       loadDrillQData(); updateUI(0);
     }
   });
+
+  // Drag support for progress slider
+  (function() {
+    const track = document.getElementById('progressTrack');
+    let dragging = false;
+    function applyDrag(e) {
+      const rect = track.getBoundingClientRect();
+      const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+      seekDepth(pct * TD);
+    }
+    track.addEventListener('mousedown', e => { dragging = true; applyDrag(e); e.preventDefault(); });
+    document.addEventListener('mousemove', e => { if (dragging) applyDrag(e); });
+    document.addEventListener('mouseup', () => { dragging = false; });
+    track.addEventListener('touchstart', e => { applyDrag(e.touches[0]); e.preventDefault(); }, {passive:false});
+    track.addEventListener('touchmove', e => { applyDrag(e.touches[0]); e.preventDefault(); }, {passive:false});
+  })();
 });
 </script>
 </body>
