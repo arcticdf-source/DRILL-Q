@@ -2127,6 +2127,32 @@ function skipPhase() {
   if (playing) { lastTs = null; requestAnimationFrame(tick); }
 }
 
+// Skip POOH / runcsg / cement / rih — jump straight to next drill phase
+function skipToNextDrill() {
+  phaseIdx++;
+  phaseElapsed = 0;
+  while (phaseIdx < PHASES.length && PHASES[phaseIdx].type !== 'drill') {
+    const p = PHASES[phaseIdx];
+    if (p.type === 'cement' && p.csgIdx !== undefined) cementedSet.add(p.csgIdx);
+    phaseIdx++;
+    phaseElapsed = 0;
+  }
+  document.getElementById('cementBar').classList.remove('show');
+  if (phaseIdx >= PHASES.length) {
+    playing = false;
+    const btn = document.getElementById('btnPlay');
+    if (btn) { btn.textContent = '▶ Пуск'; btn.classList.remove('active'); }
+    broadcastState();
+    return;
+  }
+  const next = PHASES[phaseIdx];
+  if (next.from !== undefined) bitDepth = next.from;
+  addPhaseEvent(next);
+  lastTs = null;
+  broadcastState();
+  if (playing) requestAnimationFrame(tick);
+}
+
 // ═══════════════════════════════════════════════════════════
 // MAIN LOOP
 // ═══════════════════════════════════════════════════════════
@@ -2139,6 +2165,8 @@ function tick(ts) {
 
   const phase = PHASES[phaseIdx];
   if (!phase) return;
+  // Always stay on a drill phase — skip POOH/runcsg/cement/rih automatically
+  if (phase.type !== 'drill') { skipToNextDrill(); return; }
 
   if (phase.type === 'drill') {
     const form = getForm(bitDepth);
@@ -2148,7 +2176,7 @@ function tick(ts) {
     if (nptActive) nptDays += dt * speed / 86400;
     bitDepth = Math.min(phase.to, bitDepth + rate * dt);
     checkEvents(bitDepth);
-    if (bitDepth >= phase.to && !nptActive) { nextPhase(); return; }
+    if (bitDepth >= phase.to && !nptActive) { skipToNextDrill(); return; }
 
   } else if (phase.type === 'pooh') {
     const dist = Math.abs(phase.from - phase.to);
