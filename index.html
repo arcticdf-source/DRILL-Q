@@ -142,21 +142,60 @@
 
     /* ── BRIDGE ── */
     .sim-bridge {
-      background: linear-gradient(180deg, #ffffff 0%, #06090f 100%);
-      padding: 32px 48px 0;
+      background: #06090f;
+      padding: 80px 24px 72px;
       text-align: center;
+      position: relative;
+      overflow: hidden;
     }
-    .sim-bridge__text {
-      display: inline-block;
-      font-size: clamp(13px, 1.6vw, 16px);
-      font-weight: 600;
-      color: transparent;
-      background: linear-gradient(90deg, #6E6E73 0%, #1D1D1F 35%, #20d9b4 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      letter-spacing: -.2px;
-      margin: 0;
-      padding-bottom: 28px;
+    .sim-bridge::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 80px;
+      background: linear-gradient(180deg, #ffffff 0%, transparent 100%);
+      pointer-events: none;
+    }
+    .sim-bridge::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 800px 400px at 50% 60%, rgba(32,217,180,.07), transparent);
+      pointer-events: none;
+    }
+    .sim-bridge__inner {
+      position: relative; z-index: 1;
+      max-width: 760px; margin: 0 auto;
+    }
+    .sim-bridge__kicker {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+      color: #20d9b4; margin-bottom: 28px;
+    }
+    .sim-bridge__kicker::before,
+    .sim-bridge__kicker::after {
+      content: ''; display: block;
+      width: 32px; height: 1px; background: rgba(32,217,180,.4);
+    }
+    .sim-bridge__headline {
+      font-size: clamp(28px, 4.5vw, 52px);
+      font-weight: 800; letter-spacing: -.04em; line-height: 1.1;
+      color: #ffffff; margin: 0 0 20px;
+    }
+    .sim-bridge__headline em {
+      font-style: normal;
+      background: linear-gradient(90deg, #20d9b4, #0891b2);
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .sim-bridge__body {
+      font-size: clamp(15px, 1.8vw, 18px);
+      color: rgba(255,255,255,.62);
+      line-height: 1.7; margin: 0;
+      font-weight: 400;
+    }
+    .sim-bridge__body strong {
+      color: rgba(255,255,255,.9); font-weight: 600;
     }
 
     /* ── DWOP SIMULATOR ── */
@@ -748,7 +787,11 @@
 
 <!-- ── BRIDGE ── -->
 <div class="sim-bridge">
-  <p class="sim-bridge__text">От симулятора скважины — до командного центра бурения с предиктивными алертами в реальном времени</p>
+  <div class="sim-bridge__inner">
+    <div class="sim-bridge__kicker">Предиктивное бурение</div>
+    <h2 class="sim-bridge__headline">Перестаньте реагировать на проблемы.<br><em>Начните их предсказывать.</em></h2>
+    <p class="sim-bridge__body">DRILL-Q объединяет <strong>Digital Well Twin</strong>, <strong>искусственный интеллект</strong> и <strong>потоковые данные бурения</strong>,&nbsp;чтобы прогнозировать осложнения, предупреждать инженеров в режиме реального времени и помогать принимать решения — до того, как возникают дорогостоящие простои.</p>
+  </div>
 </div>
 
 <!-- ── DWOP SIMULATOR ── -->
